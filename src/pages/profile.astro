@@ -1,0 +1,392 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import Navbar from "../components/Navbar.astro";
+import Footer from "../components/Footer.astro";
+---
+
+<BaseLayout title="Mon Profil - VinylVault">
+  <Navbar slot="navbar" />
+
+  <main class="min-h-screen bg-light-background dark:bg-dark-background">
+    <div class="container mx-auto px-4 py-8">
+      <!-- Navigation et en-tête -->
+      <div class="mb-8">
+        <!-- Breadcrumb / Navigation -->
+        <nav class="flex items-center space-x-2 text-sm mb-6">
+          <a
+            href="/dashboard"
+            class="text-light-textSecondary dark:text-dark-textSecondary hover:text-light-accent1 dark:hover:text-dark-accent1 transition-colors"
+          >
+            Ma Collection
+          </a>
+          <span class="text-light-textSecondary dark:text-dark-textSecondary">
+            /
+          </span>
+          <span class="text-light-text dark:text-dark-text font-medium">
+            Mon Profil
+          </span>
+        </nav>
+
+        <!-- Titre et bouton retour -->
+        <div class="flex items-center justify-between">
+          <div>
+            <h1
+              class="text-4xl font-bold text-light-text dark:text-dark-text mb-2"
+            >
+              Mon Profil
+            </h1>
+            <p class="text-light-textSecondary dark:text-dark-textSecondary">
+              Gérez vos informations personnelles et préférences
+            </p>
+          </div>
+
+          <!-- Bouton retour vers les collections -->
+          <a
+            href="/dashboard"
+            class="hidden md:flex items-center space-x-2 px-4 py-2 bg-light-surface dark:bg-dark-surface text-light-textSecondary dark:text-dark-textSecondary hover:text-light-accent1 dark:hover:text-dark-accent1 hover:bg-light-accent1/10 dark:hover:bg-dark-accent1/10 rounded-xl transition-colors"
+          >
+            <svg
+              class="w-5 h-5"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M15 19l-7-7 7-7"></path>
+            </svg>
+            <span>Retour aux Collections</span>
+          </a>
+        </div>
+      </div>
+
+      <!-- Formulaire de profil -->
+      <div
+        class="bg-white dark:bg-dark-surface rounded-2xl shadow-lg border border-light-surface dark:border-dark-surface p-6 max-w-2xl"
+      >
+        <!-- Messages de feedback -->
+        <div
+          id="success-message"
+          class="hidden mb-6 p-4 bg-emerald-50 dark:bg-emerald-900/20 border border-emerald-200 dark:border-emerald-800 rounded-xl text-emerald-700 dark:text-emerald-300"
+        >
+          <span id="success-text"></span>
+        </div>
+
+        <div
+          id="error-message"
+          class="hidden mb-6 p-4 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-xl text-red-700 dark:text-red-300"
+        >
+          <span id="error-text"></span>
+        </div>
+
+        <form id="profile-form" class="space-y-6">
+          <!-- Informations personnelles -->
+          <div>
+            <h3
+              class="text-lg font-semibold text-light-text dark:text-dark-text mb-4"
+            >
+              Informations personnelles
+            </h3>
+
+            <!-- Nom -->
+            <div class="mb-4">
+              <label
+                for="name"
+                class="block text-sm font-medium text-light-text dark:text-dark-text mb-2"
+              >
+                Nom complet
+              </label>
+              <input
+                type="text"
+                id="name"
+                name="name"
+                class="w-full px-4 py-3 border border-light-surface dark:border-dark-surface rounded-xl bg-light-background dark:bg-dark-background text-light-text dark:text-dark-text focus:ring-2 focus:ring-light-accent1 dark:focus:ring-dark-accent1 focus:border-transparent transition-colors"
+                placeholder="Votre nom complet"
+              />
+            </div>
+
+            <!-- Email -->
+            <div class="mb-4">
+              <label
+                for="email"
+                class="block text-sm font-medium text-light-text dark:text-dark-text mb-2"
+              >
+                Adresse email
+              </label>
+              <input
+                type="email"
+                id="email"
+                name="email"
+                class="w-full px-4 py-3 border border-light-surface dark:border-dark-surface rounded-xl bg-light-background dark:bg-dark-background text-light-text dark:text-dark-text focus:ring-2 focus:ring-light-accent1 dark:focus:ring-dark-accent1 focus:border-transparent transition-colors"
+                placeholder="votre@email.com"
+              />
+            </div>
+          </div>
+
+          <!-- Changement de mot de passe -->
+          <div
+            class="border-t border-light-surface dark:border-dark-surface pt-6"
+          >
+            <h3
+              class="text-lg font-semibold text-light-text dark:text-dark-text mb-4"
+            >
+              Changer le mot de passe
+            </h3>
+            <p
+              class="text-sm text-light-textSecondary dark:text-dark-textSecondary mb-4"
+            >
+              Laissez vide si vous ne souhaitez pas changer votre mot de passe
+            </p>
+
+            <!-- Mot de passe actuel -->
+            <div class="mb-4">
+              <label
+                for="currentPassword"
+                class="block text-sm font-medium text-light-text dark:text-dark-text mb-2"
+              >
+                Mot de passe actuel
+              </label>
+              <input
+                type="password"
+                id="currentPassword"
+                name="currentPassword"
+                class="w-full px-4 py-3 border border-light-surface dark:border-dark-surface rounded-xl bg-light-background dark:bg-dark-background text-light-text dark:text-dark-text focus:ring-2 focus:ring-light-accent1 dark:focus:ring-dark-accent1 focus:border-transparent transition-colors"
+                placeholder="Votre mot de passe actuel"
+              />
+            </div>
+
+            <!-- Nouveau mot de passe -->
+            <div class="mb-4">
+              <label
+                for="newPassword"
+                class="block text-sm font-medium text-light-text dark:text-dark-text mb-2"
+              >
+                Nouveau mot de passe
+              </label>
+              <input
+                type="password"
+                id="newPassword"
+                name="newPassword"
+                class="w-full px-4 py-3 border border-light-surface dark:border-dark-surface rounded-xl bg-light-background dark:bg-dark-background text-light-text dark:text-dark-text focus:ring-2 focus:ring-light-accent1 dark:focus:ring-dark-accent1 focus:border-transparent transition-colors"
+                placeholder="Nouveau mot de passe (min. 8 caractères)"
+              />
+            </div>
+
+            <!-- Confirmation du nouveau mot de passe -->
+            <div class="mb-4">
+              <label
+                for="confirmPassword"
+                class="block text-sm font-medium text-light-text dark:text-dark-text mb-2"
+              >
+                Confirmer le nouveau mot de passe
+              </label>
+              <input
+                type="password"
+                id="confirmPassword"
+                name="confirmPassword"
+                class="w-full px-4 py-3 border border-light-surface dark:border-dark-surface rounded-xl bg-light-background dark:bg-dark-background text-light-text dark:text-dark-text focus:ring-2 focus:ring-light-accent1 dark:focus:ring-dark-accent1 focus:border-transparent transition-colors"
+                placeholder="Confirmer le nouveau mot de passe"
+              />
+            </div>
+          </div>
+
+          <!-- Boutons d'action -->
+          <div class="flex flex-col sm:flex-row gap-4 pt-6">
+            <button
+              type="submit"
+              id="save-button"
+              class="flex-1 bg-light-accent1 dark:bg-dark-accent1 text-white py-3 px-6 rounded-xl hover:bg-amber-700 dark:hover:bg-amber-600 focus:ring-2 focus:ring-light-accent1 dark:focus:ring-dark-accent1 focus:ring-offset-2 transition-colors font-medium"
+            >
+              <span id="save-text">Sauvegarder les modifications</span>
+              <span id="save-loading" class="hidden">Sauvegarde...</span>
+            </button>
+
+            <!-- Bouton retour mobile -->
+            <a
+              href="/dashboard"
+              class="md:hidden flex items-center justify-center space-x-2 px-6 py-3 border border-light-surface dark:border-dark-surface rounded-xl text-light-textSecondary dark:text-dark-textSecondary hover:bg-light-surface dark:hover:bg-dark-surface transition-colors font-medium"
+            >
+              <svg
+                class="w-4 h-4"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M15 19l-7-7 7-7"></path>
+              </svg>
+              <span>Retour aux Collections</span>
+            </a>
+
+            <!-- Bouton annuler desktop -->
+            <button
+              type="button"
+              onclick="window.history.back()"
+              class="hidden md:block px-6 py-3 border border-light-surface dark:border-dark-surface rounded-xl text-light-textSecondary dark:text-dark-textSecondary hover:bg-light-surface dark:hover:bg-dark-surface transition-colors font-medium"
+            >
+              Annuler
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </main>
+
+  <Footer slot="footer" />
+</BaseLayout>
+
+<script>
+  import { getCurrentUser, getAuthToken } from "../lib/auth.js";
+
+  document.addEventListener("DOMContentLoaded", async () => {
+    const form = document.getElementById("profile-form") as HTMLFormElement;
+    const nameInput = document.getElementById("name") as HTMLInputElement;
+    const emailInput = document.getElementById("email") as HTMLInputElement;
+    const currentPasswordInput = document.getElementById(
+      "currentPassword"
+    ) as HTMLInputElement;
+    const newPasswordInput = document.getElementById(
+      "newPassword"
+    ) as HTMLInputElement;
+    const confirmPasswordInput = document.getElementById(
+      "confirmPassword"
+    ) as HTMLInputElement;
+
+    const successMessage = document.getElementById("success-message");
+    const errorMessage = document.getElementById("error-message");
+    const successText = document.getElementById("success-text");
+    const errorText = document.getElementById("error-text");
+
+    const saveButton = document.getElementById(
+      "save-button"
+    ) as HTMLButtonElement;
+    const saveText = document.getElementById("save-text");
+    const saveLoading = document.getElementById("save-loading");
+
+    // Charger les données utilisateur
+    try {
+      const user = await getCurrentUser();
+      if (!user) {
+        window.location.href =
+          "/login?redirect=" + encodeURIComponent(window.location.pathname);
+        return;
+      }
+
+      // Pré-remplir le formulaire
+      nameInput.value = user.name || "";
+      emailInput.value = user.email || "";
+    } catch (error) {
+      console.error("Erreur lors du chargement du profil:", error);
+      window.location.href = "/login";
+    }
+
+    // Fonction pour afficher les messages
+    function showMessage(type: "success" | "error", message: string) {
+      if (type === "success" && successMessage && successText) {
+        successText.textContent = message;
+        successMessage.classList.remove("hidden");
+        errorMessage?.classList.add("hidden");
+      } else if (type === "error" && errorMessage && errorText) {
+        errorText.textContent = message;
+        errorMessage.classList.remove("hidden");
+        successMessage?.classList.add("hidden");
+      }
+    }
+
+    // Gérer la soumission du formulaire
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault();
+
+      // Masquer les messages précédents
+      successMessage?.classList.add("hidden");
+      errorMessage?.classList.add("hidden");
+
+      // Validation côté client
+      if (
+        newPasswordInput.value &&
+        newPasswordInput.value !== confirmPasswordInput.value
+      ) {
+        showMessage("error", "Les nouveaux mots de passe ne correspondent pas");
+        return;
+      }
+
+      if (newPasswordInput.value && newPasswordInput.value.length < 8) {
+        showMessage(
+          "error",
+          "Le nouveau mot de passe doit contenir au moins 8 caractères"
+        );
+        return;
+      }
+
+      if (newPasswordInput.value && !currentPasswordInput.value) {
+        showMessage(
+          "error",
+          "Le mot de passe actuel est requis pour changer le mot de passe"
+        );
+        return;
+      }
+
+      // Interface de chargement
+      saveButton.disabled = true;
+      saveText?.classList.add("hidden");
+      saveLoading?.classList.remove("hidden");
+
+      try {
+        const token = getAuthToken();
+        if (!token) {
+          throw new Error("Token d'authentification manquant");
+        }
+
+        // Préparer les données
+        const data: any = {
+          name: nameInput.value.trim() || null,
+          email: emailInput.value.trim(),
+        };
+
+        if (newPasswordInput.value) {
+          data.currentPassword = currentPasswordInput.value;
+          data.newPassword = newPasswordInput.value;
+        }
+
+        // Envoyer la requête
+        const response = await fetch("/api/auth/profile", {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify(data),
+        });
+
+        const result = await response.json();
+
+        if (result.success) {
+          showMessage(
+            "success",
+            result.message || "Profil mis à jour avec succès"
+          );
+
+          // Vider les champs de mot de passe
+          currentPasswordInput.value = "";
+          newPasswordInput.value = "";
+          confirmPasswordInput.value = "";
+        } else {
+          showMessage("error", result.error || "Une erreur est survenue");
+        }
+      } catch (error) {
+        console.error("Erreur lors de la mise à jour du profil:", error);
+        showMessage("error", "Une erreur est survenue lors de la mise à jour");
+      } finally {
+        // Restaurer l'interface
+        saveButton.disabled = false;
+        saveText?.classList.remove("hidden");
+        saveLoading?.classList.add("hidden");
+      }
+    });
+  });
+</script>

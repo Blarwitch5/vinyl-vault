@@ -44,18 +44,74 @@ import { ThemeToggle } from "./theme-toggle";
       <div class="flex items-center space-x-4">
         <ThemeToggle />
 
-        <a
-          href="/login"
-          class="text-light-textSecondary dark:text-dark-textSecondary hover:text-light-accent1 dark:hover:text-dark-accent1 transition-colors"
-        >
-          Connexion
-        </a>
-        <a
-          href="/register"
-          class="bg-light-accent1 text-white px-4 py-2 rounded-xl hover:bg-amber-700 dark:bg-dark-accent1 dark:hover:bg-amber-600 transition-colors"
-        >
-          Inscription
-        </a>
+        <!-- Menu utilisateur connecté -->
+        <div id="user-menu" class="hidden relative">
+          <button
+            id="user-menu-button"
+            class="flex items-center space-x-2 text-light-textSecondary dark:text-dark-textSecondary hover:text-light-accent1 dark:hover:text-dark-accent1 transition-colors"
+          >
+            <span id="user-name" class="text-sm font-medium"></span>
+            <svg
+              class="w-4 h-4"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M19 9l-7 7-7-7"></path>
+            </svg>
+          </button>
+
+          <!-- Dropdown menu -->
+          <div
+            id="user-dropdown"
+            class="hidden absolute right-0 mt-2 w-48 bg-light-background dark:bg-dark-background rounded-xl shadow-lg border border-light-surface dark:border-dark-surface z-50"
+          >
+            <div class="py-2">
+              <a
+                href="/profile"
+                class="block px-4 py-2 text-sm text-light-textSecondary dark:text-dark-textSecondary hover:bg-light-surface dark:hover:bg-dark-surface transition-colors"
+              >
+                Mon Profil
+              </a>
+              <a
+                href="/dashboard"
+                class="block px-4 py-2 text-sm text-light-textSecondary dark:text-dark-textSecondary hover:bg-light-surface dark:hover:bg-dark-surface transition-colors"
+              >
+                Ma Collection
+              </a>
+              <div
+                class="border-t border-light-surface dark:border-dark-surface my-1"
+              >
+              </div>
+              <button
+                id="logout-button"
+                class="w-full text-left px-4 py-2 text-sm text-light-textSecondary dark:text-dark-textSecondary hover:bg-light-surface dark:hover:bg-dark-surface transition-colors"
+              >
+                Se Déconnecter
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Menu non connecté -->
+        <div id="guest-menu" class="flex items-center space-x-4">
+          <a
+            href="/login"
+            class="text-light-textSecondary dark:text-dark-textSecondary hover:text-light-accent1 dark:hover:text-dark-accent1 transition-colors"
+          >
+            Connexion
+          </a>
+          <a
+            href="/register"
+            class="bg-light-accent1 text-white px-4 py-2 rounded-xl hover:bg-amber-700 dark:bg-dark-accent1 dark:hover:bg-amber-600 transition-colors"
+          >
+            Inscription
+          </a>
+        </div>
       </div>
 
       <!-- Menu mobile -->
@@ -114,18 +170,38 @@ import { ThemeToggle } from "./theme-toggle";
             >
             <ThemeToggle />
           </div>
-          <a
-            href="/login"
-            class="block text-light-textSecondary dark:text-dark-textSecondary hover:text-light-accent1 dark:hover:text-dark-accent1 py-2"
-          >
-            Connexion
-          </a>
-          <a
-            href="/register"
-            class="block bg-light-accent1 text-white px-4 py-2 rounded-xl hover:bg-amber-700 dark:bg-dark-accent1 dark:hover:bg-amber-600 transition-colors"
-          >
-            Inscription
-          </a>
+
+          <!-- Menu mobile utilisateur connecté -->
+          <div id="mobile-user-menu" class="hidden">
+            <a
+              href="/profile"
+              class="block text-light-textSecondary dark:text-dark-textSecondary hover:text-light-accent1 dark:hover:text-dark-accent1 py-2"
+            >
+              Mon Profil
+            </a>
+            <button
+              id="mobile-logout-button"
+              class="block text-left w-full text-light-textSecondary dark:text-dark-textSecondary hover:text-light-accent1 dark:hover:text-dark-accent1 py-2"
+            >
+              Se Déconnecter
+            </button>
+          </div>
+
+          <!-- Menu mobile non connecté -->
+          <div id="mobile-guest-menu">
+            <a
+              href="/login"
+              class="block text-light-textSecondary dark:text-dark-textSecondary hover:text-light-accent1 dark:hover:text-dark-accent1 py-2"
+            >
+              Connexion
+            </a>
+            <a
+              href="/register"
+              class="block bg-light-accent1 text-white px-4 py-2 rounded-xl hover:bg-amber-700 dark:bg-dark-accent1 dark:hover:bg-amber-600 transition-colors"
+            >
+              Inscription
+            </a>
+          </div>
         </div>
       </div>
     </div>
@@ -133,8 +209,75 @@ import { ThemeToggle } from "./theme-toggle";
 </nav>
 
 <script>
-  // Gestion du menu mobile
-  document.addEventListener("DOMContentLoaded", () => {
+  import { getCurrentUser, logout } from "../lib/auth.js";
+
+  // Gestion de l'état d'authentification
+  document.addEventListener("DOMContentLoaded", async () => {
+    // Elements de l'interface
+    const userMenu = document.getElementById("user-menu");
+    const guestMenu = document.getElementById("guest-menu");
+    const mobileUserMenu = document.getElementById("mobile-user-menu");
+    const mobileGuestMenu = document.getElementById("mobile-guest-menu");
+    const userNameSpan = document.getElementById("user-name");
+    const userMenuButton = document.getElementById("user-menu-button");
+    const userDropdown = document.getElementById("user-dropdown");
+    const logoutButton = document.getElementById("logout-button");
+    const mobileLogoutButton = document.getElementById("mobile-logout-button");
+
+    // Vérifier l'état de connexion
+    try {
+      const user = await getCurrentUser();
+
+      if (user && userMenu && guestMenu && userNameSpan) {
+        // Utilisateur connecté
+        userMenu.classList.remove("hidden");
+        guestMenu.classList.add("hidden");
+        mobileUserMenu?.classList.remove("hidden");
+        mobileGuestMenu?.classList.add("hidden");
+
+        // Afficher le nom de l'utilisateur
+        userNameSpan.textContent = user.name || user.email.split("@")[0];
+
+        // Gestion du dropdown
+        if (userMenuButton && userDropdown) {
+          userMenuButton.addEventListener("click", (e) => {
+            e.stopPropagation();
+            userDropdown.classList.toggle("hidden");
+          });
+
+          // Fermer le dropdown en cliquant ailleurs
+          document.addEventListener("click", () => {
+            userDropdown.classList.add("hidden");
+          });
+        }
+
+        // Gestion de la déconnexion
+        const handleLogout = () => {
+          logout();
+        };
+
+        logoutButton?.addEventListener("click", handleLogout);
+        mobileLogoutButton?.addEventListener("click", handleLogout);
+      } else {
+        // Utilisateur non connecté
+        userMenu?.classList.add("hidden");
+        guestMenu?.classList.remove("hidden");
+        mobileUserMenu?.classList.add("hidden");
+        mobileGuestMenu?.classList.remove("hidden");
+      }
+    } catch (error) {
+      console.error(
+        "Erreur lors de la vérification de l'authentification:",
+        error
+      );
+      // En cas d'erreur, afficher le menu non connecté
+      userMenu?.classList.add("hidden");
+      guestMenu?.classList.remove("hidden");
+      mobileUserMenu?.classList.add("hidden");
+      mobileGuestMenu?.classList.remove("hidden");
+    }
+
+    // Gestion du menu mobile
     const toggle = document.getElementById("mobile-menu-toggle");
     const menu = document.getElementById("mobile-menu");
 

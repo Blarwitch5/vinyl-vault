@@ -213,9 +213,27 @@ const description =
 </BaseLayout>
 
 <script>
-  import { login, isValidEmail, isValidPassword } from "../lib/auth";
+  import {
+    login,
+    getCurrentUser,
+    isValidEmail,
+    isValidPassword,
+  } from "../lib/auth";
 
-  document.addEventListener("DOMContentLoaded", () => {
+  document.addEventListener("DOMContentLoaded", async () => {
+    // Vérifier si l'utilisateur est déjà connecté
+    try {
+      const user = await getCurrentUser();
+      if (user) {
+        // Rediriger vers le dashboard si déjà connecté
+        const urlParams = new URLSearchParams(window.location.search);
+        const redirect = urlParams.get("redirect") || "/dashboard";
+        window.location.href = redirect;
+        return;
+      }
+    } catch (error) {
+      // Continuer vers la connexion si erreur
+    }
     const form = document.getElementById("login-form") as HTMLFormElement;
     const emailInput = document.getElementById("email") as HTMLInputElement;
     const passwordInput = document.getElementById(
