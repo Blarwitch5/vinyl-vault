@@ -420,6 +420,30 @@ if (!isAuthenticated) {
     avatar: "${user?.avatar || 'default'}",
   };
 
+  // Fonction pour récupérer le token d'authentification
+  function getAuthToken(): string | null {
+    if (typeof window === "undefined") {
+      return null;
+    }
+
+    // Essayer localStorage d'abord
+    const localToken = localStorage.getItem("auth_token");
+    if (localToken) {
+      return localToken;
+    }
+
+    // Fallback sur les cookies
+    const cookies = document.cookie.split(";");
+    for (const cookie of cookies) {
+      const [name, value] = cookie.trim().split("=");
+      if (name === "vinyl_vault_token") {
+        return value;
+      }
+    }
+
+    return null;
+  }
+
   // Charger les données utilisateur
   function loadUserData() {
     loadUserDataFromServer(serverUser);
@@ -524,10 +548,17 @@ if (!isAuthenticated) {
       };
 
       try {
+        const token = getAuthToken();
+        if (!token) {
+          showMessage(messageDiv, "Vous devez être connecté pour modifier votre profil", "error");
+          return;
+        }
+
         const response = await fetch("/api/auth/profile", {
           method: "PUT",
           headers: {
             "Content-Type": "application/json",
+            "Authorization": `Bearer ${token}`,
           },
           body: JSON.stringify(data),
         });
@@ -577,10 +608,17 @@ if (!isAuthenticated) {
       };
 
       try {
+        const token = getAuthToken();
+        if (!token) {
+          showMessage(messageDiv, "Vous devez être connecté pour changer votre mot de passe", "error");
+          return;
+        }
+
         const response = await fetch("/api/auth/profile", {
           method: "PUT",
           headers: {
             "Content-Type": "application/json",
+            "Authorization": `Bearer ${token}`,
           },
           body: JSON.stringify(data),
         });
