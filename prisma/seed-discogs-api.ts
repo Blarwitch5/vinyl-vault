@@ -142,6 +142,7 @@ async function main() {
       email: "demo@vinylvault.com",
       name: "Utilisateur Demo",
       password: hashedPassword,
+      avatar: "blue",
     },
   });
 
@@ -150,6 +151,7 @@ async function main() {
       email: "collector@vinylvault.com",
       name: "Marie Collector",
       password: hashedPassword,
+      avatar: "emerald",
     },
   });
 
