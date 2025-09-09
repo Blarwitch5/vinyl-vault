@@ -50,6 +50,7 @@ export const GET: APIRoute = async ({ request }) => {
         id: true,
         email: true,
         name: true,
+        avatar: true,
         createdAt: true,
       },
     });

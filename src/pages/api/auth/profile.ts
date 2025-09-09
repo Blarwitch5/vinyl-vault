@@ -45,7 +45,7 @@ export const PUT: APIRoute = async ({ request }) => {
       );
     }
 
-    const { name, email, currentPassword, newPassword } = await request.json();
+    const { name, email, avatar, currentPassword, newPassword } = await request.json();
 
     // Vérifier si l'utilisateur existe
     const user = await prisma.user.findUnique({
@@ -72,6 +72,10 @@ export const PUT: APIRoute = async ({ request }) => {
 
     if (name !== undefined) {
       updateData.name = name;
+    }
+
+    if (avatar !== undefined) {
+      updateData.avatar = avatar;
     }
 
     if (email !== undefined && email !== user.email) {
@@ -166,6 +170,7 @@ export const PUT: APIRoute = async ({ request }) => {
         id: true,
         email: true,
         name: true,
+        avatar: true,
         createdAt: true,
         updatedAt: true,
       },

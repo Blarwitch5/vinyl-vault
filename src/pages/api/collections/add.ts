@@ -21,23 +21,27 @@ export const POST: APIRoute = async ({ request, cookies }) => {
 
     // Récupérer les données de la requête
     const body = await request.json();
-    const { collection_id, vinyl_data } = body;
+    const {
+      collection_id,
+      vinyl_data,
+      // Nouveaux champs pour le scan de code-barres
+      title,
+      artist,
+      year,
+      genre,
+      label,
+      format,
+      imageUrl,
+      discogsId,
+      discogsUrl,
+      barcode,
+    } = body;
 
-    // Validation
-    if (!collection_id || typeof collection_id !== "string") {
-      return new Response(
-        JSON.stringify({
-          success: false,
-          error: "ID de collection requis",
-        }),
-        {
-          status: 400,
-          headers: { "Content-Type": "application/json" },
-        }
-      );
-    }
+    // Validation - soit collection_id + vinyl_data, soit les champs directs
+    const hasDirectFields = title && artist;
+    const hasVinylData = collection_id && vinyl_data;
 
-    if (!vinyl_data || typeof vinyl_data !== "object") {
+    if (!hasDirectFields && !hasVinylData) {
       return new Response(
         JSON.stringify({
           success: false,
@@ -57,36 +61,68 @@ export const POST: APIRoute = async ({ request, cookies }) => {
     // TODO: Vérifier que le vinyle n'est pas déjà dans la collection
     // TODO: Ajouter le vinyle à la collection en base de données
 
-    // Pour l'instant, on simule l'ajout
-    const vinylEntry = {
-      id: `vinyl-${Date.now()}`,
-      collection_id,
-      discogs_id: vinyl_data.discogsId,
-      title: vinyl_data.title,
-      artist: vinyl_data.artist,
-      year: vinyl_data.year,
-      format: vinyl_data.format,
-      condition: "Near Mint", // Par défaut
-      cover_image: vinyl_data.coverImage,
-      discogs_url: vinyl_data.discogsUrl,
-      labels: Array.isArray(vinyl_data.labels)
-        ? vinyl_data.labels.join(", ")
-        : null,
-      catalog_number: vinyl_data.catalogNumber,
-      genre: Array.isArray(vinyl_data.genre)
-        ? vinyl_data.genre.join(", ")
-        : null,
-      style: Array.isArray(vinyl_data.style)
-        ? vinyl_data.style.join(", ")
-        : null,
-      country: vinyl_data.country,
-      notes: null,
-      purchase_price: null,
-      purchase_date: null,
-      estimated_value: null,
-      added_at: new Date().toISOString(),
-      user_id: userId,
-    };
+    // Préparer les données du vinyle
+    let vinylEntry;
+
+    if (hasDirectFields) {
+      // Données directes du scan de code-barres
+      vinylEntry = {
+        id: `vinyl-${Date.now()}`,
+        collection_id: collection_id || "1", // Collection par défaut
+        discogs_id: discogsId,
+        title: title,
+        artist: artist,
+        year: year || new Date().getFullYear(),
+        format: format || "LP",
+        condition: "Near Mint", // Par défaut
+        cover_image: imageUrl || "/default-vinyl-cover.svg",
+        discogs_url: discogsUrl,
+        labels: label,
+        catalog_number: null,
+        genre: genre,
+        style: null,
+        country: null,
+        barcode: barcode,
+        notes: null,
+        purchase_price: null,
+        purchase_date: null,
+        estimated_value: null,
+        added_at: new Date().toISOString(),
+        user_id: userId,
+      };
+    } else {
+      // Données via vinyl_data (ancien format)
+      vinylEntry = {
+        id: `vinyl-${Date.now()}`,
+        collection_id,
+        discogs_id: vinyl_data.discogsId,
+        title: vinyl_data.title,
+        artist: vinyl_data.artist,
+        year: vinyl_data.year,
+        format: vinyl_data.format,
+        condition: "Near Mint", // Par défaut
+        cover_image: vinyl_data.coverImage,
+        discogs_url: vinyl_data.discogsUrl,
+        labels: Array.isArray(vinyl_data.labels)
+          ? vinyl_data.labels.join(", ")
+          : null,
+        catalog_number: vinyl_data.catalogNumber,
+        genre: Array.isArray(vinyl_data.genre)
+          ? vinyl_data.genre.join(", ")
+          : null,
+        style: Array.isArray(vinyl_data.style)
+          ? vinyl_data.style.join(", ")
+          : null,
+        country: vinyl_data.country,
+        barcode: vinyl_data.barcode,
+        notes: null,
+        purchase_price: null,
+        purchase_date: null,
+        estimated_value: null,
+        added_at: new Date().toISOString(),
+        user_id: userId,
+      };
+    }
 
     console.log("Vinyle ajouté à la collection:", {
       collection_id,
