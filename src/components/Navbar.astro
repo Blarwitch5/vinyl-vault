@@ -1,0 +1,147 @@
+---
+// Navbar pour la navigation principale
+import { ThemeToggle } from "./theme-toggle";
+---
+
+<nav
+  class="bg-light-background dark:bg-dark-background shadow-lg border-b border-light-surface dark:border-dark-surface transition-colors duration-300"
+>
+  <div class="container mx-auto px-4">
+    <div class="flex justify-between items-center h-16">
+      <!-- Logo et titre -->
+      <div class="flex items-center space-x-4">
+        <a href="/" class="flex items-center space-x-2">
+          <span class="text-2xl">🎵</span>
+          <span class="text-xl font-bold text-light-text dark:text-dark-text"
+            >VinylVault</span
+          >
+        </a>
+      </div>
+
+      <!-- Navigation principale -->
+      <div class="hidden md:flex items-center space-x-6">
+        <a
+          href="/"
+          class="text-light-textSecondary dark:text-dark-textSecondary hover:text-light-accent1 dark:hover:text-dark-accent1 transition-colors"
+        >
+          Accueil
+        </a>
+        <a
+          href="/search"
+          class="text-light-textSecondary dark:text-dark-textSecondary hover:text-light-accent1 dark:hover:text-dark-accent1 transition-colors"
+        >
+          Rechercher
+        </a>
+        <a
+          href="/dashboard"
+          class="text-light-textSecondary dark:text-dark-textSecondary hover:text-light-accent1 dark:hover:text-dark-accent1 transition-colors"
+        >
+          Ma Collection
+        </a>
+      </div>
+
+      <!-- Boutons d'authentification et thème -->
+      <div class="flex items-center space-x-4">
+        <ThemeToggle />
+
+        <a
+          href="/login"
+          class="text-light-textSecondary dark:text-dark-textSecondary hover:text-light-accent1 dark:hover:text-dark-accent1 transition-colors"
+        >
+          Connexion
+        </a>
+        <a
+          href="/register"
+          class="bg-light-accent1 text-white px-4 py-2 rounded-xl hover:bg-amber-700 dark:bg-dark-accent1 dark:hover:bg-amber-600 transition-colors"
+        >
+          Inscription
+        </a>
+      </div>
+
+      <!-- Menu mobile -->
+      <div class="md:hidden">
+        <button
+          id="mobile-menu-toggle"
+          class="text-light-textSecondary dark:text-dark-textSecondary hover:text-light-accent1 dark:hover:text-dark-accent1 focus:outline-none"
+        >
+          <svg
+            class="w-6 h-6"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M4 6h16M4 12h16M4 18h16"></path>
+          </svg>
+        </button>
+      </div>
+    </div>
+
+    <!-- Menu mobile déroulant -->
+    <div
+      id="mobile-menu"
+      class="hidden md:hidden border-t border-light-surface dark:border-dark-surface"
+    >
+      <div class="py-4 space-y-2">
+        <a
+          href="/"
+          class="block text-light-textSecondary dark:text-dark-textSecondary hover:text-light-accent1 dark:hover:text-dark-accent1 py-2"
+        >
+          Accueil
+        </a>
+        <a
+          href="/search"
+          class="block text-light-textSecondary dark:text-dark-textSecondary hover:text-light-accent1 dark:hover:text-dark-accent1 py-2"
+        >
+          Rechercher
+        </a>
+        <a
+          href="/dashboard"
+          class="block text-light-textSecondary dark:text-dark-textSecondary hover:text-light-accent1 dark:hover:text-dark-accent1 py-2"
+        >
+          Ma Collection
+        </a>
+        <div
+          class="border-t border-light-surface dark:border-dark-surface pt-2 space-y-2"
+        >
+          <div class="flex items-center justify-between py-2">
+            <span
+              class="text-light-textSecondary dark:text-dark-textSecondary text-sm"
+              >Thème</span
+            >
+            <ThemeToggle />
+          </div>
+          <a
+            href="/login"
+            class="block text-light-textSecondary dark:text-dark-textSecondary hover:text-light-accent1 dark:hover:text-dark-accent1 py-2"
+          >
+            Connexion
+          </a>
+          <a
+            href="/register"
+            class="block bg-light-accent1 text-white px-4 py-2 rounded-xl hover:bg-amber-700 dark:bg-dark-accent1 dark:hover:bg-amber-600 transition-colors"
+          >
+            Inscription
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</nav>
+
+<script>
+  // Gestion du menu mobile
+  document.addEventListener("DOMContentLoaded", () => {
+    const toggle = document.getElementById("mobile-menu-toggle");
+    const menu = document.getElementById("mobile-menu");
+
+    if (toggle && menu) {
+      toggle.addEventListener("click", () => {
+        menu.classList.toggle("hidden");
+      });
+    }
+  });
+</script>

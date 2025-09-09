@@ -1,0 +1,407 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import Navbar from "../components/Navbar.astro";
+import Footer from "../components/Footer.astro";
+
+const title = "Démo Couleurs Vinyl Modern";
+const description =
+  "Aperçu de la nouvelle palette de couleurs moderne pour VinylVault";
+---
+
+<BaseLayout title={title} description={description}>
+  <Navbar slot="navbar" />
+
+  <div class="min-h-screen bg-light-background dark:bg-dark-background py-12">
+    <div class="container mx-auto px-4">
+      <!-- En-tête -->
+      <div class="text-center mb-12">
+        <h1 class="text-5xl font-bold text-light-text dark:text-dark-text mb-4">
+          🎵 Palette <span class="text-light-accent1 dark:text-dark-accent1"
+            >Vinyl Modern</span
+          >
+        </h1>
+        <p
+          class="text-xl text-light-textSecondary dark:text-dark-textSecondary"
+        >
+          Une palette moderne inspirée de l'univers des vinyles
+        </p>
+      </div>
+
+      <!-- Couleurs principales -->
+      <div class="grid lg:grid-cols-2 gap-8 mb-12">
+        <!-- Mode Light -->
+        <div
+          class="bg-light-surface dark:bg-dark-surface rounded-2xl p-8 border border-light-surface dark:border-dark-surface"
+        >
+          <h2
+            class="text-2xl font-bold text-light-text dark:text-dark-text mb-6"
+          >
+            Mode Light
+          </h2>
+
+          <!-- Accent 1 - Violet -->
+          <div class="mb-6">
+            <h3
+              class="text-lg font-semibold text-light-text dark:text-dark-text mb-3"
+            >
+              Accent Principal (Violet)
+            </h3>
+            <div class="flex items-center space-x-4">
+              <div class="w-20 h-20 bg-light-accent1 rounded-xl shadow-lg">
+              </div>
+              <div>
+                <p
+                  class="font-mono text-sm text-light-textSecondary dark:text-dark-textSecondary"
+                >
+                  #7b1fa2
+                </p>
+                <button
+                  class="mt-2 px-4 py-2 bg-light-accent1 text-white rounded-lg hover:bg-vinyl-700 transition-colors"
+                >
+                  Bouton Principal
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Accent 2 - Or -->
+          <div class="mb-6">
+            <h3
+              class="text-lg font-semibold text-light-text dark:text-dark-text mb-3"
+            >
+              Accent Secondaire (Or)
+            </h3>
+            <div class="flex items-center space-x-4">
+              <div class="w-20 h-20 bg-light-accent2 rounded-xl shadow-lg">
+              </div>
+              <div>
+                <p
+                  class="font-mono text-sm text-light-textSecondary dark:text-dark-textSecondary"
+                >
+                  #eab308
+                </p>
+                <button
+                  class="mt-2 px-4 py-2 bg-light-accent2 text-black rounded-lg hover:bg-gold-600 transition-colors"
+                >
+                  Bouton Secondaire
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Accent 3 - Rouge -->
+          <div>
+            <h3
+              class="text-lg font-semibold text-light-text dark:text-dark-text mb-3"
+            >
+              Accent Spécial (Rouge)
+            </h3>
+            <div class="flex items-center space-x-4">
+              <div class="w-20 h-20 bg-light-accent3 rounded-xl shadow-lg">
+              </div>
+              <div>
+                <p
+                  class="font-mono text-sm text-light-textSecondary dark:text-dark-textSecondary"
+                >
+                  #dc2626
+                </p>
+                <button
+                  class="mt-2 px-4 py-2 bg-light-accent3 text-white rounded-lg hover:bg-red-700 transition-colors"
+                >
+                  Action Critique
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Mode Dark -->
+        <div
+          class="bg-light-surface dark:bg-dark-surface rounded-2xl p-8 border border-light-surface dark:border-dark-surface"
+        >
+          <h2
+            class="text-2xl font-bold text-light-text dark:text-dark-text mb-6"
+          >
+            Mode Dark
+          </h2>
+
+          <!-- Accent 1 - Violet -->
+          <div class="mb-6">
+            <h3
+              class="text-lg font-semibold text-light-text dark:text-dark-text mb-3"
+            >
+              Accent Principal (Violet)
+            </h3>
+            <div class="flex items-center space-x-4">
+              <div class="w-20 h-20 bg-dark-accent1 rounded-xl shadow-lg"></div>
+              <div>
+                <p
+                  class="font-mono text-sm text-light-textSecondary dark:text-dark-textSecondary"
+                >
+                  #9c27b0
+                </p>
+                <button
+                  class="mt-2 px-4 py-2 bg-dark-accent1 text-white rounded-lg hover:bg-vinyl-600 transition-colors"
+                >
+                  Bouton Principal
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Accent 2 - Or -->
+          <div class="mb-6">
+            <h3
+              class="text-lg font-semibold text-light-text dark:text-dark-text mb-3"
+            >
+              Accent Secondaire (Or)
+            </h3>
+            <div class="flex items-center space-x-4">
+              <div class="w-20 h-20 bg-dark-accent2 rounded-xl shadow-lg"></div>
+              <div>
+                <p
+                  class="font-mono text-sm text-light-textSecondary dark:text-dark-textSecondary"
+                >
+                  #facc15
+                </p>
+                <button
+                  class="mt-2 px-4 py-2 bg-dark-accent2 text-black rounded-lg hover:bg-gold-400 transition-colors"
+                >
+                  Bouton Secondaire
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Accent 3 - Orange -->
+          <div>
+            <h3
+              class="text-lg font-semibold text-light-text dark:text-dark-text mb-3"
+            >
+              Accent Spécial (Orange)
+            </h3>
+            <div class="flex items-center space-x-4">
+              <div class="w-20 h-20 bg-dark-accent3 rounded-xl shadow-lg"></div>
+              <div>
+                <p
+                  class="font-mono text-sm text-light-textSecondary dark:text-dark-textSecondary"
+                >
+                  #ff6b35
+                </p>
+                <button
+                  class="mt-2 px-4 py-2 bg-dark-accent3 text-white rounded-lg hover:bg-orange-600 transition-colors"
+                >
+                  Action Spéciale
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Couleurs thématiques vinyles -->
+      <div
+        class="bg-light-surface dark:bg-dark-surface rounded-2xl p-8 border border-light-surface dark:border-dark-surface mb-12"
+      >
+        <h2 class="text-2xl font-bold text-light-text dark:text-dark-text mb-6">
+          Couleurs Thématiques Vinyles
+        </h2>
+
+        <div class="grid grid-cols-2 lg:grid-cols-3 gap-6">
+          <div class="text-center">
+            <div
+              class="w-16 h-16 bg-vinyl-record-black rounded-full mx-auto mb-2 shadow-lg"
+            >
+            </div>
+            <p class="text-sm font-medium text-light-text dark:text-dark-text">
+              Noir Vinyle
+            </p>
+            <p
+              class="text-xs font-mono text-light-textSecondary dark:text-dark-textSecondary"
+            >
+              #1a1a1b
+            </p>
+          </div>
+
+          <div class="text-center">
+            <div
+              class="w-16 h-16 bg-vinyl-label-gold rounded-full mx-auto mb-2 shadow-lg"
+            >
+            </div>
+            <p class="text-sm font-medium text-light-text dark:text-dark-text">
+              Or Label
+            </p>
+            <p
+              class="text-xs font-mono text-light-textSecondary dark:text-dark-textSecondary"
+            >
+              #ffd700
+            </p>
+          </div>
+
+          <div class="text-center">
+            <div
+              class="w-16 h-16 bg-vinyl-label-red rounded-full mx-auto mb-2 shadow-lg"
+            >
+            </div>
+            <p class="text-sm font-medium text-light-text dark:text-dark-text">
+              Rouge Label
+            </p>
+            <p
+              class="text-xs font-mono text-light-textSecondary dark:text-dark-textSecondary"
+            >
+              #dc143c
+            </p>
+          </div>
+
+          <div class="text-center">
+            <div
+              class="w-16 h-16 bg-vinyl-label-blue rounded-full mx-auto mb-2 shadow-lg"
+            >
+            </div>
+            <p class="text-sm font-medium text-light-text dark:text-dark-text">
+              Bleu Label
+            </p>
+            <p
+              class="text-xs font-mono text-light-textSecondary dark:text-dark-textSecondary"
+            >
+              #1e40af
+            </p>
+          </div>
+
+          <div class="text-center">
+            <div
+              class="w-16 h-16 bg-vinyl-sleeve-cream rounded-full mx-auto mb-2 shadow-lg"
+            >
+            </div>
+            <p class="text-sm font-medium text-light-text dark:text-dark-text">
+              Crème Pochette
+            </p>
+            <p
+              class="text-xs font-mono text-light-textSecondary dark:text-dark-textSecondary"
+            >
+              #f5f5dc
+            </p>
+          </div>
+
+          <div class="text-center">
+            <div
+              class="w-16 h-16 bg-vinyl-groove-silver rounded-full mx-auto mb-2 shadow-lg"
+            >
+            </div>
+            <p class="text-sm font-medium text-light-text dark:text-dark-text">
+              Argent Sillons
+            </p>
+            <p
+              class="text-xs font-mono text-light-textSecondary dark:text-dark-textSecondary"
+            >
+              #c0c0c0
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Exemple d'interface -->
+      <div
+        class="bg-light-surface dark:bg-dark-surface rounded-2xl p-8 border border-light-surface dark:border-dark-surface"
+      >
+        <h2 class="text-2xl font-bold text-light-text dark:text-dark-text mb-6">
+          Aperçu Interface
+        </h2>
+
+        <!-- Simulation d'une carte vinyle -->
+        <div
+          class="bg-light-background dark:bg-dark-background rounded-xl p-6 border border-light-surface dark:border-dark-surface"
+        >
+          <div class="flex items-center space-x-4 mb-4">
+            <div
+              class="w-16 h-16 bg-vinyl-record-black rounded-full flex items-center justify-center"
+            >
+              <div class="w-4 h-4 bg-vinyl-label-gold rounded-full"></div>
+            </div>
+            <div class="flex-1">
+              <h3
+                class="text-lg font-semibold text-light-text dark:text-dark-text"
+              >
+                Dark Side of the Moon
+              </h3>
+              <p class="text-light-textSecondary dark:text-dark-textSecondary">
+                Pink Floyd • 1973
+              </p>
+            </div>
+            <div class="text-right">
+              <p
+                class="text-2xl font-bold text-light-accent2 dark:text-dark-accent2"
+              >
+                €45.00
+              </p>
+              <span
+                class="inline-block px-2 py-1 bg-vinyl-label-gold text-black text-xs rounded-full"
+              >
+                Near Mint
+              </span>
+            </div>
+          </div>
+
+          <div class="flex space-x-3">
+            <button
+              class="flex-1 bg-light-accent1 dark:bg-dark-accent1 text-white py-2 px-4 rounded-lg hover:bg-vinyl-700 dark:hover:bg-vinyl-600 transition-colors"
+            >
+              Ajouter à la collection
+            </button>
+            <button
+              class="px-4 py-2 border border-light-accent1 dark:border-dark-accent1 text-light-accent1 dark:text-dark-accent1 rounded-lg hover:bg-light-accent1 hover:text-white dark:hover:bg-dark-accent1 transition-colors"
+            >
+              Voir détails
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Notes de design -->
+      <div class="mt-12 text-center">
+        <h2 class="text-2xl font-bold text-light-text dark:text-dark-text mb-4">
+          💡 Philosophie de Design
+        </h2>
+        <div class="grid md:grid-cols-3 gap-6 text-left">
+          <div class="bg-light-surface dark:bg-dark-surface rounded-xl p-6">
+            <h3
+              class="text-lg font-semibold text-light-accent1 dark:text-dark-accent1 mb-2"
+            >
+              🎨 Moderne & Nostalgique
+            </h3>
+            <p class="text-light-textSecondary dark:text-dark-textSecondary">
+              Une palette qui allie modernité technique et nostalgie des vinyles
+              vintage.
+            </p>
+          </div>
+
+          <div class="bg-light-surface dark:bg-dark-surface rounded-xl p-6">
+            <h3
+              class="text-lg font-semibold text-light-accent2 dark:text-dark-accent2 mb-2"
+            >
+              ✨ Contrastes Riches
+            </h3>
+            <p class="text-light-textSecondary dark:text-dark-textSecondary">
+              Des contrastes élevés pour une lisibilité parfaite et une
+              expérience premium.
+            </p>
+          </div>
+
+          <div class="bg-light-surface dark:bg-dark-surface rounded-xl p-6">
+            <h3
+              class="text-lg font-semibold text-light-accent3 dark:text-dark-accent3 mb-2"
+            >
+              🎵 Thématique Vinyle
+            </h3>
+            <p class="text-light-textSecondary dark:text-dark-textSecondary">
+              Chaque couleur raconte l'histoire des vinyles : du noir profond à
+              l'or des labels.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <Footer slot="footer" />
+</BaseLayout>

@@ -22,3 +22,10 @@ pnpm-debug.log*
 
 # jetbrains setting folder
 .idea/
+
+/src/generated/prisma
+
+# Documentation files (ignore all .md except README.md)
+*.md
+!README.md
+

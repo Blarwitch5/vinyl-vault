@@ -1,0 +1,213 @@
+---
+export interface Props {
+  vinyl: {
+    id: string;
+    title: string;
+    artist: string;
+    year?: number;
+    format?: string;
+    coverImage?: string;
+    condition?: string;
+    price?: number;
+    note?: string;
+    discogsId?: string;
+    discogsUrl?: string;
+  };
+  showActions?: boolean;
+  isInCollection?: boolean;
+}
+
+const { vinyl, showActions = false, isInCollection = false } = Astro.props;
+const defaultCover = "/default-vinyl-cover.svg";
+---
+
+<div
+  class="vinyl-card-container bg-light-background dark:bg-dark-surface rounded-xl shadow-md overflow-hidden hover:shadow-lg transition-shadow duration-300"
+  data-discogs-id={vinyl.discogsId}
+  data-discogs-url={vinyl.discogsUrl}
+>
+  <!-- Image de couverture -->
+  <div class="aspect-square relative bg-light-surface dark:bg-dark-surface">
+    <img
+      src={vinyl.coverImage || defaultCover}
+      alt={`Couverture de ${vinyl.title}`}
+      class="w-full h-full object-cover"
+      loading="lazy"
+      onerror="this.src='/default-vinyl-cover.svg'"
+    />
+    {
+      vinyl.condition && (
+        <div class="absolute top-2 right-2">
+          <span class="bg-black bg-opacity-70 text-white text-xs px-2 py-1 rounded-full">
+            {vinyl.condition}
+          </span>
+        </div>
+      )
+    }
+  </div>
+
+  <!-- Informations du vinyle -->
+  <div class="p-4">
+    <h3
+      class="font-semibold text-lg text-light-text dark:text-dark-text mb-1 line-clamp-2"
+      data-vinyl-title
+    >
+      {vinyl.title}
+    </h3>
+
+    <p
+      class="text-light-textSecondary dark:text-dark-textSecondary mb-2 line-clamp-1"
+      data-vinyl-artist
+    >
+      {vinyl.artist}
+    </p>
+
+    <div
+      class="flex items-center justify-between text-sm text-light-textSecondary dark:text-dark-textSecondary mb-3"
+    >
+      {vinyl.year && <span data-vinyl-year>{vinyl.year}</span>}
+      {vinyl.format && <span>{vinyl.format}</span>}
+    </div>
+
+    {
+      vinyl.price && (
+        <div class="text-lg font-bold text-emerald-600 dark:text-dark-accent2 mb-3">
+          {vinyl.price.toFixed(2)} €
+        </div>
+      )
+    }
+
+    {
+      vinyl.note && (
+        <p class="text-sm text-light-textSecondary dark:text-dark-textSecondary italic mb-3 line-clamp-2">
+          "{vinyl.note}"
+        </p>
+      )
+    }
+
+    {
+      showActions && (
+        <div class="flex gap-2">
+          {!isInCollection ? (
+            <button
+              class="flex-1 bg-light-accent1 dark:bg-dark-accent1 text-white py-2 px-4 rounded-lg hover:bg-amber-700 dark:hover:bg-amber-600 transition-colors text-sm font-medium"
+              data-vinyl-id={vinyl.id}
+              data-action="add-to-collection"
+            >
+              Ajouter à ma collection
+            </button>
+          ) : (
+            <div class="flex gap-2 w-full">
+              <button
+                class="flex-1 bg-light-surface dark:bg-dark-surface text-light-text dark:text-dark-text py-2 px-4 rounded-lg hover:bg-light-surface dark:hover:bg-dark-background transition-colors text-sm font-medium"
+                data-vinyl-id={vinyl.id}
+                data-action="edit"
+              >
+                Modifier
+              </button>
+              <button
+                class="flex-1 bg-red-600 text-white py-2 px-4 rounded-lg hover:bg-red-700 transition-colors text-sm font-medium"
+                data-vinyl-id={vinyl.id}
+                data-action="remove"
+              >
+                Supprimer
+              </button>
+            </div>
+          )}
+        </div>
+      )
+    }
+  </div>
+</div>
+
+<style>
+  .line-clamp-1 {
+    display: -webkit-box;
+    -webkit-line-clamp: 1;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  .line-clamp-2 {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+</style>
+
+<script>
+  // Gestion des actions sur les cartes de vinyles
+  document.addEventListener("DOMContentLoaded", () => {
+    const actionButtons = document.querySelectorAll("[data-action]");
+
+    actionButtons.forEach((button) => {
+      button.addEventListener("click", async (e) => {
+        e.preventDefault();
+        const target = e.target as HTMLButtonElement;
+        const action = target.dataset.action;
+        const vinylId = target.dataset.vinylId;
+
+        if (!action || !vinylId) return;
+
+        try {
+          switch (action) {
+            case "add-to-collection":
+              await addToCollection(vinylId);
+              break;
+            case "remove":
+              await removeFromCollection(vinylId);
+              break;
+            case "edit":
+              // Rediriger vers une page d'édition ou ouvrir un modal
+              window.location.href = `/edit-vinyl/${vinylId}`;
+              break;
+          }
+        } catch (error) {
+          console.error("Erreur lors de l'action:", error);
+          alert("Une erreur est survenue. Veuillez réessayer.");
+        }
+      });
+    });
+  });
+
+  async function addToCollection(vinylId: string) {
+    const response = await fetch("/api/collections/add", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ vinylId }),
+    });
+
+    if (response.ok) {
+      location.reload(); // Recharger la page pour voir les changements
+    } else {
+      throw new Error("Échec de l'ajout à la collection");
+    }
+  }
+
+  async function removeFromCollection(vinylId: string) {
+    if (
+      !confirm(
+        "Êtes-vous sûr de vouloir supprimer ce vinyle de votre collection ?"
+      )
+    ) {
+      return;
+    }
+
+    const response = await fetch("/api/collections/remove", {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ vinylId }),
+    });
+
+    if (response.ok) {
+      location.reload(); // Recharger la page pour voir les changements
+    } else {
+      throw new Error("Échec de la suppression de la collection");
+    }
+  }
+</script>

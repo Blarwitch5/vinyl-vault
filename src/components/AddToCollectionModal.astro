@@ -1,0 +1,569 @@
+---
+// Composant modal pour ajouter un vinyle à une collection
+export interface Props {
+  vinylData?: any;
+}
+
+const { vinylData } = Astro.props;
+---
+
+<!-- Modal overlay -->
+<div
+  id="add-to-collection-modal"
+  class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden flex items-center justify-center p-4"
+>
+  <div
+    class="bg-light-background dark:bg-dark-surface rounded-lg max-w-md w-full max-h-[90vh] overflow-y-auto"
+  >
+    <!-- Header -->
+    <div
+      class="flex items-center justify-between p-6 border-b border-light-surface dark:border-dark-surface"
+    >
+      <h3 class="text-lg font-semibold text-light-text dark:text-dark-text">
+        Ajouter à ma collection
+      </h3>
+      <button
+        id="close-modal"
+        class="text-gray-400 hover:text-light-textSecondary dark:hover:text-gray-300 p-1"
+      >
+        <svg
+          class="w-6 h-6"
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M6 18L18 6M6 6l12 12"></path>
+        </svg>
+      </button>
+    </div>
+
+    <!-- Vinyl info -->
+    <div
+      id="vinyl-info"
+      class="p-6 border-b border-light-surface dark:border-dark-surface hidden"
+    >
+      <div class="flex space-x-4">
+        <img
+          id="vinyl-cover"
+          src=""
+          alt=""
+          class="w-16 h-16 object-cover rounded"
+        />
+        <div class="flex-1">
+          <h4
+            id="vinyl-title"
+            class="font-semibold text-light-text dark:text-dark-text"
+          >
+          </h4>
+          <p id="vinyl-artist" class="text-light-textSecondary dark:text-dark-textSecondary"></p>
+          <p id="vinyl-year" class="text-sm text-light-textSecondary dark:text-light-textSecondary">
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Content -->
+    <div class="p-6">
+      <!-- Connexion requise -->
+      <div id="login-required" class="text-center hidden">
+        <div class="mb-4">
+          <svg
+            class="w-16 h-16 text-primary-500 mx-auto mb-4"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"
+            ></path>
+          </svg>
+        </div>
+        <h4 class="text-lg font-semibold text-light-text dark:text-dark-text mb-2">
+          Connexion requise
+        </h4>
+        <p class="text-light-textSecondary dark:text-dark-textSecondary mb-6">
+          Vous devez être connecté pour ajouter des vinyles à votre collection.
+        </p>
+        <div class="flex space-x-3">
+          <a
+            href="/login"
+            class="flex-1 bg-primary-500 text-white py-2 px-4 rounded-lg hover:bg-primary-600 transition-colors text-center"
+          >
+            Se connecter
+          </a>
+          <a
+            href="/register"
+            class="flex-1 border border-light-surface dark:border-dark-surface text-gray-700 dark:text-dark-textSecondary py-2 px-4 rounded-lg hover:bg-light-background dark:hover:bg-dark-700 transition-colors text-center"
+          >
+            S'inscrire
+          </a>
+        </div>
+      </div>
+
+      <!-- Loading -->
+      <div id="loading-collections" class="text-center hidden">
+        <div
+          class="animate-spin rounded-full h-8 w-8 border-b-2 border-primary-500 mx-auto mb-4"
+        >
+        </div>
+        <p class="text-light-textSecondary dark:text-dark-textSecondary">
+          Chargement de vos collections...
+        </p>
+      </div>
+
+      <!-- Aucune collection -->
+      <div id="no-collections" class="text-center hidden">
+        <div class="mb-4">
+          <svg
+            class="w-16 h-16 text-gray-400 mx-auto mb-4"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M19 11H5m14-5v12a2 2 0 01-2 2H7a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2z"
+            ></path>
+          </svg>
+        </div>
+        <h4 class="text-lg font-semibold text-light-text dark:text-dark-text mb-2">
+          Aucune collection
+        </h4>
+        <p class="text-light-textSecondary dark:text-dark-textSecondary mb-6">
+          Vous n'avez pas encore de collection. Créez-en une pour commencer !
+        </p>
+        <button
+          id="create-collection-btn"
+          class="w-full bg-primary-500 text-white py-2 px-4 rounded-lg hover:bg-primary-600 transition-colors"
+        >
+          Créer ma première collection
+        </button>
+      </div>
+
+      <!-- Sélection de collection -->
+      <div id="collection-selection" class="hidden">
+        <h4 class="font-semibold text-light-text dark:text-dark-text mb-4">
+          Choisir une collection
+        </h4>
+        <div
+          id="collections-list"
+          class="space-y-2 mb-4 max-h-60 overflow-y-auto"
+        >
+          <!-- Collections will be inserted here -->
+        </div>
+        <button
+          id="create-new-collection-btn"
+          class="w-full border border-dashed border-light-surface dark:border-dark-surface text-light-textSecondary dark:text-dark-textSecondary py-3 px-4 rounded-lg hover:border-primary-500 hover:text-primary-500 transition-colors"
+        >
+          + Créer une nouvelle collection
+        </button>
+      </div>
+
+      <!-- Création de collection -->
+      <div id="collection-creation" class="hidden">
+        <h4 class="font-semibold text-light-text dark:text-dark-text mb-4">
+          Créer une nouvelle collection
+        </h4>
+        <form id="create-collection-form">
+          <div class="mb-4">
+            <label
+              for="collection-name"
+              class="block text-sm font-medium text-gray-700 dark:text-dark-textSecondary mb-2"
+            >
+              Nom de la collection *
+            </label>
+            <input
+              type="text"
+              id="collection-name"
+              name="name"
+              required
+              placeholder="Ex: Ma collection rock"
+              class="w-full px-3 py-2 border border-light-surface dark:border-dark-surface rounded-md bg-light-background dark:bg-dark-background text-light-text dark:text-dark-text focus:outline-none focus:ring-2 focus:ring-primary-500"
+            />
+          </div>
+          <div class="mb-6">
+            <label
+              for="collection-description"
+              class="block text-sm font-medium text-gray-700 dark:text-dark-textSecondary mb-2"
+            >
+              Description (optionnel)
+            </label>
+            <textarea
+              id="collection-description"
+              name="description"
+              rows="3"
+              placeholder="Décrivez votre collection..."
+              class="w-full px-3 py-2 border border-light-surface dark:border-dark-surface rounded-md bg-light-background dark:bg-dark-background text-light-text dark:text-dark-text focus:outline-none focus:ring-2 focus:ring-primary-500 resize-none"
+            ></textarea>
+          </div>
+          <div class="flex space-x-3">
+            <button
+              type="button"
+              id="back-to-selection"
+              class="flex-1 border border-light-surface dark:border-dark-surface text-gray-700 dark:text-dark-textSecondary py-2 px-4 rounded-lg hover:bg-light-background dark:hover:bg-dark-700 transition-colors"
+            >
+              Retour
+            </button>
+            <button
+              type="submit"
+              class="flex-1 bg-primary-500 text-white py-2 px-4 rounded-lg hover:bg-primary-600 transition-colors"
+            >
+              Créer et ajouter
+            </button>
+          </div>
+        </form>
+      </div>
+
+      <!-- Success -->
+      <div id="success-message" class="text-center hidden">
+        <div class="mb-4">
+          <svg
+            class="w-16 h-16 text-green-500 mx-auto mb-4"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+          </svg>
+        </div>
+        <h4 class="text-lg font-semibold text-light-text dark:text-dark-text mb-2">
+          Vinyle ajouté !
+        </h4>
+        <p id="success-details" class="text-light-textSecondary dark:text-dark-textSecondary mb-6">
+        </p>
+        <div class="flex space-x-3">
+          <button
+            id="close-success"
+            class="flex-1 border border-light-surface dark:border-dark-surface text-gray-700 dark:text-dark-textSecondary py-2 px-4 rounded-lg hover:bg-light-background dark:hover:bg-dark-700 transition-colors"
+          >
+            Fermer
+          </button>
+          <a
+            href="/dashboard"
+            class="flex-1 bg-primary-500 text-white py-2 px-4 rounded-lg hover:bg-primary-600 transition-colors text-center"
+          >
+            Voir ma collection
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  // Types selon les règles .cursorrules
+  type VinylData = {
+    id?: string;
+    discogsId?: string;
+    title: string;
+    artist: string;
+    year?: number;
+    coverImage?: string;
+    discogsUrl?: string;
+  };
+
+  type Collection = {
+    id: string;
+    name: string;
+    description?: string;
+    vinyl_count: number;
+  };
+
+  // Variables d'état
+  let modalElement: HTMLElement | null = null;
+  let currentVinyl: VinylData | null = null;
+  let userCollections: Collection[] = [];
+
+  // Fonctions utilitaires selon les règles
+  const initModal = (): void => {
+    modalElement = document.getElementById("add-to-collection-modal");
+    attachEventListeners();
+  };
+
+  const attachEventListeners = (): void => {
+    // Fermer la modal
+    document
+      .getElementById("close-modal")
+      ?.addEventListener("click", closeModal);
+
+    document
+      .getElementById("close-success")
+      ?.addEventListener("click", closeModal);
+
+    // Fermer en cliquant sur l'overlay
+    modalElement?.addEventListener("click", (e) => {
+      if (e.target === modalElement) closeModal();
+    });
+
+    // Échap pour fermer
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "Escape" && isModalOpen()) closeModal();
+    });
+
+    // Boutons d'action
+    document
+      .getElementById("create-collection-btn")
+      ?.addEventListener("click", showCollectionCreation);
+
+    document
+      .getElementById("create-new-collection-btn")
+      ?.addEventListener("click", showCollectionCreation);
+
+    document
+      .getElementById("back-to-selection")
+      ?.addEventListener("click", showCollectionSelection);
+
+    // Form de création
+    document
+      .getElementById("create-collection-form")
+      ?.addEventListener("submit", (e) => {
+        e.preventDefault();
+        handleCreateCollection();
+      });
+  };
+
+  const openModal = async (vinylData: VinylData): Promise<void> => {
+    currentVinyl = vinylData;
+    updateVinylInfo();
+    modalElement?.classList.remove("hidden");
+    document.body.style.overflow = "hidden";
+
+    // Vérifier l'authentification
+    await checkAuthAndLoadCollections();
+  };
+
+  const closeModal = (): void => {
+    modalElement?.classList.add("hidden");
+    document.body.style.overflow = "";
+    resetModal();
+  };
+
+  const isModalOpen = (): boolean => {
+    return !modalElement?.classList.contains("hidden");
+  };
+
+  const updateVinylInfo = (): void => {
+    if (!currentVinyl) return;
+
+    const coverImg = document.getElementById("vinyl-cover") as HTMLImageElement;
+    const titleEl = document.getElementById("vinyl-title");
+    const artistEl = document.getElementById("vinyl-artist");
+    const yearEl = document.getElementById("vinyl-year");
+
+    if (coverImg)
+      coverImg.src = currentVinyl.coverImage || "/default-vinyl-cover.svg";
+    if (titleEl) titleEl.textContent = currentVinyl.title || "Titre inconnu";
+    if (artistEl)
+      artistEl.textContent = currentVinyl.artist || "Artiste inconnu";
+    if (yearEl)
+      yearEl.textContent = currentVinyl.year ? `${currentVinyl.year}` : "";
+
+    document.getElementById("vinyl-info")?.classList.remove("hidden");
+  };
+
+  const checkAuthAndLoadCollections = async (): Promise<void> => {
+    showSection("loading-collections");
+
+    try {
+      // Vérifier l'authentification
+      const authResponse = await fetch("/api/auth/check");
+
+      if (!authResponse.ok) {
+        showSection("login-required");
+        return;
+      }
+
+      const authData = await authResponse.json();
+      if (!authData.authenticated) {
+        showSection("login-required");
+        return;
+      }
+
+      // Charger les collections
+      const collectionsResponse = await fetch("/api/collections/list");
+      if (!collectionsResponse.ok) {
+        throw new Error("Erreur lors du chargement des collections");
+      }
+
+      const collectionsData = await collectionsResponse.json();
+      userCollections = collectionsData.collections || [];
+
+      if (userCollections.length === 0) {
+        showSection("no-collections");
+      } else {
+        showCollectionSelection();
+      }
+    } catch (error) {
+      console.error("Erreur:", error);
+      showSection("login-required");
+    }
+  };
+
+  const showCollectionSelection = (): void => {
+    showSection("collection-selection");
+    renderCollections();
+  };
+
+  const renderCollections = (): void => {
+    const container = document.getElementById("collections-list");
+    if (!container) return;
+
+    container.innerHTML = "";
+
+    userCollections.forEach((collection) => {
+      const collectionElement = document.createElement("button");
+      collectionElement.className =
+        "w-full text-left p-3 border border-light-surface dark:border-slate-800 rounded-lg hover:border-primary-500 hover:bg-primary-50 dark:hover:bg-primary-900/20 transition-colors";
+      collectionElement.innerHTML = `
+        <div class="font-medium text-light-text dark:text-dark-text">${collection.name}</div>
+        ${collection.description ? `<div class="text-sm text-light-textSecondary dark:text-dark-textSecondary">${collection.description}</div>` : ""}
+        <div class="text-xs text-light-textSecondary dark:text-dark-textSecondary mt-1">${collection.vinyl_count || 0} vinyle(s)</div>
+      `;
+
+      collectionElement.addEventListener("click", () => {
+        addToCollection(collection.id, collection.name);
+      });
+
+      container.appendChild(collectionElement);
+    });
+  };
+
+  const showCollectionCreation = (): void => {
+    showSection("collection-creation");
+    // Focus sur le champ nom
+    setTimeout(() => {
+      document.getElementById("collection-name")?.focus();
+    }, 100);
+  };
+
+  const handleCreateCollection = async (): Promise<void> => {
+    const form = document.getElementById(
+      "create-collection-form"
+    ) as HTMLFormElement;
+    const formData = new FormData(form);
+
+    try {
+      const response = await fetch("/api/collections/create", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          name: formData.get("name"),
+          description: formData.get("description"),
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error("Erreur lors de la création de la collection");
+      }
+
+      const result = await response.json();
+
+      // Ajouter directement le vinyle à la nouvelle collection
+      await addToCollection(result.collection.id, result.collection.name);
+    } catch (error) {
+      console.error("Erreur:", error);
+      alert("Erreur lors de la création de la collection");
+    }
+  };
+
+  const addToCollection = async (
+    collectionId: string,
+    collectionName: string
+  ): Promise<void> => {
+    showSection("loading-collections");
+
+    try {
+      const response = await fetch("/api/collections/add", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          collection_id: collectionId,
+          vinyl_data: currentVinyl,
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error("Erreur lors de l'ajout du vinyle");
+      }
+
+      // Afficher le succès
+      const successDetails = document.getElementById("success-details");
+      if (successDetails) {
+        successDetails.textContent = `Le vinyle a été ajouté à votre collection "${collectionName}".`;
+      }
+
+      showSection("success-message");
+    } catch (error) {
+      console.error("Erreur:", error);
+      alert("Erreur lors de l'ajout du vinyle à la collection");
+    }
+  };
+
+  const showSection = (sectionId: string): void => {
+    // Cacher toutes les sections
+    const sections = [
+      "login-required",
+      "loading-collections",
+      "no-collections",
+      "collection-selection",
+      "collection-creation",
+      "success-message",
+    ];
+    sections.forEach((id) => {
+      document.getElementById(id)?.classList.add("hidden");
+    });
+
+    // Afficher la section demandée
+    document.getElementById(sectionId)?.classList.remove("hidden");
+  };
+
+  const resetModal = (): void => {
+    currentVinyl = null;
+    userCollections = [];
+    document.getElementById("vinyl-info")?.classList.add("hidden");
+    showSection("loading-collections");
+
+    // Reset form
+    const form = document.getElementById(
+      "create-collection-form"
+    ) as HTMLFormElement;
+    form?.reset();
+  };
+
+  // API publique selon les règles .cursorrules (éviter les classes)
+  const addToCollectionModal = {
+    open: openModal,
+    close: closeModal,
+    isOpen: isModalOpen,
+  };
+
+  // Initialiser la modal
+  document.addEventListener("DOMContentLoaded", () => {
+    initModal();
+    window.addToCollectionModal = addToCollectionModal;
+  });
+
+  // Type global pour TypeScript
+  declare global {
+    interface Window {
+      addToCollectionModal: typeof addToCollectionModal;
+    }
+  }
+</script>

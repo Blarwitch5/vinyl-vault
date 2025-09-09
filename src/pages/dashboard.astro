@@ -1,0 +1,599 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import Navbar from "../components/Navbar.astro";
+import Footer from "../components/Footer.astro";
+import VinylCard from "../components/VinylCard.astro";
+
+const title = "Tableau de bord - VinylVault";
+const description =
+  "Gérez votre collection de vinyles personnelle et suivez vos statistiques";
+
+// Note: En production, vous récupéreriez ces données depuis votre API/base de données
+// en utilisant l'authentification de l'utilisateur
+
+// Données simulées pour l'exemple
+const userCollections = [
+  {
+    id: "1",
+    name: "Ma collection principale",
+    description: "Mes vinyles préférés",
+    itemCount: 42,
+    totalValue: 1250.0,
+    isPublic: false,
+  },
+  {
+    id: "2",
+    name: "Jazz Classics",
+    description: "Ma collection de jazz",
+    itemCount: 18,
+    totalValue: 890.0,
+    isPublic: true,
+  },
+];
+
+const recentVinyls = [
+  {
+    id: "1",
+    title: "Dark Side of the Moon",
+    artist: "Pink Floyd",
+    year: 1973,
+    format: "LP",
+    condition: "Near Mint",
+    coverImage: "/vinyl-covers/dark-side.jpg",
+    price: 45.0,
+  },
+  {
+    id: "2",
+    title: "Kind of Blue",
+    artist: "Miles Davis",
+    year: 1959,
+    format: "LP",
+    condition: "Very Good Plus",
+    coverImage: "/vinyl-covers/kind-of-blue.jpg",
+    price: 32.0,
+  },
+  // Ajouter plus d'exemples...
+];
+
+const stats = {
+  totalVinyls: 60,
+  totalValue: 2140.0,
+  totalCollections: 2,
+  averageValue: 35.67,
+  topGenres: [
+    { name: "Rock", count: 25 },
+    { name: "Jazz", count: 18 },
+    { name: "Electronic", count: 12 },
+    { name: "Pop", count: 5 },
+  ],
+};
+---
+
+<BaseLayout title={title} description={description}>
+  <Navbar slot="navbar" />
+
+  <div class="container mx-auto px-4 py-8">
+    <!-- En-tête du tableau de bord -->
+    <div class="mb-8">
+      <h1
+        class="text-4xl font-bold text-light-text dark:text-dark-text dark:text-dark-text mb-2"
+      >
+        📀 Mon tableau de bord
+      </h1>
+      <p
+        class="text-xl text-light-text dark:text-dark-textSecondary dark:text-dark-textSecondary"
+      >
+        Bienvenue dans votre espace personnel VinylVault
+      </p>
+    </div>
+
+    <!-- Statistiques rapides -->
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+      <!-- Total vinyles -->
+      <div
+        class="bg-light-background dark:bg-dark-surface p-6 rounded-xl shadow-sm border border-light-surface dark:border-dark-surface"
+      >
+        <div class="flex items-center">
+          <div class="p-2 bg-amber-100 dark:bg-amber-900/20 rounded-lg">
+            <svg
+              class="w-6 h-6 text-light-accent1 dark:text-dark-accent1"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M19 11H5m14-5v12a2 2 0 01-2 2H7a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2z"
+              ></path>
+            </svg>
+          </div>
+          <div class="ml-4">
+            <p
+              class="text-sm font-medium text-light-text dark:text-dark-textSecondary dark:text-dark-textSecondary"
+            >
+              Total vinyles
+            </p>
+            <p class="text-2xl font-bold text-light-text dark:text-dark-text">
+              {stats.totalVinyls}
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Valeur totale -->
+      <div
+        class="bg-light-background dark:bg-dark-surface p-6 rounded-xl shadow-sm border border-light-surface dark:border-dark-surface"
+      >
+        <div class="flex items-center">
+          <div class="p-2 bg-emerald-100 dark:bg-emerald-900/20 rounded-lg">
+            <svg
+              class="w-6 h-6 text-light-accent2 dark:text-dark-accent2"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1"
+              ></path>
+            </svg>
+          </div>
+          <div class="ml-4">
+            <p
+              class="text-sm font-medium text-light-text dark:text-dark-textSecondary dark:text-dark-textSecondary"
+            >
+              Valeur totale
+            </p>
+            <p class="text-2xl font-bold text-light-text dark:text-dark-text">
+              {stats.totalValue.toFixed(2)} €
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Collections -->
+      <div
+        class="bg-light-background dark:bg-dark-surface p-6 rounded-xl shadow-sm border border-light-surface dark:border-dark-surface"
+      >
+        <div class="flex items-center">
+          <div class="p-2 bg-purple-100 rounded-lg">
+            <svg
+              class="w-6 h-6 text-light-accent1 dark:text-dark-accent1"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M19 11H5m14-5v12a2 2 0 01-2 2H7a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2z"
+              ></path>
+            </svg>
+          </div>
+          <div class="ml-4">
+            <p
+              class="text-sm font-medium text-light-text dark:text-dark-textSecondary dark:text-dark-textSecondary"
+            >
+              Collections
+            </p>
+            <p class="text-2xl font-bold text-light-text dark:text-dark-text">
+              {stats.totalCollections}
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Valeur moyenne -->
+      <div
+        class="bg-light-background dark:bg-dark-surface p-6 rounded-xl shadow-sm border border-light-surface dark:border-dark-surface"
+      >
+        <div class="flex items-center">
+          <div class="p-2 bg-yellow-100 rounded-lg">
+            <svg
+              class="w-6 h-6 text-yellow-600"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"></path>
+            </svg>
+          </div>
+          <div class="ml-4">
+            <p
+              class="text-sm font-medium text-light-text dark:text-dark-textSecondary dark:text-dark-textSecondary"
+            >
+              Valeur moyenne
+            </p>
+            <p class="text-2xl font-bold text-light-text dark:text-dark-text">
+              {stats.averageValue.toFixed(2)} €
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="grid lg:grid-cols-3 gap-8">
+      <!-- Section principale - Collections -->
+      <div class="lg:col-span-2">
+        <!-- Mes collections -->
+        <div
+          class="bg-light-background dark:bg-dark-surface rounded-xl shadow-sm border border-light-surface dark:border-dark-surface mb-8"
+        >
+          <div
+            class="px-6 py-4 border-b border-light-surface dark:border-dark-surface"
+          >
+            <div class="flex items-center justify-between">
+              <h2
+                class="text-xl font-semibold text-light-text dark:text-dark-text"
+              >
+                Mes collections
+              </h2>
+              <button
+                class="bg-light-accent1 dark:bg-dark-accent1 text-white px-4 py-2 rounded-xl hover:bg-amber-700 dark:hover:bg-amber-600 transition-colors text-sm"
+              >
+                Nouvelle collection
+              </button>
+            </div>
+          </div>
+          <div class="p-6">
+            <div class="space-y-4">
+              {
+                userCollections.map((collection) => (
+                  <div class="border border-light-surface dark:border-dark-surface bg-light-background dark:bg-dark-background rounded-xl p-4 hover:shadow-md dark:hover:shadow-lg transition-all duration-300">
+                    <div class="flex items-center justify-between">
+                      <div class="flex-1">
+                        <h3 class="text-lg font-medium text-light-text dark:text-dark-text mb-1">
+                          <a
+                            href={`/collection/${collection.id}`}
+                            class="hover:text-light-accent1 dark:hover:text-dark-accent1"
+                          >
+                            {collection.name}
+                          </a>
+                        </h3>
+                        <p class="text-sm text-light-text dark:text-dark-textSecondary dark:text-dark-textSecondary mb-2">
+                          {collection.description}
+                        </p>
+                        <div class="flex items-center space-x-4 text-sm text-light-text dark:text-dark-textSecondary dark:text-dark-textSecondary">
+                          <span>{collection.itemCount} vinyles</span>
+                          <span>{collection.totalValue.toFixed(2)} €</span>
+                          <span
+                            class={`px-2 py-1 rounded-full text-xs ${
+                              collection.isPublic
+                                ? "bg-emerald-100 dark:bg-emerald-900/20 text-emerald-800 dark:text-dark-accent2"
+                                : "bg-light-surface dark:bg-dark-surface text-light-text dark:text-dark-text"
+                            }`}
+                          >
+                            {collection.isPublic ? "Publique" : "Privée"}
+                          </span>
+                        </div>
+                      </div>
+                      <div class="flex items-center space-x-2">
+                        <button class="text-light-textSecondary dark:text-dark-textSecondary hover:text-light-text dark:hover:text-dark-text">
+                          <svg
+                            class="w-5 h-5"
+                            fill="none"
+                            stroke="currentColor"
+                            viewBox="0 0 24 24"
+                          >
+                            <path
+                              stroke-linecap="round"
+                              stroke-linejoin="round"
+                              stroke-width="2"
+                              d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"
+                            />
+                          </svg>
+                        </button>
+                        <button class="text-light-textSecondary dark:text-dark-textSecondary hover:text-red-600 dark:hover:text-red-400">
+                          <svg
+                            class="w-5 h-5"
+                            fill="none"
+                            stroke="currentColor"
+                            viewBox="0 0 24 24"
+                          >
+                            <path
+                              stroke-linecap="round"
+                              stroke-linejoin="round"
+                              stroke-width="2"
+                              d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
+                            />
+                          </svg>
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                ))
+              }
+            </div>
+          </div>
+        </div>
+
+        <!-- Vinyles récents -->
+        <div
+          class="bg-light-background dark:bg-dark-surface rounded-xl shadow-sm border border-light-surface dark:border-dark-surface"
+        >
+          <div
+            class="px-6 py-4 border-b border-light-surface dark:border-dark-surface"
+          >
+            <h2
+              class="text-xl font-semibold text-light-text dark:text-dark-text"
+            >
+              Ajouts récents
+            </h2>
+          </div>
+          <div class="p-6">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {
+                recentVinyls.map((vinyl) => (
+                  <VinylCard
+                    vinyl={vinyl}
+                    showActions={true}
+                    isInCollection={true}
+                  />
+                ))
+              }
+            </div>
+            <div class="mt-6 text-center">
+              <a
+                href="/collection/1"
+                class="text-light-accent1 dark:text-dark-accent1 hover:text-amber-700 dark:hover:text-amber-600 font-medium"
+              >
+                Voir toute ma collection →
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Sidebar - Statistiques et actions -->
+      <div class="space-y-6">
+        <!-- Genres favoris -->
+        <div
+          class="bg-light-background dark:bg-dark-surface rounded-xl shadow-sm border border-light-surface dark:border-dark-surface"
+        >
+          <div
+            class="px-6 py-4 border-b border-light-surface dark:border-dark-surface"
+          >
+            <h3
+              class="text-lg font-semibold text-light-text dark:text-dark-text"
+            >
+              Genres favoris
+            </h3>
+          </div>
+          <div class="p-6">
+            <div class="space-y-3">
+              {
+                stats.topGenres.map((genre) => (
+                  <div class="flex items-center justify-between">
+                    <span class="text-sm font-medium text-light-text dark:text-dark-text">
+                      {genre.name}
+                    </span>
+                    <div class="flex items-center">
+                      <div class="w-20 bg-light-surface dark:bg-dark-surface rounded-full h-2 mr-3">
+                        <div
+                          class="bg-light-accent1 dark:bg-dark-accent1 h-2 rounded-full"
+                          style={`width: ${(genre.count / stats.totalVinyls) * 100}%`}
+                        />
+                      </div>
+                      <span class="text-sm text-light-text dark:text-dark-textSecondary dark:text-dark-textSecondary">
+                        {genre.count}
+                      </span>
+                    </div>
+                  </div>
+                ))
+              }
+            </div>
+          </div>
+        </div>
+
+        <!-- Actions rapides -->
+        <div
+          class="bg-light-background dark:bg-dark-surface rounded-xl shadow-sm border border-light-surface dark:border-dark-surface"
+        >
+          <div
+            class="px-6 py-4 border-b border-light-surface dark:border-dark-surface"
+          >
+            <h3
+              class="text-lg font-semibold text-light-text dark:text-dark-text"
+            >
+              Actions rapides
+            </h3>
+          </div>
+          <div class="p-6 space-y-3">
+            <button
+              class="w-full text-left p-3 rounded-lg border border-light-surface dark:border-dark-surface hover:bg-light-surface dark:hover:bg-dark-background transition-colors"
+            >
+              <div class="flex items-center">
+                <svg
+                  class="w-5 h-5 text-light-accent1 dark:text-dark-accent1 mr-3"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
+                </svg>
+                <span
+                  class="text-sm font-medium text-light-text dark:text-dark-text"
+                  >Ajouter un vinyle</span
+                >
+              </div>
+            </button>
+
+            <button
+              class="w-full text-left p-3 rounded-lg border border-light-surface dark:border-dark-surface hover:bg-light-surface dark:hover:bg-dark-background transition-colors"
+            >
+              <div class="flex items-center">
+                <svg
+                  class="w-5 h-5 text-light-accent2 dark:text-dark-accent2 mr-3"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                </svg>
+                <span
+                  class="text-sm font-medium text-light-text dark:text-dark-text"
+                  >Rechercher dans Discogs</span
+                >
+              </div>
+            </button>
+
+            <button
+              class="w-full text-left p-3 rounded-lg border border-light-surface dark:border-dark-surface hover:bg-light-surface dark:hover:bg-dark-background transition-colors"
+            >
+              <div class="flex items-center">
+                <svg
+                  class="w-5 h-5 text-light-accent1 dark:text-dark-accent1 mr-3"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"
+                  ></path>
+                </svg>
+                <span
+                  class="text-sm font-medium text-light-text dark:text-dark-text"
+                  >Voir les statistiques</span
+                >
+              </div>
+            </button>
+          </div>
+        </div>
+
+        <!-- Dernière activité -->
+        <div
+          class="bg-light-background dark:bg-dark-surface rounded-xl shadow-sm border border-light-surface dark:border-dark-surface"
+        >
+          <div
+            class="px-6 py-4 border-b border-light-surface dark:border-dark-surface"
+          >
+            <h3
+              class="text-lg font-semibold text-light-text dark:text-dark-text"
+            >
+              Activité récente
+            </h3>
+          </div>
+          <div class="p-6">
+            <div class="space-y-3 text-sm">
+              <div class="flex items-start">
+                <div
+                  class="w-2 h-2 bg-light-accent2 dark:bg-dark-accent2 rounded-full mt-2 mr-3"
+                >
+                </div>
+                <div>
+                  <p class="text-light-text dark:text-dark-text">
+                    Vinyle ajouté
+                  </p>
+                  <p
+                    class="text-light-text dark:text-dark-textSecondary dark:text-dark-textSecondary"
+                  >
+                    Dark Side of the Moon
+                  </p>
+                  <p
+                    class="text-light-text dark:text-dark-textSecondary dark:text-dark-textSecondary text-xs"
+                  >
+                    Il y a 2 heures
+                  </p>
+                </div>
+              </div>
+
+              <div class="flex items-start">
+                <div
+                  class="w-2 h-2 bg-light-accent1 dark:bg-dark-accent1 rounded-full mt-2 mr-3"
+                >
+                </div>
+                <div>
+                  <p class="text-light-text dark:text-dark-text">
+                    Collection créée
+                  </p>
+                  <p
+                    class="text-light-text dark:text-dark-textSecondary dark:text-dark-textSecondary"
+                  >
+                    Jazz Classics
+                  </p>
+                  <p
+                    class="text-light-text dark:text-dark-textSecondary dark:text-dark-textSecondary text-xs"
+                  >
+                    Hier
+                  </p>
+                </div>
+              </div>
+
+              <div class="flex items-start">
+                <div class="w-2 h-2 bg-yellow-500 rounded-full mt-2 mr-3"></div>
+                <div>
+                  <p class="text-light-text dark:text-dark-text">
+                    Prix mis à jour
+                  </p>
+                  <p
+                    class="text-light-text dark:text-dark-textSecondary dark:text-dark-textSecondary"
+                  >
+                    Kind of Blue
+                  </p>
+                  <p
+                    class="text-light-text dark:text-dark-textSecondary dark:text-dark-textSecondary text-xs"
+                  >
+                    Il y a 3 jours
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <Footer slot="footer" />
+</BaseLayout>
+
+<script>
+  // Gestion des actions du tableau de bord
+  document.addEventListener("DOMContentLoaded", () => {
+    // Nouvelle collection
+    const newCollectionBtn = document.querySelector(
+      'button:contains("Nouvelle collection")'
+    );
+
+    // Actions rapides
+    const quickActions = document.querySelectorAll("[data-action]");
+
+    quickActions.forEach((action) => {
+      action.addEventListener("click", (e) => {
+        const actionType = e.currentTarget.getAttribute("data-action");
+
+        switch (actionType) {
+          case "add-vinyl":
+            window.location.href = "/search";
+            break;
+          case "search-discogs":
+            window.location.href = "/search";
+            break;
+          case "view-stats":
+            // Ouvrir une modal de statistiques ou rediriger
+            break;
+        }
+      });
+    });
+  });
+</script>

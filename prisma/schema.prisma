@@ -1,0 +1,72 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// Modèle Utilisateur
+model User {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  name      String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  
+  // Relations
+  collections Collection[]
+  vinyls      Vinyl[]
+  
+  @@map("users")
+}
+
+// Modèle Collection
+model Collection {
+  id          String   @id @default(cuid())
+  name        String
+  description String?
+  isPublic    Boolean  @default(false)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  
+  // Relations
+  userId      String
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  vinyls      Vinyl[]
+  
+  @@map("collections")
+}
+
+// Modèle Vinyle
+model Vinyl {
+  id           String   @id @default(cuid())
+  title        String
+  artist       String
+  year         Int?
+  genre        String?
+  format       String?  // LP, EP, Single, etc.
+  condition    String?  // Mint, Near Mint, etc.
+  coverImage   String?
+  discogsId    String?  // ID Discogs pour synchronisation
+  discogsUrl   String?
+  price        Float?
+  note         String?
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+  
+  // Relations
+  userId       String
+  user         User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  collectionId String?
+  collection   Collection? @relation(fields: [collectionId], references: [id])
+  
+  @@map("vinyls")
+}
