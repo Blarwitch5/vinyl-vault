@@ -3,6 +3,7 @@ import BaseLayout from "../layouts/BaseLayout.astro";
 import Navbar from "../components/Navbar.astro";
 import Footer from "../components/Footer.astro";
 import VinylCard from "../components/VinylCard.astro";
+import BarcodeScannerModal from "../components/BarcodeScannerModal.astro";
 
 const title = "Tableau de bord - VinylVault";
 const description =
@@ -75,14 +76,10 @@ const stats = {
   <div class="container mx-auto px-4 py-8">
     <!-- En-tête du tableau de bord -->
     <div class="mb-8">
-      <h1
-        class="text-4xl font-bold text-light-text dark:text-dark-text dark:text-dark-text mb-2"
-      >
+      <h1 class="text-4xl font-bold text-light-text dark:text-dark-text mb-2">
         📀 Mon tableau de bord
       </h1>
-      <p
-        class="text-xl text-light-text dark:text-dark-textSecondary dark:text-dark-textSecondary"
-      >
+      <p class="text-xl text-light-textSecondary dark:text-dark-textSecondary">
         Bienvenue dans votre espace personnel VinylVault
       </p>
     </div>
@@ -94,7 +91,9 @@ const stats = {
         class="bg-light-background dark:bg-dark-surface p-6 rounded-xl shadow-sm border border-light-surface dark:border-dark-surface"
       >
         <div class="flex items-center">
-          <div class="p-2 bg-amber-100 dark:bg-amber-900/20 rounded-lg">
+          <div
+            class="p-2 bg-light-accent1/10 dark:bg-dark-accent1/20 rounded-lg"
+          >
             <svg
               class="w-6 h-6 text-light-accent1 dark:text-dark-accent1"
               fill="none"
@@ -111,11 +110,13 @@ const stats = {
           </div>
           <div class="ml-4">
             <p
-              class="text-sm font-medium text-light-text dark:text-dark-textSecondary dark:text-dark-textSecondary"
+              class="text-sm font-medium text-light-textSecondary dark:text-dark-textSecondary"
             >
               Total vinyles
             </p>
-            <p class="text-2xl font-bold text-light-text dark:text-dark-text">
+            <p
+              class="text-2xl font-bold text-light-text dark:text-dark-text font-mono"
+            >
               {stats.totalVinyls}
             </p>
           </div>
@@ -127,7 +128,9 @@ const stats = {
         class="bg-light-background dark:bg-dark-surface p-6 rounded-xl shadow-sm border border-light-surface dark:border-dark-surface"
       >
         <div class="flex items-center">
-          <div class="p-2 bg-emerald-100 dark:bg-emerald-900/20 rounded-lg">
+          <div
+            class="p-2 bg-light-accent2/10 dark:bg-dark-accent2/20 rounded-lg"
+          >
             <svg
               class="w-6 h-6 text-light-accent2 dark:text-dark-accent2"
               fill="none"
@@ -144,11 +147,13 @@ const stats = {
           </div>
           <div class="ml-4">
             <p
-              class="text-sm font-medium text-light-text dark:text-dark-textSecondary dark:text-dark-textSecondary"
+              class="text-sm font-medium text-light-textSecondary dark:text-dark-textSecondary"
             >
               Valeur totale
             </p>
-            <p class="text-2xl font-bold text-light-text dark:text-dark-text">
+            <p
+              class="text-2xl font-bold text-light-text dark:text-dark-text font-mono"
+            >
               {stats.totalValue.toFixed(2)} €
             </p>
           </div>
@@ -177,11 +182,13 @@ const stats = {
           </div>
           <div class="ml-4">
             <p
-              class="text-sm font-medium text-light-text dark:text-dark-textSecondary dark:text-dark-textSecondary"
+              class="text-sm font-medium text-light-textSecondary dark:text-dark-textSecondary"
             >
               Collections
             </p>
-            <p class="text-2xl font-bold text-light-text dark:text-dark-text">
+            <p
+              class="text-2xl font-bold text-light-text dark:text-dark-text font-mono"
+            >
               {stats.totalCollections}
             </p>
           </div>
@@ -209,11 +216,13 @@ const stats = {
           </div>
           <div class="ml-4">
             <p
-              class="text-sm font-medium text-light-text dark:text-dark-textSecondary dark:text-dark-textSecondary"
+              class="text-sm font-medium text-light-textSecondary dark:text-dark-textSecondary"
             >
               Valeur moyenne
             </p>
-            <p class="text-2xl font-bold text-light-text dark:text-dark-text">
+            <p
+              class="text-2xl font-bold text-light-text dark:text-dark-text font-mono"
+            >
               {stats.averageValue.toFixed(2)} €
             </p>
           </div>
@@ -259,16 +268,16 @@ const stats = {
                             {collection.name}
                           </a>
                         </h3>
-                        <p class="text-sm text-light-text dark:text-dark-textSecondary dark:text-dark-textSecondary mb-2">
+                        <p class="text-sm text-light-textSecondary dark:text-dark-textSecondary mb-2">
                           {collection.description}
                         </p>
-                        <div class="flex items-center space-x-4 text-sm text-light-text dark:text-dark-textSecondary dark:text-dark-textSecondary">
+                        <div class="flex items-center space-x-4 text-sm text-light-textSecondary dark:text-dark-textSecondary">
                           <span>{collection.itemCount} vinyles</span>
                           <span>{collection.totalValue.toFixed(2)} €</span>
                           <span
                             class={`px-2 py-1 rounded-full text-xs ${
                               collection.isPublic
-                                ? "bg-emerald-100 dark:bg-emerald-900/20 text-emerald-800 dark:text-dark-accent2"
+                                ? "bg-light-accent2/10 dark:bg-dark-accent2/20 text-light-accent2 dark:text-dark-accent2"
                                 : "bg-light-surface dark:bg-dark-surface text-light-text dark:text-dark-text"
                             }`}
                           >
@@ -383,7 +392,7 @@ const stats = {
                           style={`width: ${(genre.count / stats.totalVinyls) * 100}%`}
                         />
                       </div>
-                      <span class="text-sm text-light-text dark:text-dark-textSecondary dark:text-dark-textSecondary">
+                      <span class="text-sm text-light-textSecondary dark:text-dark-textSecondary">
                         {genre.count}
                       </span>
                     </div>
@@ -409,6 +418,7 @@ const stats = {
           </div>
           <div class="p-6 space-y-3">
             <button
+              id="add-vinyl-btn"
               class="w-full text-left p-3 rounded-lg border border-light-surface dark:border-dark-surface hover:bg-light-surface dark:hover:bg-dark-background transition-colors"
             >
               <div class="flex items-center">
@@ -565,26 +575,38 @@ const stats = {
   </div>
 
   <Footer slot="footer" />
+
+  <!-- Modal de scan de code-barres -->
+  <BarcodeScannerModal />
 </BaseLayout>
 
 <script>
   // Gestion des actions du tableau de bord
   document.addEventListener("DOMContentLoaded", () => {
-    // Nouvelle collection
-    const newCollectionBtn = document.querySelector(
-      'button:contains("Nouvelle collection")'
-    );
+    // Bouton d'ajout de vinyle
+    const addVinylBtn = document.getElementById("add-vinyl-btn");
+    addVinylBtn?.addEventListener("click", () => {
+      if (typeof (window as any).openBarcodeModal === "function") {
+        (window as any).openBarcodeModal();
+      } else {
+        console.error("Modal de scan de code-barres non disponible");
+      }
+    });
 
     // Actions rapides
     const quickActions = document.querySelectorAll("[data-action]");
 
     quickActions.forEach((action) => {
       action.addEventListener("click", (e) => {
-        const actionType = e.currentTarget.getAttribute("data-action");
+        const actionType = (e.currentTarget as HTMLElement)?.getAttribute(
+          "data-action"
+        );
 
         switch (actionType) {
           case "add-vinyl":
-            window.location.href = "/search";
+            if (typeof (window as any).openBarcodeModal === "function") {
+              (window as any).openBarcodeModal();
+            }
             break;
           case "search-discogs":
             window.location.href = "/search";
