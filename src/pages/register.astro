@@ -48,7 +48,7 @@ const description =
               name="name"
               type="text"
               autocomplete="name"
-              class="mt-1 block w-full px-3 py-2 border border-light-surface dark:border-dark-surface placeholder-light-textSecondary dark:placeholder-dark-textSecondary text-light-text dark:text-dark-text bg-light-background dark:bg-dark-surface rounded-xl focus:outline-none focus:ring-light-accent1 dark:focus:ring-dark-accent1 focus:border-light-accent1 dark:focus:border-dark-accent1 sm:text-sm"
+              class="mt-1 block w-full px-3 py-2 border border-light-surface dark:border-dark-surface placeholder:text-light-textSecondary dark:placeholder:text-dark-textSecondary text-light-text dark:text-dark-text bg-white dark:bg-dark-background rounded-xl focus:outline-none focus:ring-light-accent1 dark:focus:ring-dark-accent1 focus:border-light-accent1 dark:focus:border-dark-accent1 sm:text-sm transition-colors"
               placeholder="Jean Dupont"
             />
           </div>
@@ -66,7 +66,7 @@ const description =
               type="email"
               autocomplete="email"
               required
-              class="mt-1 block w-full px-3 py-2 border border-light-surface dark:border-dark-surface placeholder-light-textSecondary dark:placeholder-dark-textSecondary text-light-text dark:text-dark-text bg-light-background dark:bg-dark-surface rounded-xl focus:outline-none focus:ring-light-accent1 dark:focus:ring-dark-accent1 focus:border-light-accent1 dark:focus:border-dark-accent1 sm:text-sm"
+              class="mt-1 block w-full px-3 py-2 border border-light-surface dark:border-dark-surface placeholder:text-light-textSecondary dark:placeholder:text-dark-textSecondary text-light-text dark:text-dark-text bg-white dark:bg-dark-background rounded-xl focus:outline-none focus:ring-light-accent1 dark:focus:ring-dark-accent1 focus:border-light-accent1 dark:focus:border-dark-accent1 sm:text-sm transition-colors"
               placeholder="jean@example.com"
             />
           </div>
@@ -84,10 +84,12 @@ const description =
               type="password"
               autocomplete="new-password"
               required
-              class="mt-1 block w-full px-3 py-2 border border-light-surface dark:border-dark-surface placeholder-light-textSecondary dark:placeholder-dark-textSecondary text-light-text dark:text-dark-text bg-light-background dark:bg-dark-surface rounded-xl focus:outline-none focus:ring-light-accent1 dark:focus:ring-dark-accent1 focus:border-light-accent1 dark:focus:border-dark-accent1 sm:text-sm"
+              class="mt-1 block w-full px-3 py-2 border border-light-surface dark:border-dark-surface placeholder:text-light-textSecondary dark:placeholder:text-dark-textSecondary text-light-text dark:text-dark-text bg-white dark:bg-dark-background rounded-xl focus:outline-none focus:ring-light-accent1 dark:focus:ring-dark-accent1 focus:border-light-accent1 dark:focus:border-dark-accent1 sm:text-sm transition-colors"
               placeholder="Minimum 8 caractères"
             />
-            <div class="mt-1 text-xs text-light-textSecondary">
+            <div
+              class="mt-1 text-xs text-light-textSecondary dark:text-dark-textSecondary"
+            >
               Le mot de passe doit contenir au moins 8 caractères
             </div>
           </div>
@@ -105,7 +107,7 @@ const description =
               type="password"
               autocomplete="new-password"
               required
-              class="mt-1 block w-full px-3 py-2 border border-light-surface dark:border-dark-surface placeholder-light-textSecondary dark:placeholder-dark-textSecondary text-light-text dark:text-dark-text bg-light-background dark:bg-dark-surface rounded-xl focus:outline-none focus:ring-light-accent1 dark:focus:ring-dark-accent1 focus:border-light-accent1 dark:focus:border-dark-accent1 sm:text-sm"
+              class="mt-1 block w-full px-3 py-2 border border-light-surface dark:border-dark-surface placeholder:text-light-textSecondary dark:placeholder:text-dark-textSecondary text-light-text dark:text-dark-text bg-white dark:bg-dark-background rounded-xl focus:outline-none focus:ring-light-accent1 dark:focus:ring-dark-accent1 focus:border-light-accent1 dark:focus:border-dark-accent1 sm:text-sm transition-colors"
               placeholder="Confirmez votre mot de passe"
             />
           </div>
@@ -119,22 +121,25 @@ const description =
               name="agree-terms"
               type="checkbox"
               required
-              class="h-4 w-4 text-blue-600 focus:ring-light-accent1 dark:focus:ring-dark-accent1 border-light-surface rounded"
+              class="h-4 w-4 text-light-accent1 dark:text-dark-accent1 focus:ring-light-accent1 dark:focus:ring-dark-accent1 border-light-surface dark:border-dark-surface bg-white dark:bg-dark-background rounded transition-colors"
             />
           </div>
           <div class="ml-3 text-sm">
-            <label for="agree-terms" class="text-light-text">
+            <label
+              for="agree-terms"
+              class="text-light-text dark:text-dark-text"
+            >
               J'accepte les
               <a
                 href="/terms"
-                class="font-medium text-light-accent1 dark:text-dark-accent1 hover:text-amber-700 dark:hover:text-amber-600"
+                class="font-medium text-light-accent1 dark:text-dark-accent1 hover:text-light-accent1/80 dark:hover:text-dark-accent1/80 transition-colors"
               >
                 conditions d'utilisation
               </a>
               et la
               <a
                 href="/privacy"
-                class="font-medium text-light-accent1 dark:text-dark-accent1 hover:text-amber-700 dark:hover:text-amber-600"
+                class="font-medium text-light-accent1 dark:text-dark-accent1 hover:text-light-accent1/80 dark:hover:text-dark-accent1/80 transition-colors"
               >
                 politique de confidentialité
               </a>
@@ -165,27 +170,30 @@ const description =
           </div>
           <div class="flex space-x-1">
             <div
-              class="h-2 w-1/4 rounded-full bg-light-surface"
+              class="h-2 w-1/4 rounded-full bg-light-surface dark:bg-dark-surface"
               data-strength="1"
             >
             </div>
             <div
-              class="h-2 w-1/4 rounded-full bg-light-surface"
+              class="h-2 w-1/4 rounded-full bg-light-surface dark:bg-dark-surface"
               data-strength="2"
             >
             </div>
             <div
-              class="h-2 w-1/4 rounded-full bg-light-surface"
+              class="h-2 w-1/4 rounded-full bg-light-surface dark:bg-dark-surface"
               data-strength="3"
             >
             </div>
             <div
-              class="h-2 w-1/4 rounded-full bg-light-surface"
+              class="h-2 w-1/4 rounded-full bg-light-surface dark:bg-dark-surface"
               data-strength="4"
             >
             </div>
           </div>
-          <div id="strength-text" class="text-xs text-light-textSecondary mt-1">
+          <div
+            id="strength-text"
+            class="text-xs text-light-textSecondary dark:text-dark-textSecondary mt-1"
+          >
           </div>
         </div>
 
@@ -194,11 +202,11 @@ const description =
           <button
             type="submit"
             id="submit-btn"
-            class="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-xl text-white bg-light-accent1 dark:bg-dark-accent1 hover:bg-amber-700 dark:hover:bg-amber-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-light-accent1 dark:focus:ring-dark-accent1 disabled:opacity-50 disabled:cursor-not-allowed"
+            class="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-xl text-white bg-light-accent1 dark:bg-dark-accent1 hover:bg-light-accent1/80 dark:hover:bg-dark-accent1/80 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-light-accent1 dark:focus:ring-dark-accent1 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
           >
             <span class="absolute left-0 inset-y-0 flex items-center pl-3">
               <svg
-                class="h-5 w-5 text-amber-200 group-hover:text-white"
+                class="h-5 w-5 text-white/80 group-hover:text-white"
                 fill="currentColor"
                 viewBox="0 0 20 20"
               >

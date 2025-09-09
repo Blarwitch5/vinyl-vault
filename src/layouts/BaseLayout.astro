@@ -1,4 +1,15 @@
 ---
+// Import des fonts Poppins (poids principaux)
+import "@fontsource/poppins/300.css"; // Light
+import "@fontsource/poppins/400.css"; // Regular
+import "@fontsource/poppins/500.css"; // Medium
+import "@fontsource/poppins/600.css"; // SemiBold
+import "@fontsource/poppins/700.css"; // Bold
+
+// Import JetBrains Mono pour les codes et références
+import "@fontsource/jetbrains-mono/400.css"; // Regular
+import "@fontsource/jetbrains-mono/500.css"; // Medium
+
 export interface Props {
   title?: string;
   description?: string;
@@ -53,11 +64,23 @@ const {
 <style is:global>
   html {
     font-family:
+      "Poppins",
       system-ui,
       -apple-system,
       BlinkMacSystemFont,
       "Segoe UI",
       Roboto,
       sans-serif;
+  }
+
+  /* Optimisation pour Poppins */
+  body {
+    font-feature-settings:
+      "kern" 1,
+      "liga" 1,
+      "calt" 1;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
   }
 </style>

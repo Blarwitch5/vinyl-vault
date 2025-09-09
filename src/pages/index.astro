@@ -14,10 +14,12 @@ const description =
 
   <!-- Hero Section -->
   <section
-    class="bg-gradient-to-br from-dark-900 via-dark-800 to-dark-900 dark:from-dark-950 dark:via-dark-900 dark:to-dark-950 text-white"
+    class="bg-gradient-to-br from-record-black via-dark-surface to-record-black dark:from-dark-background dark:via-dark-surface dark:to-dark-background text-white"
   >
     <div class="container mx-auto px-4 py-16 lg:py-24">
-      <div class="max-w-4xl mx-auto text-center">
+      <div
+        class="max-w-4xl mx-auto text-center bg-black/20 dark:bg-black/30 backdrop-blur-sm rounded-2xl p-8 lg:p-12 border border-white/10"
+      >
         <h1 class="text-4xl lg:text-6xl font-bold mb-6">
           Votre collection de vinyles,
           <span class="text-light-accent1 dark:text-dark-accent1"
@@ -25,7 +27,7 @@ const description =
           >
         </h1>
         <p
-          class="text-xl lg:text-2xl mb-8 text-zinc-300 dark:text-dark-textSecondary"
+          class="text-xl lg:text-2xl mb-8 text-gray-300 dark:text-dark-textSecondary"
         >
           Gérez, cataloguez et découvrez vos vinyles préférés avec la puissance
           de la base de données Discogs
@@ -42,13 +44,13 @@ const description =
         <div class="flex flex-col sm:flex-row gap-4 justify-center">
           <a
             href="/register"
-            class="bg-light-accent1 dark:bg-dark-accent1 text-white px-8 py-3 rounded-lg font-semibold hover:bg-amber-700 dark:hover:bg-amber-600 transition-colors shadow-lg hover:shadow-xl"
+            class="bg-light-accent1 dark:bg-dark-accent1 text-white px-8 py-3 rounded-xl font-semibold hover:bg-light-accent1/80 dark:hover:bg-dark-accent1/80 transition-colors shadow-lg hover:shadow-xl"
           >
             Commencer gratuitement
           </a>
           <a
             href="/search"
-            class="border-2 border-light-accent1 dark:border-dark-accent1 text-light-accent1 dark:text-dark-accent1 px-8 py-3 rounded-lg font-semibold hover:bg-light-accent1 dark:hover:bg-dark-accent1 hover:text-white transition-colors"
+            class="border-2 border-light-accent1 dark:border-dark-accent1 text-light-accent1 dark:text-dark-accent1 px-8 py-3 rounded-xl font-semibold hover:bg-light-accent1 dark:hover:bg-dark-accent1 hover:text-white dark:hover:text-white transition-colors"
           >
             Explorer Discogs
           </a>
@@ -59,7 +61,7 @@ const description =
 
   <!-- Features Section -->
   <section
-    class="py-16 bg-light-background dark:bg-dark-background transition-colors duration-300"
+    class="py-16 bg-gradient-to-br from-light-background to-light-surface dark:from-dark-background dark:to-dark-surface transition-colors duration-300"
   >
     <div class="container mx-auto px-4">
       <div class="text-center mb-12">
@@ -69,7 +71,7 @@ const description =
           Pourquoi choisir VinylVault ?
         </h2>
         <p
-          class="text-xl text-light-textSecondary dark:text-dark-textSecondary dark:text-dark-textSecondary max-w-2xl mx-auto"
+          class="text-xl text-light-textSecondary dark:text-dark-textSecondary max-w-2xl mx-auto"
         >
           Tout ce dont vous avez besoin pour gérer votre passion des vinyles
         </p>
@@ -78,10 +80,10 @@ const description =
       <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
         <!-- Feature 1 -->
         <div
-          class="text-center p-6 rounded-lg border border-light-surface dark:border-dark-surface bg-light-background dark:bg-dark-surface hover:shadow-lg transition-all duration-300"
+          class="text-center p-6 rounded-xl border border-light-surface dark:border-dark-surface bg-light-background dark:bg-dark-surface hover:shadow-lg transition-all duration-300"
         >
           <div
-            class="w-16 h-16 bg-amber-100 dark:bg-amber-900/20 rounded-full flex items-center justify-center mx-auto mb-4"
+            class="w-16 h-16 bg-light-accent1/10 dark:bg-dark-accent1/20 rounded-full flex items-center justify-center mx-auto mb-4"
           >
             <svg
               class="w-8 h-8 text-light-accent1 dark:text-dark-accent1"
@@ -110,7 +112,7 @@ const description =
 
         <!-- Feature 2 -->
         <div
-          class="text-center p-6 rounded-lg border border-light-surface dark:border-dark-surface bg-light-background dark:bg-dark-surface hover:shadow-lg transition-all duration-300"
+          class="text-center p-6 rounded-xl border border-light-surface dark:border-dark-surface bg-light-background dark:bg-dark-surface hover:shadow-lg transition-all duration-300"
         >
           <div
             class="w-16 h-16 bg-emerald-100 dark:bg-emerald-900/20 rounded-full flex items-center justify-center mx-auto mb-4"
@@ -141,7 +143,7 @@ const description =
 
         <!-- Feature 3 -->
         <div
-          class="text-center p-6 rounded-lg border border-light-surface dark:border-dark-surface bg-light-background dark:bg-dark-surface hover:shadow-lg transition-all duration-300"
+          class="text-center p-6 rounded-xl border border-light-surface dark:border-dark-surface bg-light-background dark:bg-dark-surface hover:shadow-lg transition-all duration-300"
         >
           <div
             class="w-16 h-16 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-4"
@@ -173,7 +175,7 @@ const description =
 
         <!-- Feature 4 -->
         <div
-          class="text-center p-6 rounded-lg border border-light-surface dark:border-dark-surface bg-light-background dark:bg-dark-surface hover:shadow-lg transition-all duration-300"
+          class="text-center p-6 rounded-xl border border-light-surface dark:border-dark-surface bg-light-background dark:bg-dark-surface hover:shadow-lg transition-all duration-300"
         >
           <div
             class="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4"
@@ -205,7 +207,7 @@ const description =
 
         <!-- Feature 5 -->
         <div
-          class="text-center p-6 rounded-lg border border-light-surface dark:border-dark-surface bg-light-background dark:bg-dark-surface hover:shadow-lg transition-all duration-300"
+          class="text-center p-6 rounded-xl border border-light-surface dark:border-dark-surface bg-light-background dark:bg-dark-surface hover:shadow-lg transition-all duration-300"
         >
           <div
             class="w-16 h-16 bg-yellow-100 rounded-full flex items-center justify-center mx-auto mb-4"
@@ -237,7 +239,7 @@ const description =
 
         <!-- Feature 6 -->
         <div
-          class="text-center p-6 rounded-lg border border-light-surface dark:border-dark-surface bg-light-background dark:bg-dark-surface hover:shadow-lg transition-all duration-300"
+          class="text-center p-6 rounded-xl border border-light-surface dark:border-dark-surface bg-light-background dark:bg-dark-surface hover:shadow-lg transition-all duration-300"
         >
           <div
             class="w-16 h-16 bg-indigo-100 rounded-full flex items-center justify-center mx-auto mb-4"
@@ -272,75 +274,79 @@ const description =
 
   <!-- How it works Section -->
   <section
-    class="py-16 bg-light-surface dark:bg-dark-surface transition-colors duration-300"
+    class="py-16 bg-gradient-to-br from-light-surface to-light-background dark:from-dark-surface dark:to-dark-background transition-colors duration-300"
   >
     <div class="container mx-auto px-4">
-      <div class="text-center mb-12">
-        <h2
-          class="text-3xl lg:text-4xl font-bold text-light-text dark:text-dark-text mb-4"
-        >
-          Comment ça marche ?
-        </h2>
-        <p
-          class="text-xl text-light-textSecondary dark:text-dark-textSecondary max-w-2xl mx-auto"
-        >
-          Commencez à gérer votre collection en quelques étapes simples
-        </p>
-      </div>
-
-      <div class="grid md:grid-cols-3 gap-8">
-        <!-- Step 1 -->
-        <div class="text-center">
-          <div
-            class="w-12 h-12 bg-light-accent1 dark:bg-dark-accent1 text-white rounded-full flex items-center justify-center mx-auto mb-4 text-xl font-bold"
+      <div
+        class="bg-light-background dark:bg-dark-background rounded-2xl p-8 lg:p-12 border border-light-surface dark:border-dark-surface shadow-lg"
+      >
+        <div class="text-center mb-12">
+          <h2
+            class="text-3xl lg:text-4xl font-bold text-light-text dark:text-dark-text mb-4"
           >
-            1
-          </div>
-          <h3
-            class="text-xl font-semibold text-light-text dark:text-dark-text mb-2"
+            Comment ça marche ?
+          </h2>
+          <p
+            class="text-xl text-light-textSecondary dark:text-dark-textSecondary max-w-2xl mx-auto"
           >
-            Créez votre compte
-          </h3>
-          <p class="text-light-textSecondary dark:text-dark-textSecondary">
-            Inscription gratuite en quelques secondes. Aucune carte de crédit
-            requise.
+            Commencez à gérer votre collection en quelques étapes simples
           </p>
         </div>
 
-        <!-- Step 2 -->
-        <div class="text-center">
-          <div
-            class="w-12 h-12 bg-light-accent1 dark:bg-dark-accent1 text-white rounded-full flex items-center justify-center mx-auto mb-4 text-xl font-bold"
-          >
-            2
+        <div class="grid md:grid-cols-3 gap-8">
+          <!-- Step 1 -->
+          <div class="text-center">
+            <div
+              class="w-12 h-12 bg-light-accent1 dark:bg-dark-accent1 text-white rounded-full flex items-center justify-center mx-auto mb-4 text-xl font-bold"
+            >
+              1
+            </div>
+            <h3
+              class="text-xl font-semibold text-light-text dark:text-dark-text mb-2"
+            >
+              Créez votre compte
+            </h3>
+            <p class="text-light-textSecondary dark:text-dark-textSecondary">
+              Inscription gratuite en quelques secondes. Aucune carte de crédit
+              requise.
+            </p>
           </div>
-          <h3
-            class="text-xl font-semibold text-light-text dark:text-dark-text mb-2"
-          >
-            Ajoutez vos vinyles
-          </h3>
-          <p class="text-light-textSecondary dark:text-dark-textSecondary">
-            Recherchez dans Discogs ou ajoutez manuellement vos vinyles à votre
-            collection.
-          </p>
-        </div>
 
-        <!-- Step 3 -->
-        <div class="text-center">
-          <div
-            class="w-12 h-12 bg-light-accent1 dark:bg-dark-accent1 text-white rounded-full flex items-center justify-center mx-auto mb-4 text-xl font-bold"
-          >
-            3
+          <!-- Step 2 -->
+          <div class="text-center">
+            <div
+              class="w-12 h-12 bg-light-accent1 dark:bg-dark-accent1 text-white rounded-full flex items-center justify-center mx-auto mb-4 text-xl font-bold"
+            >
+              2
+            </div>
+            <h3
+              class="text-xl font-semibold text-light-text dark:text-dark-text mb-2"
+            >
+              Ajoutez vos vinyles
+            </h3>
+            <p class="text-light-textSecondary dark:text-dark-textSecondary">
+              Recherchez dans Discogs ou ajoutez manuellement vos vinyles à
+              votre collection.
+            </p>
           </div>
-          <h3
-            class="text-xl font-semibold text-light-text dark:text-dark-text mb-2"
-          >
-            Organisez et explorez
-          </h3>
-          <p class="text-light-textSecondary dark:text-dark-textSecondary">
-            Créez des collections, suivez les statistiques et découvrez de
-            nouveaux vinyles.
-          </p>
+
+          <!-- Step 3 -->
+          <div class="text-center">
+            <div
+              class="w-12 h-12 bg-light-accent1 dark:bg-dark-accent1 text-white rounded-full flex items-center justify-center mx-auto mb-4 text-xl font-bold"
+            >
+              3
+            </div>
+            <h3
+              class="text-xl font-semibold text-light-text dark:text-dark-text mb-2"
+            >
+              Organisez et explorez
+            </h3>
+            <p class="text-light-textSecondary dark:text-dark-textSecondary">
+              Créez des collections, suivez les statistiques et découvrez de
+              nouveaux vinyles.
+            </p>
+          </div>
         </div>
       </div>
     </div>
@@ -350,27 +356,31 @@ const description =
   <section
     class="py-16 bg-gradient-to-r from-light-accent1 to-light-accent2 dark:from-dark-accent1 dark:to-dark-accent2 text-white"
   >
-    <div class="container mx-auto px-4 text-center">
-      <h2 class="text-3xl lg:text-4xl font-bold mb-4">
-        Prêt à organiser votre collection ?
-      </h2>
-      <p class="text-xl mb-8 text-amber-100 dark:text-emerald-100">
-        Rejoignez des milliers de collectionneurs qui font confiance à
-        VinylVault
-      </p>
-      <div class="flex flex-col sm:flex-row gap-4 justify-center">
-        <a
-          href="/register"
-          class="bg-amber-400 dark:bg-amber-500 text-slate-900 px-8 py-3 rounded-lg font-semibold hover:bg-amber-300 dark:hover:bg-amber-400 transition-colors text-lg"
-        >
-          Commencer maintenant
-        </a>
-        <a
-          href="/search"
-          class="border-2 border-white text-white px-8 py-3 rounded-lg font-semibold hover:bg-white hover:text-light-text dark:hover:text-dark-text transition-colors text-lg"
-        >
-          Explorer la base Discogs
-        </a>
+    <div class="container mx-auto px-4">
+      <div
+        class="text-center bg-white/10 dark:bg-black/20 backdrop-blur-sm rounded-2xl p-8 lg:p-12 border border-white/20"
+      >
+        <h2 class="text-3xl lg:text-4xl font-bold mb-4">
+          Prêt à organiser votre collection ?
+        </h2>
+        <p class="text-xl mb-8 text-amber-100 dark:text-emerald-100">
+          Rejoignez des milliers de collectionneurs qui font confiance à
+          VinylVault
+        </p>
+        <div class="flex flex-col sm:flex-row gap-4 justify-center">
+          <a
+            href="/register"
+            class="bg-white/90 backdrop-blur-sm text-light-accent1 dark:text-dark-accent1 px-8 py-3 rounded-xl font-semibold hover:bg-white transition-all duration-300 text-lg shadow-lg hover:shadow-2xl border border-white/30"
+          >
+            Commencer maintenant
+          </a>
+          <a
+            href="/search"
+            class="border-2 border-white/80 bg-white/10 backdrop-blur-sm text-white px-8 py-3 rounded-xl font-semibold hover:bg-white hover:text-light-accent1 dark:hover:text-dark-accent1 transition-all duration-300 text-lg hover:shadow-xl"
+          >
+            Explorer la base Discogs
+          </a>
+        </div>
       </div>
     </div>
   </section>
