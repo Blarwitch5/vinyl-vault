@@ -1,0 +1,285 @@
+---
+// Composant de recherche pour la navbar avec résultats en temps réel
+---
+
+<div class="relative flex-1 max-w-md mx-4">
+  <!-- Champ de recherche -->
+  <div class="relative">
+    <div
+      class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none"
+    >
+      <svg
+        class="w-5 h-5 text-light-textSecondary dark:text-dark-textSecondary"
+        fill="none"
+        stroke="currentColor"
+        viewBox="0 0 24 24"
+      >
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          stroke-width="2"
+          d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+      </svg>
+    </div>
+    <input
+      id="navbar-search"
+      type="text"
+      placeholder="Rechercher un vinyle, artiste..."
+      class="w-full pl-10 pr-4 py-2 bg-light-surface dark:bg-dark-surface border border-light-surface dark:border-dark-surface rounded-xl text-light-text dark:text-dark-text placeholder:text-light-textSecondary dark:placeholder:text-dark-textSecondary focus:ring-2 focus:ring-light-accent1 dark:focus:ring-dark-accent1 focus:border-transparent transition-all duration-200"
+    />
+    <!-- Bouton clear (caché par défaut) -->
+    <button
+      id="search-clear"
+      class="hidden absolute inset-y-0 right-0 pr-3 flex items-center text-light-textSecondary dark:text-dark-textSecondary hover:text-light-text dark:hover:text-dark-text transition-colors"
+    >
+      <svg
+        class="w-4 h-4"
+        fill="none"
+        stroke="currentColor"
+        viewBox="0 0 24 24"
+      >
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          stroke-width="2"
+          d="M6 18L18 6M6 6l12 12"></path>
+      </svg>
+    </button>
+  </div>
+
+  <!-- Mini-modal des résultats -->
+  <div
+    id="search-results"
+    class="hidden absolute top-full left-0 right-0 mt-2 bg-light-background dark:bg-dark-background border border-light-surface dark:border-dark-surface rounded-xl shadow-xl z-50 max-h-80 overflow-y-auto"
+  >
+    <!-- Loading state -->
+    <div id="search-loading" class="hidden p-4 text-center">
+      <div class="inline-flex items-center space-x-2">
+        <div
+          class="w-4 h-4 border-2 border-light-accent1 dark:border-dark-accent1 border-t-transparent rounded-full animate-spin"
+        >
+        </div>
+        <span
+          class="text-sm text-light-textSecondary dark:text-dark-textSecondary"
+          >Recherche en cours...</span
+        >
+      </div>
+    </div>
+
+    <!-- Résultats -->
+    <div id="search-items" class="py-2"></div>
+
+    <!-- Aucun résultat -->
+    <div id="search-empty" class="hidden p-4 text-center">
+      <span
+        class="text-sm text-light-textSecondary dark:text-dark-textSecondary"
+        >Aucun résultat trouvé</span
+      >
+    </div>
+
+    <!-- Footer avec lien vers recherche complète -->
+    <div
+      id="search-footer"
+      class="hidden border-t border-light-surface dark:border-dark-surface p-3"
+    >
+      <a
+        href="/search"
+        class="block text-center text-sm text-light-accent1 dark:text-dark-accent1 hover:text-light-accent1/80 dark:hover:text-dark-accent1/80 transition-colors"
+      >
+        Voir tous les résultats →
+      </a>
+    </div>
+  </div>
+</div>
+
+<script>
+  import { debounce } from "../utils/dom-helpers";
+
+  document.addEventListener("DOMContentLoaded", () => {
+    const searchInput = document.getElementById(
+      "navbar-search"
+    ) as HTMLInputElement;
+    const searchClear = document.getElementById(
+      "search-clear"
+    ) as HTMLButtonElement;
+    const searchResults = document.getElementById(
+      "search-results"
+    ) as HTMLDivElement;
+    const searchLoading = document.getElementById(
+      "search-loading"
+    ) as HTMLDivElement;
+    const searchItems = document.getElementById(
+      "search-items"
+    ) as HTMLDivElement;
+    const searchEmpty = document.getElementById(
+      "search-empty"
+    ) as HTMLDivElement;
+    const searchFooter = document.getElementById(
+      "search-footer"
+    ) as HTMLDivElement;
+
+    let isSearchOpen = false;
+
+    // Debounce pour éviter trop de requêtes
+    const debouncedSearch = debounce(performSearch, 300);
+
+    // Événements du champ de recherche
+    searchInput?.addEventListener("input", (e) => {
+      const query = (e.target as HTMLInputElement).value.trim();
+
+      // Afficher/masquer le bouton clear
+      if (query) {
+        searchClear?.classList.remove("hidden");
+      } else {
+        searchClear?.classList.add("hidden");
+        hideSearchResults();
+        return;
+      }
+
+      // Lancer la recherche avec debounce
+      if (query.length >= 2) {
+        debouncedSearch(query);
+      } else {
+        hideSearchResults();
+      }
+    });
+
+    // Focus sur le champ
+    searchInput?.addEventListener("focus", () => {
+      const query = searchInput.value.trim();
+      if (query.length >= 2) {
+        showSearchResults();
+      }
+    });
+
+    // Bouton clear
+    searchClear?.addEventListener("click", () => {
+      searchInput.value = "";
+      searchClear.classList.add("hidden");
+      hideSearchResults();
+      searchInput.focus();
+    });
+
+    // Fermer avec Escape
+    searchInput?.addEventListener("keydown", (e) => {
+      if (e.key === "Escape") {
+        hideSearchResults();
+        searchInput.blur();
+      }
+    });
+
+    // Fermer en cliquant à l'extérieur
+    document.addEventListener("click", (e) => {
+      if (
+        !searchResults?.contains(e.target as Node) &&
+        !searchInput?.contains(e.target as Node)
+      ) {
+        hideSearchResults();
+      }
+    });
+
+    // Fonction de recherche
+    async function performSearch(query: string) {
+      if (!query || query.length < 2) return;
+
+      showSearchResults();
+      showLoading();
+
+      try {
+        const response = await fetch(
+          `/api/search/suggestions?q=${encodeURIComponent(query)}&limit=5`
+        );
+        const data = await response.json();
+
+        hideLoading();
+
+        if (data.success && data.results && data.results.length > 0) {
+          displayResults(data.results, query);
+        } else {
+          showEmpty();
+        }
+      } catch (error) {
+        console.error("Erreur lors de la recherche:", error);
+        hideLoading();
+        showEmpty();
+      }
+    }
+
+    // Afficher les résultats
+    function displayResults(results: any[], query: string) {
+      if (!searchItems) return;
+
+      searchItems.innerHTML = results
+        .map(
+          (vinyl) => `
+        <a
+          href="/search?q=${encodeURIComponent(query)}"
+          class="block px-4 py-3 hover:bg-light-surface dark:hover:bg-dark-surface transition-colors border-b border-light-surface dark:border-dark-surface last:border-b-0"
+        >
+          <div class="flex items-center space-x-3">
+            <img
+              src="${vinyl.coverImage || "/default-vinyl-cover.svg"}"
+              alt="${vinyl.title}"
+              class="w-10 h-10 rounded-lg object-cover border border-light-surface dark:border-dark-surface"
+            />
+            <div class="flex-1 min-w-0">
+              <p class="text-sm font-medium text-light-text dark:text-dark-text truncate">
+                ${vinyl.title}
+              </p>
+              <p class="text-xs text-light-textSecondary dark:text-dark-textSecondary truncate">
+                ${vinyl.artist} ${vinyl.year ? `• ${vinyl.year}` : ""}
+              </p>
+            </div>
+            <div class="text-xs text-light-textSecondary dark:text-dark-textSecondary">
+              ${vinyl.format || "LP"}
+            </div>
+          </div>
+        </a>
+      `
+        )
+        .join("");
+
+      showFooter();
+      hideEmpty();
+    }
+
+    // États de l'interface
+    function showSearchResults() {
+      isSearchOpen = true;
+      searchResults?.classList.remove("hidden");
+    }
+
+    function hideSearchResults() {
+      isSearchOpen = false;
+      searchResults?.classList.add("hidden");
+    }
+
+    function showLoading() {
+      searchLoading?.classList.remove("hidden");
+      searchItems && (searchItems.innerHTML = "");
+      hideEmpty();
+      hideFooter();
+    }
+
+    function hideLoading() {
+      searchLoading?.classList.add("hidden");
+    }
+
+    function showEmpty() {
+      searchEmpty?.classList.remove("hidden");
+      hideFooter();
+    }
+
+    function hideEmpty() {
+      searchEmpty?.classList.add("hidden");
+    }
+
+    function showFooter() {
+      searchFooter?.classList.remove("hidden");
+    }
+
+    function hideFooter() {
+      searchFooter?.classList.add("hidden");
+    }
+  });
+</script>
