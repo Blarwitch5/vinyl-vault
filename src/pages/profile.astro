@@ -444,6 +444,15 @@ if (!isAuthenticated) {
     return null;
   }
 
+  // Fonction de debug pour vérifier l'authentification
+  function debugAuth() {
+    console.log("=== DEBUG AUTHENTIFICATION ===");
+    console.log("localStorage auth_token:", localStorage.getItem("auth_token"));
+    console.log("document.cookie:", document.cookie);
+    console.log("getAuthToken():", getAuthToken());
+    console.log("==============================");
+  }
+
   // Charger les données utilisateur
   function loadUserData() {
     loadUserDataFromServer(serverUser);
@@ -550,7 +559,9 @@ if (!isAuthenticated) {
       try {
         const token = getAuthToken();
         if (!token) {
-          showMessage(messageDiv, "Vous devez être connecté pour modifier votre profil", "error");
+          console.error("Token manquant - localStorage:", localStorage.getItem("auth_token"));
+          console.error("Token manquant - cookies:", document.cookie);
+          showMessage(messageDiv, "Vous devez être connecté pour modifier votre profil. Veuillez vous reconnecter.", "error");
           return;
         }
 
@@ -610,7 +621,9 @@ if (!isAuthenticated) {
       try {
         const token = getAuthToken();
         if (!token) {
-          showMessage(messageDiv, "Vous devez être connecté pour changer votre mot de passe", "error");
+          console.error("Token manquant pour changement de mot de passe - localStorage:", localStorage.getItem("auth_token"));
+          console.error("Token manquant pour changement de mot de passe - cookies:", document.cookie);
+          showMessage(messageDiv, "Vous devez être connecté pour changer votre mot de passe. Veuillez vous reconnecter.", "error");
           return;
         }
 
@@ -686,6 +699,7 @@ if (!isAuthenticated) {
 
   // Initialisation
   document.addEventListener("DOMContentLoaded", () => {
+    debugAuth(); // Debug de l'authentification
     loadUserData();
     setupAvatarSelection();
     setupProfileForm();
