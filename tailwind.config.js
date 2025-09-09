@@ -4,19 +4,6 @@ export default {
   theme: {
     extend: {
       colors: {
-        // Couleurs personnalisées pour VinylVault avec thème dark/light
-        vinyl: {
-          50: '#f8fafc',
-          100: '#f1f5f9',
-          200: '#e2e8f0',
-          300: '#cbd5e1',
-          400: '#94a3b8',
-          500: '#64748b',
-          600: '#475569',
-          700: '#334155',
-          800: '#1e293b',
-          900: '#0f172a',
-        },
         // Palette "Vinyl Modern" - Inspirée de l'univers des vinyles
         vinyl: {
           50: '#faf7ff',   // Très clair pour les backgrounds
@@ -62,18 +49,18 @@ export default {
           accent3: '#dc2626',     // Rouge moderne pour les alertes
         },
         // Couleurs thématiques vinyles
-        vinyl: {
-          'record-black': '#1a1a1b',     // Noir vinyle
-          'label-gold': '#ffd700',       // Or des labels vintage
-          'label-red': '#dc143c',        // Rouge des labels classiques
-          'label-blue': '#1e40af',       // Bleu des labels jazz
-          'sleeve-cream': '#f5f5dc',     // Beige des pochettes vintage
-          'groove-silver': '#c0c0c0',    // Argent des sillons
+        record: {
+          'black': '#1a1a1b',     // Noir vinyle
+          'gold': '#ffd700',      // Or des labels vintage
+          'red': '#dc143c',       // Rouge des labels classiques
+          'blue': '#1e40af',      // Bleu des labels jazz
+          'cream': '#f5f5dc',     // Beige des pochettes vintage
+          'silver': '#c0c0c0',    // Argent des sillons
         },
       },
       fontFamily: {
         sans: [
-          'Inter',
+          'Poppins',
           'system-ui',
           '-apple-system',
           'BlinkMacSystemFont',
@@ -81,22 +68,27 @@ export default {
           'Roboto',
           '"Helvetica Neue"',
           'Arial',
-          '"Noto Sans"',
           'sans-serif',
-          '"Apple Color Emoji"',
-          '"Segoe UI Emoji"',
-          '"Segoe UI Symbol"',
-          '"Noto Color Emoji"',
         ],
         display: [
-          '"Space Grotesk"',
-          'Inter',
+          'Poppins',
           'system-ui',
           '-apple-system',
           'BlinkMacSystemFont',
           '"Segoe UI"',
           'Roboto',
           'sans-serif',
+        ],
+        mono: [
+          '"JetBrains Mono"',
+          'ui-monospace',
+          'SFMono-Regular',
+          '"SF Mono"',
+          'Monaco',
+          'Consolas',
+          '"Liberation Mono"',
+          '"Courier New"',
+          'monospace',
         ],
       },
       spacing: {

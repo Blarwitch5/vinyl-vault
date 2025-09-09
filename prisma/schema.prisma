@@ -19,6 +19,7 @@ model User {
   email     String   @unique
   name      String?
   password  String   // Hash du mot de passe
+  avatar    String?  // URL ou chemin vers l'avatar
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   
@@ -58,6 +59,7 @@ model Vinyl {
   coverImage   String?
   discogsId    String?  // ID Discogs pour synchronisation
   discogsUrl   String?
+  barcode      String?  // Code-barres du vinyle
   price        Float?
   note         String?
   createdAt    DateTime @default(now())

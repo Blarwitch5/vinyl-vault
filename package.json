@@ -23,6 +23,8 @@
   "dependencies": {
     "@astrojs/tailwind": "^5.1.5",
     "@astrojs/vercel": "^8.2.7",
+    "@fontsource/jetbrains-mono": "^5.2.6",
+    "@fontsource/poppins": "^5.2.6",
     "@prisma/client": "^6.15.0",
     "astro": "^5.13.5",
     "bcryptjs": "^2.4.3",
