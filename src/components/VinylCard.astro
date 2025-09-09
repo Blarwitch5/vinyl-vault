@@ -65,13 +65,19 @@ const defaultCover = "/default-vinyl-cover.svg";
     <div
       class="flex items-center justify-between text-sm text-light-textSecondary dark:text-dark-textSecondary mb-3"
     >
-      {vinyl.year && <span data-vinyl-year>{vinyl.year}</span>}
+      {
+        vinyl.year && (
+          <span data-vinyl-year class="font-mono">
+            {vinyl.year}
+          </span>
+        )
+      }
       {vinyl.format && <span>{vinyl.format}</span>}
     </div>
 
     {
       vinyl.price && (
-        <div class="text-lg font-bold text-emerald-600 dark:text-dark-accent2 mb-3">
+        <div class="text-lg font-bold text-emerald-600 dark:text-dark-accent2 mb-3 font-mono">
           {vinyl.price.toFixed(2)} €
         </div>
       )
@@ -106,7 +112,7 @@ const defaultCover = "/default-vinyl-cover.svg";
                 Modifier
               </button>
               <button
-                class="flex-1 bg-red-600 text-white py-2 px-4 rounded-lg hover:bg-red-700 transition-colors text-sm font-medium"
+                class="flex-1 bg-light-accent3 dark:bg-red-600 text-white py-2 px-4 rounded-lg hover:bg-red-700 dark:hover:bg-red-700 transition-colors text-sm font-medium"
                 data-vinyl-id={vinyl.id}
                 data-action="remove"
               >

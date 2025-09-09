@@ -24,7 +24,7 @@ const { vinylData } = Astro.props;
       </h3>
       <button
         id="close-modal"
-        class="text-gray-400 hover:text-light-textSecondary dark:hover:text-gray-300 p-1"
+        class="text-light-textSecondary dark:text-dark-textSecondary hover:text-light-text dark:hover:text-dark-text p-1"
       >
         <svg
           class="w-6 h-6"
@@ -59,8 +59,15 @@ const { vinylData } = Astro.props;
             class="font-semibold text-light-text dark:text-dark-text"
           >
           </h4>
-          <p id="vinyl-artist" class="text-light-textSecondary dark:text-dark-textSecondary"></p>
-          <p id="vinyl-year" class="text-sm text-light-textSecondary dark:text-light-textSecondary">
+          <p
+            id="vinyl-artist"
+            class="text-light-textSecondary dark:text-dark-textSecondary"
+          >
+          </p>
+          <p
+            id="vinyl-year"
+            class="text-sm text-light-textSecondary dark:text-dark-textSecondary"
+          >
           </p>
         </div>
       </div>
@@ -85,7 +92,9 @@ const { vinylData } = Astro.props;
             ></path>
           </svg>
         </div>
-        <h4 class="text-lg font-semibold text-light-text dark:text-dark-text mb-2">
+        <h4
+          class="text-lg font-semibold text-light-text dark:text-dark-text mb-2"
+        >
           Connexion requise
         </h4>
         <p class="text-light-textSecondary dark:text-dark-textSecondary mb-6">
@@ -135,7 +144,9 @@ const { vinylData } = Astro.props;
             ></path>
           </svg>
         </div>
-        <h4 class="text-lg font-semibold text-light-text dark:text-dark-text mb-2">
+        <h4
+          class="text-lg font-semibold text-light-text dark:text-dark-text mb-2"
+        >
           Aucune collection
         </h4>
         <p class="text-light-textSecondary dark:text-dark-textSecondary mb-6">
@@ -239,10 +250,15 @@ const { vinylData } = Astro.props;
               d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
           </svg>
         </div>
-        <h4 class="text-lg font-semibold text-light-text dark:text-dark-text mb-2">
+        <h4
+          class="text-lg font-semibold text-light-text dark:text-dark-text mb-2"
+        >
           Vinyle ajouté !
         </h4>
-        <p id="success-details" class="text-light-textSecondary dark:text-dark-textSecondary mb-6">
+        <p
+          id="success-details"
+          class="text-light-textSecondary dark:text-dark-textSecondary mb-6"
+        >
         </p>
         <div class="flex space-x-3">
           <button
