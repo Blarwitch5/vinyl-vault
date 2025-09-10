@@ -62,6 +62,7 @@ try {
 
   if (collection) {
     collectionVinyls = collection.vinyls;
+    console.log('Vinyles récupérés:', collectionVinyls);
   } else {
     error = "Collection non trouvée";
   }
@@ -71,7 +72,7 @@ try {
 }
 
 // Calculer les statistiques de la collection
-let stats: {
+const stats: {
   topArtists: { name: string; count: number }[];
   formatBreakdown: { format: string; count: number; percentage: number }[];
   conditionBreakdown: { condition: string; count: number; percentage: number }[];
@@ -133,7 +134,6 @@ const filterFormat = Astro.url.searchParams.get("format") || "";
 
   <div class="container mx-auto px-4 py-8">
     {error ? (
-      <!-- Message d'erreur -->
       <div class="text-center py-12">
         <div class="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-xl p-8 max-w-md mx-auto">
           <div class="text-red-600 dark:text-red-400 mb-4">
@@ -156,7 +156,6 @@ const filterFormat = Astro.url.searchParams.get("format") || "";
         </div>
       </div>
     ) : collection ? (
-    <!-- En-tête de la collection -->
     <div
       class="bg-neutral-50 dark:bg-black/20 dark:glass-emerald-border rounded-xl shadow-sm dark:shadow-white p-6 mb-8"
     >
@@ -668,7 +667,17 @@ const filterFormat = Astro.url.searchParams.get("format") || "";
                       <button class="text-gradient-emerald dark:text-gradient-emerald hover:text-gradient-emerald/80 dark:hover:text-gradient-emerald/80 text-sm">
                         Modifier
                       </button>
-                      <button class="text-red-600 dark:text-red-400 hover:text-red-700 dark:hover:text-red-300 text-sm">
+                      <button 
+                        class="text-red-600 dark:text-red-400 hover:text-red-700 dark:hover:text-red-300 text-sm"
+                        data-vinyl-id={vinyl.id || ''}
+                        data-vinyl-title={vinyl.title || ''}
+                        data-vinyl-artist={vinyl.artist || ''}
+                        data-vinyl-year={vinyl.year || ''}
+                        data-vinyl-format={vinyl.format || ''}
+                        data-vinyl-condition={vinyl.condition || ''}
+                        data-vinyl-price={vinyl.price || 0}
+                        data-vinyl-cover={vinyl.coverImage || '/default-vinyl-cover.svg'}
+                      >
                         Supprimer
                       </button>
                     </div>
@@ -717,7 +726,6 @@ const filterFormat = Astro.url.searchParams.get("format") || "";
       </div>
   </div>
     ) : (
-      <!-- Chargement -->
       <div class="text-center py-12">
         <div class="inline-flex items-center">
           <svg class="animate-spin h-8 w-8 text-gradient-emerald dark:text-gradient-emerald mr-3" fill="none" viewBox="0 0 24 24">
@@ -833,5 +841,95 @@ const filterFormat = Astro.url.searchParams.get("format") || "";
 
     addVinylCollectionBtn?.addEventListener("click", openBarcodeModal);
     addVinylEmptyBtn?.addEventListener("click", openBarcodeModal);
+
+    // Gestion des boutons de suppression dans la vue liste
+    const deleteButtons = document.querySelectorAll('button[data-vinyl-id]');
+    deleteButtons.forEach(button => {
+      button.addEventListener('click', async (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+
+        const vinylId = button.getAttribute('data-vinyl-id');
+        if (!vinylId) return;
+        
+        // Récupérer les informations du vinyle depuis les attributs data
+        const vinyl = {
+          id: vinylId,
+          title: button.getAttribute('data-vinyl-title') || 'Titre inconnu',
+          artist: button.getAttribute('data-vinyl-artist') || 'Artiste inconnu',
+          year: button.getAttribute('data-vinyl-year') || '',
+          format: button.getAttribute('data-vinyl-format') || '',
+          condition: button.getAttribute('data-vinyl-condition') || '',
+          price: parseFloat(button.getAttribute('data-vinyl-price') || '0'),
+          coverImage: button.getAttribute('data-vinyl-cover') || '/default-vinyl-cover.svg'
+        };
+
+        // Vérifier que les données essentielles sont présentes
+        if (!vinyl.title || vinyl.title === 'Titre inconnu') {
+          console.error('Titre du vinyle manquant');
+        }
+        if (!vinyl.artist || vinyl.artist === 'Artiste inconnu') {
+          console.error('Artiste du vinyle manquant');
+        }
+
+        console.log('Bouton cliqué:', button);
+        console.log('Tous les attributs du bouton:', button.attributes);
+        console.log('Attributs data:', {
+          id: button.getAttribute('data-vinyl-id'),
+          title: button.getAttribute('data-vinyl-title'),
+          artist: button.getAttribute('data-vinyl-artist'),
+          year: button.getAttribute('data-vinyl-year'),
+          format: button.getAttribute('data-vinyl-format'),
+          condition: button.getAttribute('data-vinyl-condition'),
+          price: button.getAttribute('data-vinyl-price'),
+          cover: button.getAttribute('data-vinyl-cover')
+        });
+        console.log('Données du vinyle à supprimer:', vinyl);
+        
+        // Vérifier si les données sont vides
+        if (!vinyl.title || vinyl.title === 'Titre inconnu') {
+          console.error('PROBLÈME: Titre manquant ou vide');
+        }
+        if (!vinyl.artist || vinyl.artist === 'Artiste inconnu') {
+          console.error('PROBLÈME: Artiste manquant ou vide');
+        }
+
+        // Ouvrir la modal de confirmation
+        if (typeof (window as any).openDeleteVinylModal === 'function') {
+          (window as any).openDeleteVinylModal(vinyl);
+        } else {
+          console.error('Modal de suppression non disponible');
+          // Fallback avec confirm
+          if (confirm(`Êtes-vous sûr de vouloir supprimer "${vinyl.title}" de votre collection ?`)) {
+            await removeFromCollection(vinylId);
+          }
+        }
+      });
+    });
+
+    // Fonction pour supprimer un vinyle de la collection
+    async function removeFromCollection(vinylId: string) {
+      try {
+        const response = await fetch(`/api/collections/remove`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ vinylId }),
+        });
+
+        if (response.ok) {
+          // Recharger la page pour mettre à jour l'affichage
+          window.location.reload();
+        } else {
+          const error = await response.json();
+          console.error('Erreur lors de la suppression:', error);
+          alert('Erreur lors de la suppression du vinyle');
+        }
+      } catch (error) {
+        console.error('Erreur lors de la suppression:', error);
+        alert('Erreur lors de la suppression du vinyle');
+      }
+    }
   });
 </script>
