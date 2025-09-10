@@ -419,14 +419,59 @@ if (currentUser) {
           <div
             class="px-6 py-4 border-b border-neutral-200 dark:border-neutral-800"
           >
-            <h2
-              class="text-xl font-semibold text-neutral-900 dark:text-neutral-50"
-            >
-              Ajouts récents
-            </h2>
+            <div class="flex items-center justify-between">
+              <h2
+                class="text-xl font-semibold text-neutral-900 dark:text-neutral-50"
+              >
+                Ajouts récents
+              </h2>
+              <div class="flex items-center gap-3">
+                <!-- Boutons de vue -->
+                <div class="flex items-center bg-neutral-100 dark:bg-neutral-800 rounded-xl p-1">
+                  <button
+                    id="dashboard-grid-view"
+                    class="px-3 py-1 rounded-xl text-sm font-medium bg-neutral-50 dark:bg-black/20 text-neutral-900 dark:text-neutral-50 shadow-sm dark:shadow-white dark:shadow-dark-card"
+                    title="Vue grille"
+                  >
+                    <svg
+                      class="w-4 h-4"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2"
+                        d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"
+                      ></path>
+                    </svg>
+                  </button>
+                  <button
+                    id="dashboard-list-view"
+                    class="px-3 py-1 rounded-xl text-sm font-medium text-neutral-600 dark:text-neutral-400"
+                    title="Vue liste"
+                  >
+                    <svg
+                      class="w-4 h-4"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2"
+                        d="M4 6h16M4 10h16M4 14h16M4 18h16"></path>
+                    </svg>
+                  </button>
+                </div>
+              </div>
+            </div>
           </div>
           <div class="p-4">
-            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4">
+            <!-- Vue grille (par défaut) -->
+            <div id="dashboard-vinyl-grid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4">
               {
                 recentVinyls.map((vinyl: any) => (
                   <VinylCardCompact
@@ -437,6 +482,50 @@ if (currentUser) {
                 ))
               }
             </div>
+
+            <!-- Vue liste (cachée par défaut) -->
+            <div id="dashboard-vinyl-list" class="hidden space-y-3">
+              {
+                recentVinyls.map((vinyl: any) => (
+                  <div class="glass dark:glass-dark rounded-xl p-3 flex items-center space-x-3 hover:bg-white/80 dark:hover:bg-neutral-900/80 transition-colors">
+                    <img
+                      src={vinyl.coverImage || "/default-vinyl-cover.svg"}
+                      alt={`Couverture de ${vinyl.title}`}
+                      class="w-12 h-12 object-cover rounded-lg shadow-sm"
+                    />
+                    <div class="flex-1 min-w-0">
+                      <h3 class="font-medium text-neutral-900 dark:text-neutral-50 truncate text-sm">
+                        {vinyl.title}
+                      </h3>
+                      <p class="text-neutral-600 dark:text-neutral-400 truncate text-xs">
+                        {vinyl.artist}
+                      </p>
+                      <div class="flex items-center space-x-2 text-xs text-neutral-600 dark:text-neutral-400">
+                        <span>{vinyl.year}</span>
+                        <span>•</span>
+                        <span>{vinyl.format}</span>
+                        <span>•</span>
+                        <span class={`px-1.5 py-0.5 rounded-full text-xs ${
+                          vinyl.condition === 'Mint' ? 'bg-green-100 dark:bg-green-900/20 text-green-800 dark:text-green-400' :
+                          vinyl.condition === 'Near Mint' ? 'bg-blue-100 dark:bg-blue-900/20 text-blue-800 dark:text-blue-400' :
+                          vinyl.condition === 'Very Good Plus' ? 'bg-yellow-100 dark:bg-yellow-900/20 text-yellow-800 dark:text-yellow-400' :
+                          vinyl.condition === 'Very Good' ? 'bg-orange-100 dark:bg-orange-900/20 text-orange-800 dark:text-orange-400' :
+                          'bg-gray-100 dark:bg-gray-900/20 text-gray-800 dark:text-gray-400'
+                        }`}>
+                          {vinyl.condition}
+                        </span>
+                      </div>
+                    </div>
+                    <div class="text-right">
+                      <div class="font-medium text-neutral-900 dark:text-neutral-50 text-sm">
+                        {vinyl.price?.toFixed(2)} €
+                      </div>
+                    </div>
+                  </div>
+                ))
+              }
+            </div>
+
             <div class="mt-4 text-center">
               <a
                 href="/collection/1"
@@ -735,6 +824,79 @@ if (currentUser) {
         console.error("Modal de création de collection non disponible");
       }
     });
+
+    // Gestion des vues grid/list pour le dashboard
+    const dashboardGridViewBtn = document.getElementById("dashboard-grid-view");
+    const dashboardListViewBtn = document.getElementById("dashboard-list-view");
+    const dashboardVinylGrid = document.getElementById("dashboard-vinyl-grid");
+    const dashboardVinylList = document.getElementById("dashboard-vinyl-list");
+
+    function switchToDashboardGridView() {
+      dashboardGridViewBtn?.classList.add(
+        "bg-neutral-50",
+        "dark:bg-black/20",
+        "text-neutral-900",
+        "dark:text-neutral-50",
+        "shadow-sm",
+        "dark:shadow-white",
+        "dark:shadow-dark-card"
+      );
+      dashboardGridViewBtn?.classList.remove(
+        "text-neutral-600",
+        "dark:text-neutral-400"
+      );
+      dashboardListViewBtn?.classList.remove(
+        "bg-neutral-50",
+        "dark:bg-black/20",
+        "text-neutral-900",
+        "dark:text-neutral-50",
+        "shadow-sm",
+        "dark:shadow-white",
+        "dark:shadow-dark-card"
+      );
+      dashboardListViewBtn?.classList.add(
+        "text-neutral-600",
+        "dark:text-neutral-400"
+      );
+
+      dashboardVinylGrid?.classList.remove("hidden");
+      dashboardVinylList?.classList.add("hidden");
+    }
+
+    function switchToDashboardListView() {
+      dashboardListViewBtn?.classList.add(
+        "bg-neutral-50",
+        "dark:bg-black/20",
+        "text-neutral-900",
+        "dark:text-neutral-50",
+        "shadow-sm",
+        "dark:shadow-white",
+        "dark:shadow-dark-card"
+      );
+      dashboardListViewBtn?.classList.remove(
+        "text-neutral-600",
+        "dark:text-neutral-400"
+      );
+      dashboardGridViewBtn?.classList.remove(
+        "bg-neutral-50",
+        "dark:bg-black/20",
+        "text-neutral-900",
+        "dark:text-neutral-50",
+        "shadow-sm",
+        "dark:shadow-white",
+        "dark:shadow-dark-card"
+      );
+      dashboardGridViewBtn?.classList.add(
+        "text-neutral-600",
+        "dark:text-neutral-400"
+      );
+
+      dashboardVinylGrid?.classList.add("hidden");
+      dashboardVinylList?.classList.remove("hidden");
+    }
+
+    dashboardGridViewBtn?.addEventListener("click", switchToDashboardGridView);
+    dashboardListViewBtn?.addEventListener("click", switchToDashboardListView);
 
     // Gestion des actions sur les collections existantes
     const collectionActions = document.querySelectorAll("[data-collection-action]");
