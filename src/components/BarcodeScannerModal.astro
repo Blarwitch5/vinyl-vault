@@ -193,7 +193,7 @@
     const value = (e.target as HTMLInputElement).value
     const isValid = /^\d{8,14}$/.test(value) // Code-barres entre 8 et 14 chiffres
     if (manualBtn) {
-      (manualBtn as HTMLButtonElement).disabled = !isValid
+      ;(manualBtn as HTMLButtonElement).disabled = !isValid
     }
   })
 
