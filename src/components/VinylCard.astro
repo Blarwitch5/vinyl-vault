@@ -159,19 +159,27 @@ const defaultCover = '/default-vinyl-cover.svg'
                 title: card.querySelector('[data-vinyl-title]')?.textContent || 'Vinyle inconnu',
                 artist: card.querySelector('[data-vinyl-artist]')?.textContent || 'Artiste inconnu',
                 year: card.querySelector('[data-vinyl-year]')?.textContent || '',
-                format: Array.from(card.querySelectorAll('span')).find(span => 
-                  span.textContent?.includes('LP') || span.textContent?.includes('EP') || span.textContent?.includes('Single')
-                )?.textContent || '',
-                coverImage: card.querySelector('img')?.src || '/default-vinyl-cover.svg'
+                format:
+                  Array.from(card.querySelectorAll('span')).find(
+                    (span) =>
+                      span.textContent?.includes('LP') ||
+                      span.textContent?.includes('EP') ||
+                      span.textContent?.includes('Single')
+                  )?.textContent || '',
+                coverImage: card.querySelector('img')?.src || '/default-vinyl-cover.svg',
               }
 
               // Ouvrir la modal de confirmation
               if (typeof (window as any).openDeleteVinylModal === 'function') {
-                (window as any).openDeleteVinylModal(vinyl)
+                ;(window as any).openDeleteVinylModal(vinyl)
               } else {
                 console.error('Modal de suppression non disponible')
                 // Fallback avec confirm
-                if (confirm(`Êtes-vous sûr de vouloir supprimer "${vinyl.title}" de votre collection ?`)) {
+                if (
+                  confirm(
+                    `Êtes-vous sûr de vouloir supprimer "${vinyl.title}" de votre collection ?`
+                  )
+                ) {
                   await removeFromCollection(vinylId)
                 }
               }

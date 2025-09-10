@@ -17,7 +17,7 @@ export interface Props {
   isInCollection?: boolean
 }
 
-const { vinyl, showActions = false, isInCollection = false } = Astro.props
+const { vinyl, showActions = false } = Astro.props
 const defaultCover = '/default-vinyl-cover.svg'
 ---
 
@@ -51,7 +51,14 @@ const defaultCover = '/default-vinyl-cover.svg'
           <button
             class="bg-red-500 hover:bg-red-600 hover:bg-opacity-90 text-white p-2 rounded-full transition-colors shadow-lg"
             title="Supprimer de la collection"
-            data-vinyl-id={vinyl.id}
+            data-vinyl-id={vinyl.id || ''}
+            data-vinyl-title={vinyl.title || ''}
+            data-vinyl-artist={vinyl.artist || ''}
+            data-vinyl-year={vinyl.year || ''}
+            data-vinyl-format={vinyl.format || ''}
+            data-vinyl-condition={vinyl.condition || ''}
+            data-vinyl-price={vinyl.price || 0}
+            data-vinyl-cover={vinyl.coverImage || '/default-vinyl-cover.svg'}
             data-action="delete"
           >
             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -136,34 +143,46 @@ const defaultCover = '/default-vinyl-cover.svg'
       button.addEventListener('click', async (e) => {
         e.preventDefault()
         e.stopPropagation()
-        
+
         const target = e.target as HTMLButtonElement
         const vinylId = target.dataset.vinylId
 
         if (!vinylId) return
 
-        // Récupérer les informations du vinyle depuis la carte
-        const card = target.closest('.vinyl-card-compact')
-        if (!card) return
-
+        // Récupérer les informations du vinyle depuis les attributs data-*
         const vinyl = {
           id: vinylId,
-          title: card.querySelector('h3')?.textContent || 'Vinyle inconnu',
-          artist: card.querySelector('p')?.textContent || 'Artiste inconnu',
-          year: card.querySelector('span')?.textContent || '',
-          format: Array.from(card.querySelectorAll('span')).find(span => 
-            span.textContent?.includes('LP') || span.textContent?.includes('EP') || span.textContent?.includes('Single')
-          )?.textContent || '',
-          coverImage: card.querySelector('img')?.src || '/default-vinyl-cover.svg'
+          title: target.dataset.vinylTitle || 'Titre inconnu',
+          artist: target.dataset.vinylArtist || 'Artiste inconnu',
+          year: target.dataset.vinylYear || '',
+          format: target.dataset.vinylFormat || '',
+          condition: target.dataset.vinylCondition || '',
+          price: parseFloat(target.dataset.vinylPrice || '0'),
+          coverImage: target.dataset.vinylCover || '/default-vinyl-cover.svg',
         }
 
         // Ouvrir la modal de confirmation
-        if (typeof (window as any).openDeleteVinylModal === 'function') {
-          (window as any).openDeleteVinylModal(vinyl)
+        const openDeleteModal = (window as unknown as Record<string, unknown>)
+          .openDeleteVinylModal as
+          | ((vinyl: {
+              id: string
+              title: string
+              artist: string
+              year: string
+              format: string
+              condition: string
+              price: number
+              coverImage: string
+            }) => void)
+          | undefined
+
+        if (typeof openDeleteModal === 'function') {
+          openDeleteModal(vinyl)
         } else {
-          console.error('Modal de suppression non disponible')
           // Fallback avec confirm
-          if (confirm(`Êtes-vous sûr de vouloir supprimer "${vinyl.title}" de votre collection ?`)) {
+          if (
+            confirm(`Êtes-vous sûr de vouloir supprimer "${vinyl.title}" de votre collection ?`)
+          ) {
             await deleteVinyl(vinylId)
           }
         }
@@ -189,8 +208,7 @@ const defaultCover = '/default-vinyl-cover.svg'
       } else {
         alert('Erreur lors de la suppression : ' + (data.error || 'Erreur inconnue'))
       }
-    } catch (error) {
-      console.error('Erreur lors de la suppression du vinyle :', error)
+    } catch {
       alert('Erreur de connexion')
     }
   }
