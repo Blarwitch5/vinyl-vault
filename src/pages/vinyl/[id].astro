@@ -1,0 +1,444 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro'
+import { db } from '../../lib/prisma'
+import { getDiscogsReleaseDetails } from '../../lib/discogs'
+import { verifyAuth } from '../../lib/auth'
+import DeleteVinylModal from '../../components/DeleteVinylModal.astro'
+
+export const prerender = false
+
+const { id } = Astro.params
+
+if (!id) {
+  return Astro.redirect('/404')
+}
+
+// Vérifier l'authentification
+const user = await verifyAuth(Astro.request)
+
+if (!user) {
+  return Astro.redirect('/login')
+}
+
+// Récupérer le vinyle depuis la base de données
+const vinyl = await db.vinyl.findUnique({
+  where: { id },
+  include: {
+    collection: {
+      include: {
+        user: true,
+      },
+    },
+  },
+})
+
+if (!vinyl) {
+  return Astro.redirect('/404')
+}
+
+// Vérifier que l'utilisateur a accès à ce vinyle
+if (!vinyl.collection) {
+  return Astro.redirect('/404')
+}
+
+const hasAccess = vinyl.collection.userId === user.id || vinyl.collection.isPublic
+
+if (!hasAccess) {
+  return Astro.redirect('/403')
+}
+
+// Récupérer les détails complets depuis Discogs
+let discogsDetails: any = null
+let tracks: any[] = []
+let images: any[] = []
+let videos: any[] = []
+
+try {
+  if (vinyl.discogsId) {
+    discogsDetails = await getDiscogsReleaseDetails(parseInt(vinyl.discogsId))
+
+    if (discogsDetails) {
+      tracks = discogsDetails.tracklist || []
+      images = discogsDetails.images || []
+      videos = discogsDetails.videos || []
+    }
+  }
+} catch (error) {
+  console.error('Erreur lors de la récupération des détails Discogs:', error)
+}
+
+// Données pour le SEO
+const pageTitle = `${vinyl.title} - ${vinyl.artist} | VinylVault`
+const pageDescription = `Détails complets de l'album ${vinyl.title} par ${vinyl.artist} (${vinyl.year})`
+---
+
+<BaseLayout title={pageTitle} description={pageDescription}>
+  <div
+    class="min-h-screen bg-gradient-to-br from-neutral-50 to-neutral-100 dark:from-neutral-950 dark:to-neutral-900"
+  >
+    <div class="container mx-auto px-4 py-8">
+      <!-- Header avec bouton de retour et breadcrumb -->
+      <div class="mb-8">
+        <div class="flex items-center justify-between mb-4">
+          <a
+            href={`/collection/${vinyl.collection.id}`}
+            class="inline-flex items-center space-x-2 text-neutral-600 dark:text-neutral-400 hover:text-gradient-emerald transition-colors group"
+          >
+            <svg
+              class="w-5 h-5 transform group-hover:-translate-x-1 transition-transform"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M15 19l-7-7 7-7"></path>
+            </svg>
+            <span class="font-medium">Retour à la collection</span>
+          </a>
+
+          <!-- Actions rapides -->
+          <div class="flex items-center space-x-3">
+            {
+              user.id === vinyl.collection.userId && (
+                <button
+                  onclick={`openDeleteVinylModal({
+                  id: '${vinyl.id}',
+                  title: '${vinyl.title}',
+                  artist: '${vinyl.artist}',
+                  year: '${vinyl.year || ''}',
+                  format: '${vinyl.format || ''}',
+                  condition: '${vinyl.condition || ''}',
+                  price: ${vinyl.price || 0},
+                  coverImage: '${vinyl.coverImage || '/default-vinyl-cover.svg'}'
+                })`}
+                  class="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg transition-colors flex items-center space-x-2"
+                >
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
+                    />
+                  </svg>
+                  <span>Supprimer</span>
+                </button>
+              )
+            }
+          </div>
+        </div>
+
+        <!-- Breadcrumb amélioré -->
+        <nav class="glass dark:glass-dark rounded-lg p-3">
+          <ol class="flex items-center space-x-2 text-sm text-neutral-600 dark:text-neutral-400">
+            <li>
+              <a href="/dashboard" class="hover:text-gradient-emerald transition-colors"
+                >Tableau de bord</a
+              >
+            </li>
+            <li class="text-neutral-400">/</li>
+            <li>
+              <a
+                href={`/collection/${vinyl.collection.id}`}
+                class="hover:text-gradient-emerald transition-colors">{vinyl.collection.name}</a
+              >
+            </li>
+            <li class="text-neutral-400">/</li>
+            <li class="text-neutral-900 dark:text-neutral-50 font-medium truncate">
+              {vinyl.title}
+            </li>
+          </ol>
+        </nav>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <!-- Informations principales -->
+        <div class="lg:col-span-1">
+          <div class="glass dark:glass-dark rounded-xl p-6 sticky top-8">
+            <!-- Image de couverture -->
+            <div class="mb-6">
+              <img
+                src={vinyl.coverImage || '/default-vinyl-cover.svg'}
+                alt={`Couverture de ${vinyl.title}`}
+                class="w-full aspect-square object-cover rounded-xl shadow-lg"
+              />
+            </div>
+
+            <!-- Informations de base -->
+            <div class="space-y-4">
+              <div>
+                <h1 class="text-2xl font-bold text-neutral-900 dark:text-neutral-50 mb-2">
+                  {vinyl.title}
+                </h1>
+                <p class="text-lg text-neutral-600 dark:text-neutral-400">
+                  {vinyl.artist}
+                </p>
+                {vinyl.year && <p class="text-neutral-500 dark:text-neutral-500">{vinyl.year}</p>}
+              </div>
+
+              <!-- Détails techniques -->
+              <div class="space-y-3">
+                {
+                  vinyl.format && (
+                    <div class="flex justify-between">
+                      <span class="text-neutral-600 dark:text-neutral-400">Format:</span>
+                      <span class="text-neutral-900 dark:text-neutral-50 font-medium">
+                        {vinyl.format}
+                      </span>
+                    </div>
+                  )
+                }
+                {
+                  vinyl.condition && (
+                    <div class="flex justify-between">
+                      <span class="text-neutral-600 dark:text-neutral-400">État:</span>
+                      <span
+                        class={`px-2 py-1 rounded-full text-xs font-medium ${
+                          vinyl.condition === 'Mint'
+                            ? 'bg-green-100 dark:bg-green-900/20 text-green-800 dark:text-green-400'
+                            : vinyl.condition === 'Near Mint'
+                              ? 'bg-blue-100 dark:bg-blue-900/20 text-blue-800 dark:text-blue-400'
+                              : vinyl.condition === 'Very Good Plus'
+                                ? 'bg-yellow-100 dark:bg-yellow-900/20 text-yellow-800 dark:text-yellow-400'
+                                : vinyl.condition === 'Very Good'
+                                  ? 'bg-orange-100 dark:bg-orange-900/20 text-orange-800 dark:text-orange-400'
+                                  : 'bg-gray-100 dark:bg-gray-900/20 text-gray-800 dark:text-gray-400'
+                        }`}
+                      >
+                        {vinyl.condition}
+                      </span>
+                    </div>
+                  )
+                }
+                {
+                  vinyl.price && (
+                    <div class="flex justify-between">
+                      <span class="text-neutral-600 dark:text-neutral-400">Prix:</span>
+                      <span class="text-neutral-900 dark:text-neutral-50 font-medium">
+                        {vinyl.price.toFixed(2)} €
+                      </span>
+                    </div>
+                  )
+                }
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Contenu détaillé -->
+        <div class="lg:col-span-2 space-y-6">
+          <!-- Pistes -->
+          {
+            tracks.length > 0 && (
+              <div class="glass dark:glass-dark rounded-xl p-6">
+                <h2 class="text-xl font-bold text-neutral-900 dark:text-neutral-50 mb-4">
+                  Pistes ({tracks.length})
+                </h2>
+                <div class="space-y-2">
+                  {tracks.map((track: any, index: number) => (
+                    <div class="flex items-center justify-between py-2 px-3 rounded-lg hover:bg-neutral-100 dark:hover:bg-neutral-800 transition-colors">
+                      <div class="flex items-center space-x-3">
+                        <span class="text-sm text-neutral-500 dark:text-neutral-400 w-8">
+                          {track.position || index + 1}
+                        </span>
+                        <div>
+                          <p class="text-neutral-900 dark:text-neutral-50 font-medium">
+                            {track.title}
+                          </p>
+                          {track.duration && (
+                            <p class="text-sm text-neutral-500 dark:text-neutral-400">
+                              {track.duration}
+                            </p>
+                          )}
+                        </div>
+                      </div>
+                      {track.type && (
+                        <span class="text-xs text-neutral-500 dark:text-neutral-400 bg-neutral-200 dark:bg-neutral-700 px-2 py-1 rounded">
+                          {track.type}
+                        </span>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )
+          }
+
+          <!-- Images supplémentaires -->
+          {
+            images.length > 1 && (
+              <div class="glass dark:glass-dark rounded-xl p-6">
+                <h2 class="text-xl font-bold text-neutral-900 dark:text-neutral-50 mb-4">
+                  Images ({images.length})
+                </h2>
+                <div class="grid grid-cols-2 md:grid-cols-3 gap-4">
+                  {images.slice(1).map((image: any) => (
+                    <img
+                      src={image.uri}
+                      alt={image.type}
+                      class="w-full aspect-square object-cover rounded-lg shadow-sm hover:shadow-md transition-shadow cursor-pointer"
+                      onclick={`window.open('${image.uri}', '_blank')`}
+                    />
+                  ))}
+                </div>
+              </div>
+            )
+          }
+
+          <!-- Vidéos -->
+          {
+            videos.length > 0 && (
+              <div class="glass dark:glass-dark rounded-xl p-6">
+                <h2 class="text-xl font-bold text-neutral-900 dark:text-neutral-50 mb-4">
+                  Vidéos ({videos.length})
+                </h2>
+                <div class="space-y-4">
+                  {videos.map((video: any) => (
+                    <div class="bg-neutral-100 dark:bg-neutral-800 rounded-lg p-4">
+                      <h3 class="font-medium text-neutral-900 dark:text-neutral-50 mb-2">
+                        {video.title}
+                      </h3>
+                      <p class="text-sm text-neutral-600 dark:text-neutral-400 mb-3">
+                        {video.description}
+                      </p>
+                      <a
+                        href={video.uri}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        class="inline-flex items-center text-gradient-emerald dark:text-gradient-emerald hover:text-gradient-emerald/80 dark:hover:text-gradient-emerald/80 transition-colors"
+                      >
+                        <svg class="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 24 24">
+                          <path d="M8 5v14l11-7z" />
+                        </svg>
+                        Regarder sur YouTube
+                      </a>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )
+          }
+
+          <!-- Informations Discogs -->
+          {
+            discogsDetails && (
+              <div class="glass dark:glass-dark rounded-xl p-6">
+                <h2 class="text-xl font-bold text-neutral-900 dark:text-neutral-50 mb-4">
+                  Informations Discogs
+                </h2>
+                <div class="space-y-3">
+                  {discogsDetails.genres && discogsDetails.genres.length > 0 && (
+                    <div>
+                      <span class="text-neutral-600 dark:text-neutral-400">Genres:</span>
+                      <div class="flex flex-wrap gap-2 mt-1">
+                        {discogsDetails.genres.map((genre: any) => (
+                          <span class="bg-gradient-emerald/10 dark:bg-gradient-emerald/20 text-gradient-emerald dark:text-gradient-emerald px-2 py-1 rounded-full text-sm">
+                            {genre}
+                          </span>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                  {discogsDetails.styles && discogsDetails.styles.length > 0 && (
+                    <div>
+                      <span class="text-neutral-600 dark:text-neutral-400">Styles:</span>
+                      <div class="flex flex-wrap gap-2 mt-1">
+                        {discogsDetails.styles.map((style: any) => (
+                          <span class="bg-neutral-200 dark:bg-neutral-700 text-neutral-700 dark:text-neutral-300 px-2 py-1 rounded-full text-sm">
+                            {style}
+                          </span>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                  {discogsDetails.country && (
+                    <div class="flex justify-between">
+                      <span class="text-neutral-600 dark:text-neutral-400">Pays:</span>
+                      <span class="text-neutral-900 dark:text-neutral-50">
+                        {discogsDetails.country}
+                      </span>
+                    </div>
+                  )}
+                  {discogsDetails.released && (
+                    <div class="flex justify-between">
+                      <span class="text-neutral-600 dark:text-neutral-400">Date de sortie:</span>
+                      <span class="text-neutral-900 dark:text-neutral-50">
+                        {discogsDetails.released}
+                      </span>
+                    </div>
+                  )}
+                  {discogsDetails.label && (
+                    <div class="flex justify-between">
+                      <span class="text-neutral-600 dark:text-neutral-400">Label:</span>
+                      <span class="text-neutral-900 dark:text-neutral-50">
+                        {discogsDetails.label}
+                      </span>
+                    </div>
+                  )}
+                  {discogsDetails.catalogNumber && (
+                    <div class="flex justify-between">
+                      <span class="text-neutral-600 dark:text-neutral-400">
+                        Numéro de catalogue:
+                      </span>
+                      <span class="text-neutral-900 dark:text-neutral-50 font-mono text-sm">
+                        {discogsDetails.catalogNumber}
+                      </span>
+                    </div>
+                  )}
+                </div>
+              </div>
+            )
+          }
+
+          <!-- Note si pas de données Discogs -->
+          {
+            !discogsDetails && vinyl.discogsId && (
+              <div class="glass dark:glass-dark rounded-xl p-6">
+                <div class="text-center text-neutral-600 dark:text-neutral-400">
+                  <svg
+                    class="w-12 h-12 mx-auto mb-4 text-neutral-400"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                    />
+                  </svg>
+                  <p>Impossible de charger les détails depuis Discogs</p>
+                  <p class="text-sm mt-2">Vérifiez votre connexion internet et réessayez</p>
+                </div>
+              </div>
+            )
+          }
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modals -->
+  <DeleteVinylModal />
+</BaseLayout>
+
+<script>
+  // Fonction pour ouvrir la modal de suppression
+  function openDeleteVinylModal(vinyl: any) {
+    const openModal = (window as unknown as Record<string, unknown>).openDeleteVinylModal as
+      | ((vinyl: any) => void)
+      | undefined
+    if (typeof openModal === 'function') {
+      openModal(vinyl)
+    } else {
+      console.error('Modal de suppression non disponible')
+    }
+  }
+
+  // Exposer la fonction globalement
+  ;(window as unknown as Record<string, unknown>).openDeleteVinylModal = openDeleteVinylModal
+</script>
