@@ -32,7 +32,7 @@ const {
 
     <!-- Script pour éviter le flash du thème -->
     <script is:inline>
-      ;(function () {
+      {
         const theme = localStorage.getItem('vinyl-vault-theme')
 
         // Par défaut, utiliser le dark mode si aucun thème n'est stocké
@@ -40,7 +40,7 @@ const {
         if (theme === 'dark' || !theme) {
           document.documentElement.classList.add('dark')
         }
-      })()
+      }
     </script>
   </head>
   <body
