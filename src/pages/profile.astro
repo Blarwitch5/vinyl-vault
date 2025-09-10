@@ -1,24 +1,24 @@
 ---
-import BaseLayout from "../layouts/BaseLayout.astro";
-import Navbar from "../components/Navbar.astro";
-import Footer from "../components/Footer.astro";
-import BarcodeScannerModal from "../components/BarcodeScannerModal.astro";
-import { PrismaClient } from "@prisma/client";
-import jwt from "jsonwebtoken";
+import BaseLayout from '../layouts/BaseLayout.astro'
+import Navbar from '../components/Navbar.astro'
+import Footer from '../components/Footer.astro'
+import BarcodeScannerModal from '../components/BarcodeScannerModal.astro'
+import { PrismaClient } from '@prisma/client'
+import jwt from 'jsonwebtoken'
 
-const prisma = new PrismaClient();
+const prisma = new PrismaClient()
 
 // Vérifier l'authentification côté serveur
-let user = null;
-let isAuthenticated = false;
+let user = null
+let isAuthenticated = false
 
 try {
   // Récupérer le token depuis les cookies
-  const token = Astro.cookies.get("vinyl_vault_token")?.value;
+  const token = Astro.cookies.get('vinyl_vault_token')?.value
 
   if (token) {
-    const jwtSecret = import.meta.env.JWT_SECRET || "your-super-secret-jwt-key";
-    const decoded = jwt.verify(token, jwtSecret) as any;
+    const jwtSecret = import.meta.env.JWT_SECRET || 'your-super-secret-jwt-key'
+    const decoded = jwt.verify(token, jwtSecret) as any
 
     user = await prisma.user.findUnique({
       where: { id: decoded.userId },
@@ -29,38 +29,34 @@ try {
         avatar: true,
         createdAt: true,
       },
-    });
+    })
 
-    isAuthenticated = !!user;
+    isAuthenticated = !!user
   }
 } catch (error) {
-  console.error("Erreur d'authentification:", error);
-  isAuthenticated = false;
+  console.error("Erreur d'authentification:", error)
+  isAuthenticated = false
 }
 
 // Rediriger vers login si non authentifié
 if (!isAuthenticated) {
-  return Astro.redirect(
-    "/login?redirect=" + encodeURIComponent(Astro.url.pathname)
-  );
+  return Astro.redirect('/login?redirect=' + encodeURIComponent(Astro.url.pathname))
 }
 ---
 
 <BaseLayout title="Mon Profil - VinylVault">
   <Navbar slot="navbar" />
 
-  <main class="min-h-screen bg-light-background dark:bg-dark-background">
+  <main class="min-h-screen bg-neutral-50 dark:bg-black/20">
     <div class="container mx-auto px-4 py-8">
       <!-- En-tête avec bouton d'ajout -->
       <div class="mb-8">
         <div class="flex items-center justify-between mb-6">
           <div>
-            <h1
-              class="text-4xl font-bold text-light-text dark:text-dark-text mb-2"
-            >
+            <h1 class="text-4xl font-bold text-neutral-900 dark:text-neutral-50 mb-2">
               Mon Profil
             </h1>
-            <p class="text-light-textSecondary dark:text-dark-textSecondary">
+            <p class="text-neutral-600 dark:text-neutral-400">
               Gérez vos informations personnelles et préférences
             </p>
           </div>
@@ -68,14 +64,9 @@ if (!isAuthenticated) {
           <!-- Bouton ajouter à ma collection -->
           <button
             id="add-to-collection-btn"
-            class="flex items-center space-x-2 px-4 py-2 bg-light-accent1 dark:bg-dark-accent1 text-white rounded-xl hover:bg-light-accent1/80 dark:hover:bg-dark-accent1/80 transition-colors"
+            class="flex items-center space-x-2 px-4 py-2 bg-gradient-emerald dark:bg-gradient-emerald text-white rounded-xl hover:bg-gradient-emerald/80 dark:hover:bg-gradient-emerald/80 transition-colors"
           >
-            <svg
-              class="w-5 h-5"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path
                 stroke-linecap="round"
                 stroke-linejoin="round"
@@ -91,25 +82,16 @@ if (!isAuthenticated) {
       <div class="flex flex-col lg:flex-row gap-8">
         <!-- Sidebar avec liens rapides -->
         <div class="lg:w-64 flex-shrink-0">
-          <div
-            class="bg-light-surface dark:bg-dark-surface rounded-2xl p-6 sticky top-8"
-          >
-            <h3
-              class="text-lg font-semibold text-light-text dark:text-dark-text mb-4"
-            >
+          <div class="glass-card dark:glass-dark rounded-2xl p-6 sticky top-8">
+            <h3 class="text-lg font-semibold text-neutral-900 dark:text-neutral-50 mb-4">
               Navigation
             </h3>
             <nav class="space-y-2">
               <a
                 href="/dashboard"
-                class="flex items-center space-x-3 px-3 py-2 text-light-textSecondary dark:text-dark-textSecondary hover:text-light-accent1 dark:hover:text-dark-accent1 hover:bg-light-background dark:hover:bg-dark-background rounded-xl transition-colors"
+                class="flex items-center space-x-3 px-3 py-2 text-neutral-600 dark:text-neutral-400 hover:text-gradient-emerald dark:hover:text-gradient-emerald hover:bg-neutral-50 dark:hover:bg-neutral-950 rounded-xl transition-colors"
               >
-                <svg
-                  class="w-5 h-5"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path
                     stroke-linecap="round"
                     stroke-linejoin="round"
@@ -121,33 +103,22 @@ if (!isAuthenticated) {
               </a>
               <a
                 href="/profile"
-                class="flex items-center space-x-3 px-3 py-2 text-light-accent1 dark:text-dark-accent1 bg-light-accent1/10 dark:bg-dark-accent1/10 rounded-xl"
+                class="flex items-center space-x-3 px-3 py-2 text-gradient-emerald dark:text-gradient-emerald bg-gradient-emerald/10 dark:bg-gradient-emerald/10 rounded-xl"
               >
-                <svg
-                  class="w-5 h-5"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path
                     stroke-linecap="round"
                     stroke-linejoin="round"
                     stroke-width="2"
-                    d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
-                  ></path>
+                    d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
                 </svg>
                 <span>Mon Profil</span>
               </a>
               <a
                 href="/search"
-                class="flex items-center space-x-3 px-3 py-2 text-light-textSecondary dark:text-dark-textSecondary hover:text-light-accent1 dark:hover:text-dark-accent1 hover:bg-light-background dark:hover:bg-dark-background rounded-xl transition-colors"
+                class="flex items-center space-x-3 px-3 py-2 text-neutral-600 dark:text-neutral-400 hover:text-gradient-emerald dark:hover:text-gradient-emerald hover:bg-neutral-50 dark:hover:bg-neutral-950 rounded-xl transition-colors"
               >
-                <svg
-                  class="w-5 h-5"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path
                     stroke-linecap="round"
                     stroke-linejoin="round"
@@ -158,25 +129,16 @@ if (!isAuthenticated) {
               </a>
             </nav>
 
-            <div
-              class="mt-6 pt-6 border-t border-light-surface dark:border-dark-surface"
-            >
-              <h4
-                class="text-sm font-medium text-light-text dark:text-dark-text mb-3"
-              >
+            <div class="mt-6 pt-6 border-t border-neutral-200 dark:border-white/10">
+              <h4 class="text-sm font-medium text-neutral-900 dark:text-neutral-50 mb-3">
                 Actions rapides
               </h4>
               <div class="space-y-2">
                 <button
                   id="quick-add-vinyl"
-                  class="w-full flex items-center space-x-3 px-3 py-2 text-light-textSecondary dark:text-dark-textSecondary hover:text-light-accent1 dark:hover:text-dark-accent1 hover:bg-light-background dark:hover:bg-dark-background rounded-xl transition-colors"
+                  class="w-full flex items-center space-x-3 px-3 py-2 text-neutral-600 dark:text-neutral-400 hover:text-gradient-emerald dark:hover:text-gradient-emerald hover:bg-neutral-50 dark:hover:bg-neutral-950 rounded-xl transition-colors"
                 >
-                  <svg
-                    class="w-5 h-5"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
+                  <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path
                       stroke-linecap="round"
                       stroke-linejoin="round"
@@ -186,14 +148,9 @@ if (!isAuthenticated) {
                   <span>Ajouter un vinyle</span>
                 </button>
                 <button
-                  class="w-full flex items-center space-x-3 px-3 py-2 text-light-textSecondary dark:text-dark-textSecondary hover:text-light-accent1 dark:hover:text-dark-accent1 hover:bg-light-background dark:hover:bg-dark-background rounded-xl transition-colors"
+                  class="w-full flex items-center space-x-3 px-3 py-2 text-neutral-600 dark:text-neutral-400 hover:text-gradient-emerald dark:hover:text-gradient-emerald hover:bg-neutral-50 dark:hover:bg-neutral-950 rounded-xl transition-colors"
                 >
-                  <svg
-                    class="w-5 h-5"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
+                  <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path
                       stroke-linecap="round"
                       stroke-linejoin="round"
@@ -211,26 +168,20 @@ if (!isAuthenticated) {
         <!-- Contenu principal centré -->
         <div class="flex-1 max-w-4xl mx-auto">
           <!-- Informations personnelles -->
-          <div
-            class="bg-light-surface dark:bg-dark-surface rounded-2xl p-6 mb-6"
-          >
-            <h2
-              class="text-2xl font-bold text-light-text dark:text-dark-text mb-6"
-            >
+          <div class="glass-card dark:glass-dark rounded-2xl p-6 mb-6">
+            <h2 class="text-2xl font-bold text-neutral-900 dark:text-neutral-50 mb-6">
               Informations personnelles
             </h2>
 
             <!-- Avatar Section -->
             <div class="mb-6">
-              <label
-                class="block text-sm font-medium text-light-text dark:text-dark-text mb-3"
-              >
+              <label class="block text-sm font-medium text-neutral-900 dark:text-neutral-50 mb-3">
                 Avatar
               </label>
               <div class="flex items-center space-x-4">
                 <div
                   id="current-avatar"
-                  class="w-16 h-16 rounded-xl border-2 border-light-surface dark:border-dark-surface overflow-hidden"
+                  class="w-16 h-16 rounded-xl border-2 border-neutral-200 dark:border-white/10 overflow-hidden"
                 >
                   <img
                     src="/default-avatar.svg"
@@ -239,16 +190,13 @@ if (!isAuthenticated) {
                   />
                 </div>
                 <div class="flex-1">
-                  <p
-                    class="text-sm text-light-textSecondary dark:text-dark-textSecondary mb-2"
-                  >
-                    Choisissez un avatar par défaut ou utilisez un dégradé
-                    coloré
+                  <p class="text-sm text-neutral-600 dark:text-neutral-400 mb-2">
+                    Choisissez un avatar par défaut ou utilisez un dégradé coloré
                   </p>
                   <div class="grid grid-cols-6 gap-2">
                     <!-- Avatars par défaut -->
                     <button
-                      class="avatar-option w-10 h-10 rounded-lg border-2 border-transparent hover:border-light-accent1 dark:hover:border-dark-accent1 transition-colors"
+                      class="avatar-option w-10 h-10 rounded-lg border-2 border-transparent hover:border-gradient-cyan dark:hover:border-gradient-cyan transition-colors"
                       data-avatar="default"
                     >
                       <img
@@ -259,19 +207,19 @@ if (!isAuthenticated) {
                     </button>
                     <!-- Avatars colorés -->
                     <button
-                      class="avatar-option w-10 h-10 rounded-lg border-2 border-transparent hover:border-light-accent1 dark:hover:border-dark-accent1 transition-colors bg-gradient-to-br from-blue-400 to-blue-600"
+                      class="avatar-option w-10 h-10 rounded-lg border-2 border-transparent hover:border-gradient-cyan dark:hover:border-gradient-cyan transition-colors bg-gradient-to-br from-blue-400 to-blue-600"
                       data-avatar="blue"></button>
                     <button
-                      class="avatar-option w-10 h-10 rounded-lg border-2 border-transparent hover:border-light-accent1 dark:hover:border-dark-accent1 transition-colors bg-gradient-to-br from-emerald-400 to-emerald-600"
+                      class="avatar-option w-10 h-10 rounded-lg border-2 border-transparent hover:border-gradient-cyan dark:hover:border-gradient-cyan transition-colors bg-gradient-to-br from-emerald-400 to-emerald-600"
                       data-avatar="emerald"></button>
                     <button
-                      class="avatar-option w-10 h-10 rounded-lg border-2 border-transparent hover:border-light-accent1 dark:hover:border-dark-accent1 transition-colors bg-gradient-to-br from-purple-400 to-purple-600"
+                      class="avatar-option w-10 h-10 rounded-lg border-2 border-transparent hover:border-gradient-cyan dark:hover:border-gradient-cyan transition-colors bg-gradient-to-br from-purple-400 to-purple-600"
                       data-avatar="purple"></button>
                     <button
-                      class="avatar-option w-10 h-10 rounded-lg border-2 border-transparent hover:border-light-accent1 dark:hover:border-dark-accent1 transition-colors bg-gradient-to-br from-orange-400 to-orange-600"
+                      class="avatar-option w-10 h-10 rounded-lg border-2 border-transparent hover:border-gradient-cyan dark:hover:border-gradient-cyan transition-colors bg-gradient-to-br from-orange-400 to-orange-600"
                       data-avatar="orange"></button>
                     <button
-                      class="avatar-option w-10 h-10 rounded-lg border-2 border-transparent hover:border-light-accent1 dark:hover:border-dark-accent1 transition-colors bg-gradient-to-br from-pink-400 to-pink-600"
+                      class="avatar-option w-10 h-10 rounded-lg border-2 border-transparent hover:border-gradient-cyan dark:hover:border-gradient-cyan transition-colors bg-gradient-to-br from-pink-400 to-pink-600"
                       data-avatar="pink"></button>
                   </div>
                 </div>
@@ -284,7 +232,7 @@ if (!isAuthenticated) {
                 <div>
                   <label
                     for="name"
-                    class="block text-sm font-medium text-light-text dark:text-dark-text mb-2"
+                    class="block text-sm font-medium text-neutral-900 dark:text-neutral-50 mb-2"
                   >
                     Nom complet
                   </label>
@@ -292,7 +240,7 @@ if (!isAuthenticated) {
                     type="text"
                     id="name"
                     name="name"
-                    class="w-full px-4 py-3 bg-light-background dark:bg-dark-background border border-light-surface dark:border-dark-surface rounded-xl text-light-text dark:text-dark-text placeholder-light-textSecondary dark:placeholder-dark-textSecondary focus:outline-none focus:ring-2 focus:ring-light-accent1 dark:focus:ring-dark-accent1 focus:border-transparent"
+                    class="w-full px-4 py-3 bg-neutral-50 dark:bg-black/20 rounded-xl text-neutral-900 dark:text-neutral-50 placeholder-light-textSecondary dark:placeholder-dark-textSecondary focus:outline-none focus:ring-2 focus:ring-light-accent1 dark:focus:ring-dark-accent1 focus:border-transparent"
                     placeholder="Votre nom complet"
                   />
                 </div>
@@ -300,7 +248,7 @@ if (!isAuthenticated) {
                 <div>
                   <label
                     for="email"
-                    class="block text-sm font-medium text-light-text dark:text-dark-text mb-2"
+                    class="block text-sm font-medium text-neutral-900 dark:text-neutral-50 mb-2"
                   >
                     Adresse email
                   </label>
@@ -308,7 +256,7 @@ if (!isAuthenticated) {
                     type="email"
                     id="email"
                     name="email"
-                    class="w-full px-4 py-3 bg-light-background dark:bg-dark-background border border-light-surface dark:border-dark-surface rounded-xl text-light-text dark:text-dark-text placeholder-light-textSecondary dark:placeholder-dark-textSecondary focus:outline-none focus:ring-2 focus:ring-light-accent1 dark:focus:ring-dark-accent1 focus:border-transparent"
+                    class="w-full px-4 py-3 bg-neutral-50 dark:bg-black/20 rounded-xl text-neutral-900 dark:text-neutral-50 placeholder-light-textSecondary dark:placeholder-dark-textSecondary focus:outline-none focus:ring-2 focus:ring-light-accent1 dark:focus:ring-dark-accent1 focus:border-transparent"
                     placeholder="votre@email.com"
                   />
                 </div>
@@ -317,7 +265,7 @@ if (!isAuthenticated) {
               <div class="flex justify-end">
                 <button
                   type="submit"
-                  class="px-6 py-3 bg-light-accent1 dark:bg-dark-accent1 text-white rounded-xl hover:bg-light-accent1/80 dark:hover:bg-dark-accent1/80 transition-colors"
+                  class="px-6 py-3 bg-gradient-emerald dark:bg-gradient-emerald text-white rounded-xl hover:bg-gradient-emerald/80 dark:hover:bg-gradient-emerald/80 transition-colors"
                 >
                   Mettre à jour le profil
                 </button>
@@ -329,18 +277,14 @@ if (!isAuthenticated) {
           </div>
 
           <!-- Changement de mot de passe -->
-          <div class="bg-light-surface dark:bg-dark-surface rounded-2xl p-6">
-            <h2
-              class="text-2xl font-bold text-light-text dark:text-dark-text mb-6"
-            >
-              Sécurité
-            </h2>
+          <div class="glass-card dark:glass-dark rounded-2xl p-6">
+            <h2 class="text-2xl font-bold text-neutral-900 dark:text-neutral-50 mb-6">Sécurité</h2>
 
             <form id="password-form" class="space-y-6">
               <div>
                 <label
                   for="current-password"
-                  class="block text-sm font-medium text-light-text dark:text-dark-text mb-2"
+                  class="block text-sm font-medium text-neutral-900 dark:text-neutral-50 mb-2"
                 >
                   Mot de passe actuel
                 </label>
@@ -348,7 +292,7 @@ if (!isAuthenticated) {
                   type="password"
                   id="current-password"
                   name="currentPassword"
-                  class="w-full px-4 py-3 bg-light-background dark:bg-dark-background border border-light-surface dark:border-dark-surface rounded-xl text-light-text dark:text-dark-text placeholder-light-textSecondary dark:placeholder-dark-textSecondary focus:outline-none focus:ring-2 focus:ring-light-accent1 dark:focus:ring-dark-accent1 focus:border-transparent"
+                  class="w-full px-4 py-3 bg-neutral-50 dark:bg-black/20 rounded-xl text-neutral-900 dark:text-neutral-50 placeholder-light-textSecondary dark:placeholder-dark-textSecondary focus:outline-none focus:ring-2 focus:ring-light-accent1 dark:focus:ring-dark-accent1 focus:border-transparent"
                   placeholder="Votre mot de passe actuel"
                 />
               </div>
@@ -357,7 +301,7 @@ if (!isAuthenticated) {
                 <div>
                   <label
                     for="new-password"
-                    class="block text-sm font-medium text-light-text dark:text-dark-text mb-2"
+                    class="block text-sm font-medium text-neutral-900 dark:text-neutral-50 mb-2"
                   >
                     Nouveau mot de passe
                   </label>
@@ -365,7 +309,7 @@ if (!isAuthenticated) {
                     type="password"
                     id="new-password"
                     name="newPassword"
-                    class="w-full px-4 py-3 bg-light-background dark:bg-dark-background border border-light-surface dark:border-dark-surface rounded-xl text-light-text dark:text-dark-text placeholder-light-textSecondary dark:placeholder-dark-textSecondary focus:outline-none focus:ring-2 focus:ring-light-accent1 dark:focus:ring-dark-accent1 focus:border-transparent"
+                    class="w-full px-4 py-3 bg-neutral-50 dark:bg-black/20 rounded-xl text-neutral-900 dark:text-neutral-50 placeholder-light-textSecondary dark:placeholder-dark-textSecondary focus:outline-none focus:ring-2 focus:ring-light-accent1 dark:focus:ring-dark-accent1 focus:border-transparent"
                     placeholder="Nouveau mot de passe"
                   />
                 </div>
@@ -373,7 +317,7 @@ if (!isAuthenticated) {
                 <div>
                   <label
                     for="confirm-password"
-                    class="block text-sm font-medium text-light-text dark:text-dark-text mb-2"
+                    class="block text-sm font-medium text-neutral-900 dark:text-neutral-50 mb-2"
                   >
                     Confirmer le mot de passe
                   </label>
@@ -381,7 +325,7 @@ if (!isAuthenticated) {
                     type="password"
                     id="confirm-password"
                     name="confirmPassword"
-                    class="w-full px-4 py-3 bg-light-background dark:bg-dark-background border border-light-surface dark:border-dark-surface rounded-xl text-light-text dark:text-dark-text placeholder-light-textSecondary dark:placeholder-dark-textSecondary focus:outline-none focus:ring-2 focus:ring-light-accent1 dark:focus:ring-dark-accent1 focus:border-transparent"
+                    class="w-full px-4 py-3 bg-neutral-50 dark:bg-black/20 rounded-xl text-neutral-900 dark:text-neutral-50 placeholder-light-textSecondary dark:placeholder-dark-textSecondary focus:outline-none focus:ring-2 focus:ring-light-accent1 dark:focus:ring-dark-accent1 focus:border-transparent"
                     placeholder="Confirmer le nouveau mot de passe"
                   />
                 </div>
@@ -390,7 +334,7 @@ if (!isAuthenticated) {
               <div class="flex justify-end">
                 <button
                   type="submit"
-                  class="px-6 py-3 bg-light-accent2 dark:bg-dark-accent2 text-white rounded-xl hover:bg-light-accent2/80 dark:hover:bg-dark-accent2/80 transition-colors"
+                  class="px-6 py-3 bg-gradient-emerald dark:bg-gradient-emerald text-white rounded-xl hover:bg-gradient-emerald/80 dark:hover:bg-gradient-emerald/80 transition-colors"
                 >
                   Changer le mot de passe
                 </button>
@@ -418,65 +362,65 @@ if (!isAuthenticated) {
     email: "${user?.email || ''}",
     name: "${user?.name || ''}",
     avatar: "${user?.avatar || 'default'}",
-  };
+  }
 
   // Fonction pour récupérer le token d'authentification
   function getAuthToken(): string | null {
-    if (typeof window === "undefined") {
-      return null;
+    if (typeof window === 'undefined') {
+      return null
     }
 
     // Essayer localStorage d'abord
-    const localToken = localStorage.getItem("auth_token");
+    const localToken = localStorage.getItem('auth_token')
     if (localToken) {
-      return localToken;
+      return localToken
     }
 
     // Fallback sur les cookies
-    const cookies = document.cookie.split(";");
+    const cookies = document.cookie.split(';')
     for (const cookie of cookies) {
-      const [name, value] = cookie.trim().split("=");
-      if (name === "vinyl_vault_token") {
-        return value;
+      const [name, value] = cookie.trim().split('=')
+      if (name === 'vinyl_vault_token') {
+        return value
       }
     }
 
-    return null;
+    return null
   }
 
   // Fonction de debug pour vérifier l'authentification
   function debugAuth() {
-    console.log("=== DEBUG AUTHENTIFICATION ===");
-    console.log("localStorage auth_token:", localStorage.getItem("auth_token"));
-    console.log("document.cookie:", document.cookie);
-    console.log("getAuthToken():", getAuthToken());
-    console.log("==============================");
+    console.log('=== DEBUG AUTHENTIFICATION ===')
+    console.log('localStorage auth_token:', localStorage.getItem('auth_token'))
+    console.log('document.cookie:', document.cookie)
+    console.log('getAuthToken():', getAuthToken())
+    console.log('==============================')
   }
 
   // Charger les données utilisateur
   function loadUserData() {
-    loadUserDataFromServer(serverUser);
+    loadUserDataFromServer(serverUser)
   }
 
   // Charger les données utilisateur depuis le serveur
   function loadUserDataFromServer(user: any) {
-    const nameInput = document.getElementById("name") as HTMLInputElement;
-    const emailInput = document.getElementById("email") as HTMLInputElement;
-    const currentAvatar = document.getElementById("current-avatar");
+    const nameInput = document.getElementById('name') as HTMLInputElement
+    const emailInput = document.getElementById('email') as HTMLInputElement
+    const currentAvatar = document.getElementById('current-avatar')
 
-    if (nameInput) nameInput.value = user.name || "";
-    if (emailInput) emailInput.value = user.email || "";
+    if (nameInput) nameInput.value = user.name || ''
+    if (emailInput) emailInput.value = user.email || ''
 
     // Charger l'avatar actuel
     if (currentAvatar && user.avatar) {
-      const img = currentAvatar.querySelector("img");
+      const img = currentAvatar.querySelector('img')
       if (img) {
-        if (user.avatar === "default") {
-          img.src = "/default-avatar.svg";
+        if (user.avatar === 'default') {
+          img.src = '/default-avatar.svg'
         } else {
           // Avatar coloré
-          img.style.display = "none";
-          currentAvatar.style.background = getGradientForColor(user.avatar);
+          img.style.display = 'none'
+          currentAvatar.style.background = getGradientForColor(user.avatar)
         }
       }
     }
@@ -485,225 +429,222 @@ if (!isAuthenticated) {
   // Obtenir le dégradé pour une couleur
   function getGradientForColor(color: string): string {
     const gradients: { [key: string]: string } = {
-      blue: "linear-gradient(135deg, #60a5fa, #2563eb)",
-      emerald: "linear-gradient(135deg, #34d399, #059669)",
-      purple: "linear-gradient(135deg, #a78bfa, #7c3aed)",
-      orange: "linear-gradient(135deg, #fb923c, #ea580c)",
-      pink: "linear-gradient(135deg, #f472b6, #db2777)",
-    };
-    return gradients[color] || gradients.blue;
+      blue: 'linear-gradient(135deg, #60a5fa, #2563eb)',
+      emerald: 'linear-gradient(135deg, #34d399, #059669)',
+      purple: 'linear-gradient(135deg, #a78bfa, #7c3aed)',
+      orange: 'linear-gradient(135deg, #fb923c, #ea580c)',
+      pink: 'linear-gradient(135deg, #f472b6, #db2777)',
+    }
+    return gradients[color] || gradients.blue
   }
 
   // Gestion des avatars
   function setupAvatarSelection() {
-    const avatarOptions = document.querySelectorAll(".avatar-option");
-    const currentAvatar = document.getElementById("current-avatar");
+    const avatarOptions = document.querySelectorAll('.avatar-option')
+    const currentAvatar = document.getElementById('current-avatar')
 
     avatarOptions.forEach((option) => {
-      option.addEventListener("click", () => {
-        const avatar = (option as HTMLElement).dataset.avatar;
-        if (!avatar) return;
+      option.addEventListener('click', () => {
+        const avatar = (option as HTMLElement).dataset.avatar
+        if (!avatar) return
 
         // Mettre à jour l'affichage
         if (currentAvatar) {
-          const img = currentAvatar.querySelector("img");
-          if (avatar === "default") {
+          const img = currentAvatar.querySelector('img')
+          if (avatar === 'default') {
             if (img) {
-              img.style.display = "block";
-              img.src = "/default-avatar.svg";
+              img.style.display = 'block'
+              img.src = '/default-avatar.svg'
             }
-            currentAvatar.style.background = "";
+            currentAvatar.style.background = ''
           } else {
-            if (img) img.style.display = "none";
-            currentAvatar.style.background = getGradientForColor(avatar);
+            if (img) img.style.display = 'none'
+            currentAvatar.style.background = getGradientForColor(avatar)
           }
         }
 
         // Marquer comme sélectionné
         avatarOptions.forEach((opt) => {
-          opt.classList.remove(
-            "ring-2",
-            "ring-light-accent1",
-            "dark:ring-dark-accent1"
-          );
-        });
-        option.classList.add(
-          "ring-2",
-          "ring-light-accent1",
-          "dark:ring-dark-accent1"
-        );
-      });
-    });
+          opt.classList.remove('ring-2', 'ring-light-accent1', 'dark:ring-dark-accent1')
+        })
+        option.classList.add('ring-2', 'ring-light-accent1', 'dark:ring-dark-accent1')
+      })
+    })
   }
 
   // Gestion du formulaire de profil
   function setupProfileForm() {
-    const form = document.getElementById("profile-form") as HTMLFormElement;
-    const messageDiv = document.getElementById("profile-message");
+    const form = document.getElementById('profile-form') as HTMLFormElement
+    const messageDiv = document.getElementById('profile-message')
 
-    form?.addEventListener("submit", async (e) => {
-      e.preventDefault();
+    form?.addEventListener('submit', async (e) => {
+      e.preventDefault()
 
-      const formData = new FormData(form);
-      const selectedAvatar = document.querySelector(
-        ".avatar-option.ring-2"
-      ) as HTMLElement;
-      const avatar = selectedAvatar?.dataset.avatar || "default";
+      const formData = new FormData(form)
+      const selectedAvatar = document.querySelector('.avatar-option.ring-2') as HTMLElement
+      const avatar = selectedAvatar?.dataset.avatar || 'default'
 
       const data = {
-        name: formData.get("name"),
-        email: formData.get("email"),
+        name: formData.get('name'),
+        email: formData.get('email'),
         avatar: avatar,
-      };
+      }
 
       try {
-        const token = getAuthToken();
+        const token = getAuthToken()
         if (!token) {
-          console.error("Token manquant - localStorage:", localStorage.getItem("auth_token"));
-          console.error("Token manquant - cookies:", document.cookie);
-          showMessage(messageDiv, "Vous devez être connecté pour modifier votre profil. Veuillez vous reconnecter.", "error");
-          return;
-        }
-
-        const response = await fetch("/api/auth/profile", {
-          method: "PUT",
-          headers: {
-            "Content-Type": "application/json",
-            "Authorization": `Bearer ${token}`,
-          },
-          body: JSON.stringify(data),
-        });
-
-        const result = await response.json();
-
-        if (result.success) {
-          showMessage(messageDiv, "Profil mis à jour avec succès!", "success");
-        } else {
+          console.error('Token manquant - localStorage:', localStorage.getItem('auth_token'))
+          console.error('Token manquant - cookies:', document.cookie)
           showMessage(
             messageDiv,
-            result.error || "Erreur lors de la mise à jour",
-            "error"
-          );
+            'Vous devez être connecté pour modifier votre profil. Veuillez vous reconnecter.',
+            'error'
+          )
+          return
+        }
+
+        const response = await fetch('/api/auth/profile', {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify(data),
+        })
+
+        const result = await response.json()
+
+        if (result.success) {
+          showMessage(messageDiv, 'Profil mis à jour avec succès!', 'success')
+        } else {
+          showMessage(messageDiv, result.error || 'Erreur lors de la mise à jour', 'error')
         }
       } catch (error) {
-        console.error("Erreur:", error);
-        showMessage(messageDiv, "Erreur de connexion", "error");
+        console.error('Erreur:', error)
+        showMessage(messageDiv, 'Erreur de connexion', 'error')
       }
-    });
+    })
   }
 
   // Gestion du formulaire de mot de passe
   function setupPasswordForm() {
-    const form = document.getElementById("password-form") as HTMLFormElement;
-    const messageDiv = document.getElementById("password-message");
+    const form = document.getElementById('password-form') as HTMLFormElement
+    const messageDiv = document.getElementById('password-message')
 
-    form?.addEventListener("submit", async (e) => {
-      e.preventDefault();
+    form?.addEventListener('submit', async (e) => {
+      e.preventDefault()
 
-      const formData = new FormData(form);
-      const newPassword = formData.get("newPassword");
-      const confirmPassword = formData.get("confirmPassword");
+      const formData = new FormData(form)
+      const newPassword = formData.get('newPassword')
+      const confirmPassword = formData.get('confirmPassword')
 
       if (newPassword !== confirmPassword) {
-        showMessage(
-          messageDiv,
-          "Les mots de passe ne correspondent pas",
-          "error"
-        );
-        return;
+        showMessage(messageDiv, 'Les mots de passe ne correspondent pas', 'error')
+        return
       }
 
       const data = {
-        currentPassword: formData.get("currentPassword"),
+        currentPassword: formData.get('currentPassword'),
         newPassword: newPassword,
-      };
+      }
 
       try {
-        const token = getAuthToken();
+        const token = getAuthToken()
         if (!token) {
-          console.error("Token manquant pour changement de mot de passe - localStorage:", localStorage.getItem("auth_token"));
-          console.error("Token manquant pour changement de mot de passe - cookies:", document.cookie);
-          showMessage(messageDiv, "Vous devez être connecté pour changer votre mot de passe. Veuillez vous reconnecter.", "error");
-          return;
+          console.error(
+            'Token manquant pour changement de mot de passe - localStorage:',
+            localStorage.getItem('auth_token')
+          )
+          console.error(
+            'Token manquant pour changement de mot de passe - cookies:',
+            document.cookie
+          )
+          showMessage(
+            messageDiv,
+            'Vous devez être connecté pour changer votre mot de passe. Veuillez vous reconnecter.',
+            'error'
+          )
+          return
         }
 
-        const response = await fetch("/api/auth/profile", {
-          method: "PUT",
+        const response = await fetch('/api/auth/profile', {
+          method: 'PUT',
           headers: {
-            "Content-Type": "application/json",
-            "Authorization": `Bearer ${token}`,
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${token}`,
           },
           body: JSON.stringify(data),
-        });
+        })
 
-        const result = await response.json();
+        const result = await response.json()
 
         if (result.success) {
-          showMessage(
-            messageDiv,
-            "Mot de passe changé avec succès!",
-            "success"
-          );
-          form.reset();
+          showMessage(messageDiv, 'Mot de passe changé avec succès!', 'success')
+          form.reset()
         } else {
-          showMessage(
-            messageDiv,
-            result.error || "Erreur lors du changement",
-            "error"
-          );
+          showMessage(messageDiv, result.error || 'Erreur lors du changement', 'error')
         }
       } catch (error) {
-        console.error("Erreur:", error);
-        showMessage(messageDiv, "Erreur de connexion", "error");
+        console.error('Erreur:', error)
+        showMessage(messageDiv, 'Erreur de connexion', 'error')
       }
-    });
+    })
   }
 
   // Afficher un message
-  function showMessage(
-    element: HTMLElement | null,
-    message: string,
-    type: "success" | "error"
-  ) {
-    if (!element) return;
+  function showMessage(element: HTMLElement | null, message: string, type: 'success' | 'error') {
+    if (!element) return
 
     element.className = `mt-4 p-4 rounded-xl ${
-      type === "success"
-        ? "bg-green-50 dark:bg-green-900/20 text-green-600 dark:text-green-400 border border-green-200 dark:border-green-800"
-        : "bg-red-50 dark:bg-red-900/20 text-red-600 dark:text-red-400 border border-red-200 dark:border-red-800"
-    }`;
-    element.textContent = message;
-    element.classList.remove("hidden");
+      type === 'success'
+        ? 'bg-green-50 dark:bg-green-900/20 text-green-600 dark:text-green-400 border border-green-200 dark:border-green-800'
+        : 'bg-red-50 dark:bg-red-900/20 text-red-600 dark:text-red-400 border border-red-200 dark:border-red-800'
+    }`
+    element.textContent = message
+    element.classList.remove('hidden')
 
     setTimeout(() => {
-      element.classList.add("hidden");
-    }, 5000);
+      element.classList.add('hidden')
+    }, 5000)
   }
 
   // Gestion des boutons d'ajout de vinyle
   function setupAddVinylButtons() {
-    const addToCollectionBtn = document.getElementById("add-to-collection-btn");
-    const quickAddVinylBtn = document.getElementById("quick-add-vinyl");
+    const addToCollectionBtn = document.getElementById('add-to-collection-btn')
+    const quickAddVinylBtn = document.getElementById('quick-add-vinyl')
+
+    console.log('=== DEBUG BOUTONS AJOUT VINYLE ===')
+    console.log('addToCollectionBtn:', addToCollectionBtn)
+    console.log('quickAddVinylBtn:', quickAddVinylBtn)
+    console.log('openBarcodeModal disponible:', typeof (window as any).openBarcodeModal)
+    console.log('==================================')
 
     const openModal = () => {
-      if (typeof (window as any).openBarcodeModal === "function") {
-        (window as any).openBarcodeModal();
+      console.log("Tentative d'ouverture du modal...")
+      if (typeof (window as any).openBarcodeModal === 'function') {
+        console.log('Ouverture du modal de scan de code-barres')
+        ;(window as any).openBarcodeModal()
       } else {
-        console.error("Modal de scan de code-barres non disponible");
+        console.error('Modal de scan de code-barres non disponible')
+        alert("Le modal de scan de code-barres n'est pas disponible. Veuillez recharger la page.")
       }
-    };
+    }
 
-    addToCollectionBtn?.addEventListener("click", openModal);
-    quickAddVinylBtn?.addEventListener("click", openModal);
+    addToCollectionBtn?.addEventListener('click', openModal)
+    quickAddVinylBtn?.addEventListener('click', openModal)
   }
 
   // Initialisation
-  document.addEventListener("DOMContentLoaded", () => {
-    debugAuth(); // Debug de l'authentification
-    loadUserData();
-    setupAvatarSelection();
-    setupProfileForm();
-    setupPasswordForm();
-    setupAddVinylButtons();
-  });
+  document.addEventListener('DOMContentLoaded', () => {
+    debugAuth() // Debug de l'authentification
+    loadUserData()
+    setupAvatarSelection()
+    setupProfileForm()
+    setupPasswordForm()
+
+    // Délai pour s'assurer que le modal est chargé
+    setTimeout(() => {
+      setupAddVinylButtons()
+    }, 100)
+  })
 </script>

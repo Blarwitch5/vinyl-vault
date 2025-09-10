@@ -1,32 +1,30 @@
 ---
-import BaseLayout from "../layouts/BaseLayout.astro";
-import Navbar from "../components/Navbar.astro";
-import Footer from "../components/Footer.astro";
+import BaseLayout from '../layouts/BaseLayout.astro'
+import Navbar from '../components/Navbar.astro'
+import Footer from '../components/Footer.astro'
 
-const title = "Connexion - VinylVault";
+const title = 'Connexion - VinylVault'
 const description =
-  "Connectez-vous à votre compte VinylVault pour accéder à votre collection de vinyles";
+  'Connectez-vous à votre compte VinylVault pour accéder à votre collection de vinyles'
 ---
 
-<BaseLayout title={title} description={description}>
+<BaseLayout {title} {description}>
   <Navbar slot="navbar" />
 
   <div
-    class="min-h-screen flex items-center justify-center bg-light-background dark:bg-dark-background py-12 px-4 sm:px-6 lg:px-8"
+    class="min-h-screen flex items-center justify-center bg-neutral-50 dark:bg-black/20 py-12 px-4 sm:px-6 lg:px-8"
   >
     <div class="max-w-md w-full space-y-8">
       <!-- En-tête -->
       <div class="text-center">
-        <h2 class="mt-6 text-4xl font-bold text-light-text dark:text-dark-text">
+        <h2 class="mt-6 text-4xl font-bold text-neutral-900 dark:text-neutral-50">
           Connexion à votre compte
         </h2>
-        <p
-          class="mt-2 text-sm text-light-textSecondary dark:text-dark-textSecondary"
-        >
+        <p class="mt-2 text-sm text-neutral-600 dark:text-neutral-400">
           Ou
           <a
             href="/register"
-            class="font-medium text-light-accent1 dark:text-dark-accent1 hover:text-light-accent1/80 dark:hover:text-dark-accent1/80 transition-colors"
+            class="font-medium text-gradient-emerald dark:text-gradient-emerald hover:text-gradient-emerald/80 dark:hover:text-gradient-emerald/80 transition-colors"
           >
             créez un nouveau compte
           </a>
@@ -35,7 +33,7 @@ const description =
 
       <!-- Formulaire de connexion -->
       <form id="login-form" class="mt-8 space-y-6" action="#" method="POST">
-        <div class="rounded-xl shadow-sm -space-y-px">
+        <div class="rounded-xl shadow-sm dark:shadow-white dark:shadow-dark-card -space-y-px">
           <div>
             <label for="email" class="sr-only">Adresse email</label>
             <input
@@ -44,7 +42,7 @@ const description =
               type="email"
               autocomplete="email"
               required
-              class="relative block w-full px-4 py-3 border border-light-surface dark:border-dark-surface placeholder:text-light-textSecondary dark:placeholder:text-dark-textSecondary text-light-text dark:text-dark-text bg-white dark:bg-dark-background rounded-t-xl focus:outline-none focus:ring-light-accent1 dark:focus:ring-dark-accent1 focus:border-light-accent1 dark:focus:border-dark-accent1 focus:z-10 sm:text-sm transition-colors"
+              class="relative block w-full px-4 py-3 placeholder:text-neutral-600 dark:placeholder:text-neutral-400 text-neutral-900 dark:text-neutral-50 bg-white dark:bg-neutral-950 rounded-t-xl focus:outline-none focus:ring-light-accent1 dark:focus:ring-dark-accent1 focus:border-gradient-cyan dark:focus:border-gradient-cyan focus:z-10 sm:text-sm transition-colors"
               placeholder="Adresse email"
             />
           </div>
@@ -56,7 +54,7 @@ const description =
               type="password"
               autocomplete="current-password"
               required
-              class="relative block w-full px-4 py-3 border border-light-surface dark:border-dark-surface placeholder:text-light-textSecondary dark:placeholder:text-dark-textSecondary text-light-text dark:text-dark-text bg-white dark:bg-dark-background rounded-b-xl focus:outline-none focus:ring-light-accent1 dark:focus:ring-dark-accent1 focus:border-light-accent1 dark:focus:border-dark-accent1 focus:z-10 sm:text-sm transition-colors"
+              class="relative block w-full px-4 py-3 placeholder:text-neutral-600 dark:placeholder:text-neutral-400 text-neutral-900 dark:text-neutral-50 bg-white dark:bg-neutral-950 rounded-b-xl focus:outline-none focus:ring-light-accent1 dark:focus:ring-dark-accent1 focus:border-gradient-cyan dark:focus:border-gradient-cyan focus:z-10 sm:text-sm transition-colors"
               placeholder="Mot de passe"
             />
           </div>
@@ -69,11 +67,11 @@ const description =
               id="remember-me"
               name="remember-me"
               type="checkbox"
-              class="h-4 w-4 text-light-accent1 dark:text-dark-accent1 focus:ring-light-accent1 dark:focus:ring-dark-accent1 border-light-surface dark:border-dark-surface bg-white dark:bg-dark-background rounded transition-colors"
+              class="h-4 w-4 text-gradient-emerald dark:text-gradient-emerald focus:ring-light-accent1 dark:focus:ring-dark-accent1 border-neutral-200 dark:border-white/10 bg-white dark:bg-neutral-950 rounded transition-colors"
             />
             <label
               for="remember-me"
-              class="ml-2 block text-sm text-light-text dark:text-dark-text"
+              class="ml-2 block text-sm text-neutral-900 dark:text-neutral-50"
             >
               Se souvenir de moi
             </label>
@@ -82,7 +80,7 @@ const description =
           <div class="text-sm">
             <a
               href="/forgot-password"
-              class="font-medium text-light-accent1 dark:text-dark-accent1 hover:text-light-accent1/80 dark:hover:text-dark-accent1/80 transition-colors"
+              class="font-medium text-gradient-emerald dark:text-gradient-emerald hover:text-gradient-emerald/80 dark:hover:text-gradient-emerald/80 transition-colors"
             >
               Mot de passe oublié ?
             </a>
@@ -110,7 +108,7 @@ const description =
           <button
             type="submit"
             id="submit-btn"
-            class="group relative w-full flex justify-center py-3 px-6 border border-transparent text-sm font-medium rounded-xl text-white bg-light-accent1 dark:bg-dark-accent1 hover:bg-light-accent1/80 dark:hover:bg-dark-accent1/80 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-light-accent1 dark:focus:ring-dark-accent1 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+            class="group relative w-full flex justify-center py-3 px-6 border border-transparent text-sm font-medium rounded-xl text-white bg-gradient-emerald dark:bg-gradient-emerald hover:bg-gradient-emerald/80 dark:hover:bg-gradient-emerald/80 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-light-accent1 dark:focus:ring-dark-accent1 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
           >
             <span class="absolute left-0 inset-y-0 flex items-center pl-3">
               <svg
@@ -126,11 +124,7 @@ const description =
             </span>
             <span id="btn-text">Se connecter</span>
             <span id="btn-loading" class="hidden">
-              <svg
-                class="animate-spin h-5 w-5 text-white"
-                fill="none"
-                viewBox="0 0 24 24"
-              >
+              <svg class="animate-spin h-5 w-5 text-white" fill="none" viewBox="0 0 24 24">
                 <circle
                   class="opacity-25"
                   cx="12"
@@ -152,14 +146,11 @@ const description =
         <div class="mt-6">
           <div class="relative">
             <div class="absolute inset-0 flex items-center">
-              <div
-                class="w-full border-t border-light-surface dark:border-dark-surface"
-              >
-              </div>
+              <div class="w-full border-t border-neutral-200 dark:border-white/10"></div>
             </div>
             <div class="relative flex justify-center text-sm">
               <span
-                class="px-2 bg-light-background dark:bg-dark-background text-light-textSecondary dark:text-dark-textSecondary"
+                class="px-2 bg-neutral-50 dark:bg-black/20 text-neutral-600 dark:text-neutral-400"
                 >Ou continuez avec</span
               >
             </div>
@@ -169,7 +160,7 @@ const description =
           <div class="mt-6 grid grid-cols-2 gap-3">
             <button
               type="button"
-              class="w-full inline-flex justify-center py-3 px-6 border border-light-surface dark:border-dark-surface rounded-xl shadow-sm bg-light-background dark:bg-dark-surface text-sm font-medium text-light-textSecondary dark:text-dark-textSecondary hover:bg-light-surface dark:hover:bg-dark-background transition-colors"
+              class="w-full inline-flex justify-center py-3 px-6 rounded-xl shadow-sm dark:shadow-white dark:shadow-dark-card glass-card dark:glass-dark text-sm font-medium text-neutral-600 dark:text-neutral-400 hover:bg-white dark:hover:bg-neutral-950 transition-colors"
             >
               <svg class="h-5 w-5" viewBox="0 0 24 24">
                 <path
@@ -194,7 +185,7 @@ const description =
 
             <button
               type="button"
-              class="w-full inline-flex justify-center py-3 px-6 border border-light-surface dark:border-dark-surface rounded-xl shadow-sm bg-light-background dark:bg-dark-surface text-sm font-medium text-light-textSecondary dark:text-dark-textSecondary hover:bg-light-surface dark:hover:bg-dark-background transition-colors"
+              class="w-full inline-flex justify-center py-3 px-6 rounded-xl shadow-sm dark:shadow-white dark:shadow-dark-card glass-card dark:glass-dark text-sm font-medium text-neutral-600 dark:text-neutral-400 hover:bg-white dark:hover:bg-neutral-950 transition-colors"
             >
               <svg class="h-5 w-5" fill="currentColor" viewBox="0 0 24 24">
                 <path
@@ -213,139 +204,124 @@ const description =
 </BaseLayout>
 
 <script>
-  import {
-    login,
-    getCurrentUser,
-    isValidEmail,
-    isValidPassword,
-  } from "../lib/auth";
+  import { getCurrentUser, isValidEmail, isValidPassword, login } from '../lib/auth'
 
-  document.addEventListener("DOMContentLoaded", async () => {
+  document.addEventListener('DOMContentLoaded', async () => {
     // Vérifier si l'utilisateur est déjà connecté
     try {
-      const user = await getCurrentUser();
+      const user = await getCurrentUser()
       if (user) {
         // Rediriger vers le dashboard si déjà connecté
-        const urlParams = new URLSearchParams(window.location.search);
-        const redirect = urlParams.get("redirect") || "/dashboard";
-        window.location.href = redirect;
-        return;
+        const urlParams = new URLSearchParams(window.location.search)
+        const redirect = urlParams.get('redirect') || '/dashboard'
+        window.location.href = redirect
+        return
       }
     } catch (error) {
       // Continuer vers la connexion si erreur
     }
-    const form = document.getElementById("login-form") as HTMLFormElement;
-    const emailInput = document.getElementById("email") as HTMLInputElement;
-    const passwordInput = document.getElementById(
-      "password"
-    ) as HTMLInputElement;
-    const submitBtn = document.getElementById(
-      "submit-btn"
-    ) as HTMLButtonElement;
-    const btnText = document.getElementById("btn-text") as HTMLSpanElement;
-    const btnLoading = document.getElementById(
-      "btn-loading"
-    ) as HTMLSpanElement;
-    const errorMessage = document.getElementById(
-      "error-message"
-    ) as HTMLDivElement;
-    const successMessage = document.getElementById(
-      "success-message"
-    ) as HTMLDivElement;
+    const form = document.getElementById('login-form') as HTMLFormElement
+    const emailInput = document.getElementById('email') as HTMLInputElement
+    const passwordInput = document.getElementById('password') as HTMLInputElement
+    const submitBtn = document.getElementById('submit-btn') as HTMLButtonElement
+    const btnText = document.getElementById('btn-text') as HTMLSpanElement
+    const btnLoading = document.getElementById('btn-loading') as HTMLSpanElement
+    const errorMessage = document.getElementById('error-message') as HTMLDivElement
+    const successMessage = document.getElementById('success-message') as HTMLDivElement
 
     // Gestion de la soumission du formulaire
-    form.addEventListener("submit", async (e) => {
-      e.preventDefault();
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault()
 
-      const email = emailInput.value.trim();
-      const password = passwordInput.value;
+      const email = emailInput.value.trim()
+      const password = passwordInput.value
 
       // Validation côté client
       if (!isValidEmail(email)) {
-        showError("Veuillez saisir une adresse email valide.");
-        return;
+        showError('Veuillez saisir une adresse email valide.')
+        return
       }
 
       if (!isValidPassword(password)) {
-        showError("Le mot de passe doit contenir au moins 8 caractères.");
-        return;
+        showError('Le mot de passe doit contenir au moins 8 caractères.')
+        return
       }
 
       // Affichage du loading
-      setLoading(true);
-      hideMessages();
+      setLoading(true)
+      hideMessages()
 
       try {
-        const result = await login({ email, password });
+        const result = await login({ email, password })
 
         if (result.success) {
-          showSuccess("Connexion réussie ! Redirection en cours...");
+          showSuccess('Connexion réussie ! Redirection en cours...')
 
           // Redirection après succès
           setTimeout(() => {
-            const urlParams = new URLSearchParams(window.location.search);
-            const redirect = urlParams.get("redirect") || "/dashboard";
-            window.location.href = redirect;
-          }, 1500);
+            const urlParams = new URLSearchParams(window.location.search)
+            const redirect = urlParams.get('redirect') || '/dashboard'
+            window.location.href = redirect
+          }, 1500)
         } else {
-          showError(result.error || "Erreur lors de la connexion");
+          showError(result.error || 'Erreur lors de la connexion')
         }
       } catch (error) {
-        console.error("Erreur de connexion:", error);
-        showError("Une erreur inattendue est survenue. Veuillez réessayer.");
+        console.error('Erreur de connexion:', error)
+        showError('Une erreur inattendue est survenue. Veuillez réessayer.')
       } finally {
-        setLoading(false);
+        setLoading(false)
       }
-    });
+    })
 
     // Validation en temps réel
-    emailInput.addEventListener("blur", () => {
+    emailInput.addEventListener('blur', () => {
       if (emailInput.value && !isValidEmail(emailInput.value)) {
-        emailInput.classList.add("border-red-500", "dark:border-red-400");
+        emailInput.classList.add('border-red-500', 'dark:border-red-400')
       } else {
-        emailInput.classList.remove("border-red-500", "dark:border-red-400");
+        emailInput.classList.remove('border-red-500', 'dark:border-red-400')
       }
-    });
+    })
 
-    passwordInput.addEventListener("blur", () => {
+    passwordInput.addEventListener('blur', () => {
       if (passwordInput.value && !isValidPassword(passwordInput.value)) {
-        passwordInput.classList.add("border-red-500", "dark:border-red-400");
+        passwordInput.classList.add('border-red-500', 'dark:border-red-400')
       } else {
-        passwordInput.classList.remove("border-red-500", "dark:border-red-400");
+        passwordInput.classList.remove('border-red-500', 'dark:border-red-400')
       }
-    });
+    })
 
     // Fonctions utilitaires
     function setLoading(loading: boolean) {
-      submitBtn.disabled = loading;
-      btnText.classList.toggle("hidden", loading);
-      btnLoading.classList.toggle("hidden", !loading);
+      submitBtn.disabled = loading
+      btnText.classList.toggle('hidden', loading)
+      btnLoading.classList.toggle('hidden', !loading)
     }
 
     function showError(message: string) {
-      const messageEl = errorMessage.querySelector("p");
+      const messageEl = errorMessage.querySelector('p')
       if (messageEl) {
-        messageEl.textContent = message;
+        messageEl.textContent = message
       }
-      errorMessage.classList.remove("hidden");
-      successMessage.classList.add("hidden");
-      document.getElementById("message")?.classList.remove("hidden");
+      errorMessage.classList.remove('hidden')
+      successMessage.classList.add('hidden')
+      document.getElementById('message')?.classList.remove('hidden')
     }
 
     function showSuccess(message: string) {
-      const messageEl = successMessage.querySelector("p");
+      const messageEl = successMessage.querySelector('p')
       if (messageEl) {
-        messageEl.textContent = message;
+        messageEl.textContent = message
       }
-      successMessage.classList.remove("hidden");
-      errorMessage.classList.add("hidden");
-      document.getElementById("message")?.classList.remove("hidden");
+      successMessage.classList.remove('hidden')
+      errorMessage.classList.add('hidden')
+      document.getElementById('message')?.classList.remove('hidden')
     }
 
     function hideMessages() {
-      errorMessage.classList.add("hidden");
-      successMessage.classList.add("hidden");
-      document.getElementById("message")?.classList.add("hidden");
+      errorMessage.classList.add('hidden')
+      successMessage.classList.add('hidden')
+      document.getElementById('message')?.classList.add('hidden')
     }
-  });
+  })
 </script>
