@@ -272,22 +272,22 @@ const filterFormat = Astro.url.searchParams.get("format") || "";
                   name="sort"
                   class="w-full px-3 py-2  rounded-xl focus:outline-none focus:ring-2 focus:ring-light-accent1 dark:focus:ring-dark-accent1 bg-neutral-50 dark:bg-black/20 text-neutral-900 dark:text-neutral-50 text-sm"
                 >
-                  <option value="title" selected={sortBy === "title"}
+                  <option value="title" selected={sortBy === "title" ? true : undefined}
                     >Titre</option
                   >
-                  <option value="artist" selected={sortBy === "artist"}
+                  <option value="artist" selected={sortBy === "artist" ? true : undefined}
                     >Artiste</option
                   >
-                  <option value="year" selected={sortBy === "year"}
+                  <option value="year" selected={sortBy === "year" ? true : undefined}
                     >Année</option
                   >
-                  <option value="price" selected={sortBy === "price"}
+                  <option value="price" selected={sortBy === "price" ? true : undefined}
                     >Prix</option
                   >
-                  <option value="condition" selected={sortBy === "condition"}
+                  <option value="condition" selected={sortBy === "condition" ? true : undefined}
                     >État</option
                   >
-                  <option value="added" selected={sortBy === "added"}
+                  <option value="added" selected={sortBy === "added" ? true : undefined}
                     >Date d'ajout</option
                   >
                 </select>
@@ -307,18 +307,18 @@ const filterFormat = Astro.url.searchParams.get("format") || "";
                   class="w-full px-3 py-2  rounded-xl focus:outline-none focus:ring-2 focus:ring-light-accent1 dark:focus:ring-dark-accent1 bg-neutral-50 dark:bg-black/20 text-neutral-900 dark:text-neutral-50 text-sm"
                 >
                   <option value="">Tous les genres</option>
-                  <option value="rock" selected={filterGenre === "rock"}
+                  <option value="rock" selected={filterGenre === "rock" ? true : undefined}
                     >Rock</option
                   >
-                  <option value="jazz" selected={filterGenre === "jazz"}
+                  <option value="jazz" selected={filterGenre === "jazz" ? true : undefined}
                     >Jazz</option
                   >
-                  <option value="pop" selected={filterGenre === "pop"}
+                  <option value="pop" selected={filterGenre === "pop" ? true : undefined}
                     >Pop</option
                   >
                   <option
                     value="electronic"
-                    selected={filterGenre === "electronic"}>Electronic</option
+                    selected={filterGenre === "electronic" ? true : undefined}>Electronic</option
                   >
                 </select>
               </div>
@@ -337,13 +337,13 @@ const filterFormat = Astro.url.searchParams.get("format") || "";
                   class="w-full px-3 py-2  rounded-xl focus:outline-none focus:ring-2 focus:ring-light-accent1 dark:focus:ring-dark-accent1 bg-neutral-50 dark:bg-black/20 text-neutral-900 dark:text-neutral-50 text-sm"
                 >
                   <option value="">Tous les formats</option>
-                  <option value="LP" selected={filterFormat === "LP"}>LP</option
+                  <option value="LP" selected={filterFormat === "LP" ? true : undefined}>LP</option
                   >
-                  <option value="12" selected={filterFormat === "12"}
+                  <option value="12" selected={filterFormat === "12" ? true : undefined}
                     >12"</option
                   >
-                  <option value="7" selected={filterFormat === "7"}>7"</option>
-                  <option value="EP" selected={filterFormat === "EP"}>EP</option
+                  <option value="7" selected={filterFormat === "7" ? true : undefined}>7"</option>
+                  <option value="EP" selected={filterFormat === "EP" ? true : undefined}>EP</option
                   >
                 </select>
               </div>
@@ -661,6 +661,7 @@ const filterFormat = Astro.url.searchParams.get("format") || "";
                   <div class="text-right">
                     <div class="font-semibold text-neutral-900 dark:text-neutral-50">
                       {vinyl.price?.toFixed(2)} €
+                    </div>
                   </div>
                   {currentUser && currentUser.id === collection.userId && (
                     <div class="flex space-x-2 mt-2">
