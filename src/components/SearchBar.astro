@@ -1,31 +1,31 @@
 ---
 export interface Props {
-  placeholder?: string;
-  initialValue?: string;
-  action?: string;
+  placeholder?: string
+  initialValue?: string
+  action?: string
 }
 
 const {
-  placeholder = "Rechercher un vinyle...",
-  initialValue = "",
-  action = "/search",
-} = Astro.props;
+  placeholder = 'Rechercher un vinyle...',
+  initialValue = '',
+  action = '/search',
+} = Astro.props
 ---
 
 <div class="w-full max-w-2xl mx-auto">
-  <form method="get" action={action} class="relative">
+  <form method="get" {action} class="relative">
     <div class="relative">
       <input
         type="text"
         name="q"
         value={initialValue}
-        placeholder={placeholder}
-        class="w-full px-4 py-3 pl-12 pr-4 text-light-text dark:text-dark-text bg-white dark:bg-dark-background border border-light-surface dark:border-dark-surface rounded-xl focus:outline-none focus:ring-2 focus:ring-light-accent1 dark:focus:ring-dark-accent1 focus:border-transparent transition-colors placeholder:text-light-textSecondary dark:placeholder:text-dark-textSecondary"
+        {placeholder}
+        class="w-full px-4 py-3 pl-12 pr-4 text-neutral-900 dark:text-neutral-50 bg-white dark:bg-neutral-950 rounded-xl focus:outline-none focus:ring-2 focus:ring-light-accent1 dark:focus:ring-dark-accent1 focus:border-transparent transition-colors placeholder:text-neutral-600 dark:placeholder:text-neutral-400"
         autocomplete="off"
       />
       <div class="absolute inset-y-0 left-0 flex items-center pl-4">
         <svg
-          class="w-5 h-5 text-light-textSecondary dark:text-dark-textSecondary"
+          class="w-5 h-5 text-neutral-600 dark:text-neutral-400"
           fill="none"
           stroke="currentColor"
           viewBox="0 0 24 24"
@@ -41,7 +41,7 @@ const {
 
     <button
       type="submit"
-      class="absolute right-2 top-1/2 transform -translate-y-1/2 bg-light-accent1 dark:bg-dark-accent1 text-white px-6 py-2 rounded-lg hover:bg-light-accent1/80 dark:hover:bg-dark-accent1/80 transition-colors focus:outline-none focus:ring-2 focus:ring-light-accent1 dark:focus:ring-dark-accent1 focus:ring-offset-2 dark:focus:ring-offset-dark-background"
+      class="absolute right-2 top-1/2 transform -translate-y-1/2 bg-gradient-emerald dark:bg-gradient-emerald text-white px-6 py-2 rounded-lg hover:bg-gradient-emerald/80 dark:hover:bg-gradient-emerald/80 transition-colors focus:outline-none focus:ring-2 focus:ring-light-accent1 dark:focus:ring-dark-accent1 focus:ring-offset-2 dark:focus:ring-offset-dark-background"
     >
       Rechercher
     </button>

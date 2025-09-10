@@ -6,24 +6,15 @@
   id="barcode-modal"
   class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden"
 >
-  <div
-    class="bg-light-background dark:bg-dark-background rounded-2xl p-6 w-full max-w-md mx-4 shadow-2xl"
-  >
+  <div class="bg-neutral-50 dark:bg-black/20 rounded-2xl p-6 w-full max-w-md mx-4 shadow-2xl">
     <!-- Header -->
     <div class="flex items-center justify-between mb-6">
-      <h2 class="text-xl font-bold text-light-text dark:text-dark-text">
-        Ajouter un vinyle
-      </h2>
+      <h2 class="text-xl font-bold text-neutral-900 dark:text-neutral-50">Ajouter un vinyle</h2>
       <button
         id="close-barcode-modal"
-        class="text-light-textSecondary dark:text-dark-textSecondary hover:text-light-text dark:hover:text-dark-text transition-colors"
+        class="text-neutral-600 dark:text-neutral-400 hover:text-neutral-900 dark:hover:text-neutral-50 transition-colors"
       >
-        <svg
-          class="w-6 h-6"
-          fill="none"
-          stroke="currentColor"
-          viewBox="0 0 24 24"
-        >
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path
             stroke-linecap="round"
             stroke-linejoin="round"
@@ -38,14 +29,9 @@
       <!-- Scanner avec caméra -->
       <button
         id="camera-scan-btn"
-        class="w-full flex items-center justify-center space-x-3 p-4 bg-light-accent1 dark:bg-dark-accent1 text-white rounded-xl hover:bg-light-accent1/80 dark:hover:bg-dark-accent1/80 transition-colors"
+        class="w-full flex items-center justify-center space-x-3 p-4 bg-neon-500 dark:bg-neon-500 text-white rounded-xl hover:bg-neon-500/80 dark:hover:bg-neon-500/80 transition-colors"
       >
-        <svg
-          class="w-6 h-6"
-          fill="none"
-          stroke="currentColor"
-          viewBox="0 0 24 24"
-        >
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path
             stroke-linecap="round"
             stroke-linejoin="round"
@@ -63,37 +49,26 @@
 
       <!-- Saisie manuelle -->
       <div class="space-y-3">
-        <div
-          class="text-center text-light-textSecondary dark:text-dark-textSecondary"
-        >
-          ou
-        </div>
+        <div class="text-center text-neutral-600 dark:text-neutral-400">ou</div>
 
         <div class="space-y-2">
-          <label
-            class="block text-sm font-medium text-light-text dark:text-dark-text"
-          >
+          <label class="block text-sm font-medium text-neutral-900 dark:text-neutral-50">
             Saisir le code-barres
           </label>
           <input
             id="barcode-input"
             type="text"
             placeholder="Ex: 1234567890123"
-            class="w-full px-4 py-3 bg-light-surface dark:bg-dark-surface border border-light-surface dark:border-dark-surface rounded-xl text-light-text dark:text-dark-text placeholder-light-textSecondary dark:placeholder-dark-textSecondary focus:outline-none focus:ring-2 focus:ring-light-accent1 dark:focus:ring-dark-accent1 focus:border-transparent"
+            class="w-full px-4 py-3 glass-card dark:glass-dark rounded-xl text-neutral-900 dark:text-neutral-50 placeholder-light-textSecondary dark:placeholder-dark-textSecondary focus:outline-none focus:ring-2 focus:ring-light-accent1 dark:focus:ring-dark-accent1 focus:border-transparent"
           />
         </div>
 
         <button
           id="manual-search-btn"
-          class="w-full flex items-center justify-center space-x-2 p-3 bg-light-accent2 dark:bg-dark-accent2 text-white rounded-xl hover:bg-light-accent2/80 dark:hover:bg-dark-accent2/80 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+          class="w-full flex items-center justify-center space-x-2 p-3 bg-neon-500 dark:bg-neon-500 text-white rounded-xl hover:bg-neon-500/80 dark:hover:bg-neon-500/80 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
           disabled
         >
-          <svg
-            class="w-5 h-5"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-          >
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path
               stroke-linecap="round"
               stroke-linejoin="round"
@@ -103,6 +78,28 @@
           <span>Rechercher</span>
         </button>
       </div>
+
+      <!-- Séparateur -->
+      <div class="flex items-center my-4">
+        <div class="flex-1 border-t border-neutral-200 dark:border-white/10"></div>
+        <span class="px-3 text-sm text-neutral-600 dark:text-neutral-400">ou</span>
+        <div class="flex-1 border-t border-neutral-200 dark:border-white/10"></div>
+      </div>
+
+      <!-- Recherche manuelle -->
+      <button
+        id="manual-search-page-btn"
+        class="w-full flex items-center justify-center space-x-3 p-4 glass-card dark:glass-dark text-neutral-900 dark:text-neutral-50 rounded-xl hover:bg-white/80 dark:hover:bg-neutral-900/80 transition-colors"
+      >
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+        </svg>
+        <span>Rechercher manuellement</span>
+      </button>
     </div>
 
     <!-- Zone de caméra (masquée par défaut) -->
@@ -110,11 +107,10 @@
       <div class="relative">
         <video
           id="camera-video"
-          class="w-full h-48 bg-light-surface dark:bg-dark-surface rounded-xl object-cover"
-        ></video>
+          class="w-full h-48 glass-card dark:glass-dark rounded-xl object-cover"></video>
         <div class="absolute inset-0 flex items-center justify-center">
           <div
-            class="w-48 h-32 border-2 border-light-accent1 dark:border-dark-accent1 rounded-lg bg-transparent"
+            class="w-48 h-32 border-2 border-neon-500 dark:border-neon-500 rounded-lg bg-transparent"
           >
           </div>
         </div>
@@ -136,11 +132,9 @@
 
     <!-- Loading -->
     <div id="search-loading" class="hidden mt-4 text-center">
-      <div
-        class="inline-flex items-center space-x-2 text-light-textSecondary dark:text-dark-textSecondary"
-      >
+      <div class="inline-flex items-center space-x-2 text-neutral-600 dark:text-neutral-400">
         <div
-          class="w-4 h-4 border-2 border-light-accent1 dark:border-dark-accent1 border-t-transparent rounded-full animate-spin"
+          class="w-4 h-4 border-2 border-neon-500 dark:border-neon-500 border-t-transparent rounded-full animate-spin"
         >
         </div>
         <span>Recherche en cours...</span>
@@ -151,100 +145,106 @@
 
 <script>
   // Éléments DOM
-  const modal = document.getElementById("barcode-modal");
-  const closeBtn = document.getElementById("close-barcode-modal");
-  const cameraBtn = document.getElementById("camera-scan-btn");
-  const manualBtn = document.getElementById("manual-search-btn");
-  const barcodeInput = document.getElementById("barcode-input");
-  const cameraContainer = document.getElementById("camera-container");
-  const cameraVideo = document.getElementById("camera-video");
-  const stopCameraBtn = document.getElementById("stop-camera-btn");
-  const searchResult = document.getElementById("search-result");
-  const searchLoading = document.getElementById("search-loading");
+  const modal = document.getElementById('barcode-modal')
+  const closeBtn = document.getElementById('close-barcode-modal')
+  const cameraBtn = document.getElementById('camera-scan-btn')
+  const manualBtn = document.getElementById('manual-search-btn')
+  const barcodeInput = document.getElementById('barcode-input')
+  const cameraContainer = document.getElementById('camera-container')
+  const cameraVideo = document.getElementById('camera-video')
+  const stopCameraBtn = document.getElementById('stop-camera-btn')
+  const searchResult = document.getElementById('search-result')
+  const searchLoading = document.getElementById('search-loading')
 
-  let stream: MediaStream | null = null;
-  let scanner: any = null;
+  let stream: MediaStream | null = null
+  let scanner: any = null
 
   // Ouvrir le modal
   function openBarcodeModal() {
-    modal?.classList.remove("hidden");
-    document.body.style.overflow = "hidden";
+    modal?.classList.remove('hidden')
+    document.body.style.overflow = 'hidden'
   }
 
   // Fermer le modal
   function closeBarcodeModal() {
-    modal?.classList.add("hidden");
-    document.body.style.overflow = "";
-    stopCamera();
-    resetModal();
+    modal?.classList.add('hidden')
+    document.body.style.overflow = ''
+    stopCamera()
+    resetModal()
   }
 
   // Réinitialiser le modal
   function resetModal() {
-    cameraContainer?.classList.add("hidden");
-    searchResult?.classList.add("hidden");
-    searchLoading?.classList.add("hidden");
-    barcodeInput.value = "";
-    manualBtn.disabled = true;
+    cameraContainer?.classList.add('hidden')
+    searchResult?.classList.add('hidden')
+    searchLoading?.classList.add('hidden')
+    barcodeInput.value = ''
+    manualBtn.disabled = true
   }
 
   // Événements
-  closeBtn?.addEventListener("click", closeBarcodeModal);
-  modal?.addEventListener("click", (e) => {
-    if (e.target === modal) closeBarcodeModal();
-  });
+  closeBtn?.addEventListener('click', closeBarcodeModal)
+  modal?.addEventListener('click', (e) => {
+    if (e.target === modal) closeBarcodeModal()
+  })
 
   // Validation du code-barres
-  barcodeInput?.addEventListener("input", (e) => {
-    const value = (e.target as HTMLInputElement).value;
-    const isValid = /^\d{8,14}$/.test(value); // Code-barres entre 8 et 14 chiffres
+  barcodeInput?.addEventListener('input', (e) => {
+    const value = (e.target as HTMLInputElement).value
+    const isValid = /^\d{8,14}$/.test(value) // Code-barres entre 8 et 14 chiffres
     if (manualBtn) {
-      (manualBtn as HTMLButtonElement).disabled = !isValid;
+      ;(manualBtn as HTMLButtonElement).disabled = !isValid
     }
-  });
+  })
 
   // Recherche manuelle
-  manualBtn?.addEventListener("click", async () => {
-    const barcode = (barcodeInput as HTMLInputElement)?.value.trim();
-    if (!barcode) return;
+  manualBtn?.addEventListener('click', async () => {
+    const barcode = (barcodeInput as HTMLInputElement)?.value.trim()
+    if (!barcode) return
 
-    await searchByBarcode(barcode);
-  });
+    await searchByBarcode(barcode)
+  })
 
   // Scanner avec caméra
-  cameraBtn?.addEventListener("click", async () => {
+  cameraBtn?.addEventListener('click', async () => {
     try {
       stream = await navigator.mediaDevices.getUserMedia({
         video: {
-          facingMode: "environment", // Caméra arrière
+          facingMode: 'environment', // Caméra arrière
         },
-      });
-
-      (cameraVideo as HTMLVideoElement).srcObject = stream;
-      cameraContainer?.classList.remove("hidden");
+      })
+      ;(cameraVideo as HTMLVideoElement).srcObject = stream
+      cameraContainer?.classList.remove('hidden')
 
       // Initialiser le scanner de code-barres
-      initBarcodeScanner();
+      initBarcodeScanner()
     } catch (error) {
-      console.error("Erreur d'accès à la caméra:", error);
+      console.error("Erreur d'accès à la caméra:", error)
       alert(
         "Impossible d'accéder à la caméra. Veuillez autoriser l'accès ou utiliser la saisie manuelle."
-      );
+      )
     }
-  });
+  })
 
   // Arrêter la caméra
-  stopCameraBtn?.addEventListener("click", stopCamera);
+  stopCameraBtn?.addEventListener('click', stopCamera)
+
+  // Recherche manuelle (page de recherche)
+  const manualSearchPageBtn = document.getElementById('manual-search-page-btn')
+  manualSearchPageBtn?.addEventListener('click', () => {
+    closeBarcodeModal()
+    window.location.href = '/search'
+  })
 
   function stopCamera() {
     if (stream) {
-      stream.getTracks().forEach((track) => track.stop());
-      stream = null;
+      stream.getTracks().forEach((track) => track.stop())
+      stream = null
     }
-    cameraContainer?.classList.add("hidden");
+    cameraContainer?.classList.add('hidden')
     if (scanner) {
-      scanner.destroy();
-      scanner = null;
+      scanner.destroy()
+      scanner = null
     }
   }
 
@@ -252,43 +252,43 @@
   function initBarcodeScanner() {
     // Pour une implémentation complète, il faudrait intégrer une librairie comme QuaggaJS ou ZXing
     // Pour l'instant, on simule la détection
-    console.log("Scanner de code-barres initialisé");
+    console.log('Scanner de code-barres initialisé')
   }
 
   // Rechercher par code-barres
   async function searchByBarcode(barcode: string) {
-    searchLoading?.classList.remove("hidden");
-    searchResult?.classList.add("hidden");
+    searchLoading?.classList.remove('hidden')
+    searchResult?.classList.add('hidden')
 
     try {
-      const response = await fetch("/api/discogs/barcode", {
-        method: "POST",
+      const response = await fetch('/api/discogs/barcode', {
+        method: 'POST',
         headers: {
-          "Content-Type": "application/json",
+          'Content-Type': 'application/json',
         },
         body: JSON.stringify({ barcode }),
-      });
+      })
 
-      const data = await response.json();
-      searchLoading?.classList.add("hidden");
+      const data = await response.json()
+      searchLoading?.classList.add('hidden')
 
       if (data.success) {
-        displaySearchResult(data.vinyl);
+        displaySearchResult(data.vinyl)
       } else {
-        displayError(data.error || "Erreur lors de la recherche");
+        displayError(data.error || 'Erreur lors de la recherche')
       }
     } catch (error) {
-      console.error("Erreur de recherche:", error);
-      searchLoading?.classList.add("hidden");
-      displayError("Erreur de connexion");
+      console.error('Erreur de recherche:', error)
+      searchLoading?.classList.add('hidden')
+      displayError('Erreur de connexion')
     }
   }
 
   // Afficher le résultat de recherche
   function displaySearchResult(vinyl: any) {
-    if (!searchResult) return;
+    if (!searchResult) return
     searchResult.innerHTML = `
-      <div class="bg-light-surface dark:bg-dark-surface rounded-xl p-4">
+      <div class="glass-card dark:glass-dark rounded-xl p-4">
         <div class="flex space-x-4">
           <img 
             src="${vinyl.imageUrl}" 
@@ -297,49 +297,45 @@
             onerror="this.src='/default-vinyl-cover.svg'"
           />
           <div class="flex-1">
-            <h3 class="font-semibold text-light-text dark:text-dark-text">${vinyl.title}</h3>
-            <p class="text-sm text-light-textSecondary dark:text-dark-textSecondary">${vinyl.artist}</p>
-            <p class="text-xs text-light-textSecondary dark:text-dark-textSecondary">${vinyl.year} • ${vinyl.label}</p>
+            <h3 class="font-semibold text-neutral-900 dark:text-neutral-50">${vinyl.title}</h3>
+            <p class="text-sm text-neutral-600 dark:text-neutral-400">${vinyl.artist}</p>
+            <p class="text-xs text-neutral-600 dark:text-neutral-400">${vinyl.year} • ${vinyl.label}</p>
           </div>
         </div>
         <div class="mt-4 flex space-x-2">
           <button 
             id="add-to-collection-btn"
-            class="flex-1 bg-light-accent1 dark:bg-dark-accent1 text-white py-2 px-4 rounded-xl hover:bg-light-accent1/80 dark:hover:bg-dark-accent1/80 transition-colors"
+            class="flex-1 bg-neon-500 dark:bg-neon-500 text-white py-2 px-4 rounded-xl hover:bg-neon-500/80 dark:hover:bg-neon-500/80 transition-colors"
             data-vinyl='${JSON.stringify(vinyl)}'
           >
             Ajouter à ma collection
           </button>
           <button 
             id="cancel-add-btn"
-            class="px-4 py-2 bg-light-surface dark:bg-dark-surface text-light-text dark:text-dark-text rounded-xl hover:bg-light-surface/80 dark:hover:bg-dark-surface/80 transition-colors"
+            class="px-4 py-2 glass-card dark:glass-dark text-neutral-900 dark:text-neutral-50 rounded-xl hover:bg-white/80 dark:hover:bg-neutral-900/80 transition-colors"
           >
             Annuler
           </button>
         </div>
       </div>
-    `;
+    `
 
-    searchResult?.classList.remove("hidden");
+    searchResult?.classList.remove('hidden')
 
     // Événements pour les boutons
-    document
-      .getElementById("add-to-collection-btn")
-      ?.addEventListener("click", (e) => {
-        const vinylData = JSON.parse(
-          (e.target as HTMLElement).dataset.vinyl || "{}"
-        );
-        addToCollection(vinylData);
-      });
+    document.getElementById('add-to-collection-btn')?.addEventListener('click', (e) => {
+      const vinylData = JSON.parse((e.target as HTMLElement).dataset.vinyl || '{}')
+      addToCollection(vinylData)
+    })
 
-    document.getElementById("cancel-add-btn")?.addEventListener("click", () => {
-      searchResult?.classList.add("hidden");
-    });
+    document.getElementById('cancel-add-btn')?.addEventListener('click', () => {
+      searchResult?.classList.add('hidden')
+    })
   }
 
   // Afficher une erreur
   function displayError(message: string) {
-    if (!searchResult) return;
+    if (!searchResult) return
     searchResult.innerHTML = `
       <div class="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-xl p-4">
         <div class="flex items-center space-x-2">
@@ -349,17 +345,17 @@
           <span class="text-red-600 dark:text-red-400">${message}</span>
         </div>
       </div>
-    `;
-    searchResult?.classList.remove("hidden");
+    `
+    searchResult?.classList.remove('hidden')
   }
 
   // Ajouter à la collection
   async function addToCollection(vinyl: any) {
     try {
-      const response = await fetch("/api/collections/add", {
-        method: "POST",
+      const response = await fetch('/api/collections/add', {
+        method: 'POST',
         headers: {
-          "Content-Type": "application/json",
+          'Content-Type': 'application/json',
         },
         body: JSON.stringify({
           title: vinyl.title,
@@ -373,24 +369,24 @@
           discogsUrl: vinyl.discogsUrl,
           barcode: vinyl.barcode,
         }),
-      });
+      })
 
-      const data = await response.json();
+      const data = await response.json()
 
       if (data.success) {
-        alert("Vinyle ajouté à votre collection !");
-        closeBarcodeModal();
+        alert('Vinyle ajouté à votre collection !')
+        closeBarcodeModal()
         // Rafraîchir la page ou mettre à jour l'interface
-        window.location.reload();
+        window.location.reload()
       } else {
-        alert("Erreur lors de l'ajout: " + data.error);
+        alert("Erreur lors de l'ajout: " + data.error)
       }
     } catch (error) {
-      console.error("Erreur d'ajout:", error);
-      alert("Erreur de connexion");
+      console.error("Erreur d'ajout:", error)
+      alert('Erreur de connexion')
     }
   }
 
   // Exposer la fonction pour ouvrir le modal
-  (window as any).openBarcodeModal = openBarcodeModal;
+  ;(window as any).openBarcodeModal = openBarcodeModal
 </script>

@@ -1,55 +1,62 @@
 ---
 // Composant skeleton loader réutilisable
 export interface Props {
-  type?: 'avatar' | 'text' | 'button' | 'collection-link';
-  width?: string;
-  height?: string;
-  className?: string;
+  type?: 'avatar' | 'text' | 'button' | 'collection-link'
+  width?: string
+  height?: string
+  className?: string
 }
 
-const { 
-  type = 'text', 
-  width = 'w-20', 
-  height = 'h-4', 
-  className = '' 
-} = Astro.props;
+const { type = 'text', width = 'w-20', height = 'h-4', className = '' } = Astro.props
 ---
 
-<!-- Skeleton Avatar -->
-{type === 'avatar' && (
-  <div class={`w-8 h-8 rounded-xl bg-light-surface dark:bg-dark-surface animate-pulse ${className}`}></div>
-)}
+<!-- Skeleton Avatar -->{
+  type === 'avatar' && (
+    <div class={`w-8 h-8 rounded-xl glass-card dark:glass-dark animate-pulse ${className}`} />
+  )
+}
 
 <!-- Skeleton Text -->
-{type === 'text' && (
-  <div class={`${width} ${height} rounded bg-light-surface dark:bg-dark-surface animate-pulse ${className}`}></div>
-)}
+{
+  type === 'text' && (
+    <div
+      class={`${width} ${height} rounded glass-card dark:glass-dark animate-pulse ${className}`}
+    />
+  )
+}
 
 <!-- Skeleton Button -->
-{type === 'button' && (
-  <div class={`px-4 py-2 rounded-xl bg-light-surface dark:bg-dark-surface animate-pulse ${className}`}>
-    <div class="w-16 h-4 rounded bg-light-background dark:bg-dark-background"></div>
-  </div>
-)}
+{
+  type === 'button' && (
+    <div class={`px-4 py-2 rounded-xl glass-card dark:glass-dark animate-pulse ${className}`}>
+      <div class="w-16 h-4 rounded bg-neutral-50 dark:bg-black/20" />
+    </div>
+  )
+}
 
 <!-- Skeleton Collection Link -->
-{type === 'collection-link' && (
-  <div class={`flex items-center space-x-2 px-3 py-2 rounded-xl bg-light-surface dark:bg-dark-surface animate-pulse ${className}`}>
-    <div class="w-5 h-5 rounded bg-light-background dark:bg-dark-background"></div>
-    <div class="w-20 h-4 rounded bg-light-background dark:bg-dark-background hidden lg:block"></div>
-  </div>
-)}
+{
+  type === 'collection-link' && (
+    <div
+      class={`flex items-center space-x-2 px-3 py-2 rounded-xl glass-card dark:glass-dark animate-pulse ${className}`}
+    >
+      <div class="w-5 h-5 rounded bg-neutral-50 dark:bg-black/20" />
+      <div class="w-20 h-4 rounded bg-neutral-50 dark:bg-black/20 hidden lg:block" />
+    </div>
+  )
+}
 
 <style>
   @keyframes pulse {
-    0%, 100% {
+    0%,
+    100% {
       opacity: 1;
     }
     50% {
       opacity: 0.5;
     }
   }
-  
+
   .animate-pulse {
     animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
   }
