@@ -1,24 +1,24 @@
 ---
 // Import des fonts Poppins (poids principaux)
-import "@fontsource/poppins/300.css"; // Light
-import "@fontsource/poppins/400.css"; // Regular
-import "@fontsource/poppins/500.css"; // Medium
-import "@fontsource/poppins/600.css"; // SemiBold
-import "@fontsource/poppins/700.css"; // Bold
+import '@fontsource/poppins/300.css' // Light
+import '@fontsource/poppins/400.css' // Regular
+import '@fontsource/poppins/500.css' // Medium
+import '@fontsource/poppins/600.css' // SemiBold
+import '@fontsource/poppins/700.css' // Bold
 
 // Import JetBrains Mono pour les codes et références
-import "@fontsource/jetbrains-mono/400.css"; // Regular
-import "@fontsource/jetbrains-mono/500.css"; // Medium
+import '@fontsource/jetbrains-mono/400.css' // Regular
+import '@fontsource/jetbrains-mono/500.css' // Medium
 
 export interface Props {
-  title?: string;
-  description?: string;
+  title?: string
+  description?: string
 }
 
 const {
-  title = "VinylVault - Votre collection de vinyles",
-  description = "Gérez et découvrez votre collection de vinyles",
-} = Astro.props;
+  title = 'VinylVault - Votre collection de vinyles',
+  description = 'Gérez et découvrez votre collection de vinyles',
+} = Astro.props
 ---
 
 <!doctype html>
@@ -32,20 +32,19 @@ const {
 
     <!-- Script pour éviter le flash du thème -->
     <script is:inline>
-      (function () {
-        const theme = localStorage.getItem("vinyl-vault-theme");
-        const systemPrefersDark = window.matchMedia(
-          "(prefers-color-scheme: dark)"
-        ).matches;
+      ;(function () {
+        const theme = localStorage.getItem('vinyl-vault-theme')
 
-        if (theme === "dark" || (!theme && systemPrefersDark)) {
-          document.documentElement.classList.add("dark");
+        // Par défaut, utiliser le dark mode si aucun thème n'est stocké
+        // La migration complète sera gérée par le composant ThemeToggle
+        if (theme === 'dark' || !theme) {
+          document.documentElement.classList.add('dark')
         }
-      })();
+      })()
     </script>
   </head>
   <body
-    class="min-h-screen bg-light-background dark:bg-dark-background text-light-text dark:text-dark-text transition-colors duration-300"
+    class="min-h-screen bg-neutral-50 dark:bg-neutral-950 text-neutral-900 dark:text-neutral-50 transition-colors duration-300"
   >
     <nav>
       <slot name="navbar" />
@@ -64,11 +63,11 @@ const {
 <style is:global>
   html {
     font-family:
-      "Poppins",
+      'Poppins',
       system-ui,
       -apple-system,
       BlinkMacSystemFont,
-      "Segoe UI",
+      'Segoe UI',
       Roboto,
       sans-serif;
   }
@@ -76,9 +75,9 @@ const {
   /* Optimisation pour Poppins */
   body {
     font-feature-settings:
-      "kern" 1,
-      "liga" 1,
-      "calt" 1;
+      'kern' 1,
+      'liga' 1,
+      'calt' 1;
     text-rendering: optimizeLegibility;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
