@@ -1,0 +1,144 @@
+---
+import Footer from '../components/Footer.astro'
+import Navbar from '../components/Navbar.astro'
+import BaseLayout from '../layouts/BaseLayout.astro'
+
+const title = "Conditions d'utilisation - VinylVault"
+const description =
+  "Consultez les conditions d'utilisation de VinylVault pour votre collection de vinyles."
+---
+
+<BaseLayout {title} {description}>
+  <Navbar slot="navbar" />
+
+  <main class="min-h-screen bg-neutral-50 dark:bg-black/20">
+    <div class="container mx-auto px-4 py-8">
+      <div class="max-w-4xl mx-auto">
+        <!-- En-tête -->
+        <div class="text-center mb-12">
+          <h1 class="text-4xl font-bold text-neutral-900 dark:text-neutral-50 mb-4">
+            Conditions d'utilisation
+          </h1>
+          <p class="text-neutral-600 dark:text-neutral-400 text-lg">
+            Dernière mise à jour : {new Date().toLocaleDateString('fr-FR')}
+          </p>
+        </div>
+
+        <!-- Contenu -->
+        <div
+          class="bg-neutral-50 dark:bg-black/20 rounded-xl shadow-sm dark:shadow-white dark:shadow-dark-card p-8"
+        >
+          <div class="prose prose-lg max-w-none">
+            <h2 class="text-2xl font-semibold text-neutral-900 dark:text-neutral-50 mb-4">
+              1. Acceptation des conditions
+            </h2>
+            <p class="text-neutral-600 dark:text-neutral-400 mb-6">
+              En utilisant VinylVault, vous acceptez d'être lié par ces conditions d'utilisation. Si
+              vous n'acceptez pas ces conditions, veuillez ne pas utiliser notre service.
+            </p>
+
+            <h2 class="text-2xl font-semibold text-neutral-900 dark:text-neutral-50 mb-4">
+              2. Description du service
+            </h2>
+            <p class="text-neutral-600 dark:text-neutral-400 mb-6">
+              VinylVault est une plateforme web permettant de gérer et organiser votre collection de
+              vinyles. Le service inclut :
+            </p>
+            <ul class="list-disc list-inside text-neutral-600 dark:text-neutral-400 mb-6 space-y-2">
+              <li>Création et gestion de collections</li>
+              <li>Recherche et ajout de vinyles via l'API Discogs</li>
+              <li>Statistiques et analyses de votre collection</li>
+              <li>Interface responsive et moderne</li>
+            </ul>
+
+            <h2 class="text-2xl font-semibold text-neutral-900 dark:text-neutral-50 mb-4">
+              3. Compte utilisateur
+            </h2>
+            <p class="text-neutral-600 dark:text-neutral-400 mb-6">
+              Pour utiliser VinylVault, vous devez créer un compte. Vous vous engagez à :
+            </p>
+            <ul class="list-disc list-inside text-neutral-600 dark:text-neutral-400 mb-6 space-y-2">
+              <li>Fournir des informations exactes et à jour</li>
+              <li>Maintenir la confidentialité de votre mot de passe</li>
+              <li>Être responsable de toutes les activités sur votre compte</li>
+              <li>Nous notifier immédiatement toute utilisation non autorisée</li>
+            </ul>
+
+            <h2 class="text-2xl font-semibold text-neutral-900 dark:text-neutral-50 mb-4">
+              4. Utilisation acceptable
+            </h2>
+            <p class="text-neutral-600 dark:text-neutral-400 mb-6">
+              Vous vous engagez à utiliser VinylVault de manière légale et responsable. Il est
+              interdit de :
+            </p>
+            <ul class="list-disc list-inside text-neutral-600 dark:text-neutral-400 mb-6 space-y-2">
+              <li>Violer les lois applicables</li>
+              <li>Transmettre du contenu illégal ou offensant</li>
+              <li>Tenter de contourner les mesures de sécurité</li>
+              <li>Utiliser le service pour des activités commerciales non autorisées</li>
+              <li>Perturber le fonctionnement du service</li>
+            </ul>
+
+            <h2 class="text-2xl font-semibold text-neutral-900 dark:text-neutral-50 mb-4">
+              5. Propriété intellectuelle
+            </h2>
+            <p class="text-neutral-600 dark:text-neutral-400 mb-6">
+              VinylVault et son contenu sont protégés par les droits de propriété intellectuelle.
+              Vous conservez la propriété de vos données de collection, mais accordez à VinylVault
+              une licence limitée pour fournir le service.
+            </p>
+
+            <h2 class="text-2xl font-semibold text-neutral-900 dark:text-neutral-50 mb-4">
+              6. API Discogs
+            </h2>
+            <p class="text-neutral-600 dark:text-neutral-400 mb-6">
+              VinylVault utilise l'API Discogs pour enrichir les données de vinyles. L'utilisation
+              de ces données est soumise aux conditions d'utilisation de Discogs.
+            </p>
+
+            <h2 class="text-2xl font-semibold text-neutral-900 dark:text-neutral-50 mb-4">
+              7. Disponibilité du service
+            </h2>
+            <p class="text-neutral-600 dark:text-neutral-400 mb-6">
+              Nous nous efforçons de maintenir VinylVault disponible 24h/24, 7j/7, mais ne pouvons
+              garantir une disponibilité ininterrompue. Des interruptions peuvent survenir pour
+              maintenance ou raisons techniques.
+            </p>
+
+            <h2 class="text-2xl font-semibold text-neutral-900 dark:text-neutral-50 mb-4">
+              8. Limitation de responsabilité
+            </h2>
+            <p class="text-neutral-600 dark:text-neutral-400 mb-6">
+              VinylVault est fourni "en l'état". Nous ne garantissons pas que le service sera exempt
+              d'erreurs ou répondra à vos besoins spécifiques. Notre responsabilité est limitée dans
+              la mesure permise par la loi.
+            </p>
+
+            <h2 class="text-2xl font-semibold text-neutral-900 dark:text-neutral-50 mb-4">
+              9. Modification des conditions
+            </h2>
+            <p class="text-neutral-600 dark:text-neutral-400 mb-6">
+              Nous nous réservons le droit de modifier ces conditions d'utilisation à tout moment.
+              Les modifications prendront effet dès leur publication sur le site. Votre utilisation
+              continue du service constitue votre acceptation des nouvelles conditions.
+            </p>
+
+            <h2 class="text-2xl font-semibold text-neutral-900 dark:text-neutral-50 mb-4">
+              10. Contact
+            </h2>
+            <p class="text-neutral-600 dark:text-neutral-400 mb-6">
+              Pour toute question concernant ces conditions d'utilisation, contactez-nous à :
+            </p>
+            <div class="glass-card dark:glass-dark rounded-xl p-4">
+              <p class="text-neutral-900 dark:text-neutral-50 font-medium">
+                Email : legal@vinylvault.com
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <Footer slot="footer" />
+</BaseLayout>
