@@ -5,6 +5,7 @@ import Footer from "../components/Footer.astro";
 import VinylCard from "../components/VinylCard.astro";
 import VinylCardCompact from "../components/VinylCardCompact.astro";
 import BarcodeScannerModal from "../components/BarcodeScannerModal.astro";
+import CreateCollectionModal from "../components/CreateCollectionModal.astro";
 import { PrismaClient } from "@prisma/client";
 import jwt from "jsonwebtoken";
 
@@ -695,8 +696,9 @@ if (currentUser) {
 
   <Footer slot="footer" />
 
-  <!-- Modal de scan de code-barres -->
+  <!-- Modals -->
   <BarcodeScannerModal />
+  <CreateCollectionModal />
 </BaseLayout>
 
 <script>
@@ -717,54 +719,22 @@ if (currentUser) {
     // Bouton de création de collection (dans la section collections)
     const newCollectionBtn = document.getElementById("new-collection-btn");
     newCollectionBtn?.addEventListener("click", () => {
-      showCreateCollectionModal();
+      if (typeof (window as any).openCreateCollectionModal === "function") {
+        (window as any).openCreateCollectionModal();
+      } else {
+        console.error("Modal de création de collection non disponible");
+      }
     });
 
     // Bouton de création de collection (dans les actions rapides)
     const createCollectionBtn = document.getElementById("create-collection-btn");
     createCollectionBtn?.addEventListener("click", () => {
-      showCreateCollectionModal();
+      if (typeof (window as any).openCreateCollectionModal === "function") {
+        (window as any).openCreateCollectionModal();
+      } else {
+        console.error("Modal de création de collection non disponible");
+      }
     });
-
-    // Fonction pour afficher le modal de création de collection
-    function showCreateCollectionModal() {
-      const collectionName = prompt("Nom de la nouvelle collection :");
-      if (collectionName && collectionName.trim()) {
-        createCollection(collectionName.trim());
-      }
-    }
-
-    // Fonction pour créer une nouvelle collection
-    async function createCollection(name: string) {
-      try {
-        const response = await fetch("/api/collections/create", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            name: name,
-            description: "",
-            isPublic: false,
-          }),
-        });
-
-        if (response.ok) {
-          const result = await response.json();
-          if (result.success) {
-            // Recharger la page pour afficher la nouvelle collection
-            window.location.reload();
-          } else {
-            alert("Erreur lors de la création de la collection : " + result.error);
-          }
-        } else {
-          alert("Erreur lors de la création de la collection");
-        }
-      } catch (error) {
-        console.error("Erreur lors de la création de la collection :", error);
-        alert("Erreur lors de la création de la collection");
-      }
-    }
 
     // Gestion des actions sur les collections existantes
     const collectionActions = document.querySelectorAll("[data-collection-action]");

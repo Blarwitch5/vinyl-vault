@@ -1,0 +1,244 @@
+---
+// Modal pour créer une nouvelle collection
+---
+
+<div
+  id="create-collection-modal"
+  class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden"
+>
+  <div class="bg-neutral-50 dark:bg-neutral-950 rounded-2xl p-6 w-full max-w-md mx-4 shadow-2xl">
+    <!-- Header -->
+    <div class="flex items-center justify-between mb-6">
+      <h2 class="text-xl font-bold text-neutral-900 dark:text-neutral-50">Nouvelle collection</h2>
+      <button
+        id="close-create-collection-modal"
+        class="text-neutral-600 dark:text-neutral-400 hover:text-neutral-900 dark:hover:text-neutral-50 transition-colors"
+      >
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M6 18L18 6M6 6l12 12"></path>
+        </svg>
+      </button>
+    </div>
+
+    <!-- Formulaire -->
+    <form id="create-collection-form" class="space-y-4">
+      <!-- Nom de la collection -->
+      <div>
+        <label for="collection-name" class="block text-sm font-medium text-neutral-900 dark:text-neutral-50 mb-2">
+          Nom de la collection *
+        </label>
+        <input
+          id="collection-name"
+          type="text"
+          required
+          placeholder="Ex: Ma collection rock"
+          class="w-full px-4 py-3 glass-card dark:glass-dark rounded-xl text-neutral-900 dark:text-neutral-50 placeholder-light-textSecondary dark:placeholder-dark-textSecondary focus:outline-none focus:ring-2 focus:ring-light-accent1 dark:focus:ring-dark-accent1 focus:border-transparent"
+        />
+      </div>
+
+      <!-- Description -->
+      <div>
+        <label for="collection-description" class="block text-sm font-medium text-neutral-900 dark:text-neutral-50 mb-2">
+          Description (optionnel)
+        </label>
+        <textarea
+          id="collection-description"
+          rows="3"
+          placeholder="Décrivez votre collection..."
+          class="w-full px-4 py-3 glass-card dark:glass-dark rounded-xl text-neutral-900 dark:text-neutral-50 placeholder-light-textSecondary dark:placeholder-dark-textSecondary focus:outline-none focus:ring-2 focus:ring-light-accent1 dark:focus:ring-dark-accent1 focus:border-transparent resize-none"
+        ></textarea>
+      </div>
+
+      <!-- Visibilité -->
+      <div>
+        <label class="block text-sm font-medium text-neutral-900 dark:text-neutral-50 mb-3">
+          Visibilité
+        </label>
+        <div class="space-y-2">
+          <label class="flex items-center space-x-3 cursor-pointer">
+            <input
+              type="radio"
+              name="visibility"
+              value="private"
+              checked
+              class="w-4 h-4 text-emerald-600 bg-neutral-100 border-neutral-300 focus:ring-emerald-500 dark:focus:ring-emerald-600 dark:ring-offset-neutral-800 focus:ring-2 dark:bg-neutral-700 dark:border-neutral-600"
+            />
+            <div>
+              <span class="text-sm font-medium text-neutral-900 dark:text-neutral-50">Privée</span>
+              <p class="text-xs text-neutral-600 dark:text-neutral-400">Seulement vous pouvez voir cette collection</p>
+            </div>
+          </label>
+          <label class="flex items-center space-x-3 cursor-pointer">
+            <input
+              type="radio"
+              name="visibility"
+              value="public"
+              class="w-4 h-4 text-emerald-600 bg-neutral-100 border-neutral-300 focus:ring-emerald-500 dark:focus:ring-emerald-600 dark:ring-offset-neutral-800 focus:ring-2 dark:bg-neutral-700 dark:border-neutral-600"
+            />
+            <div>
+              <span class="text-sm font-medium text-neutral-900 dark:text-neutral-50">Publique</span>
+              <p class="text-xs text-neutral-600 dark:text-neutral-400">Tout le monde peut voir cette collection</p>
+            </div>
+          </label>
+        </div>
+      </div>
+
+      <!-- Boutons d'action -->
+      <div class="flex space-x-3 pt-4">
+        <button
+          type="button"
+          id="cancel-create-collection"
+          class="flex-1 px-4 py-3 glass-card dark:glass-dark text-neutral-900 dark:text-neutral-50 rounded-xl hover:bg-white/80 dark:hover:bg-neutral-900/80 transition-colors"
+        >
+          Annuler
+        </button>
+        <button
+          type="submit"
+          id="submit-create-collection"
+          class="flex-1 px-4 py-3 bg-gradient-emerald text-white rounded-xl hover:bg-gradient-emerald/80 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+        >
+          <span id="submit-text">Créer</span>
+          <span id="submit-loading" class="hidden">
+            <svg class="w-4 h-4 animate-spin mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
+            </svg>
+          </span>
+        </button>
+      </div>
+    </form>
+
+    <!-- Message d'erreur -->
+    <div id="create-collection-error" class="hidden mt-4">
+      <div class="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-xl p-4">
+        <div class="flex items-center space-x-2">
+          <svg class="w-5 h-5 text-red-600 dark:text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+          </svg>
+          <span id="error-message" class="text-red-600 dark:text-red-400"></span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  // Éléments DOM
+  const modal = document.getElementById('create-collection-modal')
+  const closeBtn = document.getElementById('close-create-collection-modal')
+  const cancelBtn = document.getElementById('cancel-create-collection')
+  const form = document.getElementById('create-collection-form')
+  const submitBtn = document.getElementById('submit-create-collection')
+  const submitText = document.getElementById('submit-text')
+  const submitLoading = document.getElementById('submit-loading')
+  const errorDiv = document.getElementById('create-collection-error')
+  const errorMessage = document.getElementById('error-message')
+
+  // Ouvrir le modal
+  function openCreateCollectionModal() {
+    modal?.classList.remove('hidden')
+    document.body.style.overflow = 'hidden'
+    resetForm()
+  }
+
+  // Fermer le modal
+  function closeCreateCollectionModal() {
+    modal?.classList.add('hidden')
+    document.body.style.overflow = ''
+    resetForm()
+  }
+
+  // Réinitialiser le formulaire
+  function resetForm() {
+    (form as HTMLFormElement)?.reset()
+    errorDiv?.classList.add('hidden')
+    setSubmitButtonState(false)
+  }
+
+  // Gérer l'état du bouton de soumission
+  function setSubmitButtonState(loading: boolean) {
+    if (loading) {
+      submitBtn?.setAttribute('disabled', 'true')
+      submitText?.classList.add('hidden')
+      submitLoading?.classList.remove('hidden')
+    } else {
+      submitBtn?.removeAttribute('disabled')
+      submitText?.classList.remove('hidden')
+      submitLoading?.classList.add('hidden')
+    }
+  }
+
+  // Afficher une erreur
+  function showError(message: string) {
+    if (errorMessage) {
+      errorMessage.textContent = message
+    }
+    errorDiv?.classList.remove('hidden')
+  }
+
+  // Masquer l'erreur
+  function hideError() {
+    errorDiv?.classList.add('hidden')
+  }
+
+  // Événements
+  closeBtn?.addEventListener('click', closeCreateCollectionModal)
+  cancelBtn?.addEventListener('click', closeCreateCollectionModal)
+  
+  modal?.addEventListener('click', (e) => {
+    if (e.target === modal) closeCreateCollectionModal()
+  })
+
+  // Soumission du formulaire
+  form?.addEventListener('submit', async (e) => {
+    e.preventDefault()
+    
+    const formData = new FormData(form as HTMLFormElement)
+    const name = (document.getElementById('collection-name') as HTMLInputElement)?.value.trim()
+    const description = (document.getElementById('collection-description') as HTMLTextAreaElement)?.value.trim()
+    const visibility = (document.querySelector('input[name="visibility"]:checked') as HTMLInputElement)?.value
+
+    if (!name) {
+      showError('Le nom de la collection est requis')
+      return
+    }
+
+    setSubmitButtonState(true)
+    hideError()
+
+    try {
+      const response = await fetch('/api/collections/create', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          name: name,
+          description: description,
+          isPublic: visibility === 'public',
+        }),
+      })
+
+      const data = await response.json()
+
+      if (data.success) {
+        closeCreateCollectionModal()
+        // Recharger la page pour afficher la nouvelle collection
+        window.location.reload()
+      } else {
+        showError(data.error || 'Erreur lors de la création de la collection')
+      }
+    } catch (error) {
+      console.error('Erreur lors de la création de la collection :', error)
+      showError('Erreur de connexion')
+    } finally {
+      setSubmitButtonState(false)
+    }
+  })
+
+  // Exposer la fonction pour ouvrir le modal
+  ;(window as any).openCreateCollectionModal = openCreateCollectionModal
+</script>

@@ -5,6 +5,7 @@ export * from './ui'
 
 // Composants existants
 export { default as BarcodeScannerModal } from './BarcodeScannerModal.astro'
+export { default as CreateCollectionModal } from './CreateCollectionModal.astro'
 export { default as Footer } from './Footer.astro'
 export { default as Navbar } from './Navbar.astro'
 export { default as NavbarSearch } from './NavbarSearch.astro'

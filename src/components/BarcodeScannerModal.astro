@@ -6,7 +6,7 @@
   id="barcode-modal"
   class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden"
 >
-  <div class="bg-neutral-50 dark:bg-black/20 rounded-2xl p-6 w-full max-w-md mx-4 shadow-2xl">
+  <div class="bg-neutral-50 dark:bg-neutral-950 rounded-2xl p-6 w-full max-w-md mx-4 shadow-2xl">
     <!-- Header -->
     <div class="flex items-center justify-between mb-6">
       <h2 class="text-xl font-bold text-neutral-900 dark:text-neutral-50">Ajouter un vinyle</h2>
@@ -193,7 +193,7 @@
     const value = (e.target as HTMLInputElement).value
     const isValid = /^\d{8,14}$/.test(value) // Code-barres entre 8 et 14 chiffres
     if (manualBtn) {
-      ;(manualBtn as HTMLButtonElement).disabled = !isValid
+      (manualBtn as HTMLButtonElement).disabled = !isValid
     }
   })
 
