@@ -436,3 +436,103 @@ export async function getVinylDetails(
 export function formatVinylForDisplay(item: DiscogsSearchResult) {
   return discogsAPI.formatVinylInfo(item)
 }
+
+// Interface pour les détails complets d'une release
+export interface DiscogsReleaseDetails {
+  id: number
+  title: string
+  artists: Array<{
+    name: string
+    anv?: string
+    join?: string
+    role?: string
+    tracks?: string
+    id: number
+    resource_url: string
+  }>
+  year?: number
+  released?: string
+  genres?: string[]
+  styles?: string[]
+  tracklist?: Array<{
+    position: string
+    type_: string
+    title: string
+    duration?: string
+    type?: string
+  }>
+  images?: Array<{
+    type: 'primary' | 'secondary'
+    uri: string
+    resource_url: string
+    uri150: string
+    width: number
+    height: number
+  }>
+  formats?: Array<{
+    name: string
+    qty: string
+    descriptions?: string[]
+  }>
+  labels?: Array<{
+    name: string
+    catno: string
+    entity_type: string
+    entity_type_name: string
+    id: number
+    resource_url: string
+  }>
+  country?: string
+  master_id?: number
+  master_url?: string
+  uri: string
+  resource_url: string
+  data_quality: string
+  community?: {
+    want: number
+    have: number
+    rating: {
+      count: number
+      average: number
+    }
+  }
+  estimated_weight?: number
+  notes?: string
+  videos?: Array<{
+    uri: string
+    title: string
+    description: string
+    duration: number
+    embed: boolean
+  }>
+  label?: string
+  catalogNumber?: string
+}
+
+/**
+ * Récupère les détails complets d'une release Discogs
+ */
+export async function getDiscogsReleaseDetails(
+  releaseId: number
+): Promise<DiscogsReleaseDetails | null> {
+  try {
+    const release = await discogsAPI.getRelease(releaseId)
+
+    // Transformer les données pour correspondre à notre interface
+    const details: DiscogsReleaseDetails = {
+      ...release,
+      label: release.labels?.[0]?.name,
+      catalogNumber: release.labels?.[0]?.catno,
+      tracklist: release.tracklist?.map((track) => ({
+        ...track,
+        type: track.type_ || track.type,
+      })),
+      videos: [], // Les vidéos ne sont pas toujours disponibles dans l'API standard
+    }
+
+    return details
+  } catch (error) {
+    console.error('Erreur lors de la récupération des détails Discogs:', error)
+    return null
+  }
+}
