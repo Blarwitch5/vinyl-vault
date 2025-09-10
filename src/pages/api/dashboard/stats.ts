@@ -1,14 +1,14 @@
-import type { APIRoute } from "astro";
-import { PrismaClient } from "@prisma/client";
-import jwt from "jsonwebtoken";
+import { PrismaClient } from '@prisma/client'
+import type { APIRoute } from 'astro'
+import jwt from 'jsonwebtoken'
 
-const prisma = new PrismaClient();
+const prisma = new PrismaClient()
 
 export const GET: APIRoute = async ({ request }) => {
   try {
     // Récupérer le token depuis l'en-tête Authorization
-    const authHeader = request.headers.get("Authorization");
-    if (!authHeader || !authHeader.startsWith("Bearer ")) {
+    const authHeader = request.headers.get('Authorization')
+    if (!authHeader || !authHeader.startsWith('Bearer ')) {
       return new Response(
         JSON.stringify({
           success: false,
@@ -17,32 +17,32 @@ export const GET: APIRoute = async ({ request }) => {
         {
           status: 401,
           headers: {
-            "Content-Type": "application/json",
+            'Content-Type': 'application/json',
           },
         }
-      );
+      )
     }
 
-    const token = authHeader.substring(7); // Enlever "Bearer "
-    const jwtSecret = process.env.JWT_SECRET || "your-super-secret-jwt-key";
+    const token = authHeader.substring(7) // Enlever "Bearer "
+    const jwtSecret = process.env.JWT_SECRET || 'your-super-secret-jwt-key'
 
-    let userId: string;
+    let userId: string
     try {
-      const decoded = jwt.verify(token, jwtSecret) as { userId: string };
-      userId = decoded.userId;
+      const decoded = jwt.verify(token, jwtSecret) as { userId: string }
+      userId = decoded.userId
     } catch (error) {
       return new Response(
         JSON.stringify({
           success: false,
-          error: "Token invalide",
+          error: 'Token invalide',
         }),
         {
           status: 401,
           headers: {
-            "Content-Type": "application/json",
+            'Content-Type': 'application/json',
           },
         }
-      );
+      )
     }
 
     // Récupérer les statistiques pour l'utilisateur
@@ -85,45 +85,45 @@ export const GET: APIRoute = async ({ request }) => {
           createdAt: true,
         },
         orderBy: {
-          createdAt: "desc",
+          createdAt: 'desc',
         },
         take: 6, // Les 6 derniers ajouts
       }),
-    ]);
+    ])
 
     if (!user) {
       return new Response(
         JSON.stringify({
           success: false,
-          error: "Utilisateur non trouvé",
+          error: 'Utilisateur non trouvé',
         }),
         {
           status: 404,
           headers: {
-            "Content-Type": "application/json",
+            'Content-Type': 'application/json',
           },
         }
-      );
+      )
     }
 
     // Calculer les statistiques
     const totalVinyls = await prisma.vinyl.count({
       where: { userId },
-    });
+    })
 
     const totalValueResult = await prisma.vinyl.aggregate({
       where: { userId },
       _sum: {
         price: true,
       },
-    });
+    })
 
-    const totalValue = totalValueResult._sum.price || 0;
-    const averageValue = totalVinyls > 0 ? totalValue / totalVinyls : 0;
+    const totalValue = totalValueResult._sum.price || 0
+    const averageValue = totalVinyls > 0 ? totalValue / totalVinyls : 0
 
     // Calculer les genres les plus populaires
     const genreStats = await prisma.vinyl.groupBy({
-      by: ["genre"],
+      by: ['genre'],
       where: {
         userId,
         genre: {
@@ -135,16 +135,16 @@ export const GET: APIRoute = async ({ request }) => {
       },
       orderBy: {
         _count: {
-          genre: "desc",
+          genre: 'desc',
         },
       },
       take: 4,
-    });
+    })
 
     const topGenres = genreStats.map((stat) => ({
-      name: stat.genre || "Inconnu",
+      name: stat.genre || 'Inconnu',
       count: stat._count.genre,
-    }));
+    }))
 
     // Formater les collections
     const userCollections = collections.map((collection) => ({
@@ -157,7 +157,7 @@ export const GET: APIRoute = async ({ request }) => {
         0
       ),
       isPublic: collection.isPublic,
-    }));
+    }))
 
     // Formater les vinyles récents
     const recentVinyls = vinyls.map((vinyl) => ({
@@ -169,7 +169,7 @@ export const GET: APIRoute = async ({ request }) => {
       condition: vinyl.condition,
       coverImage: vinyl.coverImage,
       price: vinyl.price,
-    }));
+    }))
 
     const stats = {
       totalVinyls,
@@ -177,7 +177,7 @@ export const GET: APIRoute = async ({ request }) => {
       totalCollections: collections.length,
       averageValue: Number(averageValue.toFixed(2)),
       topGenres,
-    };
+    }
 
     return new Response(
       JSON.stringify({
@@ -190,26 +190,26 @@ export const GET: APIRoute = async ({ request }) => {
       {
         status: 200,
         headers: {
-          "Content-Type": "application/json",
+          'Content-Type': 'application/json',
         },
       }
-    );
+    )
   } catch (error) {
-    console.error("Erreur lors de la récupération des stats dashboard:", error);
+    console.error('Erreur lors de la récupération des stats dashboard:', error)
 
     return new Response(
       JSON.stringify({
         success: false,
-        error: "Erreur interne du serveur",
+        error: 'Erreur interne du serveur',
       }),
       {
         status: 500,
         headers: {
-          "Content-Type": "application/json",
+          'Content-Type': 'application/json',
         },
       }
-    );
+    )
   } finally {
-    await prisma.$disconnect();
+    await prisma.$disconnect()
   }
-};
+}

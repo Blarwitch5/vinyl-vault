@@ -1,10 +1,10 @@
-import type { APIRoute } from "astro";
+import type { APIRoute } from 'astro'
 
 // GET /api/auth/check - Vérifier l'authentification de l'utilisateur
 export const GET: APIRoute = async ({ request, cookies }) => {
   try {
     // Récupérer le token d'authentification depuis les cookies
-    const authToken = cookies.get("vinyl-vault-auth")?.value;
+    const authToken = cookies.get('vinyl-vault-auth')?.value
 
     if (!authToken) {
       return new Response(
@@ -14,9 +14,9 @@ export const GET: APIRoute = async ({ request, cookies }) => {
         }),
         {
           status: 401,
-          headers: { "Content-Type": "application/json" },
+          headers: { 'Content-Type': 'application/json' },
         }
-      );
+      )
     }
 
     // TODO: Valider le token JWT
@@ -28,10 +28,10 @@ export const GET: APIRoute = async ({ request, cookies }) => {
 
       // Simulation d'un utilisateur connecté
       const mockUser = {
-        id: "1",
-        email: "user@example.com",
-        name: "Utilisateur Test",
-      };
+        id: '1',
+        email: 'user@example.com',
+        name: 'Utilisateur Test',
+      }
 
       return new Response(
         JSON.stringify({
@@ -40,9 +40,9 @@ export const GET: APIRoute = async ({ request, cookies }) => {
         }),
         {
           status: 200,
-          headers: { "Content-Type": "application/json" },
+          headers: { 'Content-Type': 'application/json' },
         }
-      );
+      )
     } catch (tokenError) {
       // Token invalide
       return new Response(
@@ -52,34 +52,34 @@ export const GET: APIRoute = async ({ request, cookies }) => {
         }),
         {
           status: 401,
-          headers: { "Content-Type": "application/json" },
+          headers: { 'Content-Type': 'application/json' },
         }
-      );
+      )
     }
   } catch (error) {
-    console.error("Erreur lors de la vérification d'authentification:", error);
+    console.error("Erreur lors de la vérification d'authentification:", error)
 
     return new Response(
       JSON.stringify({
         authenticated: false,
-        error: "Erreur interne du serveur",
+        error: 'Erreur interne du serveur',
       }),
       {
         status: 500,
-        headers: { "Content-Type": "application/json" },
+        headers: { 'Content-Type': 'application/json' },
       }
-    );
+    )
   }
-};
+}
 
 // OPTIONS pour CORS
 export const OPTIONS: APIRoute = async () => {
   return new Response(null, {
     status: 200,
     headers: {
-      "Access-Control-Allow-Origin": "*",
-      "Access-Control-Allow-Methods": "GET, OPTIONS",
-      "Access-Control-Allow-Headers": "Content-Type, Authorization",
+      'Access-Control-Allow-Origin': '*',
+      'Access-Control-Allow-Methods': 'GET, OPTIONS',
+      'Access-Control-Allow-Headers': 'Content-Type, Authorization',
     },
-  });
-};
+  })
+}

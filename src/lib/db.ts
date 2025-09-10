@@ -3,66 +3,74 @@
 
 // Types pour la base de données
 export interface DbUser {
-  id: string;
-  email: string;
-  password_hash: string;
-  name?: string;
-  created_at: Date;
-  updated_at: Date;
+  id: string
+  email: string
+  password_hash: string
+  name?: string
+  created_at: Date
+  updated_at: Date
 }
 
 export interface DbCollection {
-  id: string;
-  user_id: string;
-  name: string;
-  description?: string;
-  is_public: boolean;
-  created_at: Date;
-  updated_at: Date;
+  id: string
+  user_id: string
+  name: string
+  description?: string
+  is_public: boolean
+  created_at: Date
+  updated_at: Date
 }
 
 export interface DbCollectionItem {
-  id: string;
-  collection_id: string;
-  discogs_id?: string;
-  title: string;
-  artist: string;
-  year?: number;
-  format?: string;
-  condition?: 'Mint' | 'Near Mint' | 'Very Good Plus' | 'Very Good' | 'Good Plus' | 'Good' | 'Fair' | 'Poor';
-  cover_image?: string;
-  note?: string;
-  purchase_price?: number;
-  purchase_date?: Date;
-  estimated_value?: number;
-  created_at: Date;
-  updated_at: Date;
+  id: string
+  collection_id: string
+  discogs_id?: string
+  title: string
+  artist: string
+  year?: number
+  format?: string
+  condition?:
+    | 'Mint'
+    | 'Near Mint'
+    | 'Very Good Plus'
+    | 'Very Good'
+    | 'Good Plus'
+    | 'Good'
+    | 'Fair'
+    | 'Poor'
+  cover_image?: string
+  note?: string
+  purchase_price?: number
+  purchase_date?: Date
+  estimated_value?: number
+  created_at: Date
+  updated_at: Date
 }
 
 // Configuration Supabase (exemple)
-const SUPABASE_URL = import.meta.env.SUPABASE_URL;
-const SUPABASE_ANON_KEY = import.meta.env.SUPABASE_ANON_KEY;
+const SUPABASE_URL = import.meta.env.SUPABASE_URL
+const SUPABASE_ANON_KEY = import.meta.env.SUPABASE_ANON_KEY
 
 // Alternative: Configuration PostgreSQL directe
-const DB_HOST = import.meta.env.DB_HOST || 'localhost';
-const DB_PORT = import.meta.env.DB_PORT || 5432;
-const DB_NAME = import.meta.env.DB_NAME || 'vinyl_vault';
-const DB_USER = import.meta.env.DB_USER || 'postgres';
-const DB_PASSWORD = import.meta.env.DB_PASSWORD;
+const DB_HOST = import.meta.env.DB_HOST || 'localhost'
+const DB_PORT = import.meta.env.DB_PORT || 5432
+const DB_NAME = import.meta.env.DB_NAME || 'vinyl_vault'
+const DB_USER = import.meta.env.DB_USER || 'postgres'
+const DB_PASSWORD = import.meta.env.DB_PASSWORD
 
 /**
  * Classe pour gérer la connexion à la base de données
  */
 export class Database {
-  private static instance: Database;
-  
+  private static instance: Database
+
   private constructor() {}
-  
+
   public static getInstance(): Database {
     if (!Database.instance) {
-      Database.instance = new Database();
+      Database.instance = new Database()
     }
-    return Database.instance;
+    return Database.instance
   }
 
   /**
@@ -73,11 +81,11 @@ export class Database {
       // Ici vous pouvez initialiser votre connexion
       // Exemple avec Supabase:
       // this.supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-      
-      console.log('Connexion à la base de données réussie');
+
+      console.log('Connexion à la base de données réussie')
     } catch (error) {
-      console.error('Erreur de connexion à la base de données:', error);
-      throw error;
+      console.error('Erreur de connexion à la base de données:', error)
+      throw error
     }
   }
 
@@ -86,18 +94,22 @@ export class Database {
   /**
    * Crée un nouveau compte utilisateur
    */
-  async createUser(email: string, passwordHash: string, name?: string): Promise<DbUser> {
+  async createUser(
+    email: string,
+    passwordHash: string,
+    name?: string
+  ): Promise<DbUser> {
     try {
       // Exemple d'implémentation avec une requête SQL
       const query = `
         INSERT INTO users (email, password_hash, name, created_at, updated_at)
         VALUES ($1, $2, $3, NOW(), NOW())
         RETURNING *
-      `;
-      
+      `
+
       // const result = await this.query(query, [email, passwordHash, name]);
       // return result.rows[0];
-      
+
       // Simulation pour l'exemple
       const user: DbUser = {
         id: crypto.randomUUID(),
@@ -106,12 +118,12 @@ export class Database {
         name,
         created_at: new Date(),
         updated_at: new Date(),
-      };
-      
-      return user;
+      }
+
+      return user
     } catch (error) {
-      console.error('Erreur lors de la création de l\'utilisateur:', error);
-      throw error;
+      console.error("Erreur lors de la création de l'utilisateur:", error)
+      throw error
     }
   }
 
@@ -120,15 +132,15 @@ export class Database {
    */
   async getUserByEmail(email: string): Promise<DbUser | null> {
     try {
-      const query = `SELECT * FROM users WHERE email = $1`;
+      const query = `SELECT * FROM users WHERE email = $1`
       // const result = await this.query(query, [email]);
       // return result.rows[0] || null;
-      
+
       // Simulation pour l'exemple
-      return null;
+      return null
     } catch (error) {
-      console.error('Erreur lors de la récupération de l\'utilisateur:', error);
-      throw error;
+      console.error("Erreur lors de la récupération de l'utilisateur:", error)
+      throw error
     }
   }
 
@@ -137,15 +149,15 @@ export class Database {
    */
   async getUserById(id: string): Promise<DbUser | null> {
     try {
-      const query = `SELECT * FROM users WHERE id = $1`;
+      const query = `SELECT * FROM users WHERE id = $1`
       // const result = await this.query(query, [id]);
       // return result.rows[0] || null;
-      
+
       // Simulation pour l'exemple
-      return null;
+      return null
     } catch (error) {
-      console.error('Erreur lors de la récupération de l\'utilisateur:', error);
-      throw error;
+      console.error("Erreur lors de la récupération de l'utilisateur:", error)
+      throw error
     }
   }
 
@@ -154,17 +166,22 @@ export class Database {
   /**
    * Crée une nouvelle collection pour un utilisateur
    */
-  async createCollection(userId: string, name: string, description?: string, isPublic = false): Promise<DbCollection> {
+  async createCollection(
+    userId: string,
+    name: string,
+    description?: string,
+    isPublic = false
+  ): Promise<DbCollection> {
     try {
       const query = `
         INSERT INTO collections (user_id, name, description, is_public, created_at, updated_at)
         VALUES ($1, $2, $3, $4, NOW(), NOW())
         RETURNING *
-      `;
-      
+      `
+
       // const result = await this.query(query, [userId, name, description, isPublic]);
       // return result.rows[0];
-      
+
       // Simulation pour l'exemple
       const collection: DbCollection = {
         id: crypto.randomUUID(),
@@ -174,12 +191,12 @@ export class Database {
         is_public: isPublic,
         created_at: new Date(),
         updated_at: new Date(),
-      };
-      
-      return collection;
+      }
+
+      return collection
     } catch (error) {
-      console.error('Erreur lors de la création de la collection:', error);
-      throw error;
+      console.error('Erreur lors de la création de la collection:', error)
+      throw error
     }
   }
 
@@ -192,23 +209,26 @@ export class Database {
         SELECT * FROM collections 
         WHERE user_id = $1 
         ORDER BY created_at DESC
-      `;
-      
+      `
+
       // const result = await this.query(query, [userId]);
       // return result.rows;
-      
+
       // Simulation pour l'exemple
-      return [];
+      return []
     } catch (error) {
-      console.error('Erreur lors de la récupération des collections:', error);
-      throw error;
+      console.error('Erreur lors de la récupération des collections:', error)
+      throw error
     }
   }
 
   /**
    * Ajoute un vinyle à une collection
    */
-  async addVinylToCollection(collectionId: string, vinylData: Partial<DbCollectionItem>): Promise<DbCollectionItem> {
+  async addVinylToCollection(
+    collectionId: string,
+    vinylData: Partial<DbCollectionItem>
+  ): Promise<DbCollectionItem> {
     try {
       const query = `
         INSERT INTO collection_items (
@@ -218,8 +238,8 @@ export class Database {
         )
         VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, NOW(), NOW())
         RETURNING *
-      `;
-      
+      `
+
       // const result = await this.query(query, [
       //   collectionId,
       //   vinylData.discogs_id,
@@ -235,7 +255,7 @@ export class Database {
       //   vinylData.estimated_value,
       // ]);
       // return result.rows[0];
-      
+
       // Simulation pour l'exemple
       const item: DbCollectionItem = {
         id: crypto.randomUUID(),
@@ -245,12 +265,12 @@ export class Database {
         artist: vinylData.artist || '',
         created_at: new Date(),
         updated_at: new Date(),
-      };
-      
-      return item;
+      }
+
+      return item
     } catch (error) {
-      console.error('Erreur lors de l\'ajout du vinyle:', error);
-      throw error;
+      console.error("Erreur lors de l'ajout du vinyle:", error)
+      throw error
     }
   }
 
@@ -263,16 +283,16 @@ export class Database {
         SELECT * FROM collection_items 
         WHERE collection_id = $1 
         ORDER BY created_at DESC
-      `;
-      
+      `
+
       // const result = await this.query(query, [collectionId]);
       // return result.rows;
-      
+
       // Simulation pour l'exemple
-      return [];
+      return []
     } catch (error) {
-      console.error('Erreur lors de la récupération des vinyles:', error);
-      throw error;
+      console.error('Erreur lors de la récupération des vinyles:', error)
+      throw error
     }
   }
 
@@ -281,43 +301,46 @@ export class Database {
    */
   async removeVinylFromCollection(itemId: string): Promise<boolean> {
     try {
-      const query = `DELETE FROM collection_items WHERE id = $1`;
+      const query = `DELETE FROM collection_items WHERE id = $1`
       // const result = await this.query(query, [itemId]);
       // return result.rowCount > 0;
-      
+
       // Simulation pour l'exemple
-      return true;
+      return true
     } catch (error) {
-      console.error('Erreur lors de la suppression du vinyle:', error);
-      throw error;
+      console.error('Erreur lors de la suppression du vinyle:', error)
+      throw error
     }
   }
 
   /**
    * Met à jour un vinyle dans une collection
    */
-  async updateCollectionItem(itemId: string, updates: Partial<DbCollectionItem>): Promise<DbCollectionItem | null> {
+  async updateCollectionItem(
+    itemId: string,
+    updates: Partial<DbCollectionItem>
+  ): Promise<DbCollectionItem | null> {
     try {
       const setClause = Object.keys(updates)
         .map((key, index) => `${key} = $${index + 2}`)
-        .join(', ');
-      
+        .join(', ')
+
       const query = `
         UPDATE collection_items 
         SET ${setClause}, updated_at = NOW()
         WHERE id = $1 
         RETURNING *
-      `;
-      
+      `
+
       // const values = [itemId, ...Object.values(updates)];
       // const result = await this.query(query, values);
       // return result.rows[0] || null;
-      
+
       // Simulation pour l'exemple
-      return null;
+      return null
     } catch (error) {
-      console.error('Erreur lors de la mise à jour du vinyle:', error);
-      throw error;
+      console.error('Erreur lors de la mise à jour du vinyle:', error)
+      throw error
     }
   }
 
@@ -326,7 +349,10 @@ export class Database {
   /**
    * Recherche dans les collections d'un utilisateur
    */
-  async searchUserCollection(userId: string, searchTerm: string): Promise<DbCollectionItem[]> {
+  async searchUserCollection(
+    userId: string,
+    searchTerm: string
+  ): Promise<DbCollectionItem[]> {
     try {
       const query = `
         SELECT ci.* FROM collection_items ci
@@ -334,17 +360,17 @@ export class Database {
         WHERE c.user_id = $1 
         AND (ci.title ILIKE $2 OR ci.artist ILIKE $2)
         ORDER BY ci.created_at DESC
-      `;
-      
-      const searchPattern = `%${searchTerm}%`;
+      `
+
+      const searchPattern = `%${searchTerm}%`
       // const result = await this.query(query, [userId, searchPattern]);
       // return result.rows;
-      
+
       // Simulation pour l'exemple
-      return [];
+      return []
     } catch (error) {
-      console.error('Erreur lors de la recherche:', error);
-      throw error;
+      console.error('Erreur lors de la recherche:', error)
+      throw error
     }
   }
 
@@ -352,10 +378,10 @@ export class Database {
    * Récupère les statistiques d'une collection
    */
   async getCollectionStats(collectionId: string): Promise<{
-    totalItems: number;
-    totalValue: number;
-    averageValue: number;
-    formatBreakdown: Record<string, number>;
+    totalItems: number
+    totalValue: number
+    averageValue: number
+    formatBreakdown: Record<string, number>
   }> {
     try {
       // Implémentation des requêtes de statistiques
@@ -365,13 +391,13 @@ export class Database {
         totalValue: 0,
         averageValue: 0,
         formatBreakdown: {},
-      };
+      }
     } catch (error) {
-      console.error('Erreur lors du calcul des statistiques:', error);
-      throw error;
+      console.error('Erreur lors du calcul des statistiques:', error)
+      throw error
     }
   }
 }
 
 // Export de l'instance singleton
-export const db = Database.getInstance();
+export const db = Database.getInstance()

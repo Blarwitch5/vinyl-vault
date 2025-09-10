@@ -3,71 +3,71 @@
 // Fonctions utilitaires pour la manipulation DOM
 export const createDomHelper = () => {
   const getElementById = (id: string): HTMLElement | null => {
-    return document.getElementById(id);
-  };
+    return document.getElementById(id)
+  }
 
   const updateTextContent = (elementId: string, content: string): void => {
-    const element = getElementById(elementId);
-    if (element) element.textContent = content;
-  };
+    const element = getElementById(elementId)
+    if (element) element.textContent = content
+  }
 
   const updateImageSrc = (elementId: string, src: string): void => {
-    const element = getElementById(elementId) as HTMLImageElement;
-    if (element) element.src = src;
-  };
+    const element = getElementById(elementId) as HTMLImageElement
+    if (element) element.src = src
+  }
 
   const addClass = (elementId: string, className: string): void => {
-    getElementById(elementId)?.classList.add(className);
-  };
+    getElementById(elementId)?.classList.add(className)
+  }
 
   const removeClass = (elementId: string, className: string): void => {
-    getElementById(elementId)?.classList.remove(className);
-  };
+    getElementById(elementId)?.classList.remove(className)
+  }
 
   const toggleClass = (elementId: string, className: string): void => {
-    getElementById(elementId)?.classList.toggle(className);
-  };
+    getElementById(elementId)?.classList.toggle(className)
+  }
 
   const hasClass = (elementId: string, className: string): boolean => {
-    return getElementById(elementId)?.classList.contains(className) ?? false;
-  };
+    return getElementById(elementId)?.classList.contains(className) ?? false
+  }
 
   const addEventListener = (
     elementId: string,
     event: string,
     handler: EventListener
   ): void => {
-    getElementById(elementId)?.addEventListener(event, handler);
-  };
+    getElementById(elementId)?.addEventListener(event, handler)
+  }
 
   const removeEventListener = (
     elementId: string,
     event: string,
     handler: EventListener
   ): void => {
-    getElementById(elementId)?.removeEventListener(event, handler);
-  };
+    getElementById(elementId)?.removeEventListener(event, handler)
+  }
 
   const setInnerHTML = (elementId: string, html: string): void => {
-    const element = getElementById(elementId);
-    if (element) element.innerHTML = html;
-  };
+    const element = getElementById(elementId)
+    if (element) element.innerHTML = html
+  }
 
   const clearInnerHTML = (elementId: string): void => {
-    setInnerHTML(elementId, "");
-  };
+    setInnerHTML(elementId, '')
+  }
 
   const createButton = (
     className: string,
     innerHTML: string,
     clickHandler: () => void
   ): HTMLButtonElement => {
-    const button = document.createElement("button");
-    button.className = className;
-    button.innerHTML = innerHTML;
-    button.addEventListener("click", clickHandler);
-    return button;
-  };
+    const button = document.createElement('button')
+    button.className = className
+    button.innerHTML = innerHTML
+    button.addEventListener('click', clickHandler)
+    return button
+  }
 
   return {
     getElementById,
@@ -82,18 +82,18 @@ export const createDomHelper = () => {
     setInnerHTML,
     clearInnerHTML,
     createButton,
-  };
-};
+  }
+}
 
 // Fonction utilitaire debounce pour optimiser les performances
 export const debounce = <T extends (...args: any[]) => any>(
   func: T,
   wait: number
 ): ((...args: Parameters<T>) => void) => {
-  let timeout: NodeJS.Timeout;
+  let timeout: NodeJS.Timeout
 
   return (...args: Parameters<T>) => {
-    clearTimeout(timeout);
-    timeout = setTimeout(() => func.apply(null, args), wait);
-  };
-};
+    clearTimeout(timeout)
+    timeout = setTimeout(() => func.apply(null, args), wait)
+  }
+}
