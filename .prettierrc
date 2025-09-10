@@ -6,6 +6,7 @@
   "printWidth": 80,
   "useTabs": false,
   "plugins": ["prettier-plugin-astro"],
+  "bracketSameLine": false,
   "overrides": [
     {
       "files": "*.astro",

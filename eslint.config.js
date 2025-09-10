@@ -67,6 +67,8 @@ export default [
       'prefer-const': 'error',
       'no-var': 'error',
       'no-undef': 'off', // Désactivé car on utilise TypeScript
+      semi: ['error', 'never'], // Pas de points-virgules
+      '@typescript-eslint/semi': ['error', 'never'], // Pas de points-virgules en TypeScript
     },
   },
   {
@@ -122,6 +124,7 @@ export default [
       // Règles TypeScript pour les fichiers Astro
       '@typescript-eslint/no-unused-vars': 'warn',
       '@typescript-eslint/no-explicit-any': 'warn',
+      '@typescript-eslint/semi': ['error', 'never'], // Pas de points-virgules en TypeScript
       // Règles JavaScript générales
       'no-console': 'warn',
       'no-debugger': 'error',
@@ -129,6 +132,7 @@ export default [
       'prefer-const': 'error',
       'no-var': 'error',
       'no-undef': 'off',
+      semi: ['error', 'never'], // Pas de points-virgules
     },
   },
   {
