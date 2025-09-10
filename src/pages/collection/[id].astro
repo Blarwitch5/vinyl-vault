@@ -5,6 +5,7 @@ import Footer from "../../components/Footer.astro";
 import VinylCard from "../../components/VinylCard.astro";
 import VinylCardCompact from "../../components/VinylCardCompact.astro";
 import BarcodeScannerModal from "../../components/BarcodeScannerModal.astro";
+import DeleteVinylModal from "../../components/DeleteVinylModal.astro";
 import { PrismaClient } from "@prisma/client";
 import jwt from "jsonwebtoken";
 
@@ -730,8 +731,9 @@ const filterFormat = Astro.url.searchParams.get("format") || "";
 
   <Footer slot="footer" />
 
-  <!-- Modal de scan de code-barres -->
+  <!-- Modals -->
   <BarcodeScannerModal />
+  <DeleteVinylModal />
 </BaseLayout>
 
 <script>

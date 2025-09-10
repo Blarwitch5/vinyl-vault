@@ -1,0 +1,209 @@
+---
+// Modal de confirmation pour supprimer un vinyle
+---
+
+<div
+  id="delete-vinyl-modal"
+  class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden"
+>
+  <div class="bg-neutral-50 dark:bg-neutral-950 rounded-2xl p-6 w-full max-w-md mx-4 shadow-2xl">
+    <!-- Header -->
+    <div class="flex items-center justify-between mb-6">
+      <h2 class="text-xl font-bold text-neutral-900 dark:text-neutral-50">Supprimer le vinyle</h2>
+      <button
+        id="close-delete-vinyl-modal"
+        class="text-neutral-600 dark:text-neutral-400 hover:text-neutral-900 dark:hover:text-neutral-50 transition-colors"
+      >
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M6 18L18 6M6 6l12 12"></path>
+        </svg>
+      </button>
+    </div>
+
+    <!-- Contenu -->
+    <div class="mb-6">
+      <div class="flex items-center space-x-3 mb-4">
+        <div class="w-12 h-12 bg-red-100 dark:bg-red-900/20 rounded-full flex items-center justify-center">
+          <svg class="w-6 h-6 text-red-600 dark:text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+          </svg>
+        </div>
+        <div>
+          <h3 class="font-semibold text-neutral-900 dark:text-neutral-50">Confirmation requise</h3>
+          <p class="text-sm text-neutral-600 dark:text-neutral-400">Cette action est irréversible</p>
+        </div>
+      </div>
+
+      <div id="vinyl-info" class="bg-neutral-100 dark:bg-neutral-800 rounded-xl p-4 mb-4">
+        <!-- Les informations du vinyle seront injectées ici -->
+      </div>
+
+      <p class="text-neutral-700 dark:text-neutral-300">
+        Êtes-vous sûr de vouloir supprimer ce vinyle de votre collection ? 
+        <span class="font-semibold text-red-600 dark:text-red-400">Cette action est irréversible.</span>
+      </p>
+    </div>
+
+    <!-- Boutons d'action -->
+    <div class="flex space-x-3">
+      <button
+        id="cancel-delete-vinyl"
+        class="flex-1 px-4 py-3 glass dark:glass-dark text-neutral-900 dark:text-neutral-50 rounded-xl hover:bg-white/80 dark:hover:bg-neutral-900/80 transition-colors"
+      >
+        Annuler
+      </button>
+      <button
+        id="confirm-delete-vinyl"
+        class="flex-1 px-4 py-3 bg-red-600 text-white rounded-xl hover:bg-red-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+      >
+        <span id="delete-text">Supprimer</span>
+        <span id="delete-loading" class="hidden">
+          <svg class="w-4 h-4 animate-spin mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
+          </svg>
+        </span>
+      </button>
+    </div>
+
+    <!-- Message d'erreur -->
+    <div id="delete-vinyl-error" class="hidden mt-4">
+      <div class="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-xl p-4">
+        <div class="flex items-center space-x-2">
+          <svg class="w-5 h-5 text-red-600 dark:text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+          </svg>
+          <span id="delete-error-message" class="text-red-600 dark:text-red-400"></span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  // Éléments DOM
+  const modal = document.getElementById('delete-vinyl-modal')
+  const closeBtn = document.getElementById('close-delete-vinyl-modal')
+  const cancelBtn = document.getElementById('cancel-delete-vinyl')
+  const confirmBtn = document.getElementById('confirm-delete-vinyl')
+  const deleteText = document.getElementById('delete-text')
+  const deleteLoading = document.getElementById('delete-loading')
+  const errorDiv = document.getElementById('delete-vinyl-error')
+  const errorMessage = document.getElementById('delete-error-message')
+  const vinylInfo = document.getElementById('vinyl-info')
+
+  let currentVinylId: string | null = null
+
+  // Ouvrir le modal
+  function openDeleteVinylModal(vinyl: any) {
+    currentVinylId = vinyl.id
+    
+    // Afficher les informations du vinyle
+    if (vinylInfo) {
+      vinylInfo.innerHTML = `
+        <div class="flex items-center space-x-3">
+          <img
+            src="${vinyl.coverImage || '/default-vinyl-cover.svg'}"
+            alt="${vinyl.title}"
+            class="w-12 h-12 object-cover rounded-lg"
+          />
+          <div class="flex-1">
+            <h4 class="font-medium text-neutral-900 dark:text-neutral-50">${vinyl.title}</h4>
+            <p class="text-sm text-neutral-600 dark:text-neutral-400">${vinyl.artist}</p>
+            <div class="text-xs text-neutral-500 dark:text-neutral-500">
+              ${vinyl.year ? vinyl.year + ' • ' : ''}${vinyl.format || ''}
+            </div>
+          </div>
+        </div>
+      `
+    }
+
+    modal?.classList.remove('hidden')
+    document.body.style.overflow = 'hidden'
+    hideError()
+    setDeleteButtonState(false)
+  }
+
+  // Fermer le modal
+  function closeDeleteVinylModal() {
+    modal?.classList.add('hidden')
+    document.body.style.overflow = ''
+    currentVinylId = null
+    hideError()
+    setDeleteButtonState(false)
+  }
+
+  // Gérer l'état du bouton de suppression
+  function setDeleteButtonState(loading: boolean) {
+    if (loading) {
+      confirmBtn?.setAttribute('disabled', 'true')
+      deleteText?.classList.add('hidden')
+      deleteLoading?.classList.remove('hidden')
+    } else {
+      confirmBtn?.removeAttribute('disabled')
+      deleteText?.classList.remove('hidden')
+      deleteLoading?.classList.add('hidden')
+    }
+  }
+
+  // Afficher une erreur
+  function showError(message: string) {
+    if (errorMessage) {
+      errorMessage.textContent = message
+    }
+    errorDiv?.classList.remove('hidden')
+  }
+
+  // Masquer l'erreur
+  function hideError() {
+    errorDiv?.classList.add('hidden')
+  }
+
+  // Supprimer le vinyle
+  async function deleteVinyl() {
+    if (!currentVinylId) return
+
+    setDeleteButtonState(true)
+    hideError()
+
+    try {
+      const response = await fetch('/api/collections/remove', {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ vinylId: currentVinylId }),
+      })
+
+      const data = await response.json()
+
+      if (data.success) {
+        closeDeleteVinylModal()
+        // Recharger la page pour voir les changements
+        window.location.reload()
+      } else {
+        showError(data.error || 'Erreur lors de la suppression du vinyle')
+      }
+    } catch (error) {
+      console.error('Erreur lors de la suppression du vinyle :', error)
+      showError('Erreur de connexion')
+    } finally {
+      setDeleteButtonState(false)
+    }
+  }
+
+  // Événements
+  closeBtn?.addEventListener('click', closeDeleteVinylModal)
+  cancelBtn?.addEventListener('click', closeDeleteVinylModal)
+  confirmBtn?.addEventListener('click', deleteVinyl)
+  
+  modal?.addEventListener('click', (e) => {
+    if (e.target === modal) closeDeleteVinylModal()
+  })
+
+  // Exposer la fonction pour ouvrir le modal
+  ;(window as any).openDeleteVinylModal = openDeleteVinylModal
+</script>

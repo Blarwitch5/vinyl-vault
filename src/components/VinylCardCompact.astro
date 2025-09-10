@@ -44,38 +44,25 @@ const defaultCover = '/default-vinyl-cover.svg'
         </div>
       )
     }
-    <!-- Overlay avec actions au hover -->
+    <!-- Overlay avec action de suppression au hover -->
     {
       showActions && (
         <div class="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-50 transition-all duration-300 flex items-center justify-center opacity-0 group-hover:opacity-100">
-          <div class="flex space-x-2">
-            <button
-              class="bg-emerald-500 hover:bg-emerald-600 hover:bg-opacity-90 text-white p-2 rounded-full transition-colors shadow-lg"
-              title="Modifier"
-            >
-              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"
-                />
-              </svg>
-            </button>
-            <button
-              class="bg-red-500 hover:bg-red-600 hover:bg-opacity-90 text-white p-2 rounded-full transition-colors shadow-lg"
-              title="Supprimer"
-            >
-              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
-                />
-              </svg>
-            </button>
-          </div>
+          <button
+            class="bg-red-500 hover:bg-red-600 hover:bg-opacity-90 text-white p-2 rounded-full transition-colors shadow-lg"
+            title="Supprimer de la collection"
+            data-vinyl-id={vinyl.id}
+            data-action="delete"
+          >
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
+              />
+            </svg>
+          </button>
         </div>
       )
     }
@@ -139,3 +126,72 @@ const defaultCover = '/default-vinyl-cover.svg'
     -webkit-line-clamp: 2;
   }
 </style>
+
+<script>
+  // Gestion des actions sur les cartes compactes de vinyles
+  document.addEventListener('DOMContentLoaded', () => {
+    const actionButtons = document.querySelectorAll('[data-action="delete"]')
+
+    actionButtons.forEach((button) => {
+      button.addEventListener('click', async (e) => {
+        e.preventDefault()
+        e.stopPropagation()
+        
+        const target = e.target as HTMLButtonElement
+        const vinylId = target.dataset.vinylId
+
+        if (!vinylId) return
+
+        // Récupérer les informations du vinyle depuis la carte
+        const card = target.closest('.vinyl-card-compact')
+        if (!card) return
+
+        const vinyl = {
+          id: vinylId,
+          title: card.querySelector('h3')?.textContent || 'Vinyle inconnu',
+          artist: card.querySelector('p')?.textContent || 'Artiste inconnu',
+          year: card.querySelector('span')?.textContent || '',
+          format: Array.from(card.querySelectorAll('span')).find(span => 
+            span.textContent?.includes('LP') || span.textContent?.includes('EP') || span.textContent?.includes('Single')
+          )?.textContent || '',
+          coverImage: card.querySelector('img')?.src || '/default-vinyl-cover.svg'
+        }
+
+        // Ouvrir la modal de confirmation
+        if (typeof (window as any).openDeleteVinylModal === 'function') {
+          (window as any).openDeleteVinylModal(vinyl)
+        } else {
+          console.error('Modal de suppression non disponible')
+          // Fallback avec confirm
+          if (confirm(`Êtes-vous sûr de vouloir supprimer "${vinyl.title}" de votre collection ?`)) {
+            await deleteVinyl(vinylId)
+          }
+        }
+      })
+    })
+  })
+
+  async function deleteVinyl(vinylId: string) {
+    try {
+      const response = await fetch('/api/collections/remove', {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ vinylId }),
+      })
+
+      const data = await response.json()
+
+      if (data.success) {
+        // Recharger la page pour voir les changements
+        window.location.reload()
+      } else {
+        alert('Erreur lors de la suppression : ' + (data.error || 'Erreur inconnue'))
+      }
+    } catch (error) {
+      console.error('Erreur lors de la suppression du vinyle :', error)
+      alert('Erreur de connexion')
+    }
+  }
+</script>

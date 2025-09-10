@@ -6,6 +6,7 @@ import VinylCard from "../components/VinylCard.astro";
 import VinylCardCompact from "../components/VinylCardCompact.astro";
 import BarcodeScannerModal from "../components/BarcodeScannerModal.astro";
 import CreateCollectionModal from "../components/CreateCollectionModal.astro";
+import DeleteVinylModal from "../components/DeleteVinylModal.astro";
 import { PrismaClient } from "@prisma/client";
 import jwt from "jsonwebtoken";
 
@@ -788,6 +789,7 @@ if (currentUser) {
   <!-- Modals -->
   <BarcodeScannerModal />
   <CreateCollectionModal />
+  <DeleteVinylModal />
 </BaseLayout>
 
 <script>
