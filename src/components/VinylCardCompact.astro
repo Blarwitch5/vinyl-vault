@@ -1,0 +1,141 @@
+---
+export interface Props {
+  vinyl: {
+    id: string
+    title: string
+    artist: string
+    year?: number
+    format?: string
+    coverImage?: string
+    condition?: string
+    price?: number
+    note?: string
+    discogsId?: string
+    discogsUrl?: string
+  }
+  showActions?: boolean
+  isInCollection?: boolean
+}
+
+const { vinyl, showActions = false, isInCollection = false } = Astro.props
+const defaultCover = '/default-vinyl-cover.svg'
+---
+
+<div
+  class="vinyl-card-compact glass dark:glass-dark dark:bg-neutral-950 dark:bg-gradient-emerald-subtle rounded-lg shadow-sm dark:shadow-white overflow-hidden hover:shadow-md dark:hover:shadow-white-md transition-all duration-300 hover:scale-105 hover:-translate-y-1 group"
+  data-discogs-id={vinyl.discogsId}
+  data-discogs-url={vinyl.discogsUrl}
+>
+  <!-- Image de couverture -->
+  <div class="aspect-square relative glass dark:glass-dark">
+    <img
+      src={vinyl.coverImage || defaultCover}
+      alt={`Couverture de ${vinyl.title}`}
+      class="w-full h-full object-cover"
+      loading="lazy"
+      onerror="this.src='/default-vinyl-cover.svg'"
+    />
+    {
+      vinyl.condition && (
+        <div class="absolute top-1 right-1">
+          <span class="bg-black bg-opacity-70 text-white text-xs px-1.5 py-0.5 rounded text-[10px] leading-none">
+            {vinyl.condition}
+          </span>
+        </div>
+      )
+    }
+    <!-- Overlay avec actions au hover -->
+    {
+      showActions && (
+        <div class="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-50 transition-all duration-300 flex items-center justify-center opacity-0 group-hover:opacity-100">
+          <div class="flex space-x-2">
+            <button
+              class="bg-emerald-500 hover:bg-emerald-600 hover:bg-opacity-90 text-white p-2 rounded-full transition-colors shadow-lg"
+              title="Modifier"
+            >
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"
+                />
+              </svg>
+            </button>
+            <button
+              class="bg-red-500 hover:bg-red-600 hover:bg-opacity-90 text-white p-2 rounded-full transition-colors shadow-lg"
+              title="Supprimer"
+            >
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
+                />
+              </svg>
+            </button>
+          </div>
+        </div>
+      )
+    }
+  </div>
+
+  <!-- Informations du vinyle -->
+  <div class="p-2 sm:p-3">
+    <!-- Titre -->
+    <h3
+      class="font-medium text-neutral-900 dark:text-neutral-50 text-sm sm:text-base line-clamp-2 mb-1"
+    >
+      {vinyl.title}
+    </h3>
+
+    <!-- Artiste -->
+    <p class="text-neutral-600 dark:text-neutral-400 text-xs sm:text-sm line-clamp-1 mb-2">
+      {vinyl.artist}
+    </p>
+
+    <!-- Détails -->
+    <div class="flex items-center justify-between text-xs text-neutral-500 dark:text-neutral-500">
+      <div class="flex items-center space-x-2">
+        {
+          vinyl.year && (
+            <span class="bg-neutral-100 dark:bg-neutral-800 px-1.5 py-0.5 rounded text-[10px]">
+              {vinyl.year}
+            </span>
+          )
+        }
+        {
+          vinyl.format && (
+            <span class="bg-neutral-100 dark:bg-neutral-800 px-1.5 py-0.5 rounded text-[10px]">
+              {vinyl.format}
+            </span>
+          )
+        }
+      </div>
+      {
+        vinyl.price && (
+          <span class="font-medium text-emerald-600 dark:text-emerald-400">
+            {vinyl.price.toFixed(0)}€
+          </span>
+        )
+      }
+    </div>
+  </div>
+</div>
+
+<style>
+  .line-clamp-1 {
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 1;
+  }
+
+  .line-clamp-2 {
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+  }
+</style>

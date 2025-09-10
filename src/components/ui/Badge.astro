@@ -1,0 +1,34 @@
+---
+export interface Props {
+  variant?: 'default' | 'success' | 'warning' | 'error' | 'info'
+  size?: 'sm' | 'md' | 'lg'
+  class?: string
+}
+
+const { variant = 'default', size = 'md', class: className = '', ...rest } = Astro.props
+
+// Classes de base
+const baseClasses = 'inline-flex items-center font-medium rounded-full'
+
+// Variants
+const variants = {
+  default: 'bg-neutral-100 dark:bg-neutral-800 text-neutral-800 dark:text-neutral-200',
+  success: 'bg-emerald-100 dark:bg-emerald-900/30 text-emerald-800 dark:text-emerald-200',
+  warning: 'bg-amber-100 dark:bg-amber-900/30 text-amber-800 dark:text-amber-200',
+  error: 'bg-red-100 dark:bg-red-900/30 text-red-800 dark:text-red-200',
+  info: 'bg-blue-100 dark:bg-blue-900/30 text-blue-800 dark:text-blue-200',
+}
+
+// Tailles
+const sizes = {
+  sm: 'px-2 py-0.5 text-xs',
+  md: 'px-3 py-1 text-sm',
+  lg: 'px-4 py-1.5 text-base',
+}
+
+const classes = `${baseClasses} ${variants[variant]} ${sizes[size]} ${className}`
+---
+
+<span class={classes} {...rest}>
+  <slot />
+</span>
