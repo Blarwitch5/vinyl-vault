@@ -558,7 +558,7 @@ const filterFormat = Astro.url.searchParams.get("format") || "";
             <!-- Boutons de vue -->
             <div class="flex items-center bg-neutral-100 dark:bg-neutral-800 rounded-xl p-1">
               <button
-                id="grid-view"
+                id="collection-grid-view"
                 class="px-3 py-1 rounded-xl text-sm font-medium bg-neutral-50 dark:bg-black/20 text-neutral-900 dark:text-neutral-50 shadow-sm dark:shadow-white dark:shadow-dark-card"
               >
                 <svg
@@ -576,7 +576,7 @@ const filterFormat = Astro.url.searchParams.get("format") || "";
                 </svg>
               </button>
               <button
-                id="list-view"
+                id="collection-list-view"
                 class="px-3 py-1 rounded-xl text-sm font-medium text-neutral-600 dark:text-neutral-400"
               >
                 <svg
@@ -609,7 +609,7 @@ const filterFormat = Astro.url.searchParams.get("format") || "";
 
         <!-- Grille des vinyles -->
         <div
-          id="vinyl-grid"
+          id="collection-vinyl-grid"
           class="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4 mb-8"
         >
           {
@@ -624,10 +624,12 @@ const filterFormat = Astro.url.searchParams.get("format") || "";
         </div>
 
         <!-- Vue liste (cachée par défaut) -->
-        <div id="vinyl-list" class="hidden space-y-4">
+        <div id="collection-vinyl-list" class="hidden space-y-4">
           {
             collectionVinyls.map((vinyl) => (
               <div class="glass dark:glass-dark rounded-xl p-4 flex items-center space-x-4 hover:bg-white/80 dark:hover:bg-neutral-900/80 transition-colors">
+                <!-- Pre-fetch de la page de détail du vinyle -->
+                <link rel="prefetch" href={`/vinyl/${vinyl.id}`} />
                 <img
                   src={vinyl.coverImage || "/default-vinyl-cover.svg"}
                   alt={`Couverture de ${vinyl.title}`}
@@ -662,11 +664,14 @@ const filterFormat = Astro.url.searchParams.get("format") || "";
                       {vinyl.price?.toFixed(2)} €
                     </div>
                   </div>
-                  {currentUser && currentUser.id === collection.userId && (
-                    <div class="flex space-x-2 mt-2">
-                      <button class="text-gradient-emerald dark:text-gradient-emerald hover:text-gradient-emerald/80 dark:hover:text-gradient-emerald/80 text-sm">
-                        Modifier
-                      </button>
+                  <div class="flex space-x-2 mt-2">
+                    <a
+                      href={`/vinyl/${vinyl.id}`}
+                      class="text-gradient-emerald dark:text-gradient-emerald hover:text-gradient-emerald/80 dark:hover:text-gradient-emerald/80 text-sm"
+                    >
+                      Voir
+                    </a>
+                    {currentUser && currentUser.id === collection.userId && (
                       <button 
                         class="text-red-600 dark:text-red-400 hover:text-red-700 dark:hover:text-red-300 text-sm"
                         data-vinyl-id={vinyl.id || ''}
@@ -680,8 +685,8 @@ const filterFormat = Astro.url.searchParams.get("format") || "";
                       >
                         Supprimer
                       </button>
-                    </div>
-                  )}
+                    )}
+                  </div>
                 </div>
               </div>
             ))
@@ -748,10 +753,15 @@ const filterFormat = Astro.url.searchParams.get("format") || "";
 <script>
   // Gestion des vues (grille/liste)
   document.addEventListener("DOMContentLoaded", () => {
-    const gridViewBtn = document.getElementById("grid-view");
-    const listViewBtn = document.getElementById("list-view");
-    const vinylGrid = document.getElementById("vinyl-grid");
-    const vinylList = document.getElementById("vinyl-list");
+    const gridViewBtn = document.getElementById("collection-grid-view");
+    const listViewBtn = document.getElementById("collection-list-view");
+    const vinylGrid = document.getElementById("collection-vinyl-grid");
+    const vinylList = document.getElementById("collection-vinyl-list");
+
+    // Vérifier si tous les éléments nécessaires existent
+    if (!gridViewBtn || !listViewBtn || !vinylGrid || !vinylList) {
+      return;
+    }
 
     function switchToGridView() {
       gridViewBtn?.classList.add(
@@ -759,7 +769,9 @@ const filterFormat = Astro.url.searchParams.get("format") || "";
         "dark:bg-neutral-950",
         "text-neutral-900",
         "dark:text-neutral-50",
-        "shadow-sm dark:shadow-white dark:shadow-dark-card"
+        "shadow-sm",
+        "dark:shadow-white",
+        "dark:shadow-dark-card"
       );
       gridViewBtn?.classList.remove(
         "text-neutral-600",
@@ -770,7 +782,9 @@ const filterFormat = Astro.url.searchParams.get("format") || "";
         "dark:bg-neutral-950",
         "text-neutral-900",
         "dark:text-neutral-50",
-        "shadow-sm dark:shadow-white dark:shadow-dark-card"
+        "shadow-sm",
+        "dark:shadow-white",
+        "dark:shadow-dark-card"
       );
       listViewBtn?.classList.add(
         "text-neutral-600",
@@ -787,7 +801,9 @@ const filterFormat = Astro.url.searchParams.get("format") || "";
         "dark:bg-neutral-950",
         "text-neutral-900",
         "dark:text-neutral-50",
-        "shadow-sm dark:shadow-white dark:shadow-dark-card"
+        "shadow-sm",
+        "dark:shadow-white",
+        "dark:shadow-dark-card"
       );
       listViewBtn?.classList.remove(
         "text-neutral-600",
@@ -798,7 +814,9 @@ const filterFormat = Astro.url.searchParams.get("format") || "";
         "dark:bg-neutral-950",
         "text-neutral-900",
         "dark:text-neutral-50",
-        "shadow-sm dark:shadow-white dark:shadow-dark-card"
+        "shadow-sm",
+        "dark:shadow-white",
+        "dark:shadow-dark-card"
       );
       gridViewBtn?.classList.add(
         "text-neutral-600",
