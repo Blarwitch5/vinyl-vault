@@ -3,6 +3,12 @@ import BaseLayout from "../../layouts/BaseLayout.astro";
 import Navbar from "../../components/Navbar.astro";
 import Footer from "../../components/Footer.astro";
 import VinylCard from "../../components/VinylCard.astro";
+import VinylCardCompact from "../../components/VinylCardCompact.astro";
+import BarcodeScannerModal from "../../components/BarcodeScannerModal.astro";
+import { PrismaClient } from "@prisma/client";
+import jwt from "jsonwebtoken";
+
+const prisma = new PrismaClient();
 
 // Récupérer l'ID de la collection depuis l'URL
 const { id } = Astro.params;
@@ -10,91 +16,110 @@ const { id } = Astro.params;
 const title = `Collection #${id} - VinylVault`;
 const description = "Explorez cette collection de vinyles en détail";
 
-// Note: En production, vous récupéreriez ces données depuis votre API/base de données
-// Données simulées pour l'exemple
-const collection = {
-  id: id,
-  name: id === "1" ? "Ma collection principale" : "Jazz Classics",
-  description:
-    id === "1" ? "Mes vinyles préférés" : "Ma collection de jazz vintage",
-  isPublic: id === "2",
-  owner: {
-    id: "user123",
-    name: "Jean Dupont",
-    isCurrentUser: true, // En réalité, vous vérifieriez si l'utilisateur connecté est le propriétaire
-  },
-  createdAt: new Date("2023-01-15"),
-  updatedAt: new Date("2024-01-10"),
-  itemCount: id === "1" ? 42 : 18,
-  totalValue: id === "1" ? 1250.0 : 890.0,
+// Vérifier l'authentification
+let currentUser = null;
+let isAuthenticated = false;
+
+try {
+  const token = Astro.cookies.get("vinyl_vault_token")?.value;
+  if (token) {
+    const jwtSecret = import.meta.env.JWT_SECRET || "your-super-secret-jwt-key";
+    const decoded = jwt.verify(token, jwtSecret) as any;
+    currentUser = await prisma.user.findUnique({
+      where: { id: decoded.userId },
+      select: { id: true, name: true, email: true },
+    });
+    isAuthenticated = !!currentUser;
+  }
+} catch (error) {
+  console.error("Erreur d'authentification:", error);
+}
+
+// Récupérer les vraies données de la collection depuis la base de données
+let collection: any = null;
+let collectionVinyls: any[] = [];
+let error: string | null = null;
+
+try {
+  collection = await prisma.collection.findUnique({
+    where: { id: id as string },
+    include: {
+      user: {
+        select: {
+          id: true,
+          name: true,
+          email: true,
+        },
+      },
+      vinyls: {
+        orderBy: {
+          createdAt: 'desc'
+        }
+      },
+    },
+  });
+
+  if (collection) {
+    collectionVinyls = collection.vinyls;
+  } else {
+    error = "Collection non trouvée";
+  }
+} catch (err) {
+  console.error("Erreur lors de la récupération de la collection:", err);
+  error = "Erreur lors du chargement de la collection";
+}
+
+// Calculer les statistiques de la collection
+let stats: {
+  topArtists: { name: string; count: number }[];
+  formatBreakdown: { format: string; count: number; percentage: number }[];
+  conditionBreakdown: { condition: string; count: number; percentage: number }[];
+} = {
+  topArtists: [],
+  formatBreakdown: [],
+  conditionBreakdown: [],
 };
 
-// Vinyles de la collection (simulés)
-const collectionVinyls = [
-  {
-    id: "1",
-    title: "Dark Side of the Moon",
-    artist: "Pink Floyd",
-    year: 1973,
-    format: "LP",
-    condition: "Near Mint",
-    coverImage: "/vinyl-covers/dark-side.jpg",
-    price: 45.0,
-    note: "Original pressing, excellent état",
-  },
-  {
-    id: "2",
-    title: "Kind of Blue",
-    artist: "Miles Davis",
-    year: 1959,
-    format: "LP",
-    condition: "Very Good Plus",
-    coverImage: "/vinyl-covers/kind-of-blue.jpg",
-    price: 32.0,
-    note: "Réédition de 1975",
-  },
-  {
-    id: "3",
-    title: "Abbey Road",
-    artist: "The Beatles",
-    year: 1969,
-    format: "LP",
-    condition: "Mint",
-    coverImage: "/vinyl-covers/abbey-road.jpg",
-    price: 55.0,
-  },
-  {
-    id: "4",
-    title: "Blue Train",
-    artist: "John Coltrane",
-    year: 1957,
-    format: "LP",
-    condition: "Very Good",
-    coverImage: "/vinyl-covers/blue-train.jpg",
-    price: 28.0,
-  },
-  // Ajouter plus d'exemples...
-];
+if (collection && collectionVinyls.length > 0) {
+  // Top artistes
+  const artistCounts: { [key: string]: number } = {};
+  collectionVinyls.forEach((vinyl: any) => {
+    artistCounts[vinyl.artist] = (artistCounts[vinyl.artist] || 0) + 1;
+  });
+  stats.topArtists = Object.entries(artistCounts)
+    .map(([name, count]) => ({ name, count: count as number }))
+    .sort((a, b) => b.count - a.count)
+    .slice(0, 5);
 
-// Statistiques de la collection
-const stats = {
-  topArtists: [
-    { name: "Pink Floyd", count: 3 },
-    { name: "Miles Davis", count: 2 },
-    { name: "The Beatles", count: 2 },
-  ],
-  formatBreakdown: [
-    { format: "LP", count: 35, percentage: 83 },
-    { format: '12"', count: 5, percentage: 12 },
-    { format: '7"', count: 2, percentage: 5 },
-  ],
-  conditionBreakdown: [
-    { condition: "Mint", count: 8, percentage: 19 },
-    { condition: "Near Mint", count: 15, percentage: 36 },
-    { condition: "Very Good Plus", count: 12, percentage: 29 },
-    { condition: "Very Good", count: 7, percentage: 16 },
-  ],
-};
+  // Répartition par format
+  const formatCounts: { [key: string]: number } = {};
+  collectionVinyls.forEach((vinyl: any) => {
+    const format = vinyl.format || 'Inconnu';
+    formatCounts[format] = (formatCounts[format] || 0) + 1;
+  });
+  const totalVinyls = collectionVinyls.length;
+  stats.formatBreakdown = Object.entries(formatCounts)
+    .map(([format, count]) => ({
+      format,
+      count: count as number,
+      percentage: Math.round(((count as number) / totalVinyls) * 100)
+    }))
+    .sort((a, b) => b.count - a.count);
+
+  // Répartition par état
+  const conditionCounts: { [key: string]: number } = {};
+  collectionVinyls.forEach((vinyl: any) => {
+    const condition = vinyl.condition || 'Inconnu';
+    conditionCounts[condition] = (conditionCounts[condition] || 0) + 1;
+  });
+  stats.conditionBreakdown = Object.entries(conditionCounts)
+    .map(([condition, count]) => ({
+      condition,
+      count: count as number,
+      percentage: Math.round(((count as number) / totalVinyls) * 100)
+    }))
+    .sort((a, b) => b.count - a.count);
+}
 
 // Filtres et tri
 const sortBy = Astro.url.searchParams.get("sort") || "title";
@@ -106,19 +131,47 @@ const filterFormat = Astro.url.searchParams.get("format") || "";
   <Navbar slot="navbar" />
 
   <div class="container mx-auto px-4 py-8">
+    {error ? (
+      <!-- Message d'erreur -->
+      <div class="text-center py-12">
+        <div class="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-xl p-8 max-w-md mx-auto">
+          <div class="text-red-600 dark:text-red-400 mb-4">
+            <svg class="mx-auto h-12 w-12" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+            </svg>
+          </div>
+          <h2 class="text-xl font-semibold text-red-800 dark:text-red-200 mb-2">
+            Erreur
+          </h2>
+          <p class="text-red-700 dark:text-red-300 mb-4">
+            {error}
+          </p>
+          <a 
+            href="/dashboard" 
+            class="inline-flex items-center px-4 py-2 bg-gradient-emerald dark:bg-gradient-emerald text-white rounded-xl hover:bg-gradient-emerald/80 dark:hover:bg-gradient-emerald/80 transition-colors"
+          >
+            Retour au tableau de bord
+          </a>
+        </div>
+      </div>
+    ) : collection ? (
     <!-- En-tête de la collection -->
-    <div class="bg-light-background rounded-lg shadow-sm border border-light-surface p-6 mb-8">
+    <div
+      class="bg-neutral-50 dark:bg-black/20 dark:glass-emerald-border rounded-xl shadow-sm dark:shadow-white p-6 mb-8"
+    >
       <div class="flex items-start justify-between">
         <div class="flex-1">
           <div class="flex items-center mb-2">
-            <h1 class="text-3xl font-bold text-light-text mr-3">
+            <h1
+              class="text-3xl font-bold text-neutral-900 dark:text-neutral-50 mr-3"
+            >
               {collection.name}
             </h1>
             <span
               class={`px-3 py-1 rounded-full text-sm font-medium ${
                 collection.isPublic
-                  ? "bg-green-100 text-green-800"
-                  : "bg-light-surface text-light-text"
+                  ? "bg-green-100 dark:bg-green-900/20 text-green-800 dark:text-green-400"
+                  : "glass dark:glass-dark shadow-sm dark:shadow-white text-neutral-900 dark:text-neutral-50"
               }`}
             >
               {
@@ -129,39 +182,57 @@ const filterFormat = Astro.url.searchParams.get("format") || "";
             </span>
           </div>
 
-          <p class="text-light-textSecondary mb-4">{collection.description}</p>
+          <p class="text-neutral-600 dark:text-neutral-400 mb-4">
+            {collection.description || "Aucune description disponible"}
+          </p>
 
           <div class="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
             <div>
-              <span class="text-light-textSecondary">Propriétaire:</span>
-              <p class="font-medium text-light-text">{collection.owner.name}</p>
-            </div>
-            <div>
-              <span class="text-light-textSecondary">Vinyles:</span>
-              <p class="font-medium text-light-text">{collection.itemCount}</p>
-            </div>
-            <div>
-              <span class="text-light-textSecondary">Valeur totale:</span>
-              <p class="font-medium text-light-text">
-                {collection.totalValue.toFixed(2)} €
+              <span
+                class="text-neutral-600 dark:text-neutral-400"
+                >Propriétaire:</span
+              >
+              <p class="font-medium text-neutral-900 dark:text-neutral-50">
+                {collection.user.name || collection.user.email}
               </p>
             </div>
             <div>
-              <span class="text-light-textSecondary">Dernière mise à jour:</span>
-              <p class="font-medium text-light-text">
-                {collection.updatedAt.toLocaleDateString("fr-FR")}
+              <span
+                class="text-neutral-600 dark:text-neutral-400"
+                >Vinyles:</span
+              >
+              <p class="font-medium text-neutral-900 dark:text-neutral-50">
+                {collectionVinyls.length}
+              </p>
+            </div>
+            <div>
+              <span
+                class="text-neutral-600 dark:text-neutral-400"
+                >Valeur totale:</span
+              >
+              <p class="font-medium text-neutral-900 dark:text-neutral-50">
+                {collectionVinyls.reduce((sum: number, vinyl: any) => sum + (vinyl.price || 0), 0).toFixed(2)} €
+              </p>
+            </div>
+            <div>
+              <span
+                class="text-neutral-600 dark:text-neutral-400"
+                >Dernière mise à jour:</span
+              >
+              <p class="font-medium text-neutral-900 dark:text-neutral-50">
+                {new Date(collection.updatedAt).toLocaleDateString("fr-FR")}
               </p>
             </div>
           </div>
         </div>
 
         {
-          collection.owner.isCurrentUser && (
+          currentUser && currentUser.id === collection.userId && (
             <div class="flex space-x-2">
-              <button class="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 transition-colors">
+              <button class="bg-gradient-emerald dark:bg-gradient-emerald text-white px-4 py-2 rounded-xl hover:bg-gradient-emerald/80 dark:hover:bg-gradient-emerald/80 transition-colors">
                 Modifier
               </button>
-              <button class="border border-light-surface text-gray-700 px-4 py-2 rounded-md hover:bg-light-background transition-colors">
+              <button class=" text-neutral-900 dark:text-neutral-50 px-4 py-2 rounded-xl hover:bg-white dark:hover:bg-neutral-900 transition-colors">
                 Partager
               </button>
             </div>
@@ -170,13 +241,20 @@ const filterFormat = Astro.url.searchParams.get("format") || "";
       </div>
     </div>
 
-    <div class="grid lg:grid-cols-4 gap-8">
+    <div class="grid lg:grid-cols-4 gap-6">
       <!-- Sidebar - Filtres et statistiques -->
-      <div class="lg:col-span-1 space-y-6">
+      <div class="lg:col-span-1 space-y-4">
         <!-- Filtres -->
-        <div class="bg-light-background rounded-lg shadow-sm border border-light-surface">
-          <div class="px-4 py-3 border-b border-light-surface">
-            <h3 class="text-lg font-semibold text-light-text">Filtres</h3>
+        <div class="mb-6 md:mb-0">
+      <div class="glass dark:glass-dark rounded-xl shadow-sm">
+          <div
+            class="px-4 py-3 border-b border-neutral-200 dark:border-white/10"
+          >
+            <h3
+              class="text-lg font-semibold text-neutral-900 dark:text-neutral-50"
+            >
+              Filtres
+            </h3>
           </div>
           <div class="p-4 space-y-4">
             <form method="get" class="space-y-4">
@@ -184,14 +262,14 @@ const filterFormat = Astro.url.searchParams.get("format") || "";
               <div>
                 <label
                   for="sort"
-                  class="block text-sm font-medium text-gray-700 mb-1"
+                  class="block text-sm font-medium text-neutral-900 dark:text-neutral-50 mb-1"
                 >
                   Trier par
                 </label>
                 <select
                   id="sort"
                   name="sort"
-                  class="w-full px-3 py-2 border border-light-surface rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
+                  class="w-full px-3 py-2  rounded-xl focus:outline-none focus:ring-2 focus:ring-light-accent1 dark:focus:ring-dark-accent1 bg-neutral-50 dark:bg-black/20 text-neutral-900 dark:text-neutral-50 text-sm"
                 >
                   <option value="title" selected={sortBy === "title"}
                     >Titre</option
@@ -218,14 +296,14 @@ const filterFormat = Astro.url.searchParams.get("format") || "";
               <div>
                 <label
                   for="genre"
-                  class="block text-sm font-medium text-gray-700 mb-1"
+                  class="block text-sm font-medium text-neutral-900 dark:text-neutral-50 mb-1"
                 >
                   Genre
                 </label>
                 <select
                   id="genre"
                   name="genre"
-                  class="w-full px-3 py-2 border border-light-surface rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
+                  class="w-full px-3 py-2  rounded-xl focus:outline-none focus:ring-2 focus:ring-light-accent1 dark:focus:ring-dark-accent1 bg-neutral-50 dark:bg-black/20 text-neutral-900 dark:text-neutral-50 text-sm"
                 >
                   <option value="">Tous les genres</option>
                   <option value="rock" selected={filterGenre === "rock"}
@@ -248,14 +326,14 @@ const filterFormat = Astro.url.searchParams.get("format") || "";
               <div>
                 <label
                   for="format"
-                  class="block text-sm font-medium text-gray-700 mb-1"
+                  class="block text-sm font-medium text-neutral-900 dark:text-neutral-50 mb-1"
                 >
                   Format
                 </label>
                 <select
                   id="format"
                   name="format"
-                  class="w-full px-3 py-2 border border-light-surface rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
+                  class="w-full px-3 py-2  rounded-xl focus:outline-none focus:ring-2 focus:ring-light-accent1 dark:focus:ring-dark-accent1 bg-neutral-50 dark:bg-black/20 text-neutral-900 dark:text-neutral-50 text-sm"
                 >
                   <option value="">Tous les formats</option>
                   <option value="LP" selected={filterFormat === "LP"}>LP</option
@@ -271,7 +349,7 @@ const filterFormat = Astro.url.searchParams.get("format") || "";
 
               <button
                 type="submit"
-                class="w-full bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 transition-colors text-sm"
+                class="w-full bg-gradient-emerald dark:bg-gradient-emerald text-white px-4 py-2 rounded-xl hover:bg-gradient-emerald/80 dark:hover:bg-gradient-emerald/80 transition-colors text-sm"
               >
                 Appliquer
               </button>
@@ -279,45 +357,55 @@ const filterFormat = Astro.url.searchParams.get("format") || "";
           </div>
         </div>
 
-        <!-- Statistiques -->
-        <div class="bg-light-background rounded-lg shadow-sm border border-light-surface">
-          <div class="px-4 py-3 border-b border-light-surface">
-            <h3 class="text-lg font-semibold text-light-text">Statistiques</h3>
+        <!-- Statistiques - Visible sur desktop et tablette -->
+        <div class="hidden md:block glass dark:glass-dark rounded-xl shadow-sm">
+          <div class="px-4 py-3 border-b border-neutral-200 dark:border-white/10">
+            <h3 class="text-lg font-semibold text-neutral-900 dark:text-neutral-50">
+              Statistiques
+            </h3>
           </div>
           <div class="p-4 space-y-4">
-            <!-- Artistes favoris -->
+            <!-- Top artistes -->
             <div>
-              <h4 class="text-sm font-medium text-light-text mb-2">
+              <h4 class="text-sm font-medium text-neutral-900 dark:text-neutral-50 mb-2">
                 Top artistes
               </h4>
               <div class="space-y-1">
                 {
                   stats.topArtists.map((artist) => (
                     <div class="flex items-center justify-between text-sm">
-                      <span class="text-gray-700">{artist.name}</span>
-                      <span class="text-light-textSecondary">{artist.count}</span>
+                      <span class="text-neutral-900 dark:text-neutral-50">
+                        {artist.name}
+                      </span>
+                      <span class="text-neutral-400 bg-neutral-900 px-2 py-1 rounded text-xs">
+                        {artist.count}
+                      </span>
                     </div>
                   ))
                 }
               </div>
             </div>
 
-            <!-- Répartition par format -->
+            <!-- Formats -->
             <div>
-              <h4 class="text-sm font-medium text-light-text mb-2">Formats</h4>
+              <h4 class="text-sm font-medium text-neutral-900 dark:text-neutral-50 mb-2">
+                Formats
+              </h4>
               <div class="space-y-2">
                 {
                   stats.formatBreakdown.map((format) => (
                     <div>
                       <div class="flex items-center justify-between text-sm mb-1">
-                        <span class="text-gray-700">{format.format}</span>
-                        <span class="text-light-textSecondary">
+                        <span class="text-neutral-900 dark:text-neutral-50">
+                          {format.format}
+                        </span>
+                        <span class="text-neutral-400 bg-neutral-900 px-2 py-1 rounded text-xs">
                           {format.count} ({format.percentage}%)
                         </span>
                       </div>
-                      <div class="w-full bg-light-surface rounded-full h-1">
+                      <div class="w-full glass dark:glass-dark shadow-sm dark:shadow-white rounded-full h-1">
                         <div
-                          class="bg-blue-600 h-1 rounded-full"
+                          class="bg-gradient-emerald dark:bg-gradient-emerald h-1 rounded-full"
                           style={`width: ${format.percentage}%`}
                         />
                       </div>
@@ -327,22 +415,26 @@ const filterFormat = Astro.url.searchParams.get("format") || "";
               </div>
             </div>
 
-            <!-- Répartition par état -->
+            <!-- État -->
             <div>
-              <h4 class="text-sm font-medium text-light-text mb-2">État</h4>
+              <h4 class="text-sm font-medium text-neutral-900 dark:text-neutral-50 mb-2">
+                État
+              </h4>
               <div class="space-y-2">
                 {
                   stats.conditionBreakdown.map((condition) => (
                     <div>
                       <div class="flex items-center justify-between text-sm mb-1">
-                        <span class="text-gray-700">{condition.condition}</span>
-                        <span class="text-light-textSecondary">
+                        <span class="text-neutral-900 dark:text-neutral-50">
+                          {condition.condition}
+                        </span>
+                        <span class="text-neutral-400 bg-neutral-900 px-2 py-1 rounded text-xs">
                           {condition.count} ({condition.percentage}%)
                         </span>
                       </div>
-                      <div class="w-full bg-light-surface rounded-full h-1">
+                      <div class="w-full glass dark:glass-dark shadow-sm dark:shadow-white rounded-full h-1">
                         <div
-                          class="bg-green-600 h-1 rounded-full"
+                          class="bg-gradient-emerald dark:bg-gradient-emerald h-1 rounded-full"
                           style={`width: ${condition.percentage}%`}
                         />
                       </div>
@@ -355,20 +447,119 @@ const filterFormat = Astro.url.searchParams.get("format") || "";
         </div>
       </div>
 
-      <!-- Contenu principal - Vinyles -->
-      <div class="lg:col-span-3">
-        <!-- Barre d'outils -->
-        <div class="flex items-center justify-between mb-6">
-          <div class="flex items-center space-x-4">
-            <h2 class="text-xl font-semibold text-light-text">
-              {collectionVinyls.length} vinyles
-            </h2>
+      <!-- Statistiques mobile - Visible uniquement sur mobile -->
+      <div class="md:hidden mb-6">
+        <div class="glass dark:glass-dark rounded-xl shadow-sm">
+          <div class="px-4 py-3 border-b border-neutral-200 dark:border-white/10">
+            <h3 class="text-lg font-semibold text-neutral-900 dark:text-neutral-50">
+              Statistiques
+            </h3>
+          </div>
+          <div class="p-4">
+            <div class="grid grid-cols-1 gap-4">
+              <!-- Top artistes -->
+              <div>
+                <h4 class="text-sm font-medium text-neutral-900 dark:text-neutral-50 mb-2">
+                  Top artistes
+                </h4>
+                <div class="space-y-1">
+                  {
+                    stats.topArtists.map((artist) => (
+                      <div class="flex items-center justify-between text-sm">
+                        <span class="text-neutral-900 dark:text-neutral-50">
+                          {artist.name}
+                        </span>
+                        <span class="text-neutral-400 bg-neutral-900 px-2 py-1 rounded text-xs">
+                          {artist.count}
+                        </span>
+                      </div>
+                    ))
+                  }
+                </div>
+              </div>
 
-            <!-- Toggle vue -->
-            <div class="flex items-center bg-light-surface rounded-lg p-1">
+              <!-- Formats -->
+              <div>
+                <h4 class="text-sm font-medium text-neutral-900 dark:text-neutral-50 mb-2">
+                  Formats
+                </h4>
+                <div class="space-y-2">
+                  {
+                    stats.formatBreakdown.map((format) => (
+                      <div>
+                        <div class="flex items-center justify-between text-sm mb-1">
+                          <span class="text-neutral-900 dark:text-neutral-50">
+                            {format.format}
+                          </span>
+                          <span class="text-neutral-400 bg-neutral-900 px-2 py-1 rounded text-xs">
+                            {format.count} ({format.percentage}%)
+                          </span>
+                        </div>
+                        <div class="w-full glass dark:glass-dark shadow-sm dark:shadow-white rounded-full h-1">
+                          <div
+                            class="bg-gradient-emerald dark:bg-gradient-emerald h-1 rounded-full"
+                            style={`width: ${format.percentage}%`}
+                          />
+                        </div>
+                      </div>
+                    ))
+                  }
+                </div>
+              </div>
+
+              <!-- État -->
+              <div>
+                <h4 class="text-sm font-medium text-neutral-900 dark:text-neutral-50 mb-2">
+                  État
+                </h4>
+                <div class="space-y-2">
+                  {
+                    stats.conditionBreakdown.map((condition) => (
+                      <div>
+                        <div class="flex items-center justify-between text-sm mb-1">
+                          <span class="text-neutral-900 dark:text-neutral-50">
+                            {condition.condition}
+                          </span>
+                          <span class="text-neutral-400 bg-neutral-900 px-2 py-1 rounded text-xs">
+                            {condition.count} ({condition.percentage}%)
+                          </span>
+                        </div>
+                        <div class="w-full glass dark:glass-dark shadow-sm dark:shadow-white rounded-full h-1">
+                          <div
+                            class="bg-gradient-emerald dark:bg-gradient-emerald h-1 rounded-full"
+                            style={`width: ${condition.percentage}%`}
+                          />
+                        </div>
+                      </div>
+                    ))
+                  }
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      
+    </div>
+    <!-- Contenu principal -->
+      <div class="lg:col-span-3">
+        <!-- En-tête avec actions -->
+        <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
+          <div>
+            <h2 class="text-2xl font-bold text-neutral-900 dark:text-neutral-50">
+              Vinyles ({collectionVinyls.length})
+            </h2>
+            <p class="text-neutral-600 dark:text-neutral-400">
+              {collectionVinyls.length} vinyles dans cette collection
+            </p>
+          </div>
+          <div class="flex items-center gap-3">
+            <!-- Boutons de vue -->
+            <div class="flex items-center bg-neutral-100 dark:bg-neutral-800 rounded-xl p-1">
               <button
                 id="grid-view"
-                class="px-3 py-1 rounded-md text-sm font-medium bg-light-background text-light-text shadow-sm"
+                class="px-3 py-1 rounded-xl text-sm font-medium bg-neutral-50 dark:bg-black/20 text-neutral-900 dark:text-neutral-50 shadow-sm dark:shadow-white dark:shadow-dark-card"
               >
                 <svg
                   class="w-4 h-4"
@@ -386,7 +577,7 @@ const filterFormat = Astro.url.searchParams.get("format") || "";
               </button>
               <button
                 id="list-view"
-                class="px-3 py-1 rounded-md text-sm font-medium text-light-textSecondary"
+                class="px-3 py-1 rounded-xl text-sm font-medium text-neutral-600 dark:text-neutral-400"
               >
                 <svg
                   class="w-4 h-4"
@@ -405,8 +596,11 @@ const filterFormat = Astro.url.searchParams.get("format") || "";
           </div>
 
           {
-            collection.owner.isCurrentUser && (
-              <button class="bg-green-600 text-white px-4 py-2 rounded-md hover:bg-green-700 transition-colors">
+            currentUser && currentUser.id === collection.userId && (
+              <button
+                id="add-vinyl-collection-btn"
+                class="bg-gradient-emerald dark:bg-gradient-emerald text-white px-4 py-2 rounded-xl hover:bg-gradient-emerald/80 dark:hover:bg-gradient-emerald/80 transition-colors"
+              >
                 + Ajouter un vinyle
               </button>
             )
@@ -416,13 +610,13 @@ const filterFormat = Astro.url.searchParams.get("format") || "";
         <!-- Grille des vinyles -->
         <div
           id="vinyl-grid"
-          class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6"
+          class="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4 mb-8"
         >
           {
             collectionVinyls.map((vinyl) => (
-              <VinylCard
+              <VinylCardCompact
                 vinyl={vinyl}
-                showActions={collection.owner.isCurrentUser}
+                showActions={!!(currentUser && currentUser.id === collection.userId)}
                 isInCollection={true}
               />
             ))
@@ -433,29 +627,33 @@ const filterFormat = Astro.url.searchParams.get("format") || "";
         <div id="vinyl-list" class="hidden space-y-4">
           {
             collectionVinyls.map((vinyl) => (
-              <div class="bg-light-background border border-light-surface rounded-lg p-4 flex items-center space-x-4">
+              <div class="bg-neutral-50 dark:bg-black/20  rounded-xl p-4 flex items-center space-x-4">
                 <img
                   src={vinyl.coverImage || "/default-vinyl-cover.svg"}
                   alt={`Couverture de ${vinyl.title}`}
                   class="w-16 h-16 object-cover rounded"
                 />
                 <div class="flex-1">
-                  <h3 class="font-semibold text-light-text">{vinyl.title}</h3>
-                  <p class="text-light-textSecondary">{vinyl.artist}</p>
-                  <div class="text-sm text-light-textSecondary">
+                  <h3 class="font-semibold text-neutral-900 dark:text-neutral-50">
+                    {vinyl.title}
+                  </h3>
+                  <p class="text-neutral-600 dark:text-neutral-400">
+                    {vinyl.artist}
+                  </p>
+                  <div class="text-sm text-neutral-600 dark:text-neutral-400">
                     {vinyl.year} • {vinyl.format} • {vinyl.condition}
                   </div>
                 </div>
                 <div class="text-right">
-                  <div class="font-semibold text-light-text">
+                  <div class="font-semibold text-neutral-900 dark:text-neutral-50">
                     {vinyl.price?.toFixed(2)} €
                   </div>
-                  {collection.owner.isCurrentUser && (
+                  {currentUser && currentUser.id === collection.userId && (
                     <div class="flex space-x-2 mt-2">
-                      <button class="text-blue-600 hover:text-blue-700 text-sm">
+                      <button class="text-gradient-emerald dark:text-gradient-emerald hover:text-gradient-emerald/80 dark:hover:text-gradient-emerald/80 text-sm">
                         Modifier
                       </button>
-                      <button class="text-red-600 hover:text-red-700 text-sm">
+                      <button class="text-red-600 dark:text-red-400 hover:text-red-700 dark:hover:text-red-300 text-sm">
                         Supprimer
                       </button>
                     </div>
@@ -469,7 +667,7 @@ const filterFormat = Astro.url.searchParams.get("format") || "";
         {
           collectionVinyls.length === 0 && (
             <div class="text-center py-12">
-              <div class="text-light-textSecondary mb-4">
+              <div class="text-neutral-600 dark:text-neutral-400 mb-4">
                 <svg
                   class="mx-auto h-12 w-12"
                   fill="none"
@@ -484,14 +682,17 @@ const filterFormat = Astro.url.searchParams.get("format") || "";
                   />
                 </svg>
               </div>
-              <h3 class="text-lg font-medium text-light-text mb-2">
+              <h3 class="text-lg font-medium text-neutral-900 dark:text-neutral-50 mb-2">
                 Aucun vinyle dans cette collection
               </h3>
-              <p class="text-light-textSecondary mb-4">
+              <p class="text-neutral-600 dark:text-neutral-400 mb-4">
                 Commencez par ajouter quelques vinyles à votre collection.
               </p>
-              {collection.owner.isCurrentUser && (
-                <button class="bg-blue-600 text-white px-6 py-2 rounded-md hover:bg-blue-700 transition-colors">
+              {currentUser && currentUser.id === collection.userId && (
+                <button
+                  id="add-vinyl-empty-btn"
+                  class="bg-gradient-emerald dark:bg-gradient-emerald text-white px-6 py-2 rounded-xl hover:bg-gradient-emerald/80 dark:hover:bg-gradient-emerald/80 transition-colors"
+                >
                   Ajouter un vinyle
                 </button>
               )}
@@ -499,10 +700,25 @@ const filterFormat = Astro.url.searchParams.get("format") || "";
           )
         }
       </div>
-    </div>
+  </div>
+    ) : (
+      <!-- Chargement -->
+      <div class="text-center py-12">
+        <div class="inline-flex items-center">
+          <svg class="animate-spin h-8 w-8 text-gradient-emerald dark:text-gradient-emerald mr-3" fill="none" viewBox="0 0 24 24">
+            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+          </svg>
+          <span class="text-lg text-neutral-600 dark:text-neutral-400">Chargement de la collection...</span>
+        </div>
+      </div>
+    )}
   </div>
 
   <Footer slot="footer" />
+
+  <!-- Modal de scan de code-barres -->
+  <BarcodeScannerModal />
 </BaseLayout>
 
 <script>
@@ -514,20 +730,56 @@ const filterFormat = Astro.url.searchParams.get("format") || "";
     const vinylList = document.getElementById("vinyl-list");
 
     function switchToGridView() {
-      gridViewBtn?.classList.add("bg-light-background", "text-light-text", "shadow-sm");
-      gridViewBtn?.classList.remove("text-light-textSecondary");
-      listViewBtn?.classList.remove("bg-light-background", "text-light-text", "shadow-sm");
-      listViewBtn?.classList.add("text-light-textSecondary");
+      gridViewBtn?.classList.add(
+        "bg-neutral-50",
+        "dark:bg-neutral-950",
+        "text-neutral-900",
+        "dark:text-neutral-50",
+        "shadow-sm dark:shadow-white dark:shadow-dark-card"
+      );
+      gridViewBtn?.classList.remove(
+        "text-neutral-600",
+        "dark:text-neutral-400"
+      );
+      listViewBtn?.classList.remove(
+        "bg-neutral-50",
+        "dark:bg-neutral-950",
+        "text-neutral-900",
+        "dark:text-neutral-50",
+        "shadow-sm dark:shadow-white dark:shadow-dark-card"
+      );
+      listViewBtn?.classList.add(
+        "text-neutral-600",
+        "dark:text-neutral-400"
+      );
 
       vinylGrid?.classList.remove("hidden");
       vinylList?.classList.add("hidden");
     }
 
     function switchToListView() {
-      listViewBtn?.classList.add("bg-light-background", "text-light-text", "shadow-sm");
-      listViewBtn?.classList.remove("text-light-textSecondary");
-      gridViewBtn?.classList.remove("bg-light-background", "text-light-text", "shadow-sm");
-      gridViewBtn?.classList.add("text-light-textSecondary");
+      listViewBtn?.classList.add(
+        "bg-neutral-50",
+        "dark:bg-neutral-950",
+        "text-neutral-900",
+        "dark:text-neutral-50",
+        "shadow-sm dark:shadow-white dark:shadow-dark-card"
+      );
+      listViewBtn?.classList.remove(
+        "text-neutral-600",
+        "dark:text-neutral-400"
+      );
+      gridViewBtn?.classList.remove(
+        "bg-neutral-50",
+        "dark:bg-neutral-950",
+        "text-neutral-900",
+        "dark:text-neutral-50",
+        "shadow-sm dark:shadow-white dark:shadow-dark-card"
+      );
+      gridViewBtn?.classList.add(
+        "text-neutral-600",
+        "dark:text-neutral-400"
+      );
 
       vinylGrid?.classList.add("hidden");
       vinylList?.classList.remove("hidden");
@@ -545,5 +797,25 @@ const filterFormat = Astro.url.searchParams.get("format") || "";
         filterForm?.submit();
       });
     });
+
+    // Gestion des boutons d'ajout de vinyle
+    const addVinylCollectionBtn = document.getElementById(
+      "add-vinyl-collection-btn"
+    );
+    const addVinylEmptyBtn = document.getElementById("add-vinyl-empty-btn");
+
+    const openBarcodeModal = () => {
+      if (typeof (window as any).openBarcodeModal === "function") {
+        (window as any).openBarcodeModal();
+      } else {
+        console.error("Modal de scan de code-barres non disponible");
+        alert(
+          "Le modal de scan de code-barres n'est pas disponible. Veuillez recharger la page."
+        );
+      }
+    };
+
+    addVinylCollectionBtn?.addEventListener("click", openBarcodeModal);
+    addVinylEmptyBtn?.addEventListener("click", openBarcodeModal);
   });
 </script>

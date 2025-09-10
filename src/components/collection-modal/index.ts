@@ -1,2 +1,2 @@
 // Export selon les règles .cursorrules
-export { default as AddToCollectionModal } from "./AddToCollectionModal.astro";
+export { default as AddToCollectionModal } from './AddToCollectionModal.astro'

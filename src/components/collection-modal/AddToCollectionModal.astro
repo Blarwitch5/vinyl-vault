@@ -1,10 +1,10 @@
 ---
 // Composant modal pour ajouter un vinyle à une collection
 export interface Props {
-  vinylData?: any;
+  vinylData?: any
 }
 
-const { vinylData } = Astro.props;
+const { vinylData } = Astro.props
 ---
 
 <!-- Modal overlay -->
@@ -12,26 +12,19 @@ const { vinylData } = Astro.props;
   id="add-to-collection-modal"
   class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden flex items-center justify-center p-4"
 >
-  <div
-    class="bg-light-background dark:bg-dark-surface rounded-lg max-w-md w-full max-h-[90vh] overflow-y-auto"
-  >
+  <div class="glass-card dark:glass-dark rounded-lg max-w-md w-full max-h-[90vh] overflow-y-auto">
     <!-- Header -->
     <div
-      class="flex items-center justify-between p-6 border-b border-light-surface dark:border-dark-surface"
+      class="flex items-center justify-between p-6 border-b border-neutral-200 dark:border-white/10"
     >
-      <h3 class="text-lg font-semibold text-light-text dark:text-dark-text">
+      <h3 class="text-lg font-semibold text-neutral-900 dark:text-neutral-50">
         Ajouter à ma collection
       </h3>
       <button
         id="close-modal"
-        class="text-gray-400 hover:text-light-textSecondary dark:hover:text-gray-300 p-1"
+        class="text-gray-400 hover:text-neutral-600 dark:hover:text-gray-300 p-1"
       >
-        <svg
-          class="w-6 h-6"
-          fill="none"
-          stroke="currentColor"
-          viewBox="0 0 24 24"
-        >
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path
             stroke-linecap="round"
             stroke-linejoin="round"
@@ -42,26 +35,13 @@ const { vinylData } = Astro.props;
     </div>
 
     <!-- Vinyl info -->
-    <div
-      id="vinyl-info"
-      class="p-6 border-b border-light-surface dark:border-dark-surface hidden"
-    >
+    <div id="vinyl-info" class="p-6 border-b border-neutral-200 dark:border-white/10 hidden">
       <div class="flex space-x-4">
-        <img
-          id="vinyl-cover"
-          src=""
-          alt=""
-          class="w-16 h-16 object-cover rounded"
-        />
+        <img id="vinyl-cover" src="" alt="" class="w-16 h-16 object-cover rounded" />
         <div class="flex-1">
-          <h4
-            id="vinyl-title"
-            class="font-semibold text-light-text dark:text-dark-text"
-          >
-          </h4>
-          <p id="vinyl-artist" class="text-light-textSecondary dark:text-dark-textSecondary"></p>
-          <p id="vinyl-year" class="text-sm text-light-textSecondary dark:text-light-textSecondary">
-          </p>
+          <h4 id="vinyl-title" class="font-semibold text-neutral-900 dark:text-neutral-50"></h4>
+          <p id="vinyl-artist" class="text-neutral-600 dark:text-neutral-400"></p>
+          <p id="vinyl-year" class="text-sm text-neutral-600 dark:text-neutral-600"></p>
         </div>
       </div>
     </div>
@@ -85,10 +65,10 @@ const { vinylData } = Astro.props;
             ></path>
           </svg>
         </div>
-        <h4 class="text-lg font-semibold text-light-text dark:text-dark-text mb-2">
+        <h4 class="text-lg font-semibold text-neutral-900 dark:text-neutral-50 mb-2">
           Connexion requise
         </h4>
-        <p class="text-light-textSecondary dark:text-dark-textSecondary mb-6">
+        <p class="text-neutral-600 dark:text-neutral-400 mb-6">
           Vous devez être connecté pour ajouter des vinyles à votre collection.
         </p>
         <div class="flex space-x-3">
@@ -100,7 +80,7 @@ const { vinylData } = Astro.props;
           </a>
           <a
             href="/register"
-            class="flex-1 border border-light-surface dark:border-dark-surface text-gray-700 dark:text-dark-textSecondary py-2 px-4 rounded-lg hover:bg-light-background dark:hover:bg-dark-700 transition-colors text-center"
+            class="flex-1 text-gray-700 dark:text-neutral-400 py-2 px-4 rounded-lg hover:bg-neutral-50 dark:hover:bg-dark-700 transition-colors text-center"
           >
             S'inscrire
           </a>
@@ -109,13 +89,9 @@ const { vinylData } = Astro.props;
 
       <!-- Loading -->
       <div id="loading-collections" class="text-center hidden">
-        <div
-          class="animate-spin rounded-full h-8 w-8 border-b-2 border-primary-500 mx-auto mb-4"
-        >
+        <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-primary-500 mx-auto mb-4">
         </div>
-        <p class="text-light-textSecondary dark:text-dark-textSecondary">
-          Chargement de vos collections...
-        </p>
+        <p class="text-neutral-600 dark:text-neutral-400">Chargement de vos collections...</p>
       </div>
 
       <!-- Aucune collection -->
@@ -131,14 +107,13 @@ const { vinylData } = Astro.props;
               stroke-linecap="round"
               stroke-linejoin="round"
               stroke-width="2"
-              d="M19 11H5m14-5v12a2 2 0 01-2 2H7a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2z"
-            ></path>
+              d="M19 11H5m14-5v12a2 2 0 01-2 2H7a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2z"></path>
           </svg>
         </div>
-        <h4 class="text-lg font-semibold text-light-text dark:text-dark-text mb-2">
+        <h4 class="text-lg font-semibold text-neutral-900 dark:text-neutral-50 mb-2">
           Aucune collection
         </h4>
-        <p class="text-light-textSecondary dark:text-dark-textSecondary mb-6">
+        <p class="text-neutral-600 dark:text-neutral-400 mb-6">
           Vous n'avez pas encore de collection. Créez-en une pour commencer !
         </p>
         <button
@@ -151,18 +126,15 @@ const { vinylData } = Astro.props;
 
       <!-- Sélection de collection -->
       <div id="collection-selection" class="hidden">
-        <h4 class="font-semibold text-light-text dark:text-dark-text mb-4">
+        <h4 class="font-semibold text-neutral-900 dark:text-neutral-50 mb-4">
           Choisir une collection
         </h4>
-        <div
-          id="collections-list"
-          class="space-y-2 mb-4 max-h-60 overflow-y-auto"
-        >
+        <div id="collections-list" class="space-y-2 mb-4 max-h-60 overflow-y-auto">
           <!-- Collections will be inserted here -->
         </div>
         <button
           id="create-new-collection-btn"
-          class="w-full border border-dashed border-light-surface dark:border-dark-surface text-light-textSecondary dark:text-dark-textSecondary py-3 px-4 rounded-lg hover:border-primary-500 hover:text-primary-500 transition-colors"
+          class="w-full border border-dashed border-neutral-200 dark:border-white/10 text-neutral-600 dark:text-neutral-400 py-3 px-4 rounded-lg hover:border-primary-500 hover:text-primary-500 transition-colors"
         >
           + Créer une nouvelle collection
         </button>
@@ -170,14 +142,14 @@ const { vinylData } = Astro.props;
 
       <!-- Création de collection -->
       <div id="collection-creation" class="hidden">
-        <h4 class="font-semibold text-light-text dark:text-dark-text mb-4">
+        <h4 class="font-semibold text-neutral-900 dark:text-neutral-50 mb-4">
           Créer une nouvelle collection
         </h4>
         <form id="create-collection-form">
           <div class="mb-4">
             <label
               for="collection-name"
-              class="block text-sm font-medium text-gray-700 dark:text-dark-textSecondary mb-2"
+              class="block text-sm font-medium text-gray-700 dark:text-neutral-400 mb-2"
             >
               Nom de la collection *
             </label>
@@ -187,13 +159,13 @@ const { vinylData } = Astro.props;
               name="name"
               required
               placeholder="Ex: Ma collection rock"
-              class="w-full px-3 py-2 border border-light-surface dark:border-dark-surface rounded-md bg-light-background dark:bg-dark-background text-light-text dark:text-dark-text focus:outline-none focus:ring-2 focus:ring-primary-500"
+              class="w-full px-3 py-2 rounded-md bg-neutral-50 dark:bg-black/20 text-neutral-900 dark:text-neutral-50 focus:outline-none focus:ring-2 focus:ring-primary-500"
             />
           </div>
           <div class="mb-6">
             <label
               for="collection-description"
-              class="block text-sm font-medium text-gray-700 dark:text-dark-textSecondary mb-2"
+              class="block text-sm font-medium text-gray-700 dark:text-neutral-400 mb-2"
             >
               Description (optionnel)
             </label>
@@ -202,14 +174,14 @@ const { vinylData } = Astro.props;
               name="description"
               rows="3"
               placeholder="Décrivez votre collection..."
-              class="w-full px-3 py-2 border border-light-surface dark:border-dark-surface rounded-md bg-light-background dark:bg-dark-background text-light-text dark:text-dark-text focus:outline-none focus:ring-2 focus:ring-primary-500 resize-none"
+              class="w-full px-3 py-2 rounded-md bg-neutral-50 dark:bg-black/20 text-neutral-900 dark:text-neutral-50 focus:outline-none focus:ring-2 focus:ring-primary-500 resize-none"
             ></textarea>
           </div>
           <div class="flex space-x-3">
             <button
               type="button"
               id="back-to-selection"
-              class="flex-1 border border-light-surface dark:border-dark-surface text-gray-700 dark:text-dark-textSecondary py-2 px-4 rounded-lg hover:bg-light-background dark:hover:bg-dark-700 transition-colors"
+              class="flex-1 text-gray-700 dark:text-neutral-400 py-2 px-4 rounded-lg hover:bg-neutral-50 dark:hover:bg-dark-700 transition-colors"
             >
               Retour
             </button>
@@ -239,15 +211,14 @@ const { vinylData } = Astro.props;
               d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
           </svg>
         </div>
-        <h4 class="text-lg font-semibold text-light-text dark:text-dark-text mb-2">
+        <h4 class="text-lg font-semibold text-neutral-900 dark:text-neutral-50 mb-2">
           Vinyle ajouté !
         </h4>
-        <p id="success-details" class="text-light-textSecondary dark:text-dark-textSecondary mb-6">
-        </p>
+        <p id="success-details" class="text-neutral-600 dark:text-neutral-400 mb-6"></p>
         <div class="flex space-x-3">
           <button
             id="close-success"
-            class="flex-1 border border-light-surface dark:border-dark-surface text-gray-700 dark:text-dark-textSecondary py-2 px-4 rounded-lg hover:bg-light-background dark:hover:bg-dark-700 transition-colors"
+            class="flex-1 text-gray-700 dark:text-neutral-400 py-2 px-4 rounded-lg hover:bg-neutral-50 dark:hover:bg-dark-700 transition-colors"
           >
             Fermer
           </button>
@@ -265,296 +236,278 @@ const { vinylData } = Astro.props;
 
 <script>
   // Import des types selon les règles .cursorrules
-  import type { Vinyl, Collection } from "../../types";
-  import { createModalHelper } from "../../utils/modal-helpers";
-  import { createDomHelper } from "../../utils/dom-helpers";
+  import type { Collection, Vinyl } from '../../types'
+  import { createDomHelper } from '../../utils/dom-helpers'
+  import { createModalHelper } from '../../utils/modal-helpers'
 
   // Variables d'état
-  let modalElement: HTMLElement | null = null;
-  let currentVinyl: Vinyl | null = null;
-  let userCollections: Collection[] = [];
+  let modalElement: HTMLElement | null = null
+  let currentVinyl: Vinyl | null = null
+  let userCollections: Collection[] = []
 
   // Créer les helpers selon les règles .cursorrules
-  const modalHelper = createModalHelper();
-  const domHelper = createDomHelper();
+  const modalHelper = createModalHelper()
+  const domHelper = createDomHelper()
 
   // Fonctions utilitaires selon les règles
   const initModal = (): void => {
-    modalElement = domHelper.getElementById("add-to-collection-modal");
-    attachEventListeners();
-  };
+    modalElement = domHelper.getElementById('add-to-collection-modal')
+    attachEventListeners()
+  }
 
   const attachEventListeners = (): void => {
     // Fermer la modal
-    document
-      .getElementById("close-modal")
-      ?.addEventListener("click", closeModal);
+    document.getElementById('close-modal')?.addEventListener('click', closeModal)
 
-    document
-      .getElementById("close-success")
-      ?.addEventListener("click", closeModal);
+    document.getElementById('close-success')?.addEventListener('click', closeModal)
 
     // Fermer en cliquant sur l'overlay
-    modalElement?.addEventListener("click", (e) => {
-      if (e.target === modalElement) closeModal();
-    });
+    modalElement?.addEventListener('click', (e) => {
+      if (e.target === modalElement) closeModal()
+    })
 
     // Échap pour fermer
-    document.addEventListener("keydown", (e) => {
-      if (e.key === "Escape" && isModalOpen()) closeModal();
-    });
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && isModalOpen()) closeModal()
+    })
 
     // Boutons d'action
     document
-      .getElementById("create-collection-btn")
-      ?.addEventListener("click", showCollectionCreation);
+      .getElementById('create-collection-btn')
+      ?.addEventListener('click', showCollectionCreation)
 
     document
-      .getElementById("create-new-collection-btn")
-      ?.addEventListener("click", showCollectionCreation);
+      .getElementById('create-new-collection-btn')
+      ?.addEventListener('click', showCollectionCreation)
 
-    document
-      .getElementById("back-to-selection")
-      ?.addEventListener("click", showCollectionSelection);
+    document.getElementById('back-to-selection')?.addEventListener('click', showCollectionSelection)
 
     // Form de création
-    document
-      .getElementById("create-collection-form")
-      ?.addEventListener("submit", (e) => {
-        e.preventDefault();
-        handleCreateCollection();
-      });
-  };
+    document.getElementById('create-collection-form')?.addEventListener('submit', (e) => {
+      e.preventDefault()
+      handleCreateCollection()
+    })
+  }
 
   const openModal = async (vinylData: Vinyl): Promise<void> => {
-    currentVinyl = vinylData;
-    updateVinylInfo();
-    modalElement?.classList.remove("hidden");
-    document.body.style.overflow = "hidden";
+    currentVinyl = vinylData
+    updateVinylInfo()
+    modalElement?.classList.remove('hidden')
+    document.body.style.overflow = 'hidden'
 
     // Vérifier l'authentification
-    await checkAuthAndLoadCollections();
-  };
+    await checkAuthAndLoadCollections()
+  }
 
   const closeModal = (): void => {
-    modalElement?.classList.add("hidden");
-    document.body.style.overflow = "";
-    resetModal();
-  };
+    modalElement?.classList.add('hidden')
+    document.body.style.overflow = ''
+    resetModal()
+  }
 
   const isModalOpen = (): boolean => {
-    return !modalElement?.classList.contains("hidden");
-  };
+    return !modalElement?.classList.contains('hidden')
+  }
 
   const updateVinylInfo = (): void => {
-    if (!currentVinyl) return;
+    if (!currentVinyl) return
 
-    const coverImg = document.getElementById("vinyl-cover") as HTMLImageElement;
-    const titleEl = document.getElementById("vinyl-title");
-    const artistEl = document.getElementById("vinyl-artist");
-    const yearEl = document.getElementById("vinyl-year");
+    const coverImg = document.getElementById('vinyl-cover') as HTMLImageElement
+    const titleEl = document.getElementById('vinyl-title')
+    const artistEl = document.getElementById('vinyl-artist')
+    const yearEl = document.getElementById('vinyl-year')
 
-    if (coverImg)
-      coverImg.src = currentVinyl.coverImage || "/default-vinyl-cover.svg";
-    if (titleEl) titleEl.textContent = currentVinyl.title || "Titre inconnu";
-    if (artistEl)
-      artistEl.textContent = currentVinyl.artist || "Artiste inconnu";
-    if (yearEl)
-      yearEl.textContent = currentVinyl.year ? `${currentVinyl.year}` : "";
+    if (coverImg) coverImg.src = currentVinyl.coverImage || '/default-vinyl-cover.svg'
+    if (titleEl) titleEl.textContent = currentVinyl.title || 'Titre inconnu'
+    if (artistEl) artistEl.textContent = currentVinyl.artist || 'Artiste inconnu'
+    if (yearEl) yearEl.textContent = currentVinyl.year ? `${currentVinyl.year}` : ''
 
-    document.getElementById("vinyl-info")?.classList.remove("hidden");
-  };
+    document.getElementById('vinyl-info')?.classList.remove('hidden')
+  }
 
   const checkAuthAndLoadCollections = async (): Promise<void> => {
-    showSection("loading-collections");
+    showSection('loading-collections')
 
     try {
       // Vérifier l'authentification
-      const authResponse = await fetch("/api/auth/check");
+      const authResponse = await fetch('/api/auth/check')
 
       if (!authResponse.ok) {
-        showSection("login-required");
-        return;
+        showSection('login-required')
+        return
       }
 
-      const authData = await authResponse.json();
+      const authData = await authResponse.json()
       if (!authData.authenticated) {
-        showSection("login-required");
-        return;
+        showSection('login-required')
+        return
       }
 
       // Charger les collections
-      const collectionsResponse = await fetch("/api/collections/list");
+      const collectionsResponse = await fetch('/api/collections/list')
       if (!collectionsResponse.ok) {
-        throw new Error("Erreur lors du chargement des collections");
+        throw new Error('Erreur lors du chargement des collections')
       }
 
-      const collectionsData = await collectionsResponse.json();
-      userCollections = collectionsData.collections || [];
+      const collectionsData = await collectionsResponse.json()
+      userCollections = collectionsData.collections || []
 
       if (userCollections.length === 0) {
-        showSection("no-collections");
+        showSection('no-collections')
       } else {
-        showCollectionSelection();
+        showCollectionSelection()
       }
     } catch (error) {
-      console.error("Erreur:", error);
-      showSection("login-required");
+      console.error('Erreur:', error)
+      showSection('login-required')
     }
-  };
+  }
 
   const showCollectionSelection = (): void => {
-    showSection("collection-selection");
-    renderCollections();
-  };
+    showSection('collection-selection')
+    renderCollections()
+  }
 
   const renderCollections = (): void => {
-    const container = document.getElementById("collections-list");
-    if (!container) return;
+    const container = document.getElementById('collections-list')
+    if (!container) return
 
-    container.innerHTML = "";
+    container.innerHTML = ''
 
     userCollections.forEach((collection) => {
-      const collectionElement = document.createElement("button");
+      const collectionElement = document.createElement('button')
       collectionElement.className =
-        "w-full text-left p-3 border border-light-surface dark:border-slate-800 rounded-lg hover:border-primary-500 hover:bg-primary-50 dark:hover:bg-primary-900/20 transition-colors";
+        'w-full text-left p-3 border border-neutral-200 dark:border-slate-800 rounded-lg hover:border-primary-500 hover:bg-primary-50 dark:hover:bg-primary-900/20 transition-colors'
       collectionElement.innerHTML = `
-        <div class="font-medium text-light-text dark:text-dark-text">${collection.name}</div>
-        ${collection.description ? `<div class="text-sm text-light-textSecondary dark:text-dark-textSecondary">${collection.description}</div>` : ""}
-        <div class="text-xs text-light-textSecondary dark:text-dark-textSecondary mt-1">${collection.vinyl_count || 0} vinyle(s)</div>
-      `;
+        <div class="font-medium text-neutral-900 dark:text-neutral-50">${collection.name}</div>
+        ${collection.description ? `<div class="text-sm text-neutral-600 dark:text-neutral-400">${collection.description}</div>` : ''}
+        <div class="text-xs text-neutral-600 dark:text-neutral-400 mt-1">${collection.vinyl_count || 0} vinyle(s)</div>
+      `
 
-      collectionElement.addEventListener("click", () => {
-        addToCollection(collection.id, collection.name);
-      });
+      collectionElement.addEventListener('click', () => {
+        addToCollection(collection.id, collection.name)
+      })
 
-      container.appendChild(collectionElement);
-    });
-  };
+      container.appendChild(collectionElement)
+    })
+  }
 
   const showCollectionCreation = (): void => {
-    showSection("collection-creation");
+    showSection('collection-creation')
     // Focus sur le champ nom
     setTimeout(() => {
-      document.getElementById("collection-name")?.focus();
-    }, 100);
-  };
+      document.getElementById('collection-name')?.focus()
+    }, 100)
+  }
 
   const handleCreateCollection = async (): Promise<void> => {
-    const form = document.getElementById(
-      "create-collection-form"
-    ) as HTMLFormElement;
-    const formData = new FormData(form);
+    const form = document.getElementById('create-collection-form') as HTMLFormElement
+    const formData = new FormData(form)
 
     try {
-      const response = await fetch("/api/collections/create", {
-        method: "POST",
+      const response = await fetch('/api/collections/create', {
+        method: 'POST',
         headers: {
-          "Content-Type": "application/json",
+          'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          name: formData.get("name"),
-          description: formData.get("description"),
+          name: formData.get('name'),
+          description: formData.get('description'),
         }),
-      });
+      })
 
       if (!response.ok) {
-        throw new Error("Erreur lors de la création de la collection");
+        throw new Error('Erreur lors de la création de la collection')
       }
 
-      const result = await response.json();
+      const result = await response.json()
 
       // Ajouter directement le vinyle à la nouvelle collection
-      await addToCollection(result.collection.id, result.collection.name);
+      await addToCollection(result.collection.id, result.collection.name)
     } catch (error) {
-      console.error("Erreur:", error);
-      alert("Erreur lors de la création de la collection");
+      console.error('Erreur:', error)
+      alert('Erreur lors de la création de la collection')
     }
-  };
+  }
 
-  const addToCollection = async (
-    collectionId: string,
-    collectionName: string
-  ): Promise<void> => {
-    showSection("loading-collections");
+  const addToCollection = async (collectionId: string, collectionName: string): Promise<void> => {
+    showSection('loading-collections')
 
     try {
-      const response = await fetch("/api/collections/add", {
-        method: "POST",
+      const response = await fetch('/api/collections/add', {
+        method: 'POST',
         headers: {
-          "Content-Type": "application/json",
+          'Content-Type': 'application/json',
         },
         body: JSON.stringify({
           collection_id: collectionId,
           vinyl_data: currentVinyl,
         }),
-      });
+      })
 
       if (!response.ok) {
-        throw new Error("Erreur lors de l'ajout du vinyle");
+        throw new Error("Erreur lors de l'ajout du vinyle")
       }
 
       // Afficher le succès
-      const successDetails = document.getElementById("success-details");
+      const successDetails = document.getElementById('success-details')
       if (successDetails) {
-        successDetails.textContent = `Le vinyle a été ajouté à votre collection "${collectionName}".`;
+        successDetails.textContent = `Le vinyle a été ajouté à votre collection "${collectionName}".`
       }
 
-      showSection("success-message");
+      showSection('success-message')
     } catch (error) {
-      console.error("Erreur:", error);
-      alert("Erreur lors de l'ajout du vinyle à la collection");
+      console.error('Erreur:', error)
+      alert("Erreur lors de l'ajout du vinyle à la collection")
     }
-  };
+  }
 
   const showSection = (sectionId: string): void => {
     // Cacher toutes les sections
     const sections = [
-      "login-required",
-      "loading-collections",
-      "no-collections",
-      "collection-selection",
-      "collection-creation",
-      "success-message",
-    ];
+      'login-required',
+      'loading-collections',
+      'no-collections',
+      'collection-selection',
+      'collection-creation',
+      'success-message',
+    ]
     sections.forEach((id) => {
-      document.getElementById(id)?.classList.add("hidden");
-    });
+      document.getElementById(id)?.classList.add('hidden')
+    })
 
     // Afficher la section demandée
-    document.getElementById(sectionId)?.classList.remove("hidden");
-  };
+    document.getElementById(sectionId)?.classList.remove('hidden')
+  }
 
   const resetModal = (): void => {
-    currentVinyl = null;
-    userCollections = [];
-    document.getElementById("vinyl-info")?.classList.add("hidden");
-    showSection("loading-collections");
+    currentVinyl = null
+    userCollections = []
+    document.getElementById('vinyl-info')?.classList.add('hidden')
+    showSection('loading-collections')
 
     // Reset form
-    const form = document.getElementById(
-      "create-collection-form"
-    ) as HTMLFormElement;
-    form?.reset();
-  };
+    const form = document.getElementById('create-collection-form') as HTMLFormElement
+    form?.reset()
+  }
 
   // API publique selon les règles .cursorrules (éviter les classes)
   const addToCollectionModal = {
     open: openModal,
     close: closeModal,
     isOpen: isModalOpen,
-  };
+  }
 
   // Initialiser la modal
-  document.addEventListener("DOMContentLoaded", () => {
-    initModal();
-    window.addToCollectionModal = addToCollectionModal;
-  });
+  document.addEventListener('DOMContentLoaded', () => {
+    initModal()
+    window.addToCollectionModal = addToCollectionModal
+  })
 
   // Type global pour TypeScript
   declare global {
     interface Window {
-      addToCollectionModal: typeof addToCollectionModal;
+      addToCollectionModal: typeof addToCollectionModal
     }
   }
 </script>
