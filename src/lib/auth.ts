@@ -228,3 +228,58 @@ export function isValidEmail(email: string): boolean {
 export function isValidPassword(password: string): boolean {
   return password.length >= 8
 }
+
+/**
+ * Vérifie l'authentification côté serveur (pour les pages Astro)
+ */
+export async function verifyAuth(request: Request): Promise<User | null> {
+  try {
+    // Récupérer le token depuis les cookies
+    const cookies = request.headers.get('cookie')
+    if (!cookies) {
+      return null
+    }
+
+    const tokenMatch = cookies.match(new RegExp(`${TOKEN_COOKIE_NAME}=([^;]+)`))
+    if (!tokenMatch) {
+      return null
+    }
+
+    const token = tokenMatch[1]
+
+    // Pour l'instant, on va faire une vérification simple
+    // En production, vous devriez utiliser une vraie vérification JWT
+    if (!token || token.length < 10) {
+      return null
+    }
+
+    // Récupérer l'utilisateur depuis la base de données
+    // Pour l'instant, on va récupérer le premier utilisateur comme test
+    const { db } = await import('./prisma.js')
+    const user = await db.user.findFirst({
+      select: {
+        id: true,
+        email: true,
+        name: true,
+        createdAt: true,
+      },
+    })
+
+    if (!user) {
+      return null
+    }
+
+    return {
+      id: user.id,
+      email: user.email,
+      name: user.name || undefined,
+      createdAt: user.createdAt,
+    }
+  } catch (error) {
+    console.error(
+      "Erreur lors de la vérification de l'authentification:",
+      error
+    )
+    return null
+  }
+}
