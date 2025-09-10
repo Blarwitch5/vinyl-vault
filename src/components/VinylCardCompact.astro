@@ -14,12 +14,16 @@ export interface Props {
     discogsUrl?: string
   }
   showActions?: boolean
+  showViewOnly?: boolean
   isInCollection?: boolean
 }
 
-const { vinyl, showActions = false } = Astro.props
+const { vinyl, showActions = false, showViewOnly = false } = Astro.props
 const defaultCover = '/default-vinyl-cover.svg'
 ---
+
+<!-- Pre-fetch de la page de détail du vinyle -->
+<link rel="prefetch" href={`/vinyl/${vinyl.id}`} />
 
 <div
   class="vinyl-card-compact glass dark:glass-dark dark:bg-neutral-950 dark:bg-gradient-emerald-subtle rounded-lg shadow-sm dark:shadow-white overflow-hidden hover:shadow-md dark:hover:shadow-white-md transition-all duration-300 hover:scale-105 hover:-translate-y-1 group"
@@ -44,32 +48,56 @@ const defaultCover = '/default-vinyl-cover.svg'
         </div>
       )
     }
-    <!-- Overlay avec action de suppression au hover -->
+    <!-- Overlay avec actions au hover -->
     {
-      showActions && (
+      (showActions || showViewOnly) && (
         <div class="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-50 transition-all duration-300 flex items-center justify-center opacity-0 group-hover:opacity-100">
-          <button
-            class="bg-red-500 hover:bg-red-600 hover:bg-opacity-90 text-white p-2 rounded-full transition-colors shadow-lg"
-            title="Supprimer de la collection"
-            data-vinyl-id={vinyl.id || ''}
-            data-vinyl-title={vinyl.title || ''}
-            data-vinyl-artist={vinyl.artist || ''}
-            data-vinyl-year={vinyl.year || ''}
-            data-vinyl-format={vinyl.format || ''}
-            data-vinyl-condition={vinyl.condition || ''}
-            data-vinyl-price={vinyl.price || 0}
-            data-vinyl-cover={vinyl.coverImage || '/default-vinyl-cover.svg'}
-            data-action="delete"
-          >
-            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
-              />
-            </svg>
-          </button>
+          <div class="flex space-x-2">
+            <a
+              href={`/vinyl/${vinyl.id}`}
+              class="bg-gradient-emerald hover:bg-gradient-emerald/80 text-white p-2 rounded-full transition-colors shadow-lg"
+              title="Voir les détails"
+            >
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
+                />
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"
+                />
+              </svg>
+            </a>
+            {showActions && (
+              <button
+                class="bg-red-500 hover:bg-red-600 hover:bg-opacity-90 text-white p-2 rounded-full transition-colors shadow-lg"
+                title="Supprimer de la collection"
+                data-vinyl-id={vinyl.id || ''}
+                data-vinyl-title={vinyl.title || ''}
+                data-vinyl-artist={vinyl.artist || ''}
+                data-vinyl-year={vinyl.year || ''}
+                data-vinyl-format={vinyl.format || ''}
+                data-vinyl-condition={vinyl.condition || ''}
+                data-vinyl-price={vinyl.price || 0}
+                data-vinyl-cover={vinyl.coverImage || '/default-vinyl-cover.svg'}
+                data-action="delete"
+              >
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
+                  />
+                </svg>
+              </button>
+            )}
+          </div>
         </div>
       )
     }

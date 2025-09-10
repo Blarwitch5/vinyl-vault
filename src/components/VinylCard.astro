@@ -21,6 +21,9 @@ const { vinyl, showActions = false, isInCollection = false } = Astro.props
 const defaultCover = '/default-vinyl-cover.svg'
 ---
 
+<!-- Pre-fetch de la page de détail du vinyle -->
+<link rel="prefetch" href={`/vinyl/${vinyl.id}`} />
+
 <div
   class="vinyl-card-container glass dark:glass-dark dark:bg-neutral-950 dark:bg-gradient-emerald-subtle rounded-xl shadow-md dark:shadow-white-md overflow-hidden hover:shadow-lg dark:hover:shadow-white-lg transition-all duration-300 hover:-translate-y-1"
   data-discogs-id={vinyl.discogsId}
@@ -100,13 +103,21 @@ const defaultCover = '/default-vinyl-cover.svg'
               Ajouter à ma collection
             </button>
           ) : (
-            <button
-              class="w-full bg-red-600 text-white py-2 px-4 rounded-lg hover:bg-red-700 transition-colors text-sm font-medium"
-              data-vinyl-id={vinyl.id}
-              data-action="remove"
-            >
-              Supprimer de la collection
-            </button>
+            <div class="flex gap-2">
+              <a
+                href={`/vinyl/${vinyl.id}`}
+                class="flex-1 bg-gradient-emerald text-white py-2 px-4 rounded-lg hover:bg-gradient-emerald/80 transition-colors text-sm font-medium text-center"
+              >
+                Voir
+              </a>
+              <button
+                class="bg-red-600 text-white py-2 px-4 rounded-lg hover:bg-red-700 transition-colors text-sm font-medium"
+                data-vinyl-id={vinyl.id}
+                data-action="remove"
+              >
+                Supprimer
+              </button>
+            </div>
           )}
         </div>
       )
