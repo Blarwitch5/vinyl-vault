@@ -556,10 +556,10 @@ const filterFormat = Astro.url.searchParams.get("format") || "";
           </div>
           <div class="flex items-center gap-3">
             <!-- Boutons de vue -->
-            <div class="flex items-center bg-neutral-100 dark:bg-neutral-800 rounded-xl p-1">
+            <div class="flex items-center glass dark:glass-dark rounded-xl p-1">
               <button
                 id="collection-grid-view"
-                class="px-3 py-1 rounded-xl text-sm font-medium bg-neutral-50 dark:bg-black/20 text-neutral-900 dark:text-neutral-50 shadow-sm dark:shadow-white dark:shadow-dark-card"
+                class="px-3 py-1 rounded-xl text-sm font-medium bg-white dark:bg-neutral-800 text-neutral-900 dark:text-neutral-50 shadow-sm"
               >
                 <svg
                   class="w-4 h-4"
@@ -577,7 +577,7 @@ const filterFormat = Astro.url.searchParams.get("format") || "";
               </button>
               <button
                 id="collection-list-view"
-                class="px-3 py-1 rounded-xl text-sm font-medium text-neutral-600 dark:text-neutral-400"
+                class="px-3 py-1 rounded-xl text-sm font-medium text-neutral-600 dark:text-neutral-400 hover:bg-white dark:hover:bg-neutral-800 transition-colors"
               >
                 <svg
                   class="w-4 h-4"
@@ -765,26 +765,22 @@ const filterFormat = Astro.url.searchParams.get("format") || "";
 
     function switchToGridView() {
       gridViewBtn?.classList.add(
-        "bg-neutral-50",
-        "dark:bg-neutral-950",
+        "bg-white",
+        "dark:bg-neutral-800",
         "text-neutral-900",
         "dark:text-neutral-50",
-        "shadow-sm",
-        "dark:shadow-white",
-        "dark:shadow-dark-card"
+        "shadow-sm"
       );
       gridViewBtn?.classList.remove(
         "text-neutral-600",
         "dark:text-neutral-400"
       );
       listViewBtn?.classList.remove(
-        "bg-neutral-50",
-        "dark:bg-neutral-950",
+        "bg-white",
+        "dark:bg-neutral-800",
         "text-neutral-900",
         "dark:text-neutral-50",
-        "shadow-sm",
-        "dark:shadow-white",
-        "dark:shadow-dark-card"
+        "shadow-sm"
       );
       listViewBtn?.classList.add(
         "text-neutral-600",
@@ -797,26 +793,22 @@ const filterFormat = Astro.url.searchParams.get("format") || "";
 
     function switchToListView() {
       listViewBtn?.classList.add(
-        "bg-neutral-50",
-        "dark:bg-neutral-950",
+        "bg-white",
+        "dark:bg-neutral-800",
         "text-neutral-900",
         "dark:text-neutral-50",
-        "shadow-sm",
-        "dark:shadow-white",
-        "dark:shadow-dark-card"
+        "shadow-sm"
       );
       listViewBtn?.classList.remove(
         "text-neutral-600",
         "dark:text-neutral-400"
       );
       gridViewBtn?.classList.remove(
-        "bg-neutral-50",
-        "dark:bg-neutral-950",
+        "bg-white",
+        "dark:bg-neutral-800",
         "text-neutral-900",
         "dark:text-neutral-50",
-        "shadow-sm",
-        "dark:shadow-white",
-        "dark:shadow-dark-card"
+        "shadow-sm"
       );
       gridViewBtn?.classList.add(
         "text-neutral-600",

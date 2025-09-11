@@ -314,7 +314,7 @@ if (currentUser) {
           class="glass dark:glass-dark rounded-xl shadow-sm mb-8"
         >
           <div
-            class="px-6 py-4 border-b border-neutral-200 dark:border-neutral-800"
+            class="px-6 py-4  border-neutral-200 dark:border-neutral-800"
           >
             <div class="flex items-center justify-between">
               <h2
@@ -418,7 +418,7 @@ if (currentUser) {
           class="glass dark:glass-dark rounded-xl shadow-sm"
         >
           <div
-            class="px-6 py-4 border-b border-neutral-200 dark:border-neutral-800"
+            class="px-6 py-4  border-neutral-200 dark:border-neutral-800"
           >
             <div class="flex items-center justify-between">
               <h2
@@ -428,10 +428,10 @@ if (currentUser) {
               </h2>
               <div class="flex items-center gap-3">
                 <!-- Boutons de vue -->
-                <div class="flex items-center bg-neutral-100 dark:bg-neutral-800 rounded-xl p-1">
+                <div class="flex items-center glass dark:glass-dark rounded-xl p-1">
                   <button
                     id="dashboard-grid-view"
-                    class="px-3 py-1 rounded-xl text-sm font-medium bg-neutral-50 dark:bg-black/20 text-neutral-900 dark:text-neutral-50 shadow-sm dark:shadow-white dark:shadow-dark-card"
+                    class="px-3 py-1 rounded-xl text-sm font-medium bg-white dark:bg-neutral-800 text-neutral-900 dark:text-neutral-50 shadow-sm"
                     title="Vue grille"
                   >
                     <svg
@@ -450,7 +450,7 @@ if (currentUser) {
                   </button>
                   <button
                     id="dashboard-list-view"
-                    class="px-3 py-1 rounded-xl text-sm font-medium text-neutral-600 dark:text-neutral-400"
+                    class="px-3 py-1 rounded-xl text-sm font-medium text-neutral-600 dark:text-neutral-400 hover:bg-white dark:hover:bg-neutral-800 transition-colors"
                     title="Vue liste"
                   >
                     <svg
@@ -566,7 +566,7 @@ if (currentUser) {
           class="glass dark:glass-dark rounded-xl shadow-sm"
         >
           <div
-            class="px-6 py-4 border-b border-neutral-200 dark:border-neutral-800"
+            class="px-6 py-4  border-neutral-200 dark:border-neutral-800"
           >
             <h3
               class="text-lg font-semibold text-neutral-900 dark:text-neutral-50"
@@ -605,7 +605,7 @@ if (currentUser) {
           class="glass dark:glass-dark rounded-xl shadow-sm"
         >
           <div
-            class="px-6 py-4 border-b border-neutral-200 dark:border-neutral-800"
+            class="px-6 py-4  border-neutral-200 dark:border-neutral-800"
           >
             <h3
               class="text-lg font-semibold text-neutral-900 dark:text-neutral-50"
@@ -723,7 +723,7 @@ if (currentUser) {
           class="glass dark:glass-dark rounded-xl shadow-sm"
         >
           <div
-            class="px-6 py-4 border-b border-neutral-200 dark:border-neutral-800"
+            class="px-6 py-4  border-neutral-200 dark:border-neutral-800"
           >
             <h3
               class="text-lg font-semibold text-neutral-900 dark:text-neutral-50"
@@ -855,26 +855,22 @@ if (currentUser) {
 
     function switchToDashboardGridView() {
       dashboardGridViewBtn?.classList.add(
-        "bg-neutral-50",
-        "dark:bg-black/20",
+        "bg-white",
+        "dark:bg-neutral-800",
         "text-neutral-900",
         "dark:text-neutral-50",
-        "shadow-sm",
-        "dark:shadow-white",
-        "dark:shadow-dark-card"
+        "shadow-sm"
       );
       dashboardGridViewBtn?.classList.remove(
         "text-neutral-600",
         "dark:text-neutral-400"
       );
       dashboardListViewBtn?.classList.remove(
-        "bg-neutral-50",
-        "dark:bg-black/20",
+        "bg-white",
+        "dark:bg-neutral-800",
         "text-neutral-900",
         "dark:text-neutral-50",
-        "shadow-sm",
-        "dark:shadow-white",
-        "dark:shadow-dark-card"
+        "shadow-sm"
       );
       dashboardListViewBtn?.classList.add(
         "text-neutral-600",
@@ -887,26 +883,22 @@ if (currentUser) {
 
     function switchToDashboardListView() {
       dashboardListViewBtn?.classList.add(
-        "bg-neutral-50",
-        "dark:bg-black/20",
+        "bg-white",
+        "dark:bg-neutral-800",
         "text-neutral-900",
         "dark:text-neutral-50",
-        "shadow-sm",
-        "dark:shadow-white",
-        "dark:shadow-dark-card"
+        "shadow-sm"
       );
       dashboardListViewBtn?.classList.remove(
         "text-neutral-600",
         "dark:text-neutral-400"
       );
       dashboardGridViewBtn?.classList.remove(
-        "bg-neutral-50",
-        "dark:bg-black/20",
+        "bg-white",
+        "dark:bg-neutral-800",
         "text-neutral-900",
         "dark:text-neutral-50",
-        "shadow-sm",
-        "dark:shadow-white",
-        "dark:shadow-dark-card"
+        "shadow-sm"
       );
       dashboardGridViewBtn?.classList.add(
         "text-neutral-600",
