@@ -255,7 +255,7 @@ export default {
           backgroundColor: 'rgba(255, 255, 255, 0.02)',
           backdropFilter: 'blur(24px)',
           WebkitBackdropFilter: 'blur(24px)',
-          border: '1px solid rgba(255, 255, 255, 0.05)',
+          border: '1px solid rgba(255, 255, 255, 0.08)',
           boxShadow:
             '0 8px 32px rgba(0, 0, 0, 0.1), inset 0 1px 0 rgba(255, 255, 255, 0.1)',
         },
@@ -263,7 +263,7 @@ export default {
           backgroundColor: 'rgba(0, 0, 0, 0.1)',
           backdropFilter: 'blur(24px)',
           WebkitBackdropFilter: 'blur(24px)',
-          border: '1px solid rgba(255, 255, 255, 0.03)',
+          border: '1px solid rgba(255, 255, 255, 0.08)',
           boxShadow:
             '0 8px 32px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.05)',
         },
@@ -299,7 +299,7 @@ export default {
           backgroundColor: 'rgba(255, 255, 255, 0.04)',
           backdropFilter: 'blur(20px)',
           WebkitBackdropFilter: 'blur(20px)',
-          border: '1px solid rgba(255, 255, 255, 0.08)',
+          border: '1px solid rgba(255, 255, 255, 0.12)',
           boxShadow: '0 4px 24px rgba(0, 0, 0, 0.05)',
         },
         '.glass-emerald-border': {
@@ -436,14 +436,14 @@ export default {
         },
         '.glass-kombai-dark': {
           backgroundColor: 'rgba(0, 0, 0, 0.2)',
-          border: '1px solid rgba(255, 255, 255, 0.08)',
+          border: '1px solid rgba(255, 255, 255, 0.12)',
           borderRadius: '12px',
           boxShadow:
             '0 4px 20px rgba(255, 255, 255, 0.05), 0 1px 3px rgba(255, 255, 255, 0.1)',
           transition: 'all 0.2s ease-in-out',
           '&:hover': {
             backgroundColor: 'rgba(0, 0, 0, 0.3)',
-            border: '1px solid rgba(255, 255, 255, 0.12)',
+            border: '1px solid rgba(255, 255, 255, 0.16)',
             boxShadow:
               '0 8px 32px rgba(255, 255, 255, 0.08), 0 2px 8px rgba(255, 255, 255, 0.12)',
             transform: 'translateY(-1px)',
