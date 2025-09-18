@@ -1,8 +1,11 @@
 ---
 // Composant de recherche pour la navbar avec résultats en temps réel
+
+// Utiliser un ID statique mais unique
+const searchId = 'navbar-search-unique'
 ---
 
-<div class="relative flex-1 max-w-md mx-4">
+<div class="relative flex-1 max-w-md mx-4" data-search-id={searchId}>
   <!-- Champ de recherche -->
   <div class="relative">
     <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
@@ -16,11 +19,11 @@
           stroke-linecap="round"
           stroke-linejoin="round"
           stroke-width="2"
-          d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+          d="m21 21-4.35-4.35"></path>
       </svg>
     </div>
     <input
-      id="navbar-search"
+      id={searchId}
       type="text"
       placeholder="Rechercher un vinyle, artiste..."
       class="w-full pl-10 pr-4 py-2 glass-card dark:glass-dark rounded-xl text-neutral-900 dark:text-neutral-50 placeholder:text-neutral-600 dark:placeholder:text-neutral-400 focus:ring-2 focus:ring-light-accent1 dark:focus:ring-dark-accent1 focus:border-transparent transition-all duration-200"
@@ -28,14 +31,14 @@
     <!-- Bouton clear (caché par défaut) -->
     <button
       id="search-clear"
-      class="hidden absolute inset-y-0 right-0 pr-3 flex items-center text-neutral-600 dark:text-neutral-400 hover:text-neutral-900 dark:hover:text-neutral-50 transition-colors"
+      class="absolute inset-y-0 right-0 pr-3 items-center text-neutral-600 dark:text-neutral-400 hover:text-neutral-900 dark:hover:text-neutral-50 transition-colors hidden"
     >
       <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
         <path
           stroke-linecap="round"
           stroke-linejoin="round"
           stroke-width="2"
-          d="M6 18L18 6M6 6l12 12"></path>
+          d="M18 6 6 18"></path>
       </svg>
     </button>
   </div>
@@ -43,16 +46,16 @@
   <!-- Mini-modal des résultats -->
   <div
     id="search-results"
-    class="hidden absolute top-full left-0 right-0 mt-2 bg-neutral-50 dark:bg-black/20 rounded-xl shadow-xl dark:shadow-white-xl z-50 max-h-80 overflow-y-auto"
+    class="hidden absolute top-full left-0 right-0 mt-2 bg-white dark:bg-neutral-900 rounded-xl shadow-xl border border-neutral-200 dark:border-neutral-700 z-50 max-h-80 overflow-y-auto"
   >
     <!-- Loading state -->
-    <div id="search-loading" class="hidden p-4 text-center">
-      <div class="inline-flex items-center space-x-2">
+    <div id="search-loading" class="hidden p-6 text-center">
+      <div class="inline-flex items-center space-x-3">
         <div
-          class="w-4 h-4 border-2 border-gradient-cyan dark:border-gradient-cyan border-t-transparent rounded-full animate-spin"
+          class="w-5 h-5 border-2 border-emerald-500 border-t-transparent rounded-full animate-spin"
         >
         </div>
-        <span class="text-sm text-neutral-600 dark:text-neutral-400">Recherche en cours...</span>
+        <span class="text-sm text-neutral-600 dark:text-neutral-400 font-medium">Recherche en cours...</span>
       </div>
     </div>
 
@@ -60,15 +63,20 @@
     <div id="search-items" class="py-2"></div>
 
     <!-- Aucun résultat -->
-    <div id="search-empty" class="hidden p-4 text-center">
-      <span class="text-sm text-neutral-600 dark:text-neutral-400">Aucun résultat trouvé</span>
+    <div id="search-empty" class="hidden p-6 text-center">
+      <div class="text-center">
+        <svg class="w-8 h-8 text-neutral-400 dark:text-neutral-500 mx-auto mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m21 21-4.35-4.35"></path>
+        </svg>
+        <span class="text-sm text-neutral-600 dark:text-neutral-400">Aucun vinyle trouvé</span>
+      </div>
     </div>
 
     <!-- Footer avec lien vers recherche complète -->
-    <div id="search-footer" class="hidden border-t border-neutral-200 dark:border-white/10 p-3">
+    <div id="search-footer" class="hidden border-t border-neutral-200 dark:border-neutral-700 p-3">
       <a
         href="/search"
-        class="block text-center text-sm text-gradient-emerald dark:text-gradient-emerald hover:text-gradient-emerald/80 dark:hover:text-gradient-emerald/80 transition-colors"
+        class="block text-center text-sm text-emerald-600 dark:text-emerald-400 hover:text-emerald-700 dark:hover:text-emerald-300 transition-colors font-medium"
       >
         Voir tous les résultats →
       </a>
@@ -80,7 +88,9 @@
   import { debounce } from '../utils/dom-helpers'
 
   document.addEventListener('DOMContentLoaded', () => {
-    const searchInput = document.getElementById('navbar-search') as HTMLInputElement
+    const searchContainer = document.querySelector('[data-search-id]')
+    const searchId = searchContainer?.getAttribute('data-search-id')
+    const searchInput = document.getElementById(searchId!) as HTMLInputElement
     const searchClear = document.getElementById('search-clear') as HTMLButtonElement
     const searchResults = document.getElementById('search-results') as HTMLDivElement
     const searchLoading = document.getElementById('search-loading') as HTMLDivElement
@@ -181,24 +191,31 @@
           (vinyl) => `
         <a
           href="/search?q=${encodeURIComponent(query)}"
-          class="block px-4 py-3 hover:bg-white dark:hover:bg-neutral-900 transition-colors border-b border-neutral-200 dark:border-white/10 last:border-b-0"
+          class="block px-4 py-3 hover:bg-neutral-50 dark:hover:bg-neutral-800 transition-colors border-b border-neutral-200 dark:border-neutral-700 last:border-b-0"
         >
           <div class="flex items-center space-x-3">
             <img
               src="${vinyl.coverImage || '/default-vinyl-cover.svg'}"
               alt="${vinyl.title}"
-              class="w-10 h-10 rounded-lg object-cover "
+              class="w-12 h-12 rounded-lg object-cover shadow-sm"
             />
             <div class="flex-1 min-w-0">
               <p class="text-sm font-medium text-neutral-900 dark:text-neutral-50 truncate">
                 ${vinyl.title}
               </p>
-              <p class="text-xs text-neutral-600 dark:text-neutral-400 truncate">
-                ${vinyl.artist} ${vinyl.year ? `• ${vinyl.year}` : ''}
-              </p>
+              <div class="flex items-center space-x-2 mt-1">
+                <p class="text-xs text-neutral-600 dark:text-neutral-400 truncate">
+                  ${vinyl.artist}
+                </p>
+                ${vinyl.year ? `
+                  <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-emerald-100 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-300">
+                    ${vinyl.year}
+                  </span>
+                ` : ''}
+              </div>
             </div>
-            <div class="text-xs text-neutral-600 dark:text-neutral-400">
-              ${vinyl.format || 'LP'}
+            <div class="text-xs text-neutral-500 dark:text-neutral-500 font-medium">
+              ${vinyl.format?.replace('Vinyl', 'LP') || 'LP'}
             </div>
           </div>
         </a>

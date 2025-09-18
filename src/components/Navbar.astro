@@ -18,6 +18,9 @@ import SkeletonLoader from './SkeletonLoader.astro'
         </a>
       </div>
 
+      <!-- Bouton de basculement de thème -->
+      <ThemeToggle />
+
       <!-- Barre de recherche centrale -->
       <div class="hidden md:flex flex-1 justify-center max-w-2xl">
         <NavbarSearch />
@@ -25,28 +28,6 @@ import SkeletonLoader from './SkeletonLoader.astro'
 
       <!-- Navigation avec icônes et actions -->
       <div class="flex items-center space-x-3">
-        <!-- Skeleton Collection Link (affiché pendant le chargement) -->
-        <div id="collection-skeleton" class="hidden">
-          <SkeletonLoader type="collection-link" />
-        </div>
-
-        <!-- Lien Collection avec icône et texte (visible seulement si connecté) -->
-        <a
-          id="collection-link"
-          href="/dashboard"
-          class="hidden flex items-center space-x-2 px-3 py-2 text-neutral-500 dark:text-neutral-400 hover:text-emerald-500 dark:hover:text-emerald-400 hover:bg-neutral-100 dark:hover:bg-neutral-800 rounded-xl transition-colors"
-          title="Ma Collection"
-        >
-          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              stroke-width="2"
-              d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"
-            ></path>
-          </svg>
-          <span class="text-sm font-medium hidden lg:inline">Ma Collection</span>
-        </a>
 
         <!-- Icône Recherche mobile -->
         <button
@@ -54,16 +35,11 @@ import SkeletonLoader from './SkeletonLoader.astro'
           class="md:hidden p-2 text-neutral-600 dark:text-neutral-400 hover:text-emerald-500 dark:hover:text-emerald-500 hover:bg-neutral-100 dark:hover:bg-neutral-900 rounded-xl transition-colors"
           title="Rechercher"
         >
-          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              stroke-width="2"
-              d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
+            <circle cx="11" cy="11" r="8"/>
+            <path d="m21 21-4.35-4.35"/>
           </svg>
         </button>
-
-        <ThemeToggle />
 
         <!-- Skeleton User Menu (affiché pendant le chargement) -->
         <div id="user-skeleton" class="flex items-center space-x-3">
@@ -97,19 +73,16 @@ import SkeletonLoader from './SkeletonLoader.astro'
           <!-- Dropdown menu -->
           <div
             id="user-dropdown"
-            class="hidden absolute right-0 mt-2 w-48 bg-white dark:bg-neutral-950 rounded-xl shadow-md dark:shadow-neutral-900/50 z-[60]"
+            class="hidden absolute right-0 top-full mt-2 w-48 bg-white dark:bg-neutral-950 rounded-xl shadow-lg dark:shadow-neutral-900/50 z-[60] border border-neutral-200 dark:border-neutral-800"
           >
             <div class="py-2">
               <a
                 href="/profile"
                 class="flex items-center space-x-3 px-4 py-2 text-sm text-neutral-600 dark:text-neutral-400 hover:bg-neutral-100 dark:hover:bg-neutral-900 transition-colors"
               >
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    stroke-width="2"
-                    d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
+                  <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+                  <circle cx="12" cy="7" r="4"/>
                 </svg>
                 <span>Mon Profil</span>
               </a>
@@ -117,28 +90,35 @@ import SkeletonLoader from './SkeletonLoader.astro'
                 href="/dashboard"
                 class="flex items-center space-x-3 px-4 py-2 text-sm text-neutral-600 dark:text-neutral-400 hover:bg-neutral-100 dark:hover:bg-neutral-900 transition-colors"
               >
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    stroke-width="2"
-                    d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"
-                  ></path>
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
+                  <path d="m16 6 4 14"/>
+                  <path d="M12 6v14"/>
+                  <path d="M8 8v12"/>
+                  <path d="M4 4v16"/>
                 </svg>
                 <span>Ma Collection</span>
               </a>
+              <button
+                id="stats-button"
+                class="flex items-center space-x-3 w-full text-left px-4 py-2 text-sm text-neutral-600 dark:text-neutral-400 hover:bg-neutral-100 dark:hover:bg-neutral-900 transition-colors"
+              >
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
+                  <path d="M3 3v16a2 2 0 0 0 2 2h16"/>
+                  <path d="M18 17V9"/>
+                  <path d="M13 17V5"/>
+                  <path d="M8 17v-3"/>
+                </svg>
+                <span>Statistiques</span>
+              </button>
               <div class="border-t border-neutral-200 dark:border-white/10 my-1"></div>
               <button
                 id="logout-button"
                 class="flex items-center space-x-3 w-full text-left px-4 py-2 text-sm text-neutral-600 dark:text-neutral-400 hover:bg-neutral-100 dark:hover:bg-neutral-900 transition-colors"
               >
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    stroke-width="2"
-                    d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"
-                  ></path>
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
+                  <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
+                  <polyline points="16,17 21,12 16,7"/>
+                  <line x1="21" x2="9" y1="12" y2="12"/>
                 </svg>
                 <span>Se Déconnecter</span>
               </button>
@@ -153,7 +133,7 @@ import SkeletonLoader from './SkeletonLoader.astro'
         </div>
 
         <!-- Menu non connecté -->
-        <div id="guest-menu" class="hidden flex items-center space-x-4">
+        <div id="guest-menu" class="items-center space-x-4 hidden">
           <a
             href="/login"
             class="text-neutral-600 dark:text-neutral-400 hover:text-emerald-500 dark:hover:text-emerald-500 transition-colors"
@@ -175,12 +155,10 @@ import SkeletonLoader from './SkeletonLoader.astro'
           id="mobile-menu-toggle"
           class="text-neutral-600 dark:text-neutral-400 hover:text-gradient-emerald dark:hover:text-gradient-emerald focus:outline-none"
         >
-          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              stroke-width="2"
-              d="M4 6h16M4 12h16M4 18h16"></path>
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
+            <line x1="4" x2="20" y1="12" y2="12"/>
+            <line x1="4" x2="20" y1="6" y2="6"/>
+            <line x1="4" x2="20" y1="18" y2="18"/>
           </svg>
         </button>
       </div>
@@ -197,21 +175,6 @@ import SkeletonLoader from './SkeletonLoader.astro'
     <!-- Menu mobile déroulant -->
     <div id="mobile-menu" class="hidden md:hidden border-t border-neutral-200 dark:border-white/10">
       <div class="py-4 space-y-2">
-        <a
-          id="mobile-collection-link"
-          href="/dashboard"
-          class="hidden flex items-center space-x-3 text-neutral-600 dark:text-neutral-400 hover:text-gradient-emerald dark:hover:text-gradient-emerald py-2"
-        >
-          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              stroke-width="2"
-              d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"
-            ></path>
-          </svg>
-          <span>Ma Collection</span>
-        </a>
         <div class="border-t border-neutral-200 dark:border-white/10 pt-2 space-y-2">
           <div class="flex items-center justify-between py-2">
             <span class="text-neutral-600 dark:text-neutral-400 text-sm">Thème</span>
@@ -224,12 +187,9 @@ import SkeletonLoader from './SkeletonLoader.astro'
               href="/profile"
               class="flex items-center space-x-3 text-neutral-600 dark:text-neutral-400 hover:text-gradient-emerald dark:hover:text-gradient-emerald py-2"
             >
-              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
+                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+                <circle cx="12" cy="7" r="4"/>
               </svg>
               <span>Mon Profil</span>
             </a>
@@ -237,13 +197,10 @@ import SkeletonLoader from './SkeletonLoader.astro'
               id="mobile-logout-button"
               class="flex items-center space-x-3 text-left w-full text-neutral-600 dark:text-neutral-400 hover:text-gradient-emerald dark:hover:text-gradient-emerald py-2"
             >
-              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"
-                ></path>
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
+                <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
+                <polyline points="16,17 21,12 16,7"/>
+                <line x1="21" x2="9" y1="12" y2="12"/>
               </svg>
               <span>Se Déconnecter</span>
             </button>
@@ -272,109 +229,139 @@ import SkeletonLoader from './SkeletonLoader.astro'
 
 <script>
   import { getCurrentUser, logout } from '../lib/auth.js'
+import {
+smoothHide,
+smoothShow,
+smoothToggle,
+smoothToggleBetween,
+smoothToggleDropdown,
+smoothToggleMobileMenu,
+} from '../utils/smooth-toggle.js'
 
-  // Gestion de l'état d'authentification
-  document.addEventListener('DOMContentLoaded', async () => {
-    // Elements de l'interface
-    const userMenu = document.getElementById('user-menu')
-    const guestMenu = document.getElementById('guest-menu')
-    const mobileUserMenu = document.getElementById('mobile-user-menu')
-    const mobileGuestMenu = document.getElementById('mobile-guest-menu')
-    const userNameSpan = document.getElementById('user-name')
-    const userAvatar = document.getElementById('user-avatar')
-    const userMenuButton = document.getElementById('user-menu-button')
-    const userDropdown = document.getElementById('user-dropdown')
-    const logoutButton = document.getElementById('logout-button')
-    const mobileLogoutButton = document.getElementById('mobile-logout-button')
+  // Configuration des animations
+  const ANIMATION_DURATIONS = {
+    FAST: 150,
+    NORMAL: 200,
+    SLOW: 250,
+  } as const
 
-    // Nouveaux éléments de navigation
-    const collectionLink = document.getElementById('collection-link')
-    const mobileCollectionLink = document.getElementById('mobile-collection-link')
-    const mobileSearchToggle = document.getElementById('mobile-search-toggle')
-    const mobileSearch = document.getElementById('mobile-search')
+  // Sélecteurs d'éléments
+  const SELECTORS = {
+    // Menus principaux
+    userMenu: 'user-menu',
+    guestMenu: 'guest-menu',
+    mobileUserMenu: 'mobile-user-menu',
+    mobileGuestMenu: 'mobile-guest-menu',
 
-    // Éléments skeleton
-    const collectionSkeleton = document.getElementById('collection-skeleton')
-    const userSkeleton = document.getElementById('user-skeleton')
-    const guestSkeleton = document.getElementById('guest-skeleton')
+    // Éléments utilisateur
+    userName: 'user-name',
+    userAvatar: 'user-avatar',
+    userMenuButton: 'user-menu-button',
+    userDropdown: 'user-dropdown',
 
-    // Vérifier l'état de connexion
-    try {
-      const user = await getCurrentUser()
+    // Boutons d'action
+    logoutButton: 'logout-button',
+    mobileLogoutButton: 'mobile-logout-button',
+    statsButton: 'stats-button',
 
-      if (user && userMenu && guestMenu && userNameSpan) {
-        // Utilisateur connecté
-        userMenu.classList.remove('hidden')
-        guestMenu.classList.add('hidden')
-        mobileUserMenu?.classList.remove('hidden')
-        mobileGuestMenu?.classList.add('hidden')
+    // Navigation
+    mobileSearchToggle: 'mobile-search-toggle',
+    mobileSearch: 'mobile-search',
+    mobileMenuToggle: 'mobile-menu-toggle',
+    mobileMenu: 'mobile-menu',
 
-        // Afficher les liens collection pour utilisateur connecté
-        collectionLink?.classList.remove('hidden')
-        mobileCollectionLink?.classList.remove('hidden')
+    // Skeletons
+    skeletons: ['user-skeleton', 'guest-skeleton'],
+  } as const
 
-        // Masquer les skeletons et afficher le contenu réel
-        userSkeleton?.classList.add('hidden')
-        guestSkeleton?.classList.add('hidden')
-        collectionSkeleton?.classList.add('hidden')
+  // Gradients pour les avatars
+  const AVATAR_GRADIENTS = {
+    blue: 'linear-gradient(135deg, #60a5fa, #2563eb)',
+    emerald: 'linear-gradient(135deg, #6ee7b7, #059669)',
+    purple: 'linear-gradient(135deg, #c084fc, #9333ea)',
+    red: 'linear-gradient(135deg, #f87171, #dc2626)',
+    orange: 'linear-gradient(135deg, #fb923c, #ea580c)',
+    pink: 'linear-gradient(135deg, #f472b6, #ec4899)',
+    indigo: 'linear-gradient(135deg, #818cf8, #4f46e5)',
+  } as const
 
-        // Afficher le nom de l'utilisateur
-        userNameSpan.textContent = user.name || user.email.split('@')[0]
+  class NavbarController {
+    private elements: Record<string, HTMLElement | null> = {}
 
-        // Afficher l'avatar de l'utilisateur
-        if (userAvatar) {
-          const avatar = (user as any).avatar || '/default-avatar.svg'
-          updateUserAvatar(avatar)
-        }
-
-        // Gestion du dropdown
-        if (userMenuButton && userDropdown) {
-          userMenuButton.addEventListener('click', (e) => {
-            e.stopPropagation()
-            userDropdown.classList.toggle('hidden')
-          })
-
-          // Fermer le dropdown en cliquant ailleurs
-          document.addEventListener('click', () => {
-            userDropdown.classList.add('hidden')
-          })
-        }
-
-        // Gestion de la déconnexion
-        const handleLogout = () => {
-          logout()
-        }
-
-        logoutButton?.addEventListener('click', handleLogout)
-        mobileLogoutButton?.addEventListener('click', handleLogout)
-      } else {
-        // Utilisateur non connecté
-        userMenu?.classList.add('hidden')
-        guestMenu?.classList.remove('hidden')
-        mobileUserMenu?.classList.add('hidden')
-        mobileGuestMenu?.classList.remove('hidden')
-
-        // Masquer les skeletons et afficher le contenu réel
-        userSkeleton?.classList.add('hidden')
-        guestSkeleton?.classList.add('hidden')
-        collectionSkeleton?.classList.add('hidden')
-      }
-    } catch (error) {
-      console.error("Erreur lors de la vérification de l'authentification:", error)
-      // En cas d'erreur, afficher le menu non connecté
-      userMenu?.classList.add('hidden')
-      guestMenu?.classList.remove('hidden')
-      mobileUserMenu?.classList.add('hidden')
-      mobileGuestMenu?.classList.remove('hidden')
-
-      // Masquer les skeletons en cas d'erreur
-      userSkeleton?.classList.add('hidden')
-      guestSkeleton?.classList.add('hidden')
-      collectionSkeleton?.classList.add('hidden')
+    constructor() {
+      this.initializeElements()
     }
 
-    // Fonction pour mettre à jour l'avatar utilisateur
-    function updateUserAvatar(avatar: string) {
+    private initializeElements(): void {
+      // Récupérer tous les éléments DOM
+      Object.entries(SELECTORS).forEach(([key, value]) => {
+        if (Array.isArray(value)) {
+          // Pour les skeletons (array)
+          value.forEach((id) => {
+            this.elements[id] = document.getElementById(id)
+          })
+        } else {
+          this.elements[key] = document.getElementById(value as string)
+        }
+      })
+    }
+
+    private hideSkeletons(): void {
+      SELECTORS.skeletons.forEach((skeleton) => {
+        this.elements[skeleton]?.classList.add('hidden')
+      })
+    }
+
+    private setupUserState(user: any): void {
+      const {
+        userMenu,
+        guestMenu,
+        mobileUserMenu,
+        mobileGuestMenu,
+      } = this.elements
+
+      // Animations des menus
+      if (userMenu && guestMenu)
+        smoothToggleBetween(userMenu, guestMenu, 'flex', ANIMATION_DURATIONS.NORMAL)
+      if (mobileUserMenu) smoothShow(mobileUserMenu, 'flex', ANIMATION_DURATIONS.NORMAL)
+      if (mobileGuestMenu) smoothHide(mobileGuestMenu, ANIMATION_DURATIONS.NORMAL)
+
+      // Informations utilisateur
+      this.updateUserInfo(user)
+      this.setupUserInteractions()
+    }
+
+    private setupGuestState(): void {
+      const { userMenu, guestMenu, mobileUserMenu, mobileGuestMenu } = this.elements
+
+      if (guestMenu && userMenu)
+        smoothToggleBetween(guestMenu, userMenu, 'flex', ANIMATION_DURATIONS.NORMAL)
+      if (mobileUserMenu) smoothHide(mobileUserMenu, ANIMATION_DURATIONS.NORMAL)
+      if (mobileGuestMenu) smoothShow(mobileGuestMenu, 'flex', ANIMATION_DURATIONS.NORMAL)
+    }
+
+    private updateUserInfo(user: any): void {
+      const { userName, userAvatar } = this.elements
+
+      // Nom d'utilisateur
+      if (userName) {
+        const fullName = user.name || user.email.split('@')[0]
+        const displayName = fullName.length > 10 ? fullName.substring(0, 10) + '...' : fullName
+        
+        userName.textContent = displayName
+        userName.title = fullName // Tooltip avec le nom complet
+        userName.setAttribute('data-tooltip', fullName)
+      }
+
+      // Avatar
+      if (userAvatar) {
+        const avatar = user.avatar || '/default-avatar.svg'
+        this.updateUserAvatar(avatar)
+      }
+    }
+
+    private updateUserAvatar(avatar: string): void {
+      const { userAvatar } = this.elements
       if (!userAvatar) return
 
       const avatarImg = userAvatar.querySelector('img')
@@ -388,52 +375,158 @@ import SkeletonLoader from './SkeletonLoader.astro'
         userAvatar.style.background = ''
       } else {
         // Avatar coloré (gradient)
-        if (avatarImg) {
-          avatarImg.style.display = 'none'
-        }
-        userAvatar.style.background = getGradientForColor(avatar)
+        if (avatarImg) avatarImg.style.display = 'none'
+        userAvatar.style.background =
+          AVATAR_GRADIENTS[avatar as keyof typeof AVATAR_GRADIENTS] || AVATAR_GRADIENTS.blue
       }
     }
 
-    // Fonction pour obtenir le gradient selon la couleur
-    function getGradientForColor(color: string): string {
-      const gradients: { [key: string]: string } = {
-        blue: 'linear-gradient(135deg, #60a5fa, #2563eb)',
-        emerald: 'linear-gradient(135deg, #6ee7b7, #059669)',
-        purple: 'linear-gradient(135deg, #c084fc, #9333ea)',
-        red: 'linear-gradient(135deg, #f87171, #dc2626)',
-        orange: 'linear-gradient(135deg, #fb923c, #ea580c)',
-        pink: 'linear-gradient(135deg, #f472b6, #ec4899)',
-        indigo: 'linear-gradient(135deg, #818cf8, #4f46e5)',
+    private setupUserInteractions(): void {
+      const { userMenuButton, userDropdown, logoutButton, mobileLogoutButton, statsButton } = this.elements
+
+      // Dropdown utilisateur
+      if (userMenuButton && userDropdown) {
+        userMenuButton.addEventListener('click', (e) => {
+          e.stopPropagation()
+          smoothToggleDropdown(userDropdown, userMenuButton, ANIMATION_DURATIONS.FAST)
+        })
       }
-      return gradients[color] || gradients.blue
+
+      // Statistiques personnelles
+      if (statsButton) {
+        statsButton.addEventListener('click', () => {
+          // Fermer le dropdown
+          if (userDropdown) smoothHide(userDropdown, ANIMATION_DURATIONS.FAST)
+          
+          // Ouvrir le modal des statistiques
+          if (window.personalStatsModal) {
+            window.personalStatsModal.open()
+          }
+        })
+      }
+
+      // Déconnexion
+      const handleLogout = () => logout()
+      logoutButton?.addEventListener('click', handleLogout)
+      mobileLogoutButton?.addEventListener('click', handleLogout)
     }
 
-    // Gestion du menu mobile
-    const toggle = document.getElementById('mobile-menu-toggle')
-    const menu = document.getElementById('mobile-menu')
+    private setupMobileInteractions(): void {
+      const { mobileMenuToggle, mobileMenu, mobileSearchToggle, mobileSearch } = this.elements
 
-    if (toggle && menu) {
-      toggle.addEventListener('click', () => {
-        menu.classList.toggle('hidden')
-        // Fermer la recherche mobile si ouverte
-        mobileSearch?.classList.add('hidden')
-      })
-    }
+      // Menu mobile
+      if (mobileMenuToggle && mobileMenu) {
+        mobileMenuToggle.addEventListener('click', () => {
+          smoothToggleMobileMenu(mobileMenu, undefined, ANIMATION_DURATIONS.SLOW)
+          if (mobileSearch) smoothHide(mobileSearch, ANIMATION_DURATIONS.NORMAL)
+        })
+      }
 
-    // Gestion de la recherche mobile
+      // Recherche mobile
     if (mobileSearchToggle && mobileSearch) {
       mobileSearchToggle.addEventListener('click', () => {
-        mobileSearch.classList.toggle('hidden')
-        // Fermer le menu mobile si ouvert
-        menu?.classList.add('hidden')
+          const isVisible = smoothToggle(mobileSearch, 'flex', ANIMATION_DURATIONS.NORMAL)
+          if (mobileMenu) smoothHide(mobileMenu, ANIMATION_DURATIONS.NORMAL)
 
-        // Focus sur le champ de recherche
-        if (!mobileSearch.classList.contains('hidden')) {
+          // Focus avec délai pour l'animation
+          if (isVisible) {
           const searchInput = mobileSearch.querySelector('#navbar-search') as HTMLInputElement
-          setTimeout(() => searchInput?.focus(), 100)
-        }
-      })
+            setTimeout(() => searchInput?.focus(), ANIMATION_DURATIONS.SLOW)
+          }
+        })
+      }
     }
+
+    async initialize(): Promise<void> {
+      try {
+        const user = await getCurrentUser()
+
+        if (user && this.elements.userMenu && this.elements.guestMenu && this.elements.userName) {
+          this.setupUserState(user)
+        } else {
+          this.setupGuestState()
+        }
+      } catch (error) {
+        console.error("Erreur lors de la vérification de l'authentification:", error)
+        this.setupGuestState()
+      } finally {
+        this.hideSkeletons()
+        this.setupMobileInteractions()
+      }
+    }
+  }
+
+  // Types globaux
+  declare global {
+    interface Window {
+      personalStatsModal: any
+    }
+  }
+
+  // Initialisation
+  document.addEventListener('DOMContentLoaded', async () => {
+    const navbar = new NavbarController()
+    await navbar.initialize()
   })
 </script>
+
+<style>
+  /* Tooltip élégant pour le nom d'utilisateur */
+  #user-name {
+    position: relative;
+    cursor: help;
+  }
+
+  #user-name:hover::after {
+    content: attr(data-tooltip);
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    background: #1f2937;
+    color: white;
+    padding: 6px 10px;
+    border-radius: 6px;
+    font-size: 12px;
+    font-weight: 500;
+    white-space: nowrap;
+    z-index: 1000;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    margin-top: 4px;
+    animation: tooltipFadeIn 0.2s ease-out;
+  }
+
+  #user-name:hover::before {
+    content: '';
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    border: 4px solid transparent;
+    border-bottom-color: #1f2937;
+    z-index: 1000;
+    margin-top: -1px;
+    animation: tooltipFadeIn 0.2s ease-out;
+  }
+
+  @keyframes tooltipFadeIn {
+    from {
+      opacity: 0;
+      transform: translateX(-50%) translateY(4px);
+    }
+    to {
+      opacity: 1;
+      transform: translateX(-50%) translateY(0);
+    }
+  }
+
+  /* Dark mode pour le tooltip */
+  .dark #user-name:hover::after {
+    background: #f3f4f6;
+    color: #111827;
+  }
+
+  .dark #user-name:hover::before {
+    border-bottom-color: #f3f4f6;
+  }
+</style>
