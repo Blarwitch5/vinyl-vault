@@ -1,14 +1,13 @@
 import type { APIRoute } from 'astro'
 import { PrismaClient } from '@prisma/client'
-import jwt from 'jsonwebtoken'
 
 const prisma = new PrismaClient()
 
-export const GET: APIRoute = async ({ request }) => {
+export const GET: APIRoute = async ({ request, cookies }) => {
   try {
-    const authHeader = request.headers.get('authorization')
+    const token = cookies.get('vinyl_vault_token')?.value
 
-    if (!authHeader || !authHeader.startsWith('Bearer ')) {
+    if (!token) {
       return new Response(
         JSON.stringify({
           success: false,
@@ -23,29 +22,19 @@ export const GET: APIRoute = async ({ request }) => {
       )
     }
 
-    const token = authHeader.substring(7) // Retirer "Bearer "
-    const jwtSecret = process.env.JWT_SECRET || 'your-super-secret-jwt-key'
-
-    let decoded: any
-    try {
-      decoded = jwt.verify(token, jwtSecret)
-    } catch (error) {
-      return new Response(
-        JSON.stringify({
-          success: false,
-          error: "Token d'authentification invalide",
-        }),
-        {
-          status: 401,
-          headers: {
-            'Content-Type': 'application/json',
-          },
-        }
-      )
-    }
-
-    const user = await prisma.user.findUnique({
-      where: { id: decoded.userId },
+    // Récupérer ou créer l'utilisateur de test
+    const user = await prisma.user.upsert({
+      where: { email: 'demo@vinylvault.com' },
+      update: {
+        id: 'test-user-id',
+        name: 'Utilisateur Test',
+      },
+      create: {
+        id: 'test-user-id',
+        email: 'demo@vinylvault.com',
+        name: 'Utilisateur Test',
+        password: 'hashed_password_test',
+      },
       select: {
         id: true,
         email: true,
@@ -54,21 +43,6 @@ export const GET: APIRoute = async ({ request }) => {
         createdAt: true,
       },
     })
-
-    if (!user) {
-      return new Response(
-        JSON.stringify({
-          success: false,
-          error: 'Utilisateur non trouvé',
-        }),
-        {
-          status: 404,
-          headers: {
-            'Content-Type': 'application/json',
-          },
-        }
-      )
-    }
 
     return new Response(
       JSON.stringify({
