@@ -4,9 +4,11 @@
 
 <div
   id="delete-vinyl-modal"
-  class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden"
+  class="fixed inset-0 bg-black/70 backdrop-blur-sm items-center justify-center z-50 hidden"
 >
-  <div class="bg-neutral-50 dark:bg-neutral-950 rounded-2xl p-6 w-full max-w-md mx-4 shadow-2xl">
+  <div
+    class="bg-white dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-700 rounded-2xl p-6 w-full max-w-md mx-4 shadow-2xl"
+  >
     <!-- Header -->
     <div class="flex items-center justify-between mb-6">
       <h2 class="text-xl font-bold text-neutral-900 dark:text-neutral-50">Supprimer le vinyle</h2>
@@ -19,7 +21,7 @@
             stroke-linecap="round"
             stroke-linejoin="round"
             stroke-width="2"
-            d="M6 18L18 6M6 6l12 12"></path>
+            d="M18 6 6 18"></path>
         </svg>
       </button>
     </div>
@@ -169,8 +171,8 @@
 
     // Afficher les informations du vinyle
     if (vinylCover) {
-      vinylCover.src = vinyl.coverImage || '/default-vinyl-cover.svg'
-      vinylCover.alt = vinyl.title || 'Couverture du vinyle'
+      ;(vinylCover as HTMLImageElement).src = vinyl.coverImage || '/default-vinyl-cover.svg'
+      ;(vinylCover as HTMLImageElement).alt = vinyl.title || 'Couverture du vinyle'
     }
 
     if (vinylTitle) {
@@ -195,16 +197,35 @@
       vinylTitleConfirm.textContent = vinyl.title || 'ce vinyle'
     }
 
-    modal?.classList.remove('hidden')
-    document.body.style.overflow = 'hidden'
+    if (modal) {
+      document.body.style.overflow = 'hidden'
+      modal.style.opacity = '0'
+      modal.classList.remove('hidden')
+      modal.classList.add('flex')
+
+      setTimeout(() => {
+        modal.style.transition = 'opacity 250ms ease-out'
+        modal.style.opacity = '1'
+      }, 10)
+    }
     hideError()
     setDeleteButtonState(false)
   }
 
-  // Fermer le modal
+  // Fermer le modal avec animation discrète
   function closeDeleteVinylModal() {
-    modal?.classList.add('hidden')
-    document.body.style.overflow = ''
+    if (modal) {
+      modal.style.transition = 'opacity 200ms ease-in'
+      modal.style.opacity = '0'
+
+      setTimeout(() => {
+        modal.classList.add('hidden')
+        modal.classList.remove('flex')
+        modal.style.transition = ''
+        modal.style.opacity = ''
+        document.body.style.overflow = ''
+      }, 200)
+    }
     currentVinylId = null
     hideError()
     setDeleteButtonState(false)
@@ -244,15 +265,12 @@
     hideError()
 
     try {
-      // Récupérer le token d'authentification
-      const token = localStorage.getItem('auth_token')
-
       const response = await fetch('/api/collections/remove', {
         method: 'DELETE',
         headers: {
           'Content-Type': 'application/json',
-          Authorization: token ? `Bearer ${token}` : '',
         },
+        credentials: 'include',
         body: JSON.stringify({ vinylId: currentVinylId }),
       })
 
