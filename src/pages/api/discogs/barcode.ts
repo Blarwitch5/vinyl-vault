@@ -31,10 +31,10 @@ export const POST: APIRoute = async ({ request }) => {
       )
     }
 
-    // Rechercher par code-barres sur Discogs
+    // Rechercher par code-barres sur Discogs (uniquement vinyles)
     const searchUrl = `https://api.discogs.com/database/search?barcode=${encodeURIComponent(
       barcode
-    )}&type=release&token=${discogsToken}`
+    )}&type=release&format=Vinyl&token=${discogsToken}`
 
     const response = await fetch(searchUrl, {
       headers: {
@@ -61,8 +61,34 @@ export const POST: APIRoute = async ({ request }) => {
       )
     }
 
-    // Prendre le premier résultat (le plus pertinent)
-    const release = data.results[0]
+    // Filtrer pour ne garder que les vinyles
+    const vinylFormats = ['LP', 'EP', 'Single', '12"', '7"', '10"', 'Vinyl']
+    const vinylResults = data.results.filter((item: any) => {
+      return (
+        item.format?.some((format: string) =>
+          vinylFormats.some((vinylFormat) =>
+            format.toLowerCase().includes(vinylFormat.toLowerCase())
+          )
+        ) || false
+      )
+    })
+
+    if (vinylResults.length === 0) {
+      return new Response(
+        JSON.stringify({
+          success: false,
+          error:
+            'Aucun vinyle trouvé pour ce code-barres (seuls les vinyles sont supportés)',
+        }),
+        {
+          status: 404,
+          headers: { 'Content-Type': 'application/json' },
+        }
+      )
+    }
+
+    // Prendre le premier résultat vinyle (le plus pertinent)
+    const release = vinylResults[0]
 
     // Récupérer les détails complets du release
     const releaseUrl = `https://api.discogs.com/releases/${release.id}?token=${discogsToken}`

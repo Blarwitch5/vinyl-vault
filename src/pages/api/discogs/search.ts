@@ -99,7 +99,7 @@ export const GET: APIRoute = async ({ request }) => {
       genre: genre || undefined,
       style: style || undefined,
       year: year || undefined,
-      format: format || undefined,
+      format: format || 'Vinyl', // Filtrer par défaut sur les vinyles
       country: country || undefined,
     }
 
@@ -108,8 +108,25 @@ export const GET: APIRoute = async ({ request }) => {
     // Effectuer la recherche
     const searchResponse = await discogsAPI.search(query, searchOptions)
 
+    // Filtrer pour ne garder que les vinyles (LP, EP, Single, etc.)
+    const vinylFormats = ['LP', 'EP', 'Single', '12"', '7"', '10"', 'Vinyl']
+    const vinylResults = searchResponse.results.filter((item) => {
+      // Vérifier si le format contient un format de vinyle
+      return (
+        item.format?.some((format) =>
+          vinylFormats.some((vinylFormat) =>
+            format.toLowerCase().includes(vinylFormat.toLowerCase())
+          )
+        ) || false
+      )
+    })
+
+    console.log(
+      `Filtré ${searchResponse.results.length} résultats vers ${vinylResults.length} vinyles`
+    )
+
     // Formater les résultats pour l'affichage
-    const formattedResults = searchResponse.results.map((item) => {
+    const formattedResults = vinylResults.map((item) => {
       return formatVinylForDisplay(item)
     })
 
@@ -119,12 +136,17 @@ export const GET: APIRoute = async ({ request }) => {
         success: true,
         data: {
           results: formattedResults,
-          pagination: searchResponse.pagination,
+          pagination: {
+            ...searchResponse.pagination,
+            items: vinylResults.length, // Mettre à jour avec le nombre de vinyles filtrés
+          },
           query: query,
-          total: searchResponse.pagination.items,
+          total: vinylResults.length,
         },
         meta: {
           searchOptions,
+          filteredCount: vinylResults.length,
+          originalCount: searchResponse.results.length,
           timestamp: new Date().toISOString(),
         },
       }),

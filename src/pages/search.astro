@@ -5,6 +5,7 @@ import Footer from '../components/Footer.astro';
 import SearchBar from '../components/SearchBar.astro';
 import VinylCard from '../components/VinylCard.astro';
 import { AddToCollectionModal } from '../components/collection-modal';
+import BarcodeScannerModal from '../components/BarcodeScannerModal.astro';
 import { searchVinyl, formatVinylForDisplay } from '../lib/discogs';
 
 const title = "Recherche de vinyles - VinylVault";
@@ -64,7 +65,7 @@ const availableGenres = [
 ];
 
 const availableFormats = [
-  'Vinyl', 'LP', '12"', '7"', '10"', 'EP', 'Single'
+  'LP', '12"', '7"', '10"', 'EP', 'Single'
 ];
 ---
 
@@ -162,9 +163,14 @@ const availableFormats = [
     {query && (
       <div class="mb-8">
         <div class="flex items-center justify-between mb-6">
-          <h2 class="text-2xl font-semibold text-neutral-900 dark:text-neutral-50">
-            Résultats pour "{query}"
-          </h2>
+          <div>
+            <h2 class="text-2xl font-semibold text-neutral-900 dark:text-neutral-50">
+              Résultats pour "{query}"
+            </h2>
+            <p class="text-sm text-neutral-600 dark:text-neutral-400 mt-1">
+              🎵 Seuls les vinyles (LP, EP, Single) sont affichés
+            </p>
+          </div>
           {pagination && (
             <div class="text-sm text-neutral-600 dark:text-neutral-400">
               {pagination.page} / {pagination.pages} pages 
@@ -324,6 +330,10 @@ const availableFormats = [
   </div>
 
   <Footer slot="footer" />
+
+  <!-- Modals -->
+  <BarcodeScannerModal />
+  <AddToCollectionModal />
 </BaseLayout>
 
 <script>
@@ -394,13 +404,13 @@ const availableFormats = [
     const discogsUrl = vinylCard.querySelector('[data-discogs-url]')?.getAttribute('data-discogs-url');
     
     return {
-      id: vinylId,
-      discogsId: discogsId,
+      id: vinylId || '',
+      discogsId: discogsId || '',
       title: title.trim(),
       artist: artist.trim(),
-      year: year ? parseInt(year) : null,
+      year: year ? parseInt(year) : 0,
       coverImage: coverImage,
-      discogsUrl: discogsUrl,
+      discogsUrl: discogsUrl || '',
       // Autres données peuvent être ajoutées selon le besoin
     };
   }
