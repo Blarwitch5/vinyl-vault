@@ -7,8 +7,11 @@ import VinylCardCompact from "../components/VinylCardCompact.astro";
 import BarcodeScannerModal from "../components/BarcodeScannerModal.astro";
 import CreateCollectionModal from "../components/CreateCollectionModal.astro";
 import DeleteVinylModal from "../components/DeleteVinylModal.astro";
+import DeleteCollectionModal from "../components/DeleteCollectionModal.astro";
+import EditCollectionModal from "../components/EditCollectionModal.astro";
+import PersonalStatsModal from "../components/PersonalStatsModal.astro";
+import { AddToCollectionModal } from "../components/collection-modal";
 import { PrismaClient } from "@prisma/client";
-import jwt from "jsonwebtoken";
 
 const prisma = new PrismaClient();
 
@@ -20,44 +23,67 @@ const description =
 let currentUser = null;
 let userCollections: any[] = [];
 let recentVinyls: any[] = [];
+let totalCollections: number = 0;
 let error = null;
 
 try {
   const token = Astro.cookies.get("vinyl_vault_token")?.value;
   if (token) {
-    const jwtSecret = import.meta.env.JWT_SECRET || "your-super-secret-jwt-key";
-    const decoded = jwt.verify(token, jwtSecret) as any;
+    // Système d'authentification simplifié - utiliser l'utilisateur de test
     currentUser = await prisma.user.findUnique({
-      where: { id: decoded.userId },
+      where: { id: 'test-user-id' },
       select: { id: true, name: true, email: true },
     });
 
+    if (!currentUser) {
+      // Créer l'utilisateur de test s'il n'existe pas
+      currentUser = await prisma.user.create({
+        data: {
+          id: 'test-user-id',
+          email: 'demo@vinylvault.com',
+          name: 'Utilisateur Test',
+          password: 'hashed_password_test',
+        },
+        select: { id: true, name: true, email: true },
+      });
+    }
+
     if (currentUser) {
-      // Récupérer les collections de l'utilisateur
+      // Récupérer toutes les collections de l'utilisateur (maximum 5)
       userCollections = await prisma.collection.findMany({
         where: { userId: currentUser.id },
         include: {
           vinyls: {
             select: {
               id: true,
+              title: true,
+              artist: true,
+              year: true,
               price: true,
-            }
-          }
+              coverImage: true,
         },
-        orderBy: { updatedAt: 'desc' }
+          },
+        },
+        orderBy: { createdAt: 'desc' }
+        // Pas de limite car on affiche toutes les collections (max 5 grâce à la limite de création)
       });
+
+      // Plus besoin de compter le total car on affiche toutes les collections
+      totalCollections = userCollections.length;
 
       // Récupérer les vinyles récents de l'utilisateur (pour l'affichage)
       recentVinyls = await prisma.vinyl.findMany({
         where: { userId: currentUser.id },
         orderBy: { createdAt: 'desc' },
-        take: 6
+        take: 4
       });
+
     }
   }
 } catch (err) {
   console.error("Erreur lors de la récupération des données:", err);
   error = "Erreur lors du chargement des données";
+  // Initialiser les variables pour éviter les erreurs
 }
 
 // Calculer les statistiques basées sur TOUS les vinyles de l'utilisateur
@@ -88,16 +114,16 @@ if (currentUser) {
 
   // Calculer les genres les plus populaires sur TOUS les vinyles
   if (allUserVinyls.length > 0) {
-    const genreCounts: { [key: string]: number } = {};
+  const genreCounts: { [key: string]: number } = {};
     allUserVinyls.forEach((vinyl: any) => {
-      if (vinyl.genre) {
-        genreCounts[vinyl.genre] = (genreCounts[vinyl.genre] || 0) + 1;
-      }
-    });
-    stats.topGenres = Object.entries(genreCounts)
-      .map(([name, count]) => ({ name, count }))
-      .sort((a, b) => b.count - a.count)
-      .slice(0, 4);
+    if (vinyl.genre) {
+      genreCounts[vinyl.genre] = (genreCounts[vinyl.genre] || 0) + 1;
+    }
+  });
+  stats.topGenres = Object.entries(genreCounts)
+    .map(([name, count]) => ({ name, count }))
+    .sort((a, b) => b.count - a.count)
+    .slice(0, 4);
   }
 }
 ---
@@ -112,7 +138,9 @@ if (currentUser) {
         <div class="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-xl p-8 max-w-md mx-auto">
           <div class="text-red-600 dark:text-red-400 mb-4">
             <svg class="mx-auto h-12 w-12" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+              <circle cx="12" cy="12" r="10"/>
+              <line x1="12" x2="12" y1="8" y2="12"/>
+              <line x1="12" x2="12.01" y1="16" y2="16"/>
             </svg>
           </div>
           <h2 class="text-xl font-semibold text-red-800 dark:text-red-200 mb-2">
@@ -152,133 +180,189 @@ if (currentUser) {
       <>
         <!-- En-tête du tableau de bord -->
         <div class="mb-8">
-          <h1 class="text-4xl font-bold text-neutral-900 dark:text-neutral-50 mb-2">
-            📀 Mon tableau de bord
+          <div class="flex items-center justify-between">
+            <div>
+              <h1 class="text-3xl font-bold text-neutral-900 dark:text-neutral-50 mb-2">
+                Mon tableau de bord
           </h1>
-          <p class="text-xl text-neutral-600 dark:text-neutral-400">
-            Bienvenue, {currentUser.name || currentUser.email} !
-          </p>
+              <p class="text-lg text-neutral-600 dark:text-neutral-400">
+                Bonjour <span class="font-semibold text-emerald-600 dark:text-emerald-400">{currentUser.name || currentUser.email}</span>
+              </p>
+              <p class="text-sm text-neutral-500 dark:text-neutral-500 mt-1">
+                Gérez votre collection de vinyles et suivez vos statistiques
+              </p>
+            </div>
+            <div class="hidden md:flex items-center space-x-3">
+              <div class="text-right">
+                <p class="text-sm text-neutral-500 dark:text-neutral-500">
+                  Dernière connexion
+                </p>
+                <p class="text-sm font-medium text-neutral-700 dark:text-neutral-300">
+                  {new Date().toLocaleDateString('fr-FR', { 
+                    weekday: 'long', 
+                    day: 'numeric', 
+                    month: 'long' 
+                  })}
+                </p>
+              </div>
+            </div>
+          </div>
         </div>
 
     <!-- Statistiques rapides -->
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+    <div class="mb-6">
+      <div class="flex items-center justify-between mb-4">
+        <h2 class="text-lg font-semibold text-neutral-900 dark:text-neutral-50">
+          Vue d'ensemble
+        </h2>
+        <button
+          id="personal-stats-btn"
+          class="text-sm text-emerald-600 dark:text-emerald-400 hover:text-emerald-700 dark:hover:text-emerald-300 transition-colors flex items-center"
+          title="Voir les statistiques détaillées"
+        >
+          <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
+            <path d="M3 3v16a2 2 0 0 0 2 2h16"/>
+            <path d="M18 17V9"/>
+            <path d="M13 17V5"/>
+            <path d="M8 17v-3"/>
+          </svg>
+          Statistiques détaillées
+        </button>
+      </div>
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
       <!-- Total vinyles -->
       <div
-        class="glass dark:glass-dark p-6 rounded-xl shadow-sm"
+        class="glass dark:glass-dark p-5 rounded-xl shadow-sm hover:shadow-md transition-shadow border border-neutral-200/50 dark:border-neutral-800/50"
       >
+        <div class="flex items-start justify-between">
         <div class="flex items-center">
           <div
-            class="p-2 bg-gradient-emerald/10 dark:bg-gradient-emerald/20 rounded-lg"
+              class="p-3 bg-gradient-emerald/10 dark:bg-gradient-emerald/20 rounded-lg"
           >
             <svg
               class="w-6 h-6 text-gradient-emerald dark:text-gradient-emerald"
               fill="none"
               stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
+              stroke-width="2"
                 stroke-linecap="round"
                 stroke-linejoin="round"
-                stroke-width="2"
-                d="M19 11H5m14-5v12a2 2 0 01-2 2H7a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2z"
-              ></path>
+              viewBox="0 0 24 24"
+            >
+              <circle cx="12" cy="12" r="10"/>
+              <path d="M6 12c0-1.7.7-3.2 1.8-4.2"/>
+              <circle cx="12" cy="12" r="2"/>
+              <path d="M18 12c0 1.7-.7 3.2-1.8 4.2"/>
             </svg>
           </div>
           <div class="ml-4">
             <p
-              class="text-sm font-medium text-neutral-600 dark:text-neutral-400"
+                class="text-sm font-medium text-neutral-600 dark:text-neutral-400 mb-1"
             >
               Total vinyles
             </p>
             <p
               class="text-2xl font-bold text-neutral-900 dark:text-neutral-50 font-mono"
+                data-stat="total-vinyls"
             >
               {stats.totalVinyls}
             </p>
+            </div>
           </div>
         </div>
       </div>
 
       <!-- Valeur totale -->
       <div
-        class="glass dark:glass-dark p-6 rounded-xl shadow-sm"
+        class="glass dark:glass-dark p-5 rounded-xl shadow-sm hover:shadow-md transition-shadow border border-neutral-200/50 dark:border-neutral-800/50"
       >
+        <div class="flex items-start justify-between">
         <div class="flex items-center">
           <div
-            class="p-2 bg-gradient-emerald/10 dark:bg-gradient-emerald/20 rounded-lg"
+                   class="p-3 bg-gradient-emerald/10 dark:bg-gradient-emerald/20 rounded-lg"
           >
             <svg
               class="w-6 h-6 text-gradient-emerald dark:text-gradient-emerald"
               fill="none"
               stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
+                     stroke-width="2"
                 stroke-linecap="round"
                 stroke-linejoin="round"
-                stroke-width="2"
-                d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1"
-              ></path>
+                     viewBox="0 0 24 24"
+                   >
+                     <path d="M11 17h3v2a1 1 0 0 0 1 1h2a1 1 0 0 0 1-1v-3a3.16 3.16 0 0 0 2-2h1a1 1 0 0 0 1-1v-2a1 1 0 0 0-1-1h-1a5 5 0 0 0-2-4V3a4 4 0 0 0-3.2 1.6l-.3.4H11a6 6 0 0 0-6 6v1a5 5 0 0 0 2 4v3a1 1 0 0 0 1 1h2a1 1 0 0 0 1-1z"/>
+                     <path d="M16 10h.01"/>
+                     <path d="M2 8v1a2 2 0 0 0 2 2h1"/>
             </svg>
           </div>
           <div class="ml-4">
             <p
-              class="text-sm font-medium text-neutral-600 dark:text-neutral-400"
+                class="text-sm font-medium text-neutral-600 dark:text-neutral-400 mb-1"
             >
               Valeur totale
             </p>
             <p
               class="text-2xl font-bold text-neutral-900 dark:text-neutral-50 font-mono"
+                data-stat="total-value"
             >
               {stats.totalValue.toFixed(2)} €
             </p>
+            </div>
           </div>
         </div>
       </div>
 
       <!-- Collections -->
       <div
-        class="glass dark:glass-dark p-6 rounded-xl shadow-sm"
+        class="glass dark:glass-dark p-5 rounded-xl shadow-sm hover:shadow-md transition-shadow border border-neutral-200/50 dark:border-neutral-800/50"
       >
+        <div class="flex items-start justify-between">
         <div class="flex items-center">
-          <div class="p-2 bg-purple-100 rounded-lg">
+            <div
+              class="p-3 bg-gradient-emerald/10 dark:bg-gradient-emerald/20 rounded-lg"
+            >
             <svg
               class="w-6 h-6 text-gradient-emerald dark:text-gradient-emerald"
               fill="none"
               stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
+                stroke-width="2"
                 stroke-linecap="round"
                 stroke-linejoin="round"
-                stroke-width="2"
-                d="M19 11H5m14-5v12a2 2 0 01-2 2H7a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2z"
-              ></path>
+                viewBox="0 0 24 24"
+              >
+                <path d="m16 6 4 14"/>
+                <path d="M12 6v14"/>
+                <path d="M8 8v12"/>
+                <path d="M4 4v16"/>
             </svg>
           </div>
           <div class="ml-4">
             <p
-              class="text-sm font-medium text-neutral-600 dark:text-neutral-400"
+                class="text-sm font-medium text-neutral-600 dark:text-neutral-400 mb-1"
             >
               Collections
             </p>
             <p
               class="text-2xl font-bold text-neutral-900 dark:text-neutral-50 font-mono"
+                data-stat="total-collections"
             >
               {stats.totalCollections}
             </p>
+            </div>
           </div>
         </div>
       </div>
 
       <!-- Valeur moyenne -->
       <div
-        class="glass dark:glass-dark p-6 rounded-xl shadow-sm"
+        class="glass dark:glass-dark p-5 rounded-xl shadow-sm hover:shadow-md transition-shadow border border-neutral-200/50 dark:border-neutral-800/50"
       >
+        <div class="flex items-start justify-between">
         <div class="flex items-center">
-          <div class="p-2 bg-yellow-100 rounded-lg">
+            <div
+              class="p-3 bg-gradient-emerald/10 dark:bg-gradient-emerald/20 rounded-lg"
+            >
             <svg
-              class="w-6 h-6 text-yellow-600"
+                class="w-6 h-6 text-gradient-emerald dark:text-gradient-emerald"
               fill="none"
               stroke="currentColor"
               viewBox="0 0 24 24"
@@ -292,15 +376,18 @@ if (currentUser) {
           </div>
           <div class="ml-4">
             <p
-              class="text-sm font-medium text-neutral-600 dark:text-neutral-400"
+                class="text-sm font-medium text-neutral-600 dark:text-neutral-400 mb-1"
             >
               Valeur moyenne
             </p>
             <p
               class="text-2xl font-bold text-neutral-900 dark:text-neutral-50 font-mono"
+                data-stat="average-value"
             >
               {stats.averageValue.toFixed(2)} €
             </p>
+            </div>
+          </div>
           </div>
         </div>
       </div>
@@ -324,18 +411,40 @@ if (currentUser) {
               </h2>
               <button
                 id="new-collection-btn"
-                class="bg-gradient-emerald text-white px-4 py-2 rounded-xl hover:bg-gradient-emerald/80 transition-colors text-sm"
+                class="bg-gradient-emerald text-white px-4 py-2 rounded-xl hover:bg-gradient-emerald/80 transition-colors text-sm flex items-center"
                 title="Créer une nouvelle collection"
               >
+                <svg
+                  class="w-4 h-4 mr-2"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+d="M5 12h14"
+                  />
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M12 5v14"
+                  />
+                </svg>
                 Nouvelle collection
               </button>
             </div>
           </div>
           <div class="p-6">
-            <div class="space-y-4">
+            <div class="space-y-4" data-collections-section>
               {
                 userCollections.map((collection: any) => (
-                  <div class="bg-neutral-50 dark:bg-neutral-950 dark:bg-gradient-emerald-subtle dark:glass-emerald-border rounded-xl p-4 shadow-sm dark:shadow-white">
+                  <div 
+                    class="bg-neutral-50 dark:bg-neutral-950 dark:bg-gradient-emerald-subtle dark:glass-emerald-border rounded-xl p-4 shadow-sm dark:shadow-white"
+                    data-collection-vinyl-count={collection.vinyls.length}
+                  >
                     <div class="flex items-center justify-between">
                       <div class="flex-1">
                         <h3 class="text-lg font-medium text-neutral-900 dark:text-neutral-50 mb-1">
@@ -364,6 +473,27 @@ if (currentUser) {
                         </div>
                       </div>
                       <div class="flex items-center space-x-2">
+                        <a
+                          href={`/collection/${collection.id}`}
+                          class="text-neutral-600 dark:text-neutral-400 hover:text-emerald-600 dark:hover:text-emerald-400"
+                          title="Voir la collection"
+                        >
+                          <svg
+                            class="w-5 h-5"
+                            fill="none"
+                            stroke="currentColor"
+                            viewBox="0 0 24 24"
+                          >
+                            <path
+                              stroke-linecap="round"
+                              stroke-linejoin="round"
+                              stroke-width="2"
+d="M2 12s3-7.5 10-7.5 10 7.5 10 7.5-3 7.5-10 7.5S2 12 2 12Z"
+                            />
+                            <circle cx="12" cy="12" r="3"
+                            />
+                          </svg>
+                        </a>
                         <button 
                           class="text-neutral-600 dark:text-neutral-400 hover:text-neutral-900 dark:hover:text-neutral-50"
                           data-collection-action="edit"
@@ -376,11 +506,17 @@ if (currentUser) {
                             stroke="currentColor"
                             viewBox="0 0 24 24"
                           >
-                            <path
-                              stroke-linecap="round"
-                              stroke-linejoin="round"
-                              stroke-width="2"
-                              d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M12 3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"
+                  />
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M18.375 2.625a1 1 0 0 1 3 3l-9.013 9.014a2 2 0 0 1-.853.505l-2.873.84a.5.5 0 0 1-.62-.62l.84-2.873a2 2 0 0 1 .506-.852z"
                             />
                           </svg>
                         </button>
@@ -400,7 +536,25 @@ if (currentUser) {
                               stroke-linecap="round"
                               stroke-linejoin="round"
                               stroke-width="2"
-                              d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
+d="M3 6h5l.645-1.69A2 2 0 0 1 10.53 4h2.94a2 2 0 0 1 1.885 1.31L15 6h5"
+                  />
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"
+                  />
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M10 11v6"
+                  />
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M14 11v6"
                             />
                           </svg>
                         </button>
@@ -421,11 +575,11 @@ if (currentUser) {
             class="px-6 py-4  border-neutral-200 dark:border-neutral-800"
           >
             <div class="flex items-center justify-between">
-              <h2
-                class="text-xl font-semibold text-neutral-900 dark:text-neutral-50"
-              >
-                Ajouts récents
-              </h2>
+            <h2
+              class="text-xl font-semibold text-neutral-900 dark:text-neutral-50"
+            >
+              Ajouts récents
+            </h2>
               <div class="flex items-center gap-3">
                 <!-- Boutons de vue -->
                 <div class="flex items-center glass dark:glass-dark rounded-xl p-1">
@@ -463,7 +617,37 @@ if (currentUser) {
                         stroke-linecap="round"
                         stroke-linejoin="round"
                         stroke-width="2"
-                        d="M4 6h16M4 10h16M4 14h16M4 18h16"></path>
+                        d="M3 5h.01"
+                      ></path>
+                      <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2"
+                        d="M3 12h.01"
+                      ></path>
+                      <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2"
+                        d="M3 19h.01"
+                      ></path>
+                      <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2"
+                        d="M8 5h13"
+                      ></path>
+                      <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2"
+                        d="M8 12h13"
+                      ></path>
+                      <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2"
+                        d="M8 19h13"></path>
                     </svg>
                   </button>
                 </div>
@@ -540,21 +724,13 @@ if (currentUser) {
                             d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"
                           />
                         </svg>
-                      </a>
-                    </div>
-                  </div>
+              </a>
+            </div>
+          </div>
                 ))
               }
             </div>
 
-            <div class="mt-4 text-center">
-              <a
-                href="/collection/1"
-                 class="text-emerald-500 dark:text-emerald-500 hover:text-emerald-600 dark:hover:text-emerald-600 font-medium"
-              >
-                Voir toute ma collection →
-              </a>
-            </div>
           </div>
         </div>
       </div>
@@ -575,7 +751,7 @@ if (currentUser) {
             </h3>
           </div>
           <div class="p-6">
-            <div class="space-y-3">
+            <div class="space-y-3" data-stat="top-genres">
               {
                 stats.topGenres.map((genre) => (
                   <div class="flex items-center justify-between">
@@ -630,7 +806,13 @@ if (currentUser) {
                     stroke-linecap="round"
                     stroke-linejoin="round"
                     stroke-width="2"
-                    d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
+d="M5 12h14"
+                  />
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M12 5v14"></path>
                 </svg>
                 <span
                   class="text-sm font-medium text-neutral-900 dark:text-neutral-50"
@@ -655,7 +837,9 @@ if (currentUser) {
                     stroke-linecap="round"
                     stroke-linejoin="round"
                     stroke-width="2"
-                    d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+d="m21 21-4.35-4.35"
+                  />
+                  <circle cx="11" cy="11" r="8"></path>
                 </svg>
                 <span
                   class="text-sm font-medium text-neutral-900 dark:text-neutral-50"
@@ -680,8 +864,14 @@ if (currentUser) {
                     stroke-linecap="round"
                     stroke-linejoin="round"
                     stroke-width="2"
-                    d="M19 11H5m14-5v12a2 2 0 01-2 2H7a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2z"
-                  ></path>
+d="M5 12h14"
+                  />
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M12 5v14"
+                  />
                 </svg>
                 <span
                   class="text-sm font-medium text-neutral-900 dark:text-neutral-50"
@@ -810,9 +1000,16 @@ if (currentUser) {
   <BarcodeScannerModal />
   <CreateCollectionModal />
   <DeleteVinylModal />
+  <DeleteCollectionModal />
+  <EditCollectionModal />
+  <PersonalStatsModal />
+  <AddToCollectionModal />
 </BaseLayout>
 
 <script>
+  // Données des collections disponibles globalement
+  const collectionsData = {};
+
   // Gestion des actions du tableau de bord
   document.addEventListener("DOMContentLoaded", () => {
     // Bouton d'ajout de vinyle (scanner de code-barres)
@@ -828,6 +1025,7 @@ if (currentUser) {
     });
 
     // Bouton de création de collection (dans la section collections)
+    // Note: Le bouton est conditionnel - soit "new-collection-btn" (actif) soit "new-collection-btn-disabled" (désactivé)
     const newCollectionBtn = document.getElementById("new-collection-btn");
     newCollectionBtn?.addEventListener("click", () => {
       if (typeof (window as any).openCreateCollectionModal === "function") {
@@ -836,6 +1034,49 @@ if (currentUser) {
         console.error("Modal de création de collection non disponible");
       }
     });
+
+    // Bouton de création de collection dans la sidebar
+    const sidebarCreateCollectionBtn = document.getElementById("create-collection-btn");
+    sidebarCreateCollectionBtn?.addEventListener("click", () => {
+      if (typeof (window as any).openCreateCollectionModal === "function") {
+        (window as any).openCreateCollectionModal();
+      } else {
+        console.error("Modal de création de collection non disponible");
+      }
+    });
+
+    // Bouton des statistiques détaillées
+    const personalStatsBtn = document.getElementById("personal-stats-btn");
+    personalStatsBtn?.addEventListener("click", () => {
+      if (window.personalStatsModal) {
+        window.personalStatsModal.open();
+      } else {
+        console.error("Modal de statistiques personnelles non disponible");
+      }
+    });
+
+    // Mettre à jour le bouton de création de collection au chargement initial
+    // Utiliser setTimeout pour s'assurer que le DOM est complètement rendu
+    setTimeout(() => {
+      // Récupérer le nombre de collections depuis l'API
+      fetch('/api/collections/list', {
+        method: 'GET',
+        credentials: 'include',
+      })
+      .then(response => response.json())
+      .then(data => {
+        if (data.success) {
+          console.log('Mise à jour initiale du bouton avec:', data.collections.length, 'collections');
+          updateCreateCollectionButton(data.collections.length);
+        }
+      })
+      .catch(error => {
+        console.error('Erreur lors du chargement initial des collections:', error);
+      });
+    }, 100);
+
+    // Le bouton désactivé (new-collection-btn-disabled) n'a pas besoin d'event listener
+    // Il est déjà disabled et ne peut pas être cliqué
 
     // Bouton de création de collection (dans les actions rapides)
     const createCollectionBtn = document.getElementById("create-collection-btn");
@@ -912,38 +1153,412 @@ if (currentUser) {
     dashboardGridViewBtn?.addEventListener("click", switchToDashboardGridView);
     dashboardListViewBtn?.addEventListener("click", switchToDashboardListView);
 
-    // Gestion des actions sur les collections existantes
-    const collectionActions = document.querySelectorAll("[data-collection-action]");
-    collectionActions.forEach((action) => {
-      action.addEventListener("click", (e) => {
-        const actionType = (e.currentTarget as HTMLElement)?.getAttribute("data-collection-action");
-        const collectionId = (e.currentTarget as HTMLElement)?.getAttribute("data-collection-id");
-        
-        if (actionType === "edit" && collectionId) {
-          editCollection(collectionId);
-        } else if (actionType === "delete" && collectionId) {
-          deleteCollection(collectionId);
+    // Fonction pour attacher les event listeners des actions de collection
+    function attachCollectionActionListeners() {
+      const collectionActions = document.querySelectorAll("[data-collection-action]");
+      collectionActions.forEach((action) => {
+        action.addEventListener("click", (e) => {
+          const actionType = (e.currentTarget as HTMLElement)?.getAttribute("data-collection-action");
+          const collectionId = (e.currentTarget as HTMLElement)?.getAttribute("data-collection-id");
+          
+          if (actionType === "edit" && collectionId) {
+            editCollection(collectionId);
+          } else if (actionType === "delete" && collectionId) {
+            deleteCollection(collectionId);
         }
       });
     });
+    }
+
+    // Gestion des actions sur les collections existantes (chargement initial)
+    attachCollectionActionListeners();
 
     // Fonction pour éditer une collection
     function editCollection(collectionId: string) {
-      const newName = prompt("Nouveau nom de la collection :");
-      if (newName && newName.trim()) {
-        // TODO: Implémenter l'édition de collection
-        console.log("Édition de la collection", collectionId, "avec le nom", newName);
-        alert("Fonctionnalité d'édition en cours de développement");
+      // Trouver les informations de la collection depuis le DOM
+      const collectionElement = document.querySelector(`[data-collection-id="${collectionId}"]`);
+      const collectionName = collectionElement?.closest('.glass')?.querySelector('h3 a')?.textContent || 'Collection';
+      const collectionDescription = collectionElement?.closest('.glass')?.querySelector('p')?.textContent || '';
+      const isPublic = collectionElement?.closest('.glass')?.querySelector('.text-gradient-emerald')?.textContent?.includes('Publique') || false;
+      
+      const collection = {
+        id: collectionId,
+        name: collectionName,
+        description: collectionDescription === "Aucune description" ? '' : collectionDescription,
+        isPublic: isPublic
+      };
+
+      // Ouvrir la modal d'édition
+      if (typeof (window as any).openEditCollectionModal === 'function') {
+        (window as any).openEditCollectionModal(collection);
+      } else {
+        console.error('Modal d\'édition de collection non disponible');
+        // Fallback avec prompt
+        const newName = prompt("Nouveau nom de la collection :");
+        if (newName && newName.trim()) {
+          console.log("Édition de la collection", collectionId, "avec le nom", newName);
+          alert("Fonctionnalité d'édition en cours de développement");
+        }
       }
     }
 
     // Fonction pour supprimer une collection
     function deleteCollection(collectionId: string) {
-      if (confirm("Êtes-vous sûr de vouloir supprimer cette collection ? Cette action est irréversible.")) {
-        // TODO: Implémenter la suppression de collection
-        console.log("Suppression de la collection", collectionId);
-        alert("Fonctionnalité de suppression en cours de développement");
+      // Récupérer les données depuis le DOM
+      const collectionElement = document.querySelector(`[data-collection-id="${collectionId}"]`);
+      const collectionCard = collectionElement?.closest('.glass');
+      const collectionName = collectionCard?.querySelector('h3 a')?.textContent || 'Collection';
+      const vinylCount = parseInt(collectionCard?.querySelector('[data-collection-vinyl-count]')?.getAttribute('data-collection-vinyl-count') || '0');
+      
+      const collection = {
+        id: collectionId,
+        name: collectionName,
+        vinylCount: vinylCount
+      };
+      
+      console.log('Delete collection debug:', collection);
+
+      // Ouvrir la modal de confirmation
+      if (typeof (window as any).openDeleteCollectionModal === 'function') {
+        (window as any).openDeleteCollectionModal(collection);
+      } else {
+        console.error('Modal de suppression de collection non disponible');
+        // Fallback avec confirm
+        if (confirm("Êtes-vous sûr de vouloir supprimer cette collection ? Cette action est irréversible.")) {
+          console.log("Suppression de la collection", collectionId);
+          alert("Fonctionnalité de suppression en cours de développement");
+        }
       }
     }
+
+    // Fonction pour recharger les collections
+    async function reloadCollections() {
+      console.log('Rechargement des collections...');
+      try {
+        const response = await fetch('/api/collections/list', {
+          method: 'GET',
+          credentials: 'include',
+        });
+
+        const data = await response.json();
+
+        if (response.ok && data.success) {
+          // Mettre à jour la liste des collections dans l'interface
+          console.log('Appel de updateCollectionsDisplay avec:', data.collections.length, 'collections');
+          console.log('Conteneur des collections trouvé:', document.querySelector('[data-collections-section]') ? 'OUI' : 'NON');
+          updateCollectionsDisplay(data.collections);
+          console.log('Collections rechargées:', data.collections);
+          
+          // Retourner le nombre de collections
+          return data.collections.length;
+        } else {
+          console.error('Erreur lors du rechargement des collections');
+          return 0;
+        }
+      } catch (error) {
+        console.error('Erreur lors du rechargement des collections:', error);
+        return 0;
+      }
+    }
+
+    // Fonction pour mettre à jour l'affichage des collections
+    function updateCollectionsDisplay(collections: any[]) {
+      console.log('updateCollectionsDisplay appelée avec:', collections.length, 'collections');
+      const collectionsContainer = document.querySelector('[data-collections-section]');
+      if (!collectionsContainer) {
+        console.log('Conteneur des collections non trouvé');
+        return;
+      }
+
+      // Afficher toutes les collections (maximum 5 grâce à la limite de création)
+      const collectionsHTML = collections.map(collection => `
+        <div 
+          class="bg-neutral-50 dark:bg-neutral-950 dark:bg-gradient-emerald-subtle dark:glass-emerald-border rounded-xl p-4 shadow-sm dark:shadow-white"
+          data-collection-id="${collection.id}"
+          data-collection-vinyl-count="${collection.vinyl_count || 0}"
+        >
+          <div class="flex items-center justify-between">
+            <div class="flex-1">
+              <h3 class="font-semibold text-neutral-900 dark:text-neutral-50 text-lg mb-1">
+                ${collection.name}
+              </h3>
+                <p class="text-neutral-600 dark:text-neutral-400 text-sm mb-2">
+                  ${collection.vinyl_count || 0} vinyles • ${collection.total_value || 0} €
+                </p>
+              <div class="flex items-center space-x-4 text-xs text-neutral-500 dark:text-neutral-500">
+                <span>Moyenne: ${collection.average_price || 0} €</span>
+                <span class="flex items-center">
+                  <svg class="w-3 h-3 mr-1" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
+                    <path d="M20 6 9 17l-5-5"/>
+                  </svg>
+                  ${collection.is_public ? 'Publique' : 'Privée'}
+                </span>
+              </div>
+            </div>
+            <div class="flex items-center space-x-2 ml-4">
+              <a
+                href="/collection/${collection.id}"
+                class="text-neutral-600 dark:text-neutral-400 hover:text-emerald-600 dark:hover:text-emerald-400"
+                title="Voir la collection"
+              >
+                <svg
+                  class="w-5 h-5"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+d="M2 12s3-7.5 10-7.5 10 7.5 10 7.5-3 7.5-10 7.5S2 12 2 12Z"
+                  />
+                  <circle cx="12" cy="12" r="3"
+                  />
+                </svg>
+              </a>
+              <button 
+                class="text-neutral-600 dark:text-neutral-400 hover:text-neutral-900 dark:hover:text-neutral-50"
+                data-collection-action="edit"
+                data-collection-id="${collection.id}"
+                title="Modifier la collection"
+              >
+                <svg
+                  class="w-5 h-5"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M12 3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"
+                  />
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M18.375 2.625a1 1 0 0 1 3 3l-9.013 9.014a2 2 0 0 1-.853.505l-2.873.84a.5.5 0 0 1-.62-.62l.84-2.873a2 2 0 0 1 .506-.852z"
+                  />
+                </svg>
+              </button>
+              <button 
+                class="text-neutral-600 dark:text-neutral-400 hover:text-red-600 dark:hover:text-red-400"
+                data-collection-action="delete"
+                data-collection-id="${collection.id}"
+                title="Supprimer la collection"
+              >
+                <svg
+                  class="w-5 h-5"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+d="M3 6h5l.645-1.69A2 2 0 0 1 10.53 4h2.94a2 2 0 0 1 1.885 1.31L15 6h5"
+                  />
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"
+                  />
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M10 11v6"
+                  />
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M14 11v6"
+                  />
+                </svg>
+              </button>
+            </div>
+          </div>
+        </div>
+      `).join('');
+
+      // Mettre à jour le contenu (plus de bouton "Voir toutes les collections")
+      const collectionsSection = document.querySelector('[data-collections-section]');
+      if (collectionsSection) {
+        collectionsSection.innerHTML = collectionsHTML;
+        console.log('Collections mises à jour avec succès');
+      } else {
+        // Fallback si l'attribut data-collections-section n'existe pas
+        collectionsContainer.innerHTML = collectionsHTML;
+        console.log('Collections mises à jour avec fallback');
+      }
+
+      // Réattacher les event listeners pour les actions de collection
+      attachCollectionActionListeners();
+
+      // Mettre à jour le bouton de création de collection
+      updateCreateCollectionButton(collections.length);
+    }
+
+    // Fonction pour mettre à jour le bouton de création de collection
+    function updateCreateCollectionButton(collectionsCount: number) {
+      console.log('updateCreateCollectionButton appelée avec:', collectionsCount);
+      
+      // Trouver le bouton principal (actif ou désactivé)
+      const mainBtn = document.getElementById("new-collection-btn") || document.getElementById("new-collection-btn-disabled");
+      
+      // Trouver le bouton sidebar
+      const sidebarBtn = document.getElementById("create-collection-btn");
+      
+      if (!mainBtn) {
+        console.log('Bouton principal non trouvé');
+        return;
+      }
+
+      console.log('Bouton principal trouvé:', mainBtn.id);
+
+      if (collectionsCount < 5) {
+        // Activer le bouton principal avec icône +
+        mainBtn.id = "new-collection-btn";
+        mainBtn.removeAttribute('disabled');
+        mainBtn.className = "bg-gradient-emerald text-white px-4 py-2 rounded-xl hover:bg-gradient-emerald/80 transition-colors text-sm flex items-center";
+        mainBtn.innerHTML = `
+          <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 12h14" />
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 5v14" />
+          </svg>
+          Nouvelle collection
+        `;
+        mainBtn.title = "Créer une nouvelle collection";
+        
+        // Activer le bouton sidebar
+        if (sidebarBtn) {
+          sidebarBtn.style.display = "block";
+          sidebarBtn.title = "Créer une nouvelle collection";
+          sidebarBtn.innerHTML = `
+            <div class="flex items-center">
+              <svg class="w-5 h-5 text-emerald-500 dark:text-emerald-500 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 12h14" />
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 5v14" />
+              </svg>
+              <span class="text-sm font-medium text-neutral-900 dark:text-neutral-50">Nouvelle collection</span>
+            </div>
+          `;
+        }
+        
+        console.log('Boutons activés avec icône +');
+      } else {
+        // Désactiver le bouton principal (sans icône)
+        mainBtn.id = "new-collection-btn-disabled";
+        mainBtn.setAttribute('disabled', 'true');
+        mainBtn.className = "bg-neutral-300 dark:bg-neutral-700 text-neutral-500 dark:text-neutral-400 px-4 py-2 rounded-xl cursor-not-allowed text-sm";
+        mainBtn.textContent = "Limite atteinte (5/5)";
+        mainBtn.title = "Limite de 5 collections atteinte";
+        
+        // Masquer le bouton sidebar
+        if (sidebarBtn) {
+          sidebarBtn.style.display = "none";
+        }
+        
+        console.log('Boutons désactivés');
+      }
+    }
+
+    // Fonction pour recalculer les statistiques après suppression/édition
+    async function recalculateStats() {
+      console.log('Recalcul des statistiques...');
+      try {
+        // Recharger les collections en premier et récupérer le nombre
+        const collectionsCount = await reloadCollections();
+        
+        // Puis recalculer les statistiques
+        const response = await fetch('/api/dashboard/recalculate-stats', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          credentials: 'include',
+        });
+
+        const data = await response.json();
+
+        if (response.ok && data.success) {
+          // Mettre à jour les statistiques dans l'interface
+          updateStatsDisplay(data.stats);
+          
+          // Mettre à jour le bouton de création de collection avec le nombre réel de collections
+          console.log('Mise à jour du bouton avec collectionsCount:', collectionsCount);
+          updateCreateCollectionButton(collectionsCount);
+          
+          console.log('Statistiques mises à jour:', data.stats);
+        } else {
+          console.error('Erreur lors du recalcul:', data.error);
+          // Fallback : recharger la page
+          setTimeout(() => {
+            window.location.reload();
+          }, 1000);
+        }
+      } catch (error) {
+        console.error('Erreur lors du recalcul des statistiques:', error);
+        // Fallback : recharger la page
+        setTimeout(() => {
+          window.location.reload();
+        }, 1000);
+      }
+    }
+
+    // Fonction pour mettre à jour l'affichage des statistiques
+    function updateStatsDisplay(stats: any) {
+      // Mettre à jour le total des vinyles
+      const totalVinylsElement = document.querySelector('[data-stat="total-vinyls"]');
+      if (totalVinylsElement) {
+        totalVinylsElement.textContent = stats.totalVinyls.toString();
+      }
+
+      // Mettre à jour la valeur totale
+      const totalValueElement = document.querySelector('[data-stat="total-value"]');
+      if (totalValueElement) {
+        totalValueElement.textContent = `${stats.totalValue.toFixed(2)} €`;
+      }
+
+      // Mettre à jour la valeur moyenne
+      const averageValueElement = document.querySelector('[data-stat="average-value"]');
+      if (averageValueElement) {
+        averageValueElement.textContent = `${stats.averageValue.toFixed(2)} €`;
+      }
+
+      // Mettre à jour le nombre de collections
+      const totalCollectionsElement = document.querySelector('[data-stat="total-collections"]');
+      if (totalCollectionsElement) {
+        totalCollectionsElement.textContent = stats.totalCollections.toString();
+      }
+
+      // Mettre à jour les genres populaires
+      const topGenresContainer = document.querySelector('[data-stat="top-genres"]');
+      if (topGenresContainer && stats.topGenres.length > 0) {
+        const genresList = stats.topGenres.map((genre: any) => 
+          `<div class="flex items-center justify-between">
+            <span class="text-sm font-medium text-neutral-900 dark:text-neutral-50">${genre.name}</span>
+            <div class="flex items-center">
+              <div class="w-20 glass dark:glass-dark rounded-full h-2 mr-3">
+                <div class="bg-gradient-emerald h-2 rounded-full" style="width: ${(genre.count / stats.totalVinyls) * 100}%"></div>
+              </div>
+              <span class="text-sm text-neutral-600 dark:text-neutral-400">${genre.count}</span>
+            </div>
+          </div>`
+        ).join('');
+        topGenresContainer.innerHTML = genresList;
+      } else if (topGenresContainer) {
+        topGenresContainer.innerHTML = '<span class="text-neutral-500 dark:text-neutral-400 text-sm">Aucun genre enregistré</span>';
+      }
+    }
+
+
+    // Exposer la fonction de recalcul pour les modals
+    (window as any).recalculateStats = recalculateStats;
   });
 </script>
