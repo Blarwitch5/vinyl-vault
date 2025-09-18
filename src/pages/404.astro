@@ -1,0 +1,119 @@
+---
+import Footer from "../components/Footer.astro";
+import Navbar from "../components/Navbar.astro";
+import BaseLayout from "../layouts/BaseLayout.astro";
+
+const title = "Page non trouvée - Vinyl Vault";
+const description = "La page que vous recherchez n'existe pas.";
+---
+
+<BaseLayout title={title} description={description}>
+  <Navbar slot="navbar" />
+  
+  <div class="min-h-screen bg-gradient-to-br from-neutral-50 via-white to-neutral-100 dark:from-neutral-950 dark:via-neutral-900 dark:to-neutral-950">
+    <div class="container mx-auto px-4 py-16">
+      <div class="text-center max-w-2xl mx-auto">
+        <!-- Illustration 404 -->
+        <div class="mb-8">
+          <div class="text-8xl font-bold text-gradient-emerald mb-4">404</div>
+          <div class="w-24 h-1 bg-gradient-emerald mx-auto rounded-full"></div>
+        </div>
+
+        <!-- Message d'erreur -->
+        <h1 class="text-3xl font-bold text-neutral-900 dark:text-neutral-50 mb-4">
+          Page non trouvée
+        </h1>
+        <p class="text-lg text-neutral-600 dark:text-neutral-400 mb-8">
+          Désolé, la page que vous recherchez n'existe pas ou a été déplacée.
+        </p>
+
+        <!-- Actions -->
+        <div class="flex flex-col sm:flex-row gap-4 justify-center items-center">
+          <a
+            href="/"
+            class="inline-flex items-center px-6 py-3 bg-gradient-emerald text-white rounded-xl hover:bg-gradient-emerald/80 transition-colors"
+          >
+            <svg
+              class="w-5 h-5 mr-2"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"
+              />
+            </svg>
+            Retour à l'accueil
+          </a>
+          
+          <a
+            href="/dashboard"
+            class="inline-flex items-center px-6 py-3 bg-neutral-100 dark:bg-neutral-800 text-neutral-700 dark:text-neutral-300 rounded-xl hover:bg-neutral-200 dark:hover:bg-neutral-700 transition-colors"
+          >
+            <svg
+              class="w-5 h-5 mr-2"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"
+              />
+            </svg>
+            Tableau de bord
+          </a>
+        </div>
+
+        <!-- Suggestions -->
+        <div class="mt-12 text-left">
+          <h2 class="text-xl font-semibold text-neutral-900 dark:text-neutral-50 mb-4">
+            Pages populaires
+          </h2>
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <a
+              href="/search"
+              class="p-4 bg-white dark:bg-neutral-900 rounded-xl border border-neutral-200 dark:border-neutral-800 hover:border-emerald-300 dark:hover:border-emerald-700 transition-colors"
+            >
+              <div class="flex items-center space-x-3">
+                <div class="w-10 h-10 bg-emerald-100 dark:bg-emerald-900/20 rounded-lg flex items-center justify-center">
+                  <svg class="w-5 h-5 text-emerald-600 dark:text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                  </svg>
+                </div>
+                <div>
+                  <h3 class="font-medium text-neutral-900 dark:text-neutral-50">Rechercher des vinyles</h3>
+                  <p class="text-sm text-neutral-600 dark:text-neutral-400">Trouvez vos vinyles préférés</p>
+                </div>
+              </div>
+            </a>
+
+            <a
+              href="/collections"
+              class="p-4 bg-white dark:bg-neutral-900 rounded-xl border border-neutral-200 dark:border-neutral-800 hover:border-emerald-300 dark:hover:border-emerald-700 transition-colors"
+            >
+              <div class="flex items-center space-x-3">
+                <div class="w-10 h-10 bg-emerald-100 dark:bg-emerald-900/20 rounded-lg flex items-center justify-center">
+                  <svg class="w-5 h-5 text-emerald-600 dark:text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
+                  </svg>
+                </div>
+                <div>
+                  <h3 class="font-medium text-neutral-900 dark:text-neutral-50">Mes collections</h3>
+                  <p class="text-sm text-neutral-600 dark:text-neutral-400">Gérez vos collections</p>
+                </div>
+              </div>
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <Footer slot="footer" />
+</BaseLayout>
