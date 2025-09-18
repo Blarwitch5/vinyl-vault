@@ -10,7 +10,7 @@ const { vinylData } = Astro.props
 <!-- Modal overlay -->
 <div
   id="add-to-collection-modal"
-  class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden flex items-center justify-center p-4"
+  class="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 items-center justify-center p-4 hidden"
 >
   <div class="glass-card dark:glass-dark rounded-lg max-w-md w-full max-h-[90vh] overflow-y-auto">
     <!-- Header -->
@@ -29,7 +29,7 @@ const { vinylData } = Astro.props
             stroke-linecap="round"
             stroke-linejoin="round"
             stroke-width="2"
-            d="M6 18L18 6M6 6l12 12"></path>
+            d="M18 6 6 18"></path>
         </svg>
       </button>
     </div>
@@ -235,27 +235,25 @@ const { vinylData } = Astro.props
 </div>
 
 <script>
-  // Import des types selon les règles .cursorrules
-  import type { Collection, Vinyl } from '../../types'
-  import { createDomHelper } from '../../utils/dom-helpers'
-  import { createModalHelper } from '../../utils/modal-helpers'
-
   // Variables d'état
   let modalElement: HTMLElement | null = null
-  let currentVinyl: Vinyl | null = null
-  let userCollections: Collection[] = []
+  let currentVinyl: any = null
+  let userCollections: any[] = []
+  let eventListenersAttached: boolean = false
 
-  // Créer les helpers selon les règles .cursorrules
-  const modalHelper = createModalHelper()
-  const domHelper = createDomHelper()
-
-  // Fonctions utilitaires selon les règles
+  // Fonctions utilitaires simplifiées
   const initModal = (): void => {
-    modalElement = domHelper.getElementById('add-to-collection-modal')
+    modalElement = document.getElementById('add-to-collection-modal')
     attachEventListeners()
   }
 
   const attachEventListeners = (): void => {
+    // Éviter d'attacher les event listeners plusieurs fois
+    if (eventListenersAttached) {
+      console.log('Event listeners déjà attachés, skip');
+      return;
+    }
+
     // Fermer la modal
     document.getElementById('close-modal')?.addEventListener('click', closeModal)
 
@@ -287,21 +285,50 @@ const { vinylData } = Astro.props
       e.preventDefault()
       handleCreateCollection()
     })
+
+    // Marquer que les event listeners ont été attachés
+    eventListenersAttached = true;
+    console.log('Event listeners attachés avec succès');
   }
 
-  const openModal = async (vinylData: Vinyl): Promise<void> => {
+  const openModal = async (vinylData: any): Promise<void> => {
+    console.log('AddToCollectionModal: openModal appelé avec:', vinylData)
     currentVinyl = vinylData
     updateVinylInfo()
-    modalElement?.classList.remove('hidden')
-    document.body.style.overflow = 'hidden'
+
+    if (modalElement) {
+      document.body.style.overflow = 'hidden'
+      modalElement.style.opacity = '0'
+      modalElement.classList.remove('hidden')
+      modalElement.classList.add('flex')
+
+      setTimeout(() => {
+        if (modalElement) {
+          modalElement.style.transition = 'opacity 250ms ease-out'
+          modalElement.style.opacity = '1'
+        }
+      }, 10)
+    }
 
     // Vérifier l'authentification
     await checkAuthAndLoadCollections()
   }
 
   const closeModal = (): void => {
-    modalElement?.classList.add('hidden')
-    document.body.style.overflow = ''
+    if (modalElement) {
+      modalElement.style.transition = 'opacity 200ms ease-in'
+      modalElement.style.opacity = '0'
+
+      setTimeout(() => {
+        if (modalElement) {
+          modalElement.classList.add('hidden')
+          modalElement.classList.remove('flex')
+          modalElement.style.transition = ''
+          modalElement.style.opacity = ''
+          document.body.style.overflow = ''
+        }
+      }, 200)
+    }
     resetModal()
   }
 
@@ -404,6 +431,18 @@ const { vinylData } = Astro.props
     const form = document.getElementById('create-collection-form') as HTMLFormElement
     const formData = new FormData(form)
 
+    // Récupérer les valeurs avec validation
+    const name = formData.get('name') as string
+    const description = formData.get('description') as string
+
+    // Validation côté client
+    if (!name || name.trim().length === 0) {
+      console.error('Nom de collection requis');
+      return;
+    }
+
+    console.log('handleCreateCollection appelé avec:', { name, description });
+
     try {
       const response = await fetch('/api/collections/create', {
         method: 'POST',
@@ -411,8 +450,9 @@ const { vinylData } = Astro.props
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          name: formData.get('name'),
-          description: formData.get('description'),
+          name: name.trim(),
+          description: description?.trim() || null,
+          isPublic: false, // Collections privées par défaut
         }),
       })
 
@@ -498,11 +538,25 @@ const { vinylData } = Astro.props
     isOpen: isModalOpen,
   }
 
+  // Exposer immédiatement sur window
+  window.addToCollectionModal = addToCollectionModal
+  console.log('AddToCollectionModal: Modal exposée immédiatement sur window')
+
   // Initialiser la modal
   document.addEventListener('DOMContentLoaded', () => {
+    console.log('AddToCollectionModal: Initialisation...')
     initModal()
     window.addToCollectionModal = addToCollectionModal
+    console.log('AddToCollectionModal: Modal initialisée et exposée sur window')
   })
+
+  // Fallback pour s'assurer que la modal est disponible
+  setTimeout(() => {
+    if (!window.addToCollectionModal) {
+      console.log('AddToCollectionModal: Fallback - réexposition de la modal')
+      window.addToCollectionModal = addToCollectionModal
+    }
+  }, 1000)
 
   // Type global pour TypeScript
   declare global {

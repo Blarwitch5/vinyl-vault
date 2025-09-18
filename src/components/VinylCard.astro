@@ -26,6 +26,7 @@ const defaultCover = '/default-vinyl-cover.svg'
 
 <div
   class="vinyl-card-container glass dark:glass-dark dark:bg-neutral-950 dark:bg-gradient-emerald-subtle rounded-xl shadow-md dark:shadow-white-md overflow-hidden hover:shadow-lg dark:hover:shadow-white-lg transition-all duration-300 hover:-translate-y-1"
+  data-vinyl-id={vinyl.id}
   data-discogs-id={vinyl.discogsId}
   data-discogs-url={vinyl.discogsUrl}
 >
@@ -158,7 +159,7 @@ const defaultCover = '/default-vinyl-cover.svg'
         try {
           switch (action) {
             case 'add-to-collection':
-              await addToCollection(vinylId)
+              await openAddToCollectionModal(vinylId, target)
               break
             case 'remove':
               // Récupérer les informations du vinyle depuis la carte
@@ -191,7 +192,7 @@ const defaultCover = '/default-vinyl-cover.svg'
                     `Êtes-vous sûr de vouloir supprimer "${vinyl.title}" de votre collection ?`
                   )
                 ) {
-                  await removeFromCollection(vinylId)
+              await removeFromCollection(vinylId)
                 }
               }
               break
@@ -204,19 +205,614 @@ const defaultCover = '/default-vinyl-cover.svg'
     })
   })
 
-  async function addToCollection(vinylId: string) {
+  async function openAddToCollectionModal(vinylId: string, button: HTMLButtonElement) {
+    // Récupérer les informations du vinyle depuis la carte
+    const card = button.closest('.vinyl-card-container')
+    if (!card) return
+
+    // Extraire le discogsId depuis l'URL si elle existe
+    const discogsUrl = card.getAttribute('data-discogs-url') || ''
+    const discogsIdFromUrl = discogsUrl.match(/\/release\/(\d+)-/)?.[1] || ''
+    
+    const vinyl = {
+      id: vinylId,
+      title: (card.querySelector('[data-vinyl-title]')?.textContent || 'Vinyle inconnu').trim(),
+      artist: (card.querySelector('[data-vinyl-artist]')?.textContent || 'Artiste inconnu').trim(),
+      year: card.querySelector('[data-vinyl-year]')?.textContent?.trim() || '',
+      format:
+        Array.from(card.querySelectorAll('span')).find(
+          (span) =>
+            span.textContent?.includes('LP') ||
+            span.textContent?.includes('EP') ||
+            span.textContent?.includes('Single')
+        )?.textContent?.trim() || 'LP',
+      coverImage: card.querySelector('img')?.src || '/default-vinyl-cover.svg',
+      discogsId: card.getAttribute('data-discogs-id') || discogsIdFromUrl,
+      discogsUrl: discogsUrl,
+      barcode: '',
+      genre: '',
+    }
+
+    console.log('VinylCard: Ouverture de la modal simple avec:', vinyl)
+    
+    // Créer une modal simple directement
+    showSimpleModal(vinyl)
+  }
+
+  function showSimpleModal(vinyl: any) {
+    // Créer la modal si elle n'existe pas
+    let modal = document.getElementById('inline-add-modal')
+    if (!modal) {
+      modal = document.createElement('div')
+      modal.id = 'inline-add-modal'
+      modal.innerHTML = `
+        <div id="modal-overlay" class="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 items-center justify-center p-4 hidden">
+          <div class="glass-card dark:glass-dark rounded-lg max-w-md w-full">
+            <div class="flex items-center justify-between p-6 border-b border-neutral-200 dark:border-white/10">
+              <h3 class="text-lg font-semibold text-neutral-900 dark:text-neutral-50">
+                Ajouter à ma collection
+              </h3>
+              <button id="close-inline-modal" class="text-gray-400 hover:text-neutral-600 dark:hover:text-gray-300 p-1">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 6 6 18"></path>
+                </svg>
+              </button>
+            </div>
+            <div class="p-6">
+              <div id="vinyl-info-inline" class="flex space-x-4 mb-6">
+                <img id="vinyl-cover-inline" src="" alt="" class="w-16 h-16 object-cover rounded" />
+                <div class="flex-1">
+                  <h4 id="vinyl-title-inline" class="font-semibold text-neutral-900 dark:text-neutral-50"></h4>
+                  <p id="vinyl-artist-inline" class="text-neutral-600 dark:text-neutral-400"></p>
+                  <p id="vinyl-year-inline" class="text-sm text-neutral-600 dark:text-neutral-600"></p>
+                </div>
+              </div>
+              <div id="modal-content-inline">
+                <div class="text-center">
+                  <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-primary-500 mx-auto mb-4"></div>
+                  <p class="text-neutral-600 dark:text-neutral-400">Chargement...</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      `
+      document.body.appendChild(modal)
+      
+      // Ajouter les event listeners
+      document.getElementById('close-inline-modal')?.addEventListener('click', hideSimpleModal)
+      document.getElementById('modal-overlay')?.addEventListener('click', (e) => {
+        if (e.target === document.getElementById('modal-overlay')) hideSimpleModal()
+      })
+    }
+
+    // Mettre à jour les informations du vinyle
+    const coverImg = document.getElementById('vinyl-cover-inline') as HTMLImageElement
+    const titleEl = document.getElementById('vinyl-title-inline')
+    const artistEl = document.getElementById('vinyl-artist-inline')
+    const yearEl = document.getElementById('vinyl-year-inline')
+
+    if (coverImg) coverImg.src = vinyl.coverImage || '/default-vinyl-cover.svg'
+    if (titleEl) titleEl.textContent = vinyl.title || 'Titre inconnu'
+    if (artistEl) artistEl.textContent = vinyl.artist || 'Artiste inconnu'
+    if (yearEl) yearEl.textContent = vinyl.year ? `${vinyl.year}` : ''
+
+    // Afficher la modal
+    const overlay = document.getElementById('modal-overlay')
+    if (overlay) {
+      document.body.style.overflow = 'hidden'
+      overlay.classList.remove('hidden')
+      overlay.classList.add('flex')
+    }
+
+    // Charger les collections
+    loadCollectionsForModal(vinyl)
+  }
+
+  function hideSimpleModal() {
+    const overlay = document.getElementById('modal-overlay')
+    if (overlay) {
+      overlay.classList.add('hidden')
+      overlay.classList.remove('flex')
+      document.body.style.overflow = ''
+    }
+  }
+
+  async function loadCollectionsForModal(vinyl: any) {
+    const content = document.getElementById('modal-content-inline')
+    if (!content) return
+
+    try {
+      console.log('Modal: Vérification de l\'authentification...')
+      
+      // Vérifier l'authentification
+      const authResponse = await fetch('/api/auth/check', {
+        credentials: 'include'
+      })
+
+      console.log('Modal: Réponse auth:', authResponse.status)
+
+      if (!authResponse.ok) {
+        console.log('Modal: Authentification échouée, affichage login')
+        content.innerHTML = `
+          <div class="text-center">
+            <div class="mb-4">
+              <svg class="w-16 h-16 text-primary-500 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path>
+              </svg>
+            </div>
+            <h4 class="text-lg font-semibold text-neutral-900 dark:text-neutral-50 mb-2">
+              Connexion requise
+            </h4>
+            <p class="text-neutral-600 dark:text-neutral-400 mb-6">
+              Vous devez être connecté pour ajouter des vinyles à votre collection.
+            </p>
+            <div class="flex space-x-3">
+              <a href="/login" class="flex-1 bg-primary-500 text-white py-2 px-4 rounded-lg hover:bg-primary-600 transition-colors text-center">
+                Se connecter
+              </a>
+              <a href="/register" class="flex-1 text-gray-700 dark:text-neutral-400 py-2 px-4 rounded-lg hover:bg-neutral-50 dark:hover:bg-dark-700 transition-colors text-center">
+                S'inscrire
+              </a>
+            </div>
+          </div>
+        `
+        return
+      }
+
+      const authData = await authResponse.json()
+      console.log('Modal: Données auth:', authData)
+      
+      if (!authData.authenticated) {
+        console.log('Modal: Non authentifié selon les données')
+        content.innerHTML = `
+          <div class="text-center">
+            <div class="mb-4">
+              <svg class="w-16 h-16 text-primary-500 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path>
+              </svg>
+            </div>
+            <h4 class="text-lg font-semibold text-neutral-900 dark:text-neutral-50 mb-2">
+              Connexion requise
+            </h4>
+            <p class="text-neutral-600 dark:text-neutral-400 mb-6">
+              Vous devez être connecté pour ajouter des vinyles à votre collection.
+            </p>
+            <div class="flex space-x-3">
+              <a href="/login" class="flex-1 bg-primary-500 text-white py-2 px-4 rounded-lg hover:bg-primary-600 transition-colors text-center">
+                Se connecter
+              </a>
+              <a href="/register" class="flex-1 text-gray-700 dark:text-neutral-400 py-2 px-4 rounded-lg hover:bg-neutral-50 dark:hover:bg-dark-700 transition-colors text-center">
+                S'inscrire
+              </a>
+            </div>
+          </div>
+        `
+        return
+      }
+
+      console.log('Modal: Authentifié, chargement des collections...')
+
+      // Charger les collections
+      const collectionsResponse = await fetch('/api/collections/list', {
+        credentials: 'include'
+      })
+
+      console.log('Modal: Réponse collections:', collectionsResponse.status)
+
+      if (!collectionsResponse.ok) {
+        throw new Error('Erreur lors du chargement des collections')
+      }
+
+      const collectionsData = await collectionsResponse.json()
+      console.log('Modal: Données collections:', collectionsData)
+      
+      const collections = collectionsData.collections || []
+
+      if (collections.length === 0) {
+        console.log('Modal: Aucune collection trouvée')
+        content.innerHTML = `
+          <div class="text-center">
+            <div class="mb-4">
+              <svg class="w-16 h-16 text-gray-400 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14-5v12a2 2 0 01-2 2H7a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2z"></path>
+              </svg>
+            </div>
+            <h4 class="text-lg font-semibold text-neutral-900 dark:text-neutral-50 mb-2">
+              Aucune collection
+            </h4>
+            <p class="text-neutral-600 dark:text-neutral-400 mb-6">
+              Vous n'avez pas encore de collection. Créez-en une pour commencer !
+            </p>
+            <button onclick="createCollectionAndAdd('${vinyl.id}')" class="w-full bg-primary-500 text-white py-2 px-4 rounded-lg hover:bg-primary-600 transition-colors">
+              Créer ma première collection
+            </button>
+          </div>
+        `
+      } else {
+        console.log('Modal: Affichage de', collections.length, 'collections')
+        
+        // Afficher les collections
+        const collectionsHtml = collections.map((collection: any) => `
+          <button onclick="addToCollectionWithData('${collection.id}', '${collection.name}', ${JSON.stringify(vinyl).replace(/"/g, '&quot;')})" 
+                  class="w-full text-left p-3 border border-neutral-200 dark:border-slate-800 rounded-lg hover:border-primary-500 hover:bg-primary-50 dark:hover:bg-primary-900/20 transition-colors mb-2">
+            <div class="font-medium text-neutral-900 dark:text-neutral-50">${collection.name}</div>
+            ${collection.description ? `<div class="text-sm text-neutral-600 dark:text-neutral-400">${collection.description}</div>` : ''}
+            <div class="text-xs text-neutral-600 dark:text-neutral-400 mt-1">${collection.vinyl_count || 0} vinyle(s)</div>
+          </button>
+        `).join('')
+
+        content.innerHTML = `
+          <div>
+            <h4 class="font-semibold text-neutral-900 dark:text-neutral-50 mb-4">
+              Choisir une collection
+            </h4>
+            <div class="space-y-2 mb-4 max-h-60 overflow-y-auto">
+              ${collectionsHtml}
+            </div>
+            <button onclick="showCreateCollectionForm()" class="w-full border border-dashed border-neutral-200 dark:border-white/10 text-neutral-600 dark:text-neutral-400 py-3 px-4 rounded-lg hover:border-primary-500 hover:text-primary-500 transition-colors">
+              + Créer une nouvelle collection
+            </button>
+          </div>
+        `
+      }
+    } catch (error) {
+      console.error('Modal: Erreur:', error)
+      content.innerHTML = `
+        <div class="text-center">
+          <p class="text-red-600 dark:text-red-400">Erreur lors du chargement des collections.</p>
+          <button onclick="hideSimpleModal()" class="mt-4 px-4 py-2 bg-gray-500 text-white rounded-lg hover:bg-gray-600">
+            Fermer
+          </button>
+        </div>
+      `
+    }
+  }
+
+  // Fonctions globales pour les boutons (version fictive pour test)
+  ;(window as any).addToCollectionFake = function(collectionId: string, collectionName: string, vinylId: string) {
+    console.log(`Test: Ajout du vinyle ${vinylId} à la collection ${collectionName} (${collectionId})`)
+    alert(`✅ Vinyle ajouté à "${collectionName}" !\n\n(Mode test - pas d'ajout réel en base)`)
+    hideSimpleModal()
+  }
+
+  ;(window as any).createCollectionFake = function(vinylId: string) {
+    const name = prompt('Nom de la nouvelle collection:')
+    if (!name) return
+    
+    console.log(`Test: Création de la collection "${name}" et ajout du vinyle ${vinylId}`)
+    alert(`✅ Collection "${name}" créée et vinyle ajouté !\n\n(Mode test - pas de création réelle en base)`)
+    hideSimpleModal()
+  }
+
+  // Nouvelle fonction qui utilise les données complètes du vinyle
+  ;(window as any).addToCollectionWithData = async function(collectionId: string, collectionName: string, vinylData: any) {
+    try {
+      console.log('addToCollectionWithData: Données du vinyle:', vinylData)
+      
+      const response = await fetch('/api/collections/add', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        credentials: 'include',
+        body: JSON.stringify({
+          collection_id: collectionId,
+          title: vinylData.title,
+          artist: vinylData.artist,
+          year: vinylData.year,
+          format: vinylData.format,
+          coverImage: vinylData.coverImage,
+          discogsId: vinylData.discogsId,
+          discogsUrl: vinylData.discogsUrl,
+          barcode: vinylData.barcode,
+          genre: vinylData.genre
+        }),
+      })
+
+      if (response.ok) {
+        showSuccessModal(collectionName)
+        hideSimpleModal()
+      } else {
+        const errorData = await response.json()
+        console.error('Erreur API:', errorData)
+        throw new Error(errorData.details || errorData.error || 'Erreur lors de l\'ajout')
+      }
+    } catch (error) {
+      console.error('Erreur:', error)
+      const errorMessage = error instanceof Error ? error.message : 'Erreur lors de l\'ajout du vinyle'
+      showErrorModal(errorMessage)
+    }
+  }
+
+  // Fonctions originales (gardées pour référence)
+  ;(window as any).addToCollection = async function(collectionId: string, collectionName: string, vinylId: string) {
+    try {
+      // Récupérer les données du vinyle depuis le DOM
+      const card = document.querySelector(`[data-vinyl-id="${vinylId}"]`)
+      if (!card) {
+        throw new Error('Carte du vinyle non trouvée')
+      }
+      
+      // Récupérer l'image de couverture
+      const imgElement = card.querySelector('img')
+      const coverImageUrl = imgElement?.src || '/default-vinyl-cover.svg'
+      console.log('addToCollection: Image trouvée:', imgElement?.src)
+      console.log('addToCollection: URL de l\'image:', coverImageUrl)
+
+      // Extraire le discogsId depuis l'URL si elle existe
+      const discogsUrl = card.getAttribute('data-discogs-url') || ''
+      const discogsIdFromUrl = discogsUrl.match(/\/release\/(\d+)-/)?.[1] || ''
+      
+      const vinylData = {
+        id: vinylId,
+        title: (card.querySelector('[data-vinyl-title]')?.textContent || 'Vinyle inconnu').trim(),
+        artist: (card.querySelector('[data-vinyl-artist]')?.textContent || 'Artiste inconnu').trim(),
+        year: card.querySelector('[data-vinyl-year]')?.textContent?.trim() || '',
+        format: Array.from(card.querySelectorAll('span')).find(
+          (span) =>
+            span.textContent?.includes('LP') ||
+            span.textContent?.includes('EP') ||
+            span.textContent?.includes('Single')
+        )?.textContent?.trim() || 'LP',
+        coverImage: coverImageUrl,
+        discogsId: card.getAttribute('data-discogs-id') || discogsIdFromUrl,
+        discogsUrl: discogsUrl,
+        barcode: '',
+        genre: '',
+      }
+      
+      console.log('addToCollection: Données du vinyle:', vinylData)
+      
     const response = await fetch('/api/collections/add', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ vinylId }),
+        credentials: 'include',
+        body: JSON.stringify({
+          collection_id: collectionId,
+          title: vinylData?.title,
+          artist: vinylData?.artist,
+          year: vinylData?.year,
+          format: vinylData?.format,
+          coverImage: vinylData?.coverImage,
+          discogsId: vinylData?.discogsId,
+          discogsUrl: vinylData?.discogsUrl,
+          barcode: vinylData?.barcode,
+          genre: vinylData?.genre
+        }),
+      })
+
+      if (response.ok) {
+        showSuccessModal(collectionName)
+        hideSimpleModal()
+      } else {
+        const errorData = await response.json()
+        console.error('Erreur API:', errorData)
+        throw new Error(errorData.details || errorData.error || 'Erreur lors de l\'ajout')
+      }
+    } catch (error) {
+      console.error('Erreur:', error)
+      const errorMessage = error instanceof Error ? error.message : 'Erreur lors de l\'ajout du vinyle'
+      showErrorModal(errorMessage)
+    }
+  }
+
+  ;(window as any).createCollectionAndAdd = async function(vinylId: string) {
+    const name = prompt('Nom de la collection:')
+    if (!name || name.trim() === '') return
+
+    try {
+      // Créer la collection
+      const response = await fetch('/api/collections/create', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        credentials: 'include',
+        body: JSON.stringify({ name: name.trim(), description: '' }),
     })
 
     if (response.ok) {
-      location.reload() // Recharger la page pour voir les changements
+        const result = await response.json()
+        console.log('Collection créée:', result.collection)
+        
+        // Maintenant ajouter le vinyle à cette nouvelle collection
+        // Récupérer les données du vinyle depuis le DOM
+        const card = document.querySelector(`[data-vinyl-id="${vinylId}"]`)
+        if (!card) {
+          throw new Error('Carte du vinyle non trouvée')
+        }
+
+        // Extraire le discogsId depuis l'URL si elle existe
+        const discogsUrl = card.getAttribute('data-discogs-url') || ''
+        const discogsIdFromUrl = discogsUrl.match(/\/release\/(\d+)-/)?.[1] || ''
+        
+        const vinylData = {
+          id: vinylId,
+          title: (card.querySelector('[data-vinyl-title]')?.textContent || 'Vinyle inconnu').trim(),
+          artist: (card.querySelector('[data-vinyl-artist]')?.textContent || 'Artiste inconnu').trim(),
+          year: card.querySelector('[data-vinyl-year]')?.textContent?.trim() || '',
+          format: Array.from(card.querySelectorAll('span')).find(
+            (span) =>
+              span.textContent?.includes('LP') ||
+              span.textContent?.includes('EP') ||
+              span.textContent?.includes('Single')
+          )?.textContent?.trim() || 'LP',
+          coverImage: card.querySelector('img')?.src || '/default-vinyl-cover.svg',
+          discogsId: card.getAttribute('data-discogs-id') || discogsIdFromUrl,
+          discogsUrl: discogsUrl,
+          barcode: '',
+          genre: '',
+        }
+
+        // Ajouter le vinyle à la nouvelle collection
+        const addResponse = await fetch('/api/collections/add', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          credentials: 'include',
+          body: JSON.stringify({
+            collection_id: result.collection.id,
+            title: vinylData.title,
+            artist: vinylData.artist,
+            year: vinylData.year,
+            format: vinylData.format,
+            coverImage: vinylData.coverImage,
+            discogsId: vinylData.discogsId,
+            discogsUrl: vinylData.discogsUrl,
+            barcode: vinylData.barcode,
+            genre: vinylData.genre
+          }),
+        })
+
+        if (addResponse.ok) {
+          showSuccessModal(name.trim())
+          hideSimpleModal()
+        } else {
+          const errorData = await addResponse.json()
+          throw new Error(errorData.details || errorData.error || 'Erreur lors de l\'ajout du vinyle')
+        }
     } else {
-      throw new Error("Échec de l'ajout à la collection")
+        const errorData = await response.json()
+        throw new Error(errorData.error || 'Erreur lors de la création de la collection')
+      }
+    } catch (error) {
+      console.error('Erreur:', error)
+      const errorMessage = error instanceof Error ? error.message : 'Erreur lors de la création de la collection'
+      showErrorModal(errorMessage)
+    }
+  }
+
+  ;(window as any).hideSimpleModal = hideSimpleModal
+
+  // Fonctions pour les modals de succès et d'erreur
+  function showSuccessModal(collectionName: string) {
+    // Créer la modal de succès si elle n'existe pas
+    let successModal = document.getElementById('success-modal')
+    if (!successModal) {
+      successModal = document.createElement('div')
+      successModal.id = 'success-modal'
+      successModal.innerHTML = `
+        <div id="success-overlay" class="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 items-center justify-center p-4 hidden">
+          <div class="glass-card dark:glass-dark rounded-lg max-w-md w-full">
+            <div class="p-8 text-center">
+              <div class="mb-6">
+                <svg class="w-20 h-20 text-green-500 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                </svg>
+              </div>
+              <h3 class="text-2xl font-semibold text-neutral-900 dark:text-neutral-50 mb-2">
+                Vinyle ajouté !
+              </h3>
+              <p id="success-message" class="text-neutral-600 dark:text-neutral-400 mb-6">
+                Le vinyle a été ajouté à votre collection.
+              </p>
+              <div class="flex space-x-3">
+                <button id="success-close" class="flex-1 bg-primary-500 text-white py-3 px-4 rounded-lg hover:bg-primary-600 transition-colors">
+                  Fermer
+                </button>
+                <a href="/dashboard" class="flex-1 bg-neutral-100 dark:bg-neutral-800 text-neutral-700 dark:text-neutral-300 py-3 px-4 rounded-lg hover:bg-neutral-200 dark:hover:bg-neutral-700 transition-colors text-center">
+                  Voir ma collection
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+      `
+      document.body.appendChild(successModal)
+      
+      // Ajouter les event listeners
+      document.getElementById('success-close')?.addEventListener('click', hideSuccessModal)
+      document.getElementById('success-overlay')?.addEventListener('click', (e) => {
+        if (e.target === document.getElementById('success-overlay')) hideSuccessModal()
+      })
+    }
+
+    // Mettre à jour le message
+    const messageEl = document.getElementById('success-message')
+    if (messageEl) {
+      messageEl.textContent = `Le vinyle a été ajouté à votre collection "${collectionName}".`
+    }
+
+    // Afficher la modal
+    const overlay = document.getElementById('success-overlay')
+    if (overlay) {
+      document.body.style.overflow = 'hidden'
+      overlay.classList.remove('hidden')
+      overlay.classList.add('flex')
+    }
+  }
+
+  function hideSuccessModal() {
+    const overlay = document.getElementById('success-overlay')
+    if (overlay) {
+      overlay.classList.add('hidden')
+      overlay.classList.remove('flex')
+      document.body.style.overflow = ''
+    }
+  }
+
+  function showErrorModal(message: string) {
+    // Créer la modal d'erreur si elle n'existe pas
+    let errorModal = document.getElementById('error-modal')
+    if (!errorModal) {
+      errorModal = document.createElement('div')
+      errorModal.id = 'error-modal'
+      errorModal.innerHTML = `
+        <div id="error-overlay" class="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 items-center justify-center p-4 hidden">
+          <div class="glass-card dark:glass-dark rounded-lg max-w-md w-full">
+            <div class="p-8 text-center">
+              <div class="mb-6">
+                <svg class="w-20 h-20 text-red-500 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z"></path>
+                </svg>
+              </div>
+              <h3 class="text-2xl font-semibold text-neutral-900 dark:text-neutral-50 mb-2">
+                Erreur
+              </h3>
+              <p id="error-message" class="text-neutral-600 dark:text-neutral-400 mb-6">
+                Une erreur est survenue.
+              </p>
+              <button id="error-close" class="w-full bg-red-500 text-white py-3 px-4 rounded-lg hover:bg-red-600 transition-colors">
+                Fermer
+              </button>
+            </div>
+          </div>
+        </div>
+      `
+      document.body.appendChild(errorModal)
+      
+      // Ajouter les event listeners
+      document.getElementById('error-close')?.addEventListener('click', hideErrorModal)
+      document.getElementById('error-overlay')?.addEventListener('click', (e) => {
+        if (e.target === document.getElementById('error-overlay')) hideErrorModal()
+      })
+    }
+
+    // Mettre à jour le message
+    const messageEl = document.getElementById('error-message')
+    if (messageEl) {
+      messageEl.textContent = message
+    }
+
+    // Afficher la modal
+    const overlay = document.getElementById('error-overlay')
+    if (overlay) {
+      document.body.style.overflow = 'hidden'
+      overlay.classList.remove('hidden')
+      overlay.classList.add('flex')
+    }
+  }
+
+  function hideErrorModal() {
+    const overlay = document.getElementById('error-overlay')
+    if (overlay) {
+      overlay.classList.add('hidden')
+      overlay.classList.remove('flex')
+      document.body.style.overflow = ''
     }
   }
 
