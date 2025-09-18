@@ -10,6 +10,8 @@
 - Avoid classes; prefer iteration and modularization over code duplication.
 - Use descriptive variable names with auxiliary verbs (e.g., `isLoading`, `hasError`).
 - Structure files into: exported component, subcomponents, helpers, static content, and types.
+- don't use any, use type instead.
+- don't use abrevations, use the full word instead (e.g. `e` -> `event` )
 - colors:
   - dark:
     - background: slate-950 # Fond principal

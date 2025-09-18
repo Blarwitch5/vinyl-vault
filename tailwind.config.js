@@ -1,6 +1,69 @@
 /** @type {import('tailwindcss').Config} */
 export default {
   content: ['./src/**/*.{astro,html,js,jsx,md,mdx,svelte,ts,tsx,vue}'],
+  safelist: [
+    // Classes de visibilité critiques pour les toggles
+    'hidden',
+    'flex',
+    'block',
+    'inline',
+    'inline-block',
+    'inline-flex',
+    'grid',
+
+    // Classes pour les modales optimisées
+    'bg-black/70',
+    'backdrop-blur-sm',
+    'bg-white',
+    'dark:bg-neutral-900',
+    'border-neutral-200',
+    'dark:border-neutral-700',
+    'shadow-2xl',
+
+    // Classes pour la modal de partage
+    'hover:bg-blue-50',
+    'dark:hover:bg-blue-900/20',
+    'hover:border-blue-300',
+    'dark:hover:border-blue-600',
+    'hover:bg-green-50',
+    'dark:hover:bg-green-900/20',
+    'hover:border-green-300',
+    'dark:hover:border-green-600',
+    'hover:bg-gray-50',
+    'dark:hover:bg-gray-900/20',
+    'hover:border-gray-300',
+    'dark:hover:border-gray-600',
+    'group-hover:text-blue-500',
+    'group-hover:text-blue-600',
+    'group-hover:text-green-500',
+    'group-hover:text-gray-600',
+
+    // Classes pour la timeline
+    'fade-in',
+    'timeline-year',
+    'timeline-year-dot',
+    'timeline-year-label',
+    'timeline-content',
+    'timeline-vinyls',
+    'timeline-axis',
+    'timeline-axis-mobile',
+    'chart-bar',
+    'bg-gradient-emerald-subtle',
+    'bg-gradient-amber-subtle',
+    'bg-gradient-blue-subtle',
+    'pulse',
+
+    // Classes pour les animations et transitions
+    'duration-200',
+    'duration-300',
+    'duration-500',
+    'scale-75',
+    'scale-105',
+    'scale-110',
+    'bg-black/0',
+    'bg-black/20',
+    'bg-white/90',
+  ],
   theme: {
     extend: {
       colors: {
