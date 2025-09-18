@@ -382,19 +382,15 @@ try {
 
 <script>
   // Données des collections disponibles globalement
-  const collectionsData = {
-    {userCollections && userCollections.length > 0 ? userCollections.map((collection: any) => 
-      `'${collection.id}': { name: '${collection.name.replace(/'/g, "\\'")}', vinylCount: ${collection.vinyls.length} }`
-    ).join(',\n    ') : ''}
-  };
+  const collectionsData = {};
 
   // Gestion des actions sur la page collections
   document.addEventListener("DOMContentLoaded", () => {
     // Bouton de création de collection (bouton principal)
     const createCollectionBtn = document.getElementById("create-collection-btn");
     createCollectionBtn?.addEventListener("click", () => {
-      if (typeof (window as any).openCreateCollectionModal === "function") {
-        (window as any).openCreateCollectionModal();
+      if (typeof window.openCreateCollectionModal === "function") {
+        window.openCreateCollectionModal();
       } else {
         console.error("Modal de création de collection non disponible");
       }
@@ -403,8 +399,8 @@ try {
     // Bouton de création de collection (première collection)
     const createFirstCollectionBtn = document.getElementById("create-first-collection");
     createFirstCollectionBtn?.addEventListener("click", () => {
-      if (typeof (window as any).openCreateCollectionModal === "function") {
-        (window as any).openCreateCollectionModal();
+      if (typeof window.openCreateCollectionModal === "function") {
+        window.openCreateCollectionModal();
       } else {
         console.error("Modal de création de collection non disponible");
       }
@@ -440,8 +436,8 @@ try {
       };
 
       // Ouvrir la modal d'édition
-      if (typeof (window as any).openEditCollectionModal === 'function') {
-        (window as any).openEditCollectionModal(collection);
+      if (typeof window.openEditCollectionModal === 'function') {
+        window.openEditCollectionModal(collection);
       } else {
         console.error('Modal d\'édition de collection non disponible');
         // Fallback avec prompt
@@ -472,8 +468,8 @@ try {
       console.log('Delete collection debug:', collection);
 
       // Ouvrir la modal de confirmation
-      if (typeof (window as any).openDeleteCollectionModal === 'function') {
-        (window as any).openDeleteCollectionModal(collection);
+      if (typeof window.openDeleteCollectionModal === 'function') {
+        window.openDeleteCollectionModal(collection);
       } else {
         console.error('Modal de suppression de collection non disponible');
         // Fallback avec confirm
@@ -494,6 +490,6 @@ try {
     }
 
     // Exposer la fonction de recalcul pour les modals
-    (window as any).recalculateStats = recalculateStats;
+    window.recalculateStats = recalculateStats;
   });
 </script>
