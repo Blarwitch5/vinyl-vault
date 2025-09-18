@@ -1,10 +1,13 @@
 import type { APIRoute } from 'astro'
+import { PrismaClient } from '@prisma/client'
+
+const prisma = new PrismaClient()
 
 // POST /api/collections/create - Créer une nouvelle collection
 export const POST: APIRoute = async ({ request, cookies }) => {
   try {
     // Vérifier l'authentification
-    const authToken = cookies.get('vinyl-vault-auth')?.value
+    const authToken = cookies.get('vinyl_vault_token')?.value
 
     if (!authToken) {
       return new Response(
@@ -21,10 +24,16 @@ export const POST: APIRoute = async ({ request, cookies }) => {
 
     // Récupérer les données de la requête
     const body = await request.json()
-    const { name, description } = body
+    console.log('API /collections/create reçoit:', body)
+    const { name, description, isPublic = false } = body
 
     // Validation
     if (!name || typeof name !== 'string' || name.trim().length === 0) {
+      console.log('Erreur validation nom:', {
+        name,
+        type: typeof name,
+        length: name?.trim()?.length,
+      })
       return new Response(
         JSON.stringify({
           success: false,
@@ -67,22 +76,76 @@ export const POST: APIRoute = async ({ request, cookies }) => {
       )
     }
 
-    // TODO: Récupérer l'ID utilisateur depuis le token JWT
-    const userId = '1'
+    // Récupérer ou créer l'utilisateur de test (système d'authentification simplifié)
+    const user = await prisma.user.upsert({
+      where: { email: 'demo@vinylvault.com' },
+      update: {
+        id: 'test-user-id',
+        name: 'Utilisateur Test',
+      },
+      create: {
+        id: 'test-user-id',
+        email: 'demo@vinylvault.com',
+        name: 'Utilisateur Test',
+        password: 'hashed_password_test',
+      },
+    })
 
-    // TODO: Créer la collection en base de données
-    // Pour l'instant, on simule la création
-    const newCollection = {
-      id: `collection-${Date.now()}`,
-      name: name.trim(),
-      description: description?.trim() || null,
-      vinyl_count: 0,
-      created_at: new Date().toISOString(),
-      updated_at: new Date().toISOString(),
-      user_id: userId,
+    const userId = user.id
+
+    // Vérifier la limite de 5 collections par utilisateur
+    const existingCollectionsCount = await prisma.collection.count({
+      where: { userId: userId },
+    })
+
+    if (existingCollectionsCount >= 5) {
+      return new Response(
+        JSON.stringify({
+          success: false,
+          error: 'Vous avez atteint la limite de 5 collections par utilisateur',
+        }),
+        {
+          status: 400,
+          headers: { 'Content-Type': 'application/json' },
+        }
+      )
     }
 
-    console.log('Nouvelle collection créée:', newCollection)
+    // Créer la collection en base de données
+    console.log('Tentative de création de collection avec:', {
+      name: name.trim(),
+      description: description?.trim() || null,
+      isPublic: isPublic,
+      userId: userId,
+      vinylCount: 0,
+      totalValue: 0,
+      averagePrice: 0,
+    })
+
+    let newCollection
+    try {
+      newCollection = await prisma.collection.create({
+        data: {
+          name: name.trim(),
+          description: description?.trim() || null,
+          isPublic: isPublic,
+          userId: userId,
+          vinylCount: 0,
+          totalValue: 0,
+          averagePrice: 0,
+        },
+      })
+
+      console.log('Nouvelle collection créée:', {
+        id: newCollection.id,
+        name: newCollection.name,
+        description: newCollection.description,
+        userId: newCollection.userId,
+      })
+    } catch (createError) {
+      console.error('Erreur lors de la création de la collection:', createError)
+      throw createError
+    }
 
     return new Response(
       JSON.stringify({

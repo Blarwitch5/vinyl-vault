@@ -36,6 +36,9 @@ model Collection {
   name        String
   description String?
   isPublic    Boolean  @default(false)
+  vinylCount  Int      @default(0)  // Nombre total de vinyles
+  totalValue  Float    @default(0)  // Valeur totale de la collection
+  averagePrice Float   @default(0)  // Prix moyen des vinyles
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
   
@@ -60,6 +63,7 @@ model Vinyl {
   discogsId    String?  // ID Discogs pour synchronisation
   discogsUrl   String?
   barcode      String?  // Code-barres du vinyle
+  tracks       String?  // JSON des pistes du vinyle
   price        Float?
   note         String?
   createdAt    DateTime @default(now())
@@ -69,7 +73,7 @@ model Vinyl {
   userId       String
   user         User       @relation(fields: [userId], references: [id], onDelete: Cascade)
   collectionId String?
-  collection   Collection? @relation(fields: [collectionId], references: [id])
+  collection   Collection? @relation(fields: [collectionId], references: [id], onDelete: Cascade)
   
   @@map("vinyls")
 }

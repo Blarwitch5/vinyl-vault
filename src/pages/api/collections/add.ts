@@ -4,9 +4,10 @@ import type { APIRoute } from 'astro'
 export const POST: APIRoute = async ({ request, cookies }) => {
   try {
     // Vérifier l'authentification
-    const authToken = cookies.get('vinyl-vault-auth')?.value
+    const authToken = cookies.get('vinyl_vault_token')?.value
 
     if (!authToken) {
+      console.log('Add vinyl: Aucun token trouvé')
       return new Response(
         JSON.stringify({
           success: false,
@@ -19,8 +20,12 @@ export const POST: APIRoute = async ({ request, cookies }) => {
       )
     }
 
+    console.log("Add vinyl: Token trouvé, traitement de l'ajout")
+
     // Récupérer les données de la requête
     const body = await request.json()
+    console.log('Add vinyl: Données reçues:', body)
+
     const {
       collection_id,
       vinyl_data,
@@ -54,92 +59,247 @@ export const POST: APIRoute = async ({ request, cookies }) => {
       )
     }
 
-    // TODO: Récupérer l'ID utilisateur depuis le token JWT
-    const userId = '1'
+    // Récupérer les collections depuis la base de données
+    const { PrismaClient } = await import('@prisma/client')
+    const prisma = new PrismaClient()
 
-    // TODO: Vérifier que la collection appartient à l'utilisateur
-    // TODO: Vérifier que le vinyle n'est pas déjà dans la collection
-    // TODO: Ajouter le vinyle à la collection en base de données
+    try {
+      // Vérifier que la collection existe
+      const collection = await prisma.collection.findUnique({
+        where: { id: collection_id },
+      })
 
-    // Préparer les données du vinyle
-    let vinylEntry
-
-    if (hasDirectFields) {
-      // Données directes du scan de code-barres
-      vinylEntry = {
-        id: `vinyl-${Date.now()}`,
-        collection_id: collection_id || '1', // Collection par défaut
-        discogs_id: discogsId,
-        title: title,
-        artist: artist,
-        year: year || new Date().getFullYear(),
-        format: format || 'LP',
-        condition: 'Near Mint', // Par défaut
-        cover_image: imageUrl || '/default-vinyl-cover.svg',
-        discogs_url: discogsUrl,
-        labels: label,
-        catalog_number: null,
-        genre: genre,
-        style: null,
-        country: null,
-        barcode: barcode,
-        notes: null,
-        purchase_price: null,
-        purchase_date: null,
-        estimated_value: null,
-        added_at: new Date().toISOString(),
-        user_id: userId,
+      if (!collection) {
+        await prisma.$disconnect()
+        return new Response(
+          JSON.stringify({
+            success: false,
+            error: 'Collection non trouvée',
+          }),
+          {
+            status: 404,
+            headers: { 'Content-Type': 'application/json' },
+          }
+        )
       }
-    } else {
-      // Données via vinyl_data (ancien format)
-      vinylEntry = {
-        id: `vinyl-${Date.now()}`,
-        collection_id,
-        discogs_id: vinyl_data.discogsId,
-        title: vinyl_data.title,
-        artist: vinyl_data.artist,
-        year: vinyl_data.year,
-        format: vinyl_data.format,
-        condition: 'Near Mint', // Par défaut
-        cover_image: vinyl_data.coverImage,
-        discogs_url: vinyl_data.discogsUrl,
-        labels: Array.isArray(vinyl_data.labels)
-          ? vinyl_data.labels.join(', ')
-          : null,
-        catalog_number: vinyl_data.catalogNumber,
-        genre: Array.isArray(vinyl_data.genre)
-          ? vinyl_data.genre.join(', ')
-          : null,
-        style: Array.isArray(vinyl_data.style)
-          ? vinyl_data.style.join(', ')
-          : null,
-        country: vinyl_data.country,
-        barcode: vinyl_data.barcode,
-        notes: null,
-        purchase_price: null,
-        purchase_date: null,
-        estimated_value: null,
-        added_at: new Date().toISOString(),
-        user_id: userId,
+
+      console.log('Add vinyl: Collection trouvée:', collection.name)
+
+      // Préparer les données du vinyle
+      let vinylData
+
+      // Créer ou récupérer l'utilisateur de test
+      let user = await prisma.user.findUnique({
+        where: { id: 'test-user-id' },
+      })
+
+      if (!user) {
+        console.log("Add vinyl: Création de l'utilisateur de test")
+        user = await prisma.user.upsert({
+          where: { email: 'demo@vinylvault.com' },
+          update: {
+            id: 'test-user-id',
+            name: 'Utilisateur Test',
+          },
+          create: {
+            id: 'test-user-id',
+            email: 'demo@vinylvault.com',
+            name: 'Utilisateur Test',
+            password: 'hashed_password_test',
+          },
+        })
       }
+
+      const userId = user.id
+      console.log('Add vinyl: Utilisateur trouvé/créé:', userId)
+
+      // Récupérer les détails complets depuis Discogs si on a un discogsId
+      let fullVinylData = null
+      const vinylDiscogsId = hasDirectFields ? discogsId : vinyl_data.discogsId
+
+      if (vinylDiscogsId && vinylDiscogsId.trim() !== '') {
+        console.log(
+          'Add vinyl: Récupération des détails depuis Discogs:',
+          vinylDiscogsId
+        )
+        try {
+          const discogsResponse = await fetch(
+            `https://api.discogs.com/releases/${vinylDiscogsId}`,
+            {
+              headers: {
+                'User-Agent': 'VinylVault/1.0 +https://vinylvault.com',
+              },
+            }
+          )
+          console.log(
+            'Add vinyl: Réponse Discogs status:',
+            discogsResponse.status
+          )
+
+          if (discogsResponse.ok) {
+            fullVinylData = await discogsResponse.json()
+            console.log(
+              'Add vinyl: Données Discogs récupérées:',
+              fullVinylData.title,
+              'Image:',
+              fullVinylData.images?.[0]?.uri
+            )
+          } else {
+            console.log(
+              'Add vinyl: Erreur Discogs API:',
+              discogsResponse.status,
+              discogsResponse.statusText
+            )
+          }
+        } catch (discogsError) {
+          console.log(
+            'Add vinyl: Erreur lors de la récupération Discogs:',
+            discogsError
+          )
+        }
+      }
+
+      if (hasDirectFields) {
+        // Données directes du scan de code-barres (enrichies avec Discogs)
+        vinylData = {
+          title: fullVinylData?.title || title,
+          artist: fullVinylData?.artists?.[0]?.name || artist,
+          year:
+            fullVinylData?.year || (year ? parseInt(year.toString()) : null),
+          format: fullVinylData?.formats?.[0]?.name || format || 'LP',
+          condition: 'Near Mint',
+          coverImage:
+            fullVinylData?.images?.[0]?.uri ||
+            coverImage ||
+            '/default-vinyl-cover.svg',
+          discogsId: discogsId,
+          discogsUrl: fullVinylData?.uri || discogsUrl,
+          barcode:
+            fullVinylData?.identifiers?.find((id) => id.type === 'Barcode')
+              ?.value || barcode,
+          tracks: fullVinylData?.tracklist
+            ? JSON.stringify(fullVinylData.tracklist)
+            : null,
+          genre: fullVinylData?.genres?.[0] || genre,
+          price: null,
+          note: null,
+          userId: userId,
+          collectionId: collection_id,
+        }
+      } else {
+        // Données via vinyl_data (format de la modal, enrichies avec Discogs)
+        vinylData = {
+          title: fullVinylData?.title || vinyl_data.title,
+          artist: fullVinylData?.artists?.[0]?.name || vinyl_data.artist,
+          year:
+            fullVinylData?.year ||
+            (vinyl_data.year ? parseInt(vinyl_data.year.toString()) : null),
+          format:
+            fullVinylData?.formats?.[0]?.name || vinyl_data.format || 'LP',
+          condition: 'Near Mint',
+          coverImage:
+            fullVinylData?.images?.[0]?.uri ||
+            vinyl_data.coverImage ||
+            '/default-vinyl-cover.svg',
+          discogsId: vinyl_data.discogsId,
+          discogsUrl: fullVinylData?.uri || vinyl_data.discogsUrl,
+          barcode:
+            fullVinylData?.identifiers?.find((id) => id.type === 'Barcode')
+              ?.value || vinyl_data.barcode,
+          tracks: fullVinylData?.tracklist
+            ? JSON.stringify(fullVinylData.tracklist)
+            : null,
+          genre: fullVinylData?.genres?.[0] || vinyl_data.genre,
+          price: null,
+          note: null,
+          userId: userId,
+          collectionId: collection_id,
+        }
+      }
+
+      console.log('Add vinyl: Données du vinyle préparées:', vinylData)
+
+      // Créer le vinyle en base de données
+      console.log(
+        'Add vinyl: Tentative de création du vinyle avec les données:',
+        vinylData
+      )
+
+      const newVinyl = await prisma.vinyl.create({
+        data: vinylData,
+      })
+
+      console.log("Add vinyl: Vinyle créé avec l'ID:", newVinyl.id)
+
+      // Recalculer les statistiques de la collection
+      try {
+        const collectionVinyls = await prisma.vinyl.findMany({
+          where: { collectionId: collection_id },
+          select: { price: true },
+        })
+
+        const totalVinyls = collectionVinyls.length
+        const totalValue = collectionVinyls.reduce(
+          (sum, vinyl) => sum + (vinyl.price || 0),
+          0
+        )
+        const averagePrice = totalVinyls > 0 ? totalValue / totalVinyls : 0
+
+        await prisma.collection.update({
+          where: { id: collection_id },
+          data: {
+            vinylCount: totalVinyls,
+            totalValue: totalValue,
+            averagePrice: averagePrice,
+          },
+        })
+
+        console.log('Add vinyl: Statistiques de collection mises à jour:', {
+          totalVinyls,
+          totalValue,
+          averagePrice,
+        })
+      } catch (statsError) {
+        console.log(
+          'Add vinyl: Erreur lors de la mise à jour des statistiques:',
+          statsError
+        )
+      }
+
+      await prisma.$disconnect()
+
+      return new Response(
+        JSON.stringify({
+          success: true,
+          vinyl: newVinyl,
+          message: 'Vinyle ajouté à la collection avec succès',
+        }),
+        {
+          status: 201,
+          headers: { 'Content-Type': 'application/json' },
+        }
+      )
+    } catch (dbError) {
+      console.error('Add vinyl: Erreur base de données:', dbError)
+      console.error("Add vinyl: Détails de l'erreur:", {
+        message: dbError.message,
+        code: dbError.code,
+        stack: dbError.stack,
+      })
+      await prisma.$disconnect()
+
+      return new Response(
+        JSON.stringify({
+          success: false,
+          error: "Erreur lors de l'ajout du vinyle",
+          details: dbError.message,
+        }),
+        {
+          status: 500,
+          headers: { 'Content-Type': 'application/json' },
+        }
+      )
     }
-
-    console.log('Vinyle ajouté à la collection:', {
-      collection_id,
-      vinyl: vinylEntry,
-    })
-
-    return new Response(
-      JSON.stringify({
-        success: true,
-        vinyl: vinylEntry,
-        message: 'Vinyle ajouté à la collection avec succès',
-      }),
-      {
-        status: 201,
-        headers: { 'Content-Type': 'application/json' },
-      }
-    )
   } catch (error) {
     console.error("Erreur lors de l'ajout du vinyle à la collection:", error)
 
