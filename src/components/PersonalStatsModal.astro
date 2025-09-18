@@ -1,0 +1,333 @@
+---
+// Modal des statistiques personnelles
+---
+
+<div id="personal-stats-modal" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 hidden items-center justify-center p-4 opacity-0 transition-opacity duration-300">
+  <div class="bg-white dark:bg-neutral-900 rounded-2xl shadow-2xl max-w-4xl w-full max-h-[90vh] overflow-hidden border border-neutral-200 dark:border-neutral-700">
+    <!-- Header -->
+    <div class="flex items-center justify-between p-6 border-b border-neutral-200 dark:border-neutral-700">
+      <div class="flex items-center gap-3">
+        <div class="w-10 h-10 bg-gradient-to-br from-emerald-500 to-emerald-600 rounded-xl flex items-center justify-center">
+          <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
+          </svg>
+        </div>
+        <div>
+          <h2 class="text-xl font-bold text-neutral-900 dark:text-white">Statistiques Personnelles</h2>
+          <p class="text-sm text-neutral-500 dark:text-neutral-400">Analyse de votre collection</p>
+        </div>
+      </div>
+      <button id="close-stats-modal" class="w-8 h-8 rounded-lg bg-neutral-100 dark:bg-neutral-800 hover:bg-neutral-200 dark:hover:bg-neutral-700 flex items-center justify-center transition-colors">
+        <svg class="w-5 h-5 text-neutral-600 dark:text-neutral-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 6 6 18"></path>
+        </svg>
+      </button>
+    </div>
+
+    <!-- Content -->
+    <div class="p-6 overflow-y-auto max-h-[calc(90vh-120px)]">
+      <!-- Loading State -->
+      <div id="stats-loading" class="flex items-center justify-center py-12">
+        <div class="flex items-center gap-3 text-neutral-500 dark:text-neutral-400">
+          <div class="w-6 h-6 border-2 border-emerald-500 border-t-transparent rounded-full animate-spin"></div>
+          <span>Chargement des statistiques...</span>
+        </div>
+      </div>
+
+      <!-- Stats Content -->
+      <div id="stats-content" class="hidden">
+        <!-- Overview Cards -->
+        <div class="grid grid-cols-2 md:grid-cols-5 gap-4 mb-8">
+          <div class="bg-gradient-to-br from-emerald-50 to-emerald-100 dark:from-emerald-900/20 dark:to-emerald-800/20 rounded-xl p-4 border border-emerald-200 dark:border-emerald-700">
+            <div class="text-2xl font-bold text-emerald-600 dark:text-emerald-400" id="total-vinyls">0</div>
+            <div class="text-sm text-emerald-700 dark:text-emerald-300">Vinyles</div>
+          </div>
+          <div class="bg-gradient-to-br from-blue-50 to-blue-100 dark:from-blue-900/20 dark:to-blue-800/20 rounded-xl p-4 border border-blue-200 dark:border-blue-700">
+            <div class="text-2xl font-bold text-blue-600 dark:text-blue-400" id="total-collections">0</div>
+            <div class="text-sm text-blue-700 dark:text-blue-300">Collections</div>
+          </div>
+          <div class="bg-gradient-to-br from-amber-50 to-amber-100 dark:from-amber-900/20 dark:to-amber-800/20 rounded-xl p-4 border border-amber-200 dark:border-amber-700">
+            <div class="text-2xl font-bold text-amber-600 dark:text-amber-400" id="oldest-year">-</div>
+            <div class="text-sm text-amber-700 dark:text-amber-300">Plus ancien</div>
+          </div>
+          <div class="bg-gradient-to-br from-purple-50 to-purple-100 dark:from-purple-900/20 dark:to-purple-800/20 rounded-xl p-4 border border-purple-200 dark:border-purple-700">
+            <div class="text-2xl font-bold text-purple-600 dark:text-purple-400" id="newest-year">-</div>
+            <div class="text-sm text-purple-700 dark:text-purple-300">Plus récent</div>
+          </div>
+          <div class="bg-gradient-to-br from-rose-50 to-rose-100 dark:from-rose-900/20 dark:to-rose-800/20 rounded-xl p-4 border border-rose-200 dark:border-rose-700">
+            <div class="text-2xl font-bold text-rose-600 dark:text-rose-400" id="average-age">0</div>
+            <div class="text-sm text-rose-700 dark:text-rose-300">Âge moyen</div>
+          </div>
+        </div>
+
+        <!-- Charts Grid -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <!-- Top Genres -->
+          <div class="bg-white dark:bg-neutral-800 rounded-xl border border-neutral-200 dark:border-neutral-700 p-6">
+            <h3 class="text-lg font-semibold text-neutral-900 dark:text-white mb-4 flex items-center gap-2">
+              <svg class="w-5 h-5 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19V6l12-3v13M9 19c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zm12-3c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zM9 10l12-3"></path>
+              </svg>
+              Genres Favoris
+            </h3>
+            <div id="top-genres-chart" class="space-y-3">
+              <!-- Sera rempli dynamiquement -->
+            </div>
+          </div>
+
+          <!-- Top Years -->
+          <div class="bg-white dark:bg-neutral-800 rounded-xl border border-neutral-200 dark:border-neutral-700 p-6">
+            <h3 class="text-lg font-semibold text-neutral-900 dark:text-white mb-4 flex items-center gap-2">
+              <svg class="w-5 h-5 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+              </svg>
+              Années Dominantes
+            </h3>
+            <div id="top-years-chart" class="space-y-3">
+              <!-- Sera rempli dynamiquement -->
+            </div>
+          </div>
+
+          <!-- Top Formats -->
+          <div class="bg-white dark:bg-neutral-800 rounded-xl border border-neutral-200 dark:border-neutral-700 p-6">
+            <h3 class="text-lg font-semibold text-neutral-900 dark:text-white mb-4 flex items-center gap-2">
+              <svg class="w-5 h-5 text-purple-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 100 4m0-4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 100 4m0-4v2m0-6V4"></path>
+              </svg>
+              Formats Favoris
+            </h3>
+            <div id="top-formats-chart" class="space-y-3">
+              <!-- Sera rempli dynamiquement -->
+            </div>
+          </div>
+
+          <!-- Decade Distribution -->
+          <div class="bg-white dark:bg-neutral-800 rounded-xl border border-neutral-200 dark:border-neutral-700 p-6">
+            <h3 class="text-lg font-semibold text-neutral-900 dark:text-white mb-4 flex items-center gap-2">
+              <svg class="w-5 h-5 text-amber-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
+              </svg>
+              Répartition par Décennie
+            </h3>
+            <div id="decade-distribution-chart" class="space-y-3">
+              <!-- Sera rempli dynamiquement -->
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Error State -->
+      <div id="stats-error" class="hidden text-center py-12">
+        <div class="w-16 h-16 bg-red-100 dark:bg-red-900/20 rounded-full flex items-center justify-center mx-auto mb-4">
+          <svg class="w-8 h-8 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+          </svg>
+        </div>
+        <h3 class="text-lg font-semibold text-neutral-900 dark:text-white mb-2">Erreur de chargement</h3>
+        <p class="text-neutral-500 dark:text-neutral-400 mb-4">Impossible de charger les statistiques</p>
+        <button id="retry-stats" class="px-4 py-2 bg-emerald-500 hover:bg-emerald-600 text-white rounded-lg transition-colors">
+          Réessayer
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+interface StatsData {
+  overview: {
+    totalVinyls: number
+    totalCollections: number
+    oldestYear: number | null
+    newestYear: number | null
+    averageAge: number
+  }
+  topGenres: Array<{ genre: string; count: number }>
+  topYears: Array<{ year: number; count: number }>
+  topFormats: Array<{ format: string; count: number }>
+  decadeDistribution: Array<{ decade: string; count: number }>
+}
+
+class PersonalStatsModal {
+  private modal: HTMLElement | null
+  private closeBtn: HTMLElement | null
+  private retryBtn: HTMLElement | null
+  private loadingEl: HTMLElement | null
+  private contentEl: HTMLElement | null
+  private errorEl: HTMLElement | null
+
+  constructor() {
+    this.modal = document.getElementById('personal-stats-modal')
+    this.closeBtn = document.getElementById('close-stats-modal')
+    this.retryBtn = document.getElementById('retry-stats')
+    this.loadingEl = document.getElementById('stats-loading')
+    this.contentEl = document.getElementById('stats-content')
+    this.errorEl = document.getElementById('stats-error')
+    
+    this.init()
+  }
+
+  init(): void {
+    // Event listeners
+    this.closeBtn?.addEventListener('click', () => this.close())
+    this.retryBtn?.addEventListener('click', () => this.loadStats())
+    
+    // Fermer en cliquant sur le backdrop
+    this.modal?.addEventListener('click', (e: Event) => {
+      if (e.target === this.modal) this.close()
+    })
+
+    // Échapper pour fermer
+    document.addEventListener('keydown', (e: KeyboardEvent) => {
+      if (e.key === 'Escape' && !this.modal?.classList.contains('hidden')) {
+        this.close()
+      }
+    })
+  }
+
+  async open(): Promise<void> {
+    this.modal?.classList.remove('hidden')
+    this.modal?.classList.add('flex')
+    
+    // Animation d'ouverture
+    requestAnimationFrame(() => {
+      this.modal?.classList.remove('opacity-0')
+    })
+
+    await this.loadStats()
+  }
+
+  close(): void {
+    this.modal?.classList.add('opacity-0')
+    setTimeout(() => {
+      this.modal?.classList.add('hidden')
+      this.modal?.classList.remove('flex')
+    }, 300)
+  }
+
+  async loadStats(): Promise<void> {
+    try {
+      this.showLoading()
+      
+      const response = await fetch('/api/user/stats', {
+        method: 'GET',
+        credentials: 'include', // Inclure les cookies d'authentification
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      })
+      
+      if (!response.ok) {
+        throw new Error(`Erreur de chargement: ${response.status}`)
+      }
+      
+      const stats: StatsData = await response.json()
+      this.displayStats(stats)
+      
+    } catch (error) {
+      console.error('Erreur lors du chargement des statistiques:', error)
+      this.showError()
+    }
+  }
+
+  showLoading(): void {
+    this.loadingEl?.classList.remove('hidden')
+    this.contentEl?.classList.add('hidden')
+    this.errorEl?.classList.add('hidden')
+  }
+
+  showError(): void {
+    this.loadingEl?.classList.add('hidden')
+    this.contentEl?.classList.add('hidden')
+    this.errorEl?.classList.remove('hidden')
+  }
+
+  displayStats(stats: StatsData): void {
+    // Overview
+    const totalVinylsEl = document.getElementById('total-vinyls')
+    const totalCollectionsEl = document.getElementById('total-collections')
+    const oldestYearEl = document.getElementById('oldest-year')
+    const newestYearEl = document.getElementById('newest-year')
+    const averageAgeEl = document.getElementById('average-age')
+
+    if (totalVinylsEl) totalVinylsEl.textContent = stats.overview.totalVinyls.toString()
+    if (totalCollectionsEl) totalCollectionsEl.textContent = stats.overview.totalCollections.toString()
+    if (oldestYearEl) oldestYearEl.textContent = stats.overview.oldestYear?.toString() || '-'
+    if (newestYearEl) newestYearEl.textContent = stats.overview.newestYear?.toString() || '-'
+    if (averageAgeEl) averageAgeEl.textContent = `${stats.overview.averageAge} ans`
+
+    // Charts
+    this.renderChart('top-genres-chart', stats.topGenres, 'genre', 'count')
+    this.renderChart('top-years-chart', stats.topYears, 'year', 'count')
+    this.renderChart('top-formats-chart', stats.topFormats, 'format', 'count')
+    this.renderChart('decade-distribution-chart', stats.decadeDistribution, 'decade', 'count')
+
+    // Show content
+    this.loadingEl?.classList.add('hidden')
+    this.contentEl?.classList.remove('hidden')
+    this.errorEl?.classList.add('hidden')
+  }
+
+  renderChart(containerId: string, data: Array<any>, labelKey: string, valueKey: string): void {
+    const container = document.getElementById(containerId)
+    if (!container || !data || data.length === 0) {
+      if (container) {
+        container.innerHTML = '<p class="text-neutral-500 dark:text-neutral-400 text-center py-4">Aucune donnée disponible</p>'
+      }
+      return
+    }
+
+    const maxValue = Math.max(...data.map((item: any) => item[valueKey]))
+    
+    container.innerHTML = data.slice(0, 8).map((item: any) => {
+      const percentage = (item[valueKey] / maxValue) * 100
+      const label = item[labelKey]
+      const value = item[valueKey]
+      
+      return `
+        <div class="flex items-center gap-3">
+          <div class="flex-1">
+            <div class="flex justify-between text-sm mb-1">
+              <span class="text-neutral-700 dark:text-neutral-300 truncate">${label}</span>
+              <span class="text-neutral-500 dark:text-neutral-400 font-medium">${value}</span>
+            </div>
+            <div class="w-full bg-neutral-200 dark:bg-neutral-700 rounded-full h-2">
+              <div class="bg-gradient-to-r from-emerald-500 to-emerald-600 h-2 rounded-full transition-all duration-500" 
+                   style="width: ${percentage}%"></div>
+            </div>
+          </div>
+        </div>
+      `
+    }).join('')
+  }
+}
+
+// Types globaux
+declare global {
+  interface Window {
+    PersonalStatsModal: typeof PersonalStatsModal
+    personalStatsModal: any
+  }
+}
+
+// Exposer globalement pour utilisation dans d'autres composants
+window.PersonalStatsModal = PersonalStatsModal
+
+// Initialiser le modal
+document.addEventListener('DOMContentLoaded', () => {
+  window.personalStatsModal = new PersonalStatsModal()
+})
+</script>
+
+<style>
+/* Animations pour les barres de progression */
+.bg-gradient-to-r {
+  animation: fillBar 1s ease-out;
+}
+
+@keyframes fillBar {
+  from {
+    width: 0% !important;
+  }
+}
+</style>

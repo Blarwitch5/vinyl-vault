@@ -1,0 +1,772 @@
+---
+// Composant de visualisation chronologique des vinyles
+export interface Props {
+  collectionId: string;
+  userId: string;
+}
+
+const { collectionId, userId } = Astro.props;
+---
+
+<div id="timeline-container" class="w-full bg-white dark:bg-neutral-900 rounded-2xl border border-neutral-200 dark:border-neutral-700 p-6">
+  <!-- Header avec contrôles -->
+  <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-8">
+    <div class="mb-4 sm:mb-0">
+      <h2 class="text-2xl font-bold text-neutral-900 dark:text-neutral-50 mb-2">
+        Visualisation Chronologique
+      </h2>
+      <p class="text-neutral-600 dark:text-neutral-400">
+        Explorez votre collection organisée par année de sortie
+      </p>
+    </div>
+    
+    <!-- Contrôles -->
+    <div class="flex flex-col sm:flex-row gap-3">
+      <!-- Sélecteur de vue -->
+      <div class="flex bg-neutral-100 dark:bg-neutral-800 rounded-xl p-1">
+        <button
+          id="timeline-view-btn"
+          class="px-4 py-2 text-sm font-medium rounded-lg bg-white dark:bg-neutral-700 text-neutral-900 dark:text-neutral-50 shadow-sm transition-all"
+        >
+          Timeline
+        </button>
+        <button
+          id="chart-view-btn"
+          class="px-4 py-2 text-sm font-medium rounded-lg text-neutral-600 dark:text-neutral-400 hover:text-neutral-900 dark:hover:text-neutral-50 transition-all"
+        >
+          Graphique
+        </button>
+      </div>
+      
+      <!-- Filtres -->
+      <select
+        id="decade-filter"
+        class="px-4 py-2 bg-white dark:bg-neutral-800 border border-neutral-200 dark:border-neutral-700 rounded-xl text-sm text-neutral-900 dark:text-neutral-50 focus:outline-none focus:ring-2 focus:ring-emerald-500"
+      >
+        <option value="all">Toutes les décennies</option>
+        <option value="2020s">2020s</option>
+        <option value="2010s">2010s</option>
+        <option value="2000s">2000s</option>
+        <option value="1990s">1990s</option>
+        <option value="1980s">1980s</option>
+        <option value="1970s">1970s</option>
+        <option value="1960s">1960s</option>
+        <option value="older">Plus ancien</option>
+      </select>
+    </div>
+  </div>
+
+  <!-- Loading State -->
+  <div id="timeline-loading" class="flex items-center justify-center py-12">
+    <div class="flex items-center space-x-3">
+      <div class="w-6 h-6 border-2 border-emerald-500 border-t-transparent rounded-full animate-spin"></div>
+      <span class="text-neutral-600 dark:text-neutral-400">Chargement de la chronologie...</span>
+    </div>
+  </div>
+
+  <!-- Timeline View -->
+  <div id="timeline-view" class="hidden">
+    <!-- Timeline Container avec barre à gauche -->
+    <div class="relative pl-8 md:pl-12">
+      <!-- Barre verticale à gauche (desktop) -->
+      <div class="timeline-axis hidden md:block absolute left-6 top-0 w-1 bg-gradient-to-b from-emerald-400 via-emerald-500 to-emerald-600 rounded-full shadow-lg" id="timeline-axis">
+      </div>
+      
+      <!-- Barre verticale pour mobile aussi -->
+      <div class="timeline-axis-mobile md:hidden absolute left-2 top-0 w-1 bg-gradient-to-b from-emerald-400 via-emerald-500 to-emerald-600 rounded-full shadow-lg" id="timeline-axis-mobile">
+      </div>
+      
+      <!-- Années avec vinyles -->
+      <div id="timeline-years" class="relative">
+        <!-- Les années seront générées dynamiquement -->
+      </div>
+    </div>
+    
+    <!-- Message si aucun vinyle -->
+    <div id="no-vinyls-message" class="hidden text-center py-12">
+      <div class="w-16 h-16 mx-auto mb-4 text-neutral-300 dark:text-neutral-600">
+        <svg fill="currentColor" viewBox="0 0 24 24">
+          <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
+        </svg>
+      </div>
+      <h3 class="text-lg font-semibold text-neutral-900 dark:text-neutral-50 mb-2">
+        Aucun vinyle trouvé
+      </h3>
+      <p class="text-neutral-600 dark:text-neutral-400">
+        Essayez de modifier les filtres ou d'ajouter des vinyles à votre collection.
+      </p>
+    </div>
+  </div>
+
+  <!-- Chart View -->
+  <div id="chart-view" class="hidden">
+    <!-- Graphique en barres par décennie -->
+    <div class="mb-6">
+      <h3 class="text-lg font-semibold text-neutral-900 dark:text-neutral-50 mb-4">
+        Répartition par décennie
+      </h3>
+      <div id="decade-chart" class="space-y-3">
+        <!-- Les barres seront générées dynamiquement -->
+      </div>
+    </div>
+    
+    <!-- Statistiques -->
+    <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mt-8">
+      <div class="bg-gradient-emerald-subtle rounded-xl p-4 text-center">
+        <div class="text-2xl font-bold text-neutral-900 dark:text-neutral-50" id="total-vinyls">0</div>
+        <div class="text-sm text-neutral-600 dark:text-neutral-400">Total vinyles</div>
+      </div>
+      <div class="bg-gradient-amber-subtle rounded-xl p-4 text-center">
+        <div class="text-2xl font-bold text-neutral-900 dark:text-neutral-50" id="year-span">-</div>
+        <div class="text-sm text-neutral-600 dark:text-neutral-400">Période couverte</div>
+      </div>
+      <div class="bg-gradient-blue-subtle rounded-xl p-4 text-center">
+        <div class="text-2xl font-bold text-neutral-900 dark:text-neutral-50" id="most-popular-decade">-</div>
+        <div class="text-sm text-neutral-600 dark:text-neutral-400">Décennie favorite</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+  /* Timeline Axis Styles */
+  .timeline-axis {
+    min-height: 100px;
+    z-index: 1;
+  }
+  
+  /* Timeline Year Styles - Desktop */
+  @media (min-width: 768px) {
+    .timeline-year {
+      position: relative;
+      margin-bottom: 4rem;
+      padding: 0;
+      margin-left: 2rem;
+    }
+    
+    .timeline-content {
+      margin-left: 2rem;
+      text-align: left;
+    }
+    
+    .timeline-year-dot {
+      position: absolute;
+      left: -1.375rem; /* Axis center (26px) - content margin (32px) = -6px = -0.375rem, but with dot radius = -0.375rem - 0.625rem = -1rem */
+      top: 2rem;
+      width: 20px;
+      height: 20px;
+      background: linear-gradient(135deg, rgb(16 185 129), rgb(5 150 105));
+      border: 4px solid white;
+      border-radius: 50%;
+      box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+      z-index: 10;
+      transition: all 0.3s ease;
+    }
+    
+    .timeline-year-dot:hover {
+      transform: scale(1.2);
+      box-shadow: 0 6px 20px rgba(16, 185, 129, 0.5);
+    }
+    
+    .dark .timeline-year-dot {
+      border-color: rgb(23 23 23);
+      box-shadow: 0 4px 12px rgba(16, 185, 129, 0.4);
+    }
+    
+    .timeline-year-label {
+      position: absolute;
+      left: -0.375rem; /* Centré sur le dot à -1.375rem + 1rem = -0.375rem */
+      top: 0;
+      transform: translateX(-50%);
+      background: linear-gradient(135deg, rgb(16 185 129), rgb(5 150 105));
+      color: white;
+      padding: 0.5rem 1rem;
+      border-radius: 1rem;
+      font-weight: 700;
+      font-size: 0.9rem;
+      box-shadow: 0 2px 8px rgba(16, 185, 129, 0.3);
+      z-index: 10;
+      white-space: nowrap;
+    }
+  }
+  
+  /* Timeline Year Styles - Mobile */
+  @media (max-width: 767px) {
+    .timeline-year {
+      position: relative;
+      margin-bottom: 3rem;
+      padding: 0;
+      margin-left: 1rem;
+    }
+    
+    .timeline-content {
+      margin-left: 1.5rem;
+      text-align: left;
+    }
+    
+    .timeline-year-dot {
+      position: absolute;
+      left: -1.375rem; /* Axis center (10px) - content margin (24px) = -14px = -0.875rem, but with dot radius = -0.875rem - 0.5rem = -1.375rem */
+      top: 1rem;
+      width: 16px;
+      height: 16px;
+      background: linear-gradient(135deg, rgb(16 185 129), rgb(5 150 105));
+      border: 3px solid white;
+      border-radius: 50%;
+      box-shadow: 0 3px 8px rgba(16, 185, 129, 0.3);
+      z-index: 10;
+    }
+    
+    .timeline-year-label {
+      position: absolute;
+      left: -0.875rem; /* Centré sur le dot à -1.375rem + 0.5rem = -0.875rem */
+      top: -0.5rem;
+      transform: translateX(-50%);
+      background: linear-gradient(135deg, rgb(16 185 129), rgb(5 150 105));
+      color: white;
+      padding: 0.4rem 0.8rem;
+      border-radius: 0.8rem;
+      font-weight: 700;
+      font-size: 0.85rem;
+      box-shadow: 0 2px 6px rgba(16, 185, 129, 0.3);
+      white-space: nowrap;
+      z-index: 10;
+    }
+  }
+  
+  /* Timeline Content */
+  .timeline-content {
+    background: white;
+    border: 1px solid rgb(229 231 235);
+    border-radius: 1rem;
+    padding: 1.5rem;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.05);
+    transition: all 0.3s ease;
+    margin-top: 2rem;
+    position: relative;
+  }
+  
+  /* Petite flèche pointant vers le dot */
+  @media (min-width: 768px) {
+    .timeline-content::before {
+      content: '';
+      position: absolute;
+      left: -8px;
+      top: 2rem;
+      width: 0;
+      height: 0;
+      border-top: 8px solid transparent;
+      border-bottom: 8px solid transparent;
+      border-right: 8px solid rgb(229 231 235);
+    }
+    
+    .timeline-content::after {
+      content: '';
+      position: absolute;
+      left: -7px;
+      top: 2rem;
+      width: 0;
+      height: 0;
+      border-top: 8px solid transparent;
+      border-bottom: 8px solid transparent;
+      border-right: 8px solid white;
+    }
+  }
+  
+  /* Flèches pour mobile */
+  @media (max-width: 767px) {
+    .timeline-content::before {
+      content: '';
+      position: absolute;
+      left: -8px;
+      top: 1rem;
+      width: 0;
+      height: 0;
+      border-top: 6px solid transparent;
+      border-bottom: 6px solid transparent;
+      border-right: 6px solid rgb(229 231 235);
+    }
+    
+    .timeline-content::after {
+      content: '';
+      position: absolute;
+      left: -7px;
+      top: 1rem;
+      width: 0;
+      height: 0;
+      border-top: 6px solid transparent;
+      border-bottom: 6px solid transparent;
+      border-right: 6px solid white;
+    }
+  }
+  
+  .timeline-content:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+  }
+  
+  .dark .timeline-content {
+    background: rgb(23 23 23);
+    border-color: rgb(64 64 64);
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+  }
+  
+  .dark .timeline-content:hover {
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+  }
+  
+  /* Flèches pour le mode sombre */
+  @media (min-width: 768px) {
+    .dark .timeline-content::before {
+      border-right-color: rgb(64 64 64);
+    }
+    
+    .dark .timeline-content::after {
+      border-right-color: rgb(23 23 23);
+    }
+  }
+  
+  @media (max-width: 767px) {
+    .dark .timeline-content::before {
+      border-right-color: rgb(64 64 64);
+    }
+    
+    .dark .timeline-content::after {
+      border-right-color: rgb(23 23 23);
+    }
+  }
+  
+  /* Vinyl Grid dans Timeline */
+  .timeline-vinyls {
+    margin-top: 1rem;
+  }
+  
+  /* Animation pour les éléments qui apparaissent */
+  .fade-in {
+    opacity: 0;
+    transform: translateY(30px);
+    animation: fadeInUp 0.8s ease-out forwards;
+  }
+  
+  @keyframes fadeInUp {
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  
+  /* Styles pour les barres du graphique */
+  .chart-bar {
+    transition: all 0.3s ease;
+  }
+  
+  .chart-bar:hover {
+    transform: scaleY(1.05);
+  }
+  
+  /* Animation de pulsation pour les dots */
+  @keyframes pulse {
+    0%, 100% {
+      box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+    }
+    50% {
+      box-shadow: 0 4px 12px rgba(16, 185, 129, 0.6), 0 0 0 8px rgba(16, 185, 129, 0.1);
+    }
+  }
+  
+  .timeline-year-dot.pulse {
+    animation: pulse 2s infinite;
+  }
+</style>
+
+<script>
+  interface VinylData {
+    id: string;
+    title: string;
+    artist: string;
+    year: number | null;
+    coverImage: string;
+    discogsUrl: string;
+  }
+
+  interface YearGroup {
+    year: number;
+    vinyls: VinylData[];
+  }
+
+  interface DecadeData {
+    decade: string;
+    count: number;
+    years: number[];
+  }
+
+  class TimelineVisualization {
+    private collectionId: string;
+    private userId: string;
+    private vinyls: VinylData[] = [];
+    private filteredVinyls: VinylData[] = [];
+    private currentView: 'timeline' | 'chart' = 'timeline';
+    private currentDecadeFilter: string = 'all';
+
+    constructor(collectionId: string, userId: string) {
+      this.collectionId = collectionId;
+      this.userId = userId;
+      this.init();
+    }
+
+    private async init() {
+      await this.loadVinyls();
+      this.setupEventListeners();
+      this.applyFilters();
+      this.renderCurrentView();
+    }
+
+    private async loadVinyls() {
+      try {
+        const response = await fetch(`/api/collections/timeline?collectionId=${this.collectionId}`);
+        if (response.ok) {
+          const data = await response.json();
+          this.vinyls = data.vinyls || [];
+        } else {
+          console.error('Erreur lors du chargement des vinyles:', response.statusText);
+        }
+      } catch (error) {
+        console.error('Erreur lors du chargement des vinyles:', error);
+      } finally {
+        this.hideLoading();
+      }
+    }
+
+    private setupEventListeners() {
+      const timelineViewBtn = document.getElementById('timeline-view-btn');
+      const chartViewBtn = document.getElementById('chart-view-btn');
+      const decadeFilter = document.getElementById('decade-filter') as HTMLSelectElement;
+
+      timelineViewBtn?.addEventListener('click', () => this.switchView('timeline'));
+      chartViewBtn?.addEventListener('click', () => this.switchView('chart'));
+      decadeFilter?.addEventListener('change', (e) => {
+        this.currentDecadeFilter = (e.target as HTMLSelectElement).value;
+        this.applyFilters();
+        this.renderCurrentView();
+      });
+    }
+
+    private switchView(view: 'timeline' | 'chart') {
+      this.currentView = view;
+      
+      // Mettre à jour les boutons
+      const timelineBtn = document.getElementById('timeline-view-btn');
+      const chartBtn = document.getElementById('chart-view-btn');
+      
+      if (view === 'timeline') {
+        timelineBtn?.classList.add('bg-white', 'dark:bg-neutral-700', 'text-neutral-900', 'dark:text-neutral-50', 'shadow-sm');
+        timelineBtn?.classList.remove('text-neutral-600', 'dark:text-neutral-400');
+        chartBtn?.classList.remove('bg-white', 'dark:bg-neutral-700', 'text-neutral-900', 'dark:text-neutral-50', 'shadow-sm');
+        chartBtn?.classList.add('text-neutral-600', 'dark:text-neutral-400');
+      } else {
+        chartBtn?.classList.add('bg-white', 'dark:bg-neutral-700', 'text-neutral-900', 'dark:text-neutral-50', 'shadow-sm');
+        chartBtn?.classList.remove('text-neutral-600', 'dark:text-neutral-400');
+        timelineBtn?.classList.remove('bg-white', 'dark:bg-neutral-700', 'text-neutral-900', 'dark:text-neutral-50', 'shadow-sm');
+        timelineBtn?.classList.add('text-neutral-600', 'dark:text-neutral-400');
+      }
+      
+      this.renderCurrentView();
+    }
+
+    private applyFilters() {
+      this.filteredVinyls = this.vinyls.filter(vinyl => {
+        if (!vinyl.year) return this.currentDecadeFilter === 'all';
+        
+        if (this.currentDecadeFilter === 'all') return true;
+        
+        const year = vinyl.year;
+        switch (this.currentDecadeFilter) {
+          case '2020s': return year >= 2020 && year < 2030;
+          case '2010s': return year >= 2010 && year < 2020;
+          case '2000s': return year >= 2000 && year < 2010;
+          case '1990s': return year >= 1990 && year < 2000;
+          case '1980s': return year >= 1980 && year < 1990;
+          case '1970s': return year >= 1970 && year < 1980;
+          case '1960s': return year >= 1960 && year < 1970;
+          case 'older': return year < 1960;
+          default: return true;
+        }
+      });
+    }
+
+    private renderCurrentView() {
+      const timelineView = document.getElementById('timeline-view');
+      const chartView = document.getElementById('chart-view');
+      
+      if (this.currentView === 'timeline') {
+        timelineView?.classList.remove('hidden');
+        chartView?.classList.add('hidden');
+        this.renderTimelineView();
+      } else {
+        timelineView?.classList.add('hidden');
+        chartView?.classList.remove('hidden');
+        this.renderChartView();
+      }
+    }
+
+    private renderTimelineView() {
+      const container = document.getElementById('timeline-years');
+      const noVinylsMessage = document.getElementById('no-vinyls-message');
+      const timelineAxis = document.getElementById('timeline-axis');
+      const timelineAxisMobile = document.getElementById('timeline-axis-mobile');
+      
+      if (!container) return;
+
+      if (this.filteredVinyls.length === 0) {
+        container.innerHTML = '';
+        noVinylsMessage?.classList.remove('hidden');
+        if (timelineAxis) timelineAxis.style.height = '0px';
+        if (timelineAxisMobile) timelineAxisMobile.style.height = '0px';
+        return;
+      }
+
+      noVinylsMessage?.classList.add('hidden');
+
+      // Grouper par année
+      const yearGroups = this.groupByYear(this.filteredVinyls);
+      
+      container.innerHTML = '';
+      
+      // Calculer la hauteur de l'axe basée sur le nombre d'années
+      const axisHeight = yearGroups.length * 280; // ~280px par année
+      if (timelineAxis) {
+        timelineAxis.style.height = `${axisHeight}px`;
+      }
+      if (timelineAxisMobile) {
+        timelineAxisMobile.style.height = `${axisHeight}px`;
+      }
+      
+      yearGroups.forEach((yearGroup, index) => {
+        const yearElement = this.createYearElement(yearGroup, index);
+        container.appendChild(yearElement);
+      });
+    }
+
+    private renderChartView() {
+      this.renderDecadeChart();
+      this.renderStatistics();
+    }
+
+    private groupByYear(vinyls: VinylData[]): YearGroup[] {
+      const groups: { [year: number]: VinylData[] } = {};
+      
+      vinyls.forEach(vinyl => {
+        const year = vinyl.year || 0;
+        if (!groups[year]) {
+          groups[year] = [];
+        }
+        groups[year].push(vinyl);
+      });
+
+      return Object.entries(groups)
+        .map(([year, vinyls]) => ({ year: parseInt(year), vinyls }))
+        .sort((a, b) => b.year - a.year);
+    }
+
+    private createYearElement(yearGroup: YearGroup, index: number): HTMLElement {
+      const yearDiv = document.createElement('div');
+      yearDiv.className = 'timeline-year fade-in';
+      yearDiv.style.animationDelay = `${index * 0.15}s`;
+
+      const yearLabel = yearGroup.year === 0 ? 'Année inconnue' : yearGroup.year.toString();
+      const vinylCount = yearGroup.vinyls.length;
+      const isFirstYear = index === 0;
+      
+      yearDiv.innerHTML = `
+        <!-- Dot avec animation pulse pour la première année -->
+        <div class="timeline-year-dot ${isFirstYear ? 'pulse' : ''}"></div>
+        
+        <!-- Label de l'année -->
+        <div class="timeline-year-label">
+          ${yearLabel}
+        </div>
+        
+        <!-- Contenu principal -->
+        <div class="timeline-content">
+          <!-- En-tête avec statistiques -->
+          <div class="mb-4 text-center md:text-left">
+            <div class="flex items-center justify-center md:justify-start space-x-2 mb-2">
+              <div class="w-3 h-3 bg-gradient-to-r from-emerald-400 to-emerald-600 rounded-full"></div>
+              <h3 class="text-lg font-bold text-neutral-900 dark:text-neutral-50">
+                ${yearLabel}
+              </h3>
+            </div>
+            <div class="flex items-center justify-center md:justify-start space-x-4 text-sm text-neutral-600 dark:text-neutral-400">
+              <span class="flex items-center space-x-1">
+                <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+                  <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
+                </svg>
+                <span>${vinylCount} vinyle${vinylCount > 1 ? 's' : ''}</span>
+              </span>
+              ${this.getYearStats(yearGroup)}
+            </div>
+          </div>
+          
+          <!-- Grid des vinyles -->
+          <div class="timeline-vinyls grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3">
+            ${yearGroup.vinyls.map(vinyl => this.createVinylCard(vinyl)).join('')}
+          </div>
+        </div>
+      `;
+
+      return yearDiv;
+    }
+    
+    private getYearStats(yearGroup: YearGroup): string {
+      const genres = [...new Set(yearGroup.vinyls.map(v => v.artist))];
+      const topGenre = genres.length > 0 ? genres[0] : '';
+      
+      return `
+        <span class="flex items-center space-x-1">
+          <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+            <path d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z"/>
+          </svg>
+          <span>${genres.length} artiste${genres.length > 1 ? 's' : ''}</span>
+        </span>
+      `;
+    }
+
+    private createVinylCard(vinyl: VinylData): string {
+      return `
+        <div class="group cursor-pointer transform transition-all duration-200 hover:scale-105" onclick="window.location.href='/vinyl/${vinyl.id}'">
+          <!-- Image avec overlay au hover -->
+          <div class="relative aspect-square rounded-xl overflow-hidden shadow-lg group-hover:shadow-xl transition-all duration-300">
+            <img
+              src="${vinyl.coverImage || '/default-vinyl-cover.svg'}"
+              alt="${vinyl.title}"
+              class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+              onerror="this.src='/default-vinyl-cover.svg'"
+            />
+            <!-- Overlay avec icône play au hover -->
+            <div class="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors duration-300 flex items-center justify-center">
+              <div class="w-8 h-8 bg-white/90 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300 transform scale-75 group-hover:scale-100">
+                <svg class="w-4 h-4 text-emerald-600 ml-0.5" fill="currentColor" viewBox="0 0 24 24">
+                  <path d="M8 5v14l11-7z"/>
+                </svg>
+              </div>
+            </div>
+            <!-- Badge année en haut à droite -->
+            <div class="absolute top-2 right-2 bg-emerald-500 text-white text-xs px-2 py-1 rounded-full font-medium opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+              ${vinyl.year || '?'}
+            </div>
+          </div>
+          
+          <!-- Informations -->
+          <div class="mt-2 space-y-1">
+            <h4 class="text-sm font-semibold text-neutral-900 dark:text-neutral-50 truncate group-hover:text-emerald-600 dark:group-hover:text-emerald-400 transition-colors duration-200">
+              ${vinyl.title}
+            </h4>
+            <p class="text-xs text-neutral-600 dark:text-neutral-400 truncate">
+              ${vinyl.artist}
+            </p>
+          </div>
+        </div>
+      `;
+    }
+
+    private renderDecadeChart() {
+      const container = document.getElementById('decade-chart');
+      if (!container) return;
+
+      const decadeData = this.getDecadeData();
+      const maxCount = Math.max(...decadeData.map(d => d.count));
+
+      container.innerHTML = '';
+
+      decadeData.forEach(decade => {
+        const percentage = maxCount > 0 ? (decade.count / maxCount) * 100 : 0;
+        
+        const barDiv = document.createElement('div');
+        barDiv.className = 'flex items-center space-x-4';
+        
+        barDiv.innerHTML = `
+          <div class="w-20 text-sm font-medium text-neutral-900 dark:text-neutral-50">
+            ${decade.decade}
+          </div>
+          <div class="flex-1 bg-neutral-200 dark:bg-neutral-700 rounded-full h-6 overflow-hidden">
+            <div
+              class="chart-bar h-full bg-gradient-emerald rounded-full flex items-center justify-end pr-2"
+              style="width: ${percentage}%"
+            >
+              ${decade.count > 0 ? `<span class="text-xs font-medium text-white">${decade.count}</span>` : ''}
+            </div>
+          </div>
+        `;
+
+        container.appendChild(barDiv);
+      });
+    }
+
+    private getDecadeData(): DecadeData[] {
+      const decades = ['2020s', '2010s', '2000s', '1990s', '1980s', '1970s', '1960s', '< 1960'];
+      const decadeData: DecadeData[] = [];
+
+      decades.forEach(decade => {
+        const vinyls = this.vinyls.filter(vinyl => {
+          if (!vinyl.year) return false;
+          const year = vinyl.year;
+          
+          switch (decade) {
+            case '2020s': return year >= 2020;
+            case '2010s': return year >= 2010 && year < 2020;
+            case '2000s': return year >= 2000 && year < 2010;
+            case '1990s': return year >= 1990 && year < 2000;
+            case '1980s': return year >= 1980 && year < 1990;
+            case '1970s': return year >= 1970 && year < 1980;
+            case '1960s': return year >= 1960 && year < 1970;
+            case '< 1960': return year < 1960;
+            default: return false;
+          }
+        });
+
+        decadeData.push({
+          decade,
+          count: vinyls.length,
+          years: [...new Set(vinyls.map(v => v.year!))].sort()
+        });
+      });
+
+      return decadeData.filter(d => d.count > 0);
+    }
+
+    private renderStatistics() {
+      const totalElement = document.getElementById('total-vinyls');
+      const yearSpanElement = document.getElementById('year-span');
+      const popularDecadeElement = document.getElementById('most-popular-decade');
+
+      if (totalElement) {
+        totalElement.textContent = this.vinyls.length.toString();
+      }
+
+      const years = this.vinyls.map(v => v.year).filter(y => y !== null) as number[];
+      if (years.length > 0 && yearSpanElement) {
+        const minYear = Math.min(...years);
+        const maxYear = Math.max(...years);
+        yearSpanElement.textContent = `${minYear} - ${maxYear}`;
+      }
+
+      if (popularDecadeElement) {
+        const decadeData = this.getDecadeData();
+        const mostPopular = decadeData.reduce((prev, current) => 
+          prev.count > current.count ? prev : current, decadeData[0]
+        );
+        popularDecadeElement.textContent = mostPopular?.decade || '-';
+      }
+    }
+
+    private hideLoading() {
+      const loading = document.getElementById('timeline-loading');
+      loading?.classList.add('hidden');
+    }
+  }
+
+  // L'initialisation se fait depuis la page parent lors du clic sur le bouton timeline
+
+  // Exposer pour utilisation externe
+  (window as any).TimelineVisualization = TimelineVisualization;
+</script>
