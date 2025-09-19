@@ -163,11 +163,13 @@
   const vinylTitleConfirm = document.getElementById('vinyl-title-confirm')
 
   let currentVinylId: string | null = null
+  let currentCollectionId: string | null = null
 
   // Ouvrir le modal
   function openDeleteVinylModal(vinyl: any) {
     console.log('Ouverture de la modal avec les données:', vinyl)
     currentVinylId = vinyl.id
+    currentCollectionId = vinyl.collectionId || null
 
     // Afficher les informations du vinyle
     if (vinylCover) {
@@ -278,8 +280,12 @@
 
       if (response.ok && data.success) {
         closeDeleteVinylModal()
-        // Recharger la page pour voir les changements
-        window.location.reload()
+        // Rediriger vers la collection ou le dashboard
+        if (currentCollectionId) {
+          window.location.href = `/collection/${currentCollectionId}`
+        } else {
+          window.location.href = '/dashboard'
+        }
       } else {
         showError(data.error || 'Erreur lors de la suppression du vinyle')
       }
@@ -300,6 +306,9 @@
     if (e.target === modal) closeDeleteVinylModal()
   })
 
-  // Exposer la fonction pour ouvrir le modal
-  ;(window as any).openDeleteVinylModal = openDeleteVinylModal
+  // Écouter les événements personnalisés pour ouvrir le modal
+  document.addEventListener('modal:delete-vinyl:open', (event: Event) => {
+    const customEvent = event as CustomEvent
+    openDeleteVinylModal(customEvent.detail.vinyl)
+  })
 </script>

@@ -3,48 +3,17 @@ import type { APIRoute } from 'astro'
 // GET /api/collections/list - Récupérer les collections de l'utilisateur
 export const GET: APIRoute = async ({ request, cookies }) => {
   try {
-    // Vérifier l'authentification
-    const authToken = cookies.get('vinyl_vault_token')?.value
-
-    if (!authToken) {
-      console.log('Collections: Aucun token trouvé')
-      return new Response(
-        JSON.stringify({
-          success: false,
-          error: 'Authentification requise',
-        }),
-        {
-          status: 401,
-          headers: { 'Content-Type': 'application/json' },
-        }
-      )
-    }
-
-    console.log('Collections: Token trouvé, récupération des collections')
+    console.log('Collections API: Début de la récupération des collections')
 
     // Récupérer les collections depuis la base de données
     const { PrismaClient } = await import('@prisma/client')
     const prisma = new PrismaClient()
 
     try {
-      // Récupérer l'utilisateur authentifié
-      const tokenMatch = cookies.match(/vinyl_vault_token=([^;]+)/)
-      if (!tokenMatch) {
-        return new Response(
-          JSON.stringify({
-            success: false,
-            error: 'Authentification requise',
-          }),
-          {
-            status: 401,
-            headers: { 'Content-Type': 'application/json' },
-          }
-        )
-      }
-
-      // Pour l'instant, on va utiliser l'ID de l'utilisateur depuis le token
-      // En production, vous devriez décoder le JWT pour obtenir l'ID utilisateur
-      const token = tokenMatch[1]
+      // Récupérer l'utilisateur le plus récent (système d'authentification simplifié)
+      console.log(
+        "Collections API: Récupération de l'utilisateur le plus récent"
+      )
 
       // Récupérer l'utilisateur depuis la base de données
       const user = await prisma.user.findFirst({
@@ -58,6 +27,7 @@ export const GET: APIRoute = async ({ request, cookies }) => {
       })
 
       if (!user) {
+        console.log('Collections API: Aucun utilisateur trouvé')
         return new Response(
           JSON.stringify({
             success: false,
@@ -70,9 +40,14 @@ export const GET: APIRoute = async ({ request, cookies }) => {
         )
       }
 
+      console.log('Collections API: Utilisateur trouvé:', user.id)
       const userId = user.id
 
       // Récupérer les collections de l'utilisateur connecté uniquement
+      console.log(
+        'Collections API: Récupération des collections pour userId:',
+        userId
+      )
       const collections = await prisma.collection.findMany({
         where: {
           userId: userId, // Filtrer par utilisateur connecté
@@ -92,9 +67,9 @@ export const GET: APIRoute = async ({ request, cookies }) => {
         },
       })
 
-      console.log('Collections: Collections trouvées:', collections.length)
+      console.log('Collections API: Collections trouvées:', collections.length)
 
-      // Formater les données pour l'API
+      // Formater les données pour l'API (même si aucune collection)
       const formattedCollections = collections.map((collection) => {
         const totalValue = collection.vinyls.reduce(
           (sum, vinyl) => sum + (vinyl.price || 0),
@@ -133,13 +108,15 @@ export const GET: APIRoute = async ({ request, cookies }) => {
         }
       )
     } catch (dbError) {
-      console.error('Collections: Erreur base de données:', dbError)
+      console.error('Collections API: Erreur base de données:', dbError)
       await prisma.$disconnect()
 
       return new Response(
         JSON.stringify({
           success: false,
           error: 'Erreur lors de la récupération des collections',
+          details:
+            dbError instanceof Error ? dbError.message : 'Erreur inconnue',
         }),
         {
           status: 500,

@@ -106,16 +106,16 @@ const pageDescription = `Détails complets de l'album ${vinyl.title} par ${vinyl
             {
               user.id === vinyl.collection.userId && (
                 <button
-                  onclick={`openDeleteVinylModal({
-                  id: '${vinyl.id}',
-                  title: '${vinyl.title}',
-                  artist: '${vinyl.artist}',
-                  year: '${vinyl.year || ''}',
-                  format: '${vinyl.format || ''}',
-                  condition: '${vinyl.condition || ''}',
-                  price: ${vinyl.price || 0},
-                  coverImage: '${vinyl.coverImage || '/default-vinyl-cover.svg'}'
-                })`}
+                  id="delete-vinyl-btn"
+                  data-vinyl-id={vinyl.id}
+                  data-vinyl-title={vinyl.title}
+                  data-vinyl-artist={vinyl.artist}
+                  data-vinyl-year={vinyl.year || ''}
+                  data-vinyl-format={vinyl.format || ''}
+                  data-vinyl-condition={vinyl.condition || ''}
+                  data-vinyl-price={vinyl.price || 0}
+                  data-vinyl-cover-image={vinyl.coverImage || '/default-vinyl-cover.svg'}
+                  data-collection-id={vinyl.collection.id}
                   class="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg transition-colors flex items-center space-x-2"
                 >
                   <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -459,6 +459,23 @@ const pageDescription = `Détails complets de l'album ${vinyl.title} par ${vinyl
     }
   }
 
-  // Exposer la fonction globalement
-  ;(window as unknown as Record<string, unknown>).openDeleteVinylModal = openDeleteVinylModal
+  // Gérer le clic sur le bouton supprimer
+  document.getElementById('delete-vinyl-btn')?.addEventListener('click', () => {
+    const vinylData = {
+      id: document.getElementById('delete-vinyl-btn')?.getAttribute('data-vinyl-id') || '',
+      title: document.getElementById('delete-vinyl-btn')?.getAttribute('data-vinyl-title') || '',
+      artist: document.getElementById('delete-vinyl-btn')?.getAttribute('data-vinyl-artist') || '',
+      year: document.getElementById('delete-vinyl-btn')?.getAttribute('data-vinyl-year') || '',
+      format: document.getElementById('delete-vinyl-btn')?.getAttribute('data-vinyl-format') || '',
+      condition: document.getElementById('delete-vinyl-btn')?.getAttribute('data-vinyl-condition') || '',
+      price: parseFloat(document.getElementById('delete-vinyl-btn')?.getAttribute('data-vinyl-price') || '0'),
+      coverImage: document.getElementById('delete-vinyl-btn')?.getAttribute('data-vinyl-cover-image') || '/default-vinyl-cover.svg',
+      collectionId: document.getElementById('delete-vinyl-btn')?.getAttribute('data-collection-id') || null
+    }
+    
+    // Ouvrir le modal via événement personnalisé
+    document.dispatchEvent(new CustomEvent('modal:delete-vinyl:open', {
+      detail: { vinyl: vinylData }
+    }))
+  })
 </script>

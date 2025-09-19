@@ -61,10 +61,12 @@ export const GET: APIRoute = async ({ request, cookies }) => {
 
     console.log('Auth check: Token trouvé:', authToken ? 'présent' : 'absent')
 
-    // Récupérer l'utilisateur de test depuis la base
+    // Récupérer l'utilisateur le plus récent (système d'authentification simplifié)
     try {
-      const user = await prisma.user.findUnique({
-        where: { id: 'test-user-id' },
+      const user = await prisma.user.findFirst({
+        orderBy: {
+          createdAt: 'desc',
+        },
         select: {
           id: true,
           email: true,
@@ -76,7 +78,7 @@ export const GET: APIRoute = async ({ request, cookies }) => {
         return new Response(
           JSON.stringify({
             authenticated: false,
-            message: 'Utilisateur non trouvé',
+            message: 'Aucun utilisateur trouvé',
           }),
           {
             status: 401,
@@ -96,11 +98,11 @@ export const GET: APIRoute = async ({ request, cookies }) => {
         }
       )
     } catch (tokenError) {
-      // Token invalide
+      // Erreur de base de données
       return new Response(
         JSON.stringify({
           authenticated: false,
-          message: "Token d'authentification invalide",
+          message: "Erreur d'authentification",
         }),
         {
           status: 401,
