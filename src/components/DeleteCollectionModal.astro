@@ -109,7 +109,7 @@ d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 
   const modal = document.getElementById('delete-collection-modal')
   const closeBtn = document.getElementById('close-delete-collection-modal')
   const cancelBtn = document.getElementById('cancel-delete-collection')
-  const confirmBtn = document.getElementById('confirm-delete-collection')
+  const confirmBtn = document.getElementById('confirm-delete-collection') as HTMLButtonElement;
   const errorDiv = document.getElementById('delete-collection-error')
   const errorMessage = document.getElementById('delete-collection-error-message')
   const deleteText = document.getElementById('delete-collection-text')
@@ -226,6 +226,9 @@ d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 
     if (e.target === modal) closeDeleteCollectionModal()
   })
 
-  // Exposer la fonction pour ouvrir le modal
-  ;(window as any).openDeleteCollectionModal = openDeleteCollectionModal
+  // Écouter les événements pour ouvrir le modal
+  document.addEventListener('modal:delete-collection:open', (event: Event) => {
+    const customEvent = event as CustomEvent
+    openDeleteCollectionModal(customEvent.detail.collection)
+  })
 </script>

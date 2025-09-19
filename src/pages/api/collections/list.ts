@@ -27,50 +27,50 @@ export const GET: APIRoute = async ({ request, cookies }) => {
     const prisma = new PrismaClient()
 
     try {
-    // Récupérer l'utilisateur authentifié
-    const tokenMatch = cookies.match(/vinyl_vault_token=([^;]+)/)
-    if (!tokenMatch) {
-      return new Response(
-        JSON.stringify({
-          success: false,
-          error: 'Authentification requise',
-        }),
-        {
-          status: 401,
-          headers: { 'Content-Type': 'application/json' },
-        }
-      )
-    }
-
-    // Pour l'instant, on va utiliser l'ID de l'utilisateur depuis le token
-    // En production, vous devriez décoder le JWT pour obtenir l'ID utilisateur
-    const token = tokenMatch[1]
-    
-    // Récupérer l'utilisateur depuis la base de données
-    const user = await prisma.user.findFirst({
-      where: {
-        // Pour simplifier, on prend le premier utilisateur créé
-        // En production, vous devriez décoder le JWT pour obtenir l'ID exact
-      },
-      orderBy: {
-        createdAt: 'desc'
+      // Récupérer l'utilisateur authentifié
+      const tokenMatch = cookies.match(/vinyl_vault_token=([^;]+)/)
+      if (!tokenMatch) {
+        return new Response(
+          JSON.stringify({
+            success: false,
+            error: 'Authentification requise',
+          }),
+          {
+            status: 401,
+            headers: { 'Content-Type': 'application/json' },
+          }
+        )
       }
-    })
 
-    if (!user) {
-      return new Response(
-        JSON.stringify({
-          success: false,
-          error: 'Utilisateur non trouvé',
-        }),
-        {
-          status: 404,
-          headers: { 'Content-Type': 'application/json' },
-        }
-      )
-    }
+      // Pour l'instant, on va utiliser l'ID de l'utilisateur depuis le token
+      // En production, vous devriez décoder le JWT pour obtenir l'ID utilisateur
+      const token = tokenMatch[1]
 
-    const userId = user.id
+      // Récupérer l'utilisateur depuis la base de données
+      const user = await prisma.user.findFirst({
+        where: {
+          // Pour simplifier, on prend le premier utilisateur créé
+          // En production, vous devriez décoder le JWT pour obtenir l'ID exact
+        },
+        orderBy: {
+          createdAt: 'desc',
+        },
+      })
+
+      if (!user) {
+        return new Response(
+          JSON.stringify({
+            success: false,
+            error: 'Utilisateur non trouvé',
+          }),
+          {
+            status: 404,
+            headers: { 'Content-Type': 'application/json' },
+          }
+        )
+      }
+
+      const userId = user.id
 
       // Récupérer les collections de l'utilisateur connecté uniquement
       const collections = await prisma.collection.findMany({

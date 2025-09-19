@@ -16,15 +16,10 @@ try {
   const token = Astro.cookies.get('vinyl_vault_token')?.value
 
   if (token) {
-    // Utiliser l'utilisateur de test pour simplifier
-    user = await prisma.user.upsert({
-      where: { email: 'demo@vinylvault.com' },
-      update: { id: 'test-user-id', name: 'Utilisateur Test' },
-      create: {
-        id: 'test-user-id',
-        email: 'demo@vinylvault.com',
-        name: 'Utilisateur Test',
-        password: 'hashed_password_test',
+    // Récupérer l'utilisateur authentifié
+    user = await prisma.user.findFirst({
+      orderBy: {
+        createdAt: 'desc',
       },
       select: {
         id: true,

@@ -16,23 +16,15 @@ let userCollections: any[] = [];
 try {
   const token = Astro.cookies.get("vinyl_vault_token")?.value;
   if (token) {
-    // Système d'authentification simplifié - utiliser l'utilisateur de test
-    currentUser = await prisma.user.findUnique({
-      where: { id: 'test-user-id' },
+    // Système d'authentification simplifié - récupérer le premier utilisateur
+    currentUser = await prisma.user.findFirst({
+      orderBy: { createdAt: 'desc' },
       select: { id: true, name: true, email: true },
     });
 
     if (!currentUser) {
-      // Créer l'utilisateur de test s'il n'existe pas
-      currentUser = await prisma.user.create({
-        data: {
-          id: 'test-user-id',
-          email: 'demo@vinylvault.com',
-          name: 'Utilisateur Test',
-          password: 'hashed_password_test',
-        },
-        select: { id: true, name: true, email: true },
-      });
+      // Rediriger vers la page de connexion si aucun utilisateur n'est trouvé
+      return Astro.redirect('/login');
     }
     
     if (currentUser) {
@@ -389,21 +381,13 @@ try {
     // Bouton de création de collection (bouton principal)
     const createCollectionBtn = document.getElementById("create-collection-btn");
     createCollectionBtn?.addEventListener("click", () => {
-      if (typeof window.openCreateCollectionModal === "function") {
-        window.openCreateCollectionModal();
-      } else {
-        console.error("Modal de création de collection non disponible");
-      }
+      document.dispatchEvent(new CustomEvent('modal:create-collection:open'));
     });
 
     // Bouton de création de collection (première collection)
     const createFirstCollectionBtn = document.getElementById("create-first-collection");
     createFirstCollectionBtn?.addEventListener("click", () => {
-      if (typeof window.openCreateCollectionModal === "function") {
-        window.openCreateCollectionModal();
-      } else {
-        console.error("Modal de création de collection non disponible");
-      }
+      document.dispatchEvent(new CustomEvent('modal:create-collection:open'));
     });
 
     // Gestion des actions sur les collections (édition et suppression)
@@ -436,23 +420,15 @@ try {
       };
 
       // Ouvrir la modal d'édition
-      if (typeof window.openEditCollectionModal === 'function') {
-        window.openEditCollectionModal(collection);
-      } else {
-        console.error('Modal d\'édition de collection non disponible');
-        // Fallback avec prompt
-        const newName = prompt("Nouveau nom de la collection:");
-        if (newName && newName.trim() !== "") {
-          console.log("Édition de la collection", collectionId, "avec le nom", newName);
-          alert("Fonctionnalité d'édition en cours de développement");
-        }
-      }
+      document.dispatchEvent(new CustomEvent('modal:edit-collection:open', { 
+        detail: { collection } 
+      }));
     }
 
     // Fonction pour supprimer une collection
     function deleteCollection(collectionId: string) {
       // Récupérer les données depuis l'objet global
-      const collectionInfo = collectionsData[collectionId];
+      const collectionInfo = (collectionsData as Record<string, { name: string; vinylCount: number }>)[collectionId];
       
       if (!collectionInfo) {
         console.error('Collection non trouvée:', collectionId);
@@ -468,16 +444,9 @@ try {
       console.log('Delete collection debug:', collection);
 
       // Ouvrir la modal de confirmation
-      if (typeof window.openDeleteCollectionModal === 'function') {
-        window.openDeleteCollectionModal(collection);
-      } else {
-        console.error('Modal de suppression de collection non disponible');
-        // Fallback avec confirm
-        if (confirm("Êtes-vous sûr de vouloir supprimer cette collection ? Cette action est irréversible.")) {
-          console.log("Suppression de la collection", collectionId);
-          alert("Fonctionnalité de suppression en cours de développement");
-        }
-      }
+      document.dispatchEvent(new CustomEvent('modal:delete-collection:open', { 
+        detail: { collection } 
+      }));
     }
 
     // Fonction pour recalculer les statistiques après suppression/édition
@@ -489,7 +458,6 @@ try {
       }, 1000);
     }
 
-    // Exposer la fonction de recalcul pour les modals
-    window.recalculateStats = recalculateStats;
+    // La fonction recalculateStats est maintenant accessible via modalEvents
   });
 </script>

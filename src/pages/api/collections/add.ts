@@ -111,8 +111,8 @@ export const POST: APIRoute = async ({ request, cookies }) => {
           // En production, vous devriez décoder le JWT pour obtenir l'ID exact
         },
         orderBy: {
-          createdAt: 'desc'
-        }
+          createdAt: 'desc',
+        },
       })
 
       if (!user) {

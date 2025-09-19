@@ -317,7 +317,6 @@ d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 
     }
   })
 
-  // Exposer la fonction pour ouvrir le modal
-  ;(window as unknown as Record<string, unknown>).openCreateCollectionModal =
-    openCreateCollectionModal
+  // Écouter les événements pour ouvrir le modal
+  document.addEventListener('modal:create-collection:open', openCreateCollectionModal)
 </script>

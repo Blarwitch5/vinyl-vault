@@ -194,7 +194,7 @@
   // Fonction pour définir l'état du bouton
   function setSaveButtonState(isLoading: boolean) {
     if (saveBtn) {
-      saveBtn.disabled = isLoading
+      ;(saveBtn as HTMLButtonElement).disabled = isLoading
     }
     if (saveText) saveText.classList.toggle('hidden', isLoading)
     if (saveLoading) saveLoading.classList.toggle('hidden', !isLoading)
@@ -307,6 +307,9 @@
     }
   })
 
-  // Exposer la fonction pour ouvrir le modal
-  ;(window as any).openEditCollectionModal = openEditCollectionModal
+  // Écouter les événements pour ouvrir le modal
+  document.addEventListener('modal:edit-collection:open', (event: Event) => {
+    const customEvent = event as CustomEvent
+    openEditCollectionModal(customEvent.detail.collection)
+  })
 </script>

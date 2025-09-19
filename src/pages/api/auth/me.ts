@@ -22,18 +22,10 @@ export const GET: APIRoute = async ({ request, cookies }) => {
       )
     }
 
-    // Récupérer ou créer l'utilisateur de test
-    const user = await prisma.user.upsert({
-      where: { email: 'demo@vinylvault.com' },
-      update: {
-        id: 'test-user-id',
-        name: 'Utilisateur Test',
-      },
-      create: {
-        id: 'test-user-id',
-        email: 'demo@vinylvault.com',
-        name: 'Utilisateur Test',
-        password: 'hashed_password_test',
+    // Récupérer l'utilisateur authentifié
+    const user = await prisma.user.findFirst({
+      orderBy: {
+        createdAt: 'desc',
       },
       select: {
         id: true,

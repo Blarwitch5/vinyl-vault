@@ -24,29 +24,24 @@ let currentUser = null;
 let userCollections: any[] = [];
 let recentVinyls: any[] = [];
 let totalCollections: number = 0;
+let recentActivity: any[] = [];
 let error = null;
 
+const token = Astro.cookies.get("vinyl_vault_token")?.value;
+
 try {
-  const token = Astro.cookies.get("vinyl_vault_token")?.value;
   if (token) {
-    // Système d'authentification simplifié - utiliser l'utilisateur de test
-    currentUser = await prisma.user.findUnique({
-      where: { id: 'test-user-id' },
+    // Récupérer l'utilisateur authentifié
+    currentUser = await prisma.user.findFirst({
+      where: {
+        // Pour simplifier, on prend le premier utilisateur créé
+        // En production, vous devriez décoder le JWT pour obtenir l'ID exact
+      },
+      orderBy: {
+        createdAt: 'desc',
+      },
       select: { id: true, name: true, email: true },
     });
-
-    if (!currentUser) {
-      // Créer l'utilisateur de test s'il n'existe pas
-      currentUser = await prisma.user.create({
-        data: {
-          id: 'test-user-id',
-          email: 'demo@vinylvault.com',
-          name: 'Utilisateur Test',
-          password: 'hashed_password_test',
-        },
-        select: { id: true, name: true, email: true },
-      });
-    }
 
     if (currentUser) {
       // Récupérer toutes les collections de l'utilisateur (maximum 5)
@@ -124,6 +119,24 @@ if (currentUser) {
     .map(([name, count]) => ({ name, count }))
     .sort((a, b) => b.count - a.count)
     .slice(0, 4);
+
+  // Récupérer l'activité récente
+  try {
+    const activityResponse = await fetch(`${Astro.url.origin}/api/dashboard/recent-activity`, {
+      headers: {
+        'Cookie': `vinyl_vault_token=${token}`,
+      },
+    });
+    
+    if (activityResponse.ok) {
+      const activityData = await activityResponse.json();
+      if (activityData.success) {
+        recentActivity = activityData.activity || [];
+      }
+    }
+  } catch (activityError) {
+    console.error('Erreur lors de la récupération de l\'activité récente:', activityError);
+  }
   }
 }
 ---
@@ -833,13 +846,12 @@ d="M5 12h14"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
                 >
-                  <path
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    stroke-width="2"
-d="m21 21-4.35-4.35"
-                  />
-                  <circle cx="11" cy="11" r="8"></path>
+                  <path d="M3 7V5a2 2 0 0 1 2-2h2"/>
+                  <path d="M17 3h2a2 2 0 0 1 2 2v2"/>
+                  <path d="M21 17v2a2 2 0 0 1-2 2h-2"/>
+                  <path d="M7 21H5a2 2 0 0 1-2-2v-2"/>
+                  <circle cx="12" cy="12" r="3"/>
+                  <path d="m16 16-1.9-1.9"/>
                 </svg>
                 <span
                   class="text-sm font-medium text-neutral-900 dark:text-neutral-50"
@@ -922,70 +934,54 @@ d="M5 12h14"
             </h3>
           </div>
           <div class="p-6">
+            {recentActivity.length > 0 ? (
             <div class="space-y-3 text-sm">
+                {recentActivity.map((activity: any) => (
               <div class="flex items-start">
                 <div
-                   class="w-2 h-2 bg-gradient-emerald rounded-full mt-2 mr-3"
+                      class={`w-2 h-2 rounded-full mt-2 mr-3 ${
+                        activity.color === 'emerald' 
+                          ? 'bg-gradient-emerald' 
+                          : activity.color === 'yellow' 
+                          ? 'bg-yellow-500' 
+                          : 'bg-blue-500'
+                      }`}
                 >
                 </div>
                 <div>
                   <p class="text-neutral-900 dark:text-neutral-50">
-                    Vinyle ajouté
-                  </p>
-                  <p
-                    class="text-neutral-900 dark:text-neutral-400 dark:text-neutral-400"
-                  >
-                    Dark Side of the Moon
-                  </p>
-                  <p
-                    class="text-neutral-900 dark:text-neutral-400 dark:text-neutral-400 text-xs"
-                  >
-                    Il y a 2 heures
-                  </p>
-                </div>
-              </div>
-
-              <div class="flex items-start">
-                <div
-                   class="w-2 h-2 bg-gradient-emerald rounded-full mt-2 mr-3"
-                >
-                </div>
-                <div>
-                  <p class="text-neutral-900 dark:text-neutral-50">
-                    Collection créée
-                  </p>
-                  <p
-                    class="text-neutral-900 dark:text-neutral-400 dark:text-neutral-400"
-                  >
-                    Jazz Classics
-                  </p>
-                  <p
-                    class="text-neutral-900 dark:text-neutral-400 dark:text-neutral-400 text-xs"
-                  >
-                    Hier
+                        {activity.title}
+                      </p>
+                      <p class="text-neutral-600 dark:text-neutral-400">
+                        {activity.description}
+                        {activity.collection && (
+                          <span class="text-neutral-500 dark:text-neutral-500">
+                            {" "}dans {activity.collection}
+                          </span>
+                        )}
+                      </p>
+                      <p class="text-neutral-500 dark:text-neutral-500 text-xs">
+                        {activity.timeAgo}
                   </p>
                 </div>
               </div>
-
-              <div class="flex items-start">
-                <div class="w-2 h-2 bg-yellow-500 rounded-full mt-2 mr-3"></div>
-                <div>
-                  <p class="text-neutral-900 dark:text-neutral-50">
-                    Prix mis à jour
-                  </p>
-                  <p
-                    class="text-neutral-900 dark:text-neutral-400 dark:text-neutral-400"
-                  >
-                    Kind of Blue
-                  </p>
-                  <p
-                    class="text-neutral-900 dark:text-neutral-400 dark:text-neutral-400 text-xs"
-                  >
-                    Il y a 3 jours
+                ))}
+                </div>
+            ) : (
+              <div class="text-center py-8">
+                <div class="text-neutral-400 dark:text-neutral-500 mb-2">
+                  <svg class="mx-auto h-12 w-12" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                </div>
+                <p class="text-neutral-500 dark:text-neutral-400 text-sm">
+                  Aucune activité récente
+                </p>
+                <p class="text-neutral-400 dark:text-neutral-500 text-xs mt-1">
+                  Commencez par ajouter des vinyles ou créer des collections
                   </p>
                 </div>
-              </div>
-            </div>
+            )}
           </div>
         </div>
       </div>
@@ -1028,31 +1024,19 @@ d="M5 12h14"
     // Note: Le bouton est conditionnel - soit "new-collection-btn" (actif) soit "new-collection-btn-disabled" (désactivé)
     const newCollectionBtn = document.getElementById("new-collection-btn");
     newCollectionBtn?.addEventListener("click", () => {
-      if (typeof (window as any).openCreateCollectionModal === "function") {
-        (window as any).openCreateCollectionModal();
-      } else {
-        console.error("Modal de création de collection non disponible");
-      }
+      document.dispatchEvent(new CustomEvent('modal:create-collection:open'));
     });
 
     // Bouton de création de collection dans la sidebar
     const sidebarCreateCollectionBtn = document.getElementById("create-collection-btn");
     sidebarCreateCollectionBtn?.addEventListener("click", () => {
-      if (typeof (window as any).openCreateCollectionModal === "function") {
-        (window as any).openCreateCollectionModal();
-      } else {
-        console.error("Modal de création de collection non disponible");
-      }
+      document.dispatchEvent(new CustomEvent('modal:create-collection:open'));
     });
 
     // Bouton des statistiques détaillées
     const personalStatsBtn = document.getElementById("personal-stats-btn");
     personalStatsBtn?.addEventListener("click", () => {
-      if (window.personalStatsModal) {
-        window.personalStatsModal.open();
-      } else {
-        console.error("Modal de statistiques personnelles non disponible");
-      }
+      document.dispatchEvent(new CustomEvent('modal:personal-stats:open'))
     });
 
     // Mettre à jour le bouton de création de collection au chargement initial
@@ -1081,11 +1065,7 @@ d="M5 12h14"
     // Bouton de création de collection (dans les actions rapides)
     const createCollectionBtn = document.getElementById("create-collection-btn");
     createCollectionBtn?.addEventListener("click", () => {
-      if (typeof (window as any).openCreateCollectionModal === "function") {
-        (window as any).openCreateCollectionModal();
-      } else {
-        console.error("Modal de création de collection non disponible");
-      }
+      document.dispatchEvent(new CustomEvent('modal:create-collection:open'));
     });
 
     // Gestion des vues grid/list pour le dashboard
@@ -1558,7 +1538,7 @@ d="M3 6h5l.645-1.69A2 2 0 0 1 10.53 4h2.94a2 2 0 0 1 1.885 1.31L15 6h5"
     }
 
 
-    // Exposer la fonction de recalcul pour les modals
-    (window as any).recalculateStats = recalculateStats;
+    // Écouter les événements de recalcul des statistiques
+    document.addEventListener('stats:recalculate', recalculateStats);
   });
 </script>

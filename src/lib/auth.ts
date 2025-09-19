@@ -262,16 +262,12 @@ export async function verifyAuth(request: Request): Promise<User | null> {
       return null
     }
 
-    // Pour simplifier, on va toujours retourner un utilisateur de test
-    // si un token est présent (même s'il n'est pas valide JWT)
-    console.log('verifyAuth: Token valide, retour utilisateur de test')
-
-    return {
-      id: 'test-user-id',
-      email: 'demo@vinylvault.com',
-      name: 'Utilisateur Test',
-      createdAt: new Date(),
-    }
+    // En production, vous devriez décoder le JWT et récupérer l'utilisateur réel
+    // Pour l'instant, on retourne null pour forcer une vraie authentification
+    console.log(
+      'verifyAuth: Authentification requise - token présent mais pas décodé'
+    )
+    return null
   } catch (error) {
     console.error(
       "Erreur lors de la vérification de l'authentification:",

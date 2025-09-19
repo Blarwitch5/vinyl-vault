@@ -4,12 +4,19 @@ import { PrismaClient } from '@prisma/client'
 const prisma = new PrismaClient()
 
 // POST /api/collections/create - Créer une nouvelle collection
-export const POST: APIRoute = async ({ request, cookies }) => {
+export const POST: APIRoute = async ({ request }) => {
   try {
-    // Vérifier l'authentification
-    const authToken = cookies.get('vinyl_vault_token')?.value
+    console.log('=== API /collections/create appelée ===')
 
-    if (!authToken) {
+    // Vérifier l'authentification
+    const cookies = request.headers.get('cookie') || ''
+    console.log('Cookies reçus:', cookies)
+
+    const authTokenMatch = cookies.match(/vinyl_vault_token=([^;]+)/)
+    console.log('Token match:', authTokenMatch ? 'Trouvé' : 'Non trouvé')
+
+    if (!authTokenMatch) {
+      console.log("Erreur: Aucun token d'authentification trouvé")
       return new Response(
         JSON.stringify({
           success: false,
@@ -76,48 +83,41 @@ export const POST: APIRoute = async ({ request, cookies }) => {
       )
     }
 
-    // Récupérer l'utilisateur authentifié
-    const tokenMatch = cookies.match(/vinyl_vault_token=([^;]+)/)
-    if (!tokenMatch) {
-      return new Response(
-        JSON.stringify({
-          success: false,
-          error: 'Authentification requise',
-        }),
-        {
-          status: 401,
-          headers: { 'Content-Type': 'application/json' },
-        }
-      )
-    }
-
     // Pour l'instant, on va utiliser l'ID de l'utilisateur depuis le token
     // En production, vous devriez décoder le JWT pour obtenir l'ID utilisateur
-    const token = tokenMatch[1]
-    
+    const token = authTokenMatch[1]
+    console.log('Token extrait:', token)
+
     // Récupérer l'utilisateur depuis la base de données
-    const user = await prisma.user.findFirst({
-      where: {
-        // Pour simplifier, on prend le premier utilisateur créé
-        // En production, vous devriez décoder le JWT pour obtenir l'ID exact
-      },
+    console.log("Recherche de l'utilisateur...")
+
+    // Pour l'instant, on va créer ou récupérer un utilisateur par défaut
+    // En production, vous devriez décoder le JWT pour obtenir l'ID exact
+    let user = await prisma.user.findFirst({
       orderBy: {
-        createdAt: 'desc'
-      }
+        createdAt: 'desc',
+      },
     })
 
+    // Si aucun utilisateur n'existe, en créer un par défaut
     if (!user) {
-      return new Response(
-        JSON.stringify({
-          success: false,
-          error: 'Utilisateur non trouvé',
-        }),
-        {
-          status: 404,
-          headers: { 'Content-Type': 'application/json' },
-        }
+      console.log(
+        "Aucun utilisateur trouvé, création d'un utilisateur par défaut..."
       )
+      user = await prisma.user.create({
+        data: {
+          email: 'default@vinylvault.com',
+          name: 'Utilisateur par défaut',
+          password: 'default_password_hash',
+        },
+      })
+      console.log('Utilisateur par défaut créé:', user.email)
     }
+
+    console.log(
+      'Utilisateur trouvé/créé:',
+      user ? `Oui (${user.email})` : 'Non'
+    )
 
     const userId = user.id
 
@@ -187,12 +187,19 @@ export const POST: APIRoute = async ({ request, cookies }) => {
       }
     )
   } catch (error) {
-    console.error('Erreur lors de la création de la collection:', error)
+    console.error('=== ERREUR lors de la création de la collection ===')
+    console.error("Type d'erreur:", typeof error)
+    console.error("Message d'erreur:", error)
+    console.error(
+      'Stack trace:',
+      error instanceof Error ? error.stack : 'Pas de stack trace'
+    )
 
     return new Response(
       JSON.stringify({
         success: false,
         error: 'Erreur interne du serveur',
+        details: error instanceof Error ? error.message : 'Erreur inconnue',
       }),
       {
         status: 500,

@@ -27,23 +27,15 @@ let isAuthenticated = false;
 try {
   const token = Astro.cookies.get("vinyl_vault_token")?.value;
   if (token) {
-    // Système d'authentification simplifié - utiliser l'utilisateur de test
-    currentUser = await prisma.user.findUnique({
-      where: { id: 'test-user-id' },
+    // Système d'authentification simplifié - récupérer le premier utilisateur
+    currentUser = await prisma.user.findFirst({
+      orderBy: { createdAt: 'desc' },
       select: { id: true, name: true, email: true },
     });
 
     if (!currentUser) {
-      // Créer l'utilisateur de test s'il n'existe pas
-      currentUser = await prisma.user.create({
-        data: {
-          id: 'test-user-id',
-          email: 'demo@vinylvault.com',
-          name: 'Utilisateur Test',
-          password: 'hashed_password_test',
-        },
-        select: { id: true, name: true, email: true },
-      });
+      // Rediriger vers la page de connexion si aucun utilisateur n'est trouvé
+      return Astro.redirect('/login');
     }
     
     isAuthenticated = !!currentUser;

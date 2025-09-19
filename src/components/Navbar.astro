@@ -35,9 +35,13 @@ import SkeletonLoader from './SkeletonLoader.astro'
           class="md:hidden p-2 text-neutral-600 dark:text-neutral-400 hover:text-emerald-500 dark:hover:text-emerald-500 hover:bg-neutral-100 dark:hover:bg-neutral-900 rounded-xl transition-colors"
           title="Rechercher"
         >
-          <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
-            <circle cx="11" cy="11" r="8"/>
-            <path d="m21 21-4.35-4.35"/>
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-scan-search-icon lucide-scan-search">
+            <path d="M3 7V5a2 2 0 0 1 2-2h2"/>
+            <path d="M17 3h2a2 2 0 0 1 2 2v2"/>
+            <path d="M21 17v2a2 2 0 0 1-2 2h-2"/>
+            <path d="M7 21H5a2 2 0 0 1-2-2v-2"/>
+            <circle cx="12" cy="12" r="3"/>
+            <path d="m16 16-1.9-1.9"/>
           </svg>
         </button>
 
@@ -399,9 +403,7 @@ smoothToggleMobileMenu,
           if (userDropdown) smoothHide(userDropdown, ANIMATION_DURATIONS.FAST)
           
           // Ouvrir le modal des statistiques
-          if (window.personalStatsModal) {
-            window.personalStatsModal.open()
-          }
+          document.dispatchEvent(new CustomEvent('modal:personal-stats:open'))
         })
       }
 
@@ -456,12 +458,7 @@ smoothToggleMobileMenu,
     }
   }
 
-  // Types globaux
-  declare global {
-    interface Window {
-      personalStatsModal: any
-    }
-  }
+  // Types globaux sont maintenant définis dans src/types/window.d.ts
 
   // Initialisation
   document.addEventListener('DOMContentLoaded', async () => {

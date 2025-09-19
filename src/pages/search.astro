@@ -384,9 +384,9 @@ const availableFormats = [
       const vinylData = extractVinylDataFromCard(vinylCard);
       
       // Ouvrir la modal
-      if (window.addToCollectionModal) {
-        window.addToCollectionModal.open(vinylData);
-      }
+      document.dispatchEvent(new CustomEvent('modal:add-to-collection:open', {
+        detail: { vinylData }
+      }));
     }
   });
 

@@ -186,8 +186,9 @@ const { vinylData } = Astro.props
               Retour
             </button>
             <button
-              type="submit"
+              type="button"
               class="flex-1 bg-primary-500 text-white py-2 px-4 rounded-lg hover:bg-primary-600 transition-colors"
+              onclick="handleCreateCollection()"
             >
               Créer et ajouter
             </button>
@@ -280,11 +281,7 @@ const { vinylData } = Astro.props
 
     document.getElementById('back-to-selection')?.addEventListener('click', showCollectionSelection)
 
-    // Form de création
-    document.getElementById('create-collection-form')?.addEventListener('submit', (e) => {
-      e.preventDefault()
-      handleCreateCollection()
-    })
+    // Event listener pour le bouton de création (géré par onclick dans le HTML)
 
     // Marquer que les event listeners ont été attachés
     eventListenersAttached = true;
@@ -431,13 +428,33 @@ const { vinylData } = Astro.props
     const form = document.getElementById('create-collection-form') as HTMLFormElement
     const formData = new FormData(form)
 
-    // Récupérer les valeurs avec validation
-    const name = formData.get('name') as string
-    const description = formData.get('description') as string
+    // Récupérer les valeurs directement depuis les champs en cas de problème avec FormData
+    const nameField = document.getElementById('collection-name') as HTMLInputElement
+    const descriptionField = document.getElementById('collection-description') as HTMLTextAreaElement
+
+    const name = nameField?.value || formData.get('name') as string
+    const description = descriptionField?.value || formData.get('description') as string
+
+    console.log('Données du formulaire:', {
+      name,
+      description,
+      nameFieldValue: nameField?.value,
+      descriptionFieldValue: descriptionField?.value,
+      formDataEntries: Array.from(formData.entries()),
+      formKeys: Array.from(formData.keys()),
+      formValues: Array.from(formData.values())
+    });
 
     // Validation côté client
     if (!name || name.trim().length === 0) {
       console.error('Nom de collection requis');
+      // Afficher un message d'erreur à l'utilisateur
+      const nameField = document.getElementById('collection-name') as HTMLInputElement
+      nameField?.focus()
+      nameField?.classList.add('ring-2', 'ring-red-500')
+      setTimeout(() => {
+        nameField?.classList.remove('ring-2', 'ring-red-500')
+      }, 3000)
       return;
     }
 
@@ -466,7 +483,16 @@ const { vinylData } = Astro.props
       await addToCollection(result.collection.id, result.collection.name)
     } catch (error) {
       console.error('Erreur:', error)
-      alert('Erreur lors de la création de la collection')
+      // Afficher un message d'erreur dans l'interface au lieu d'une alerte
+      const nameField = document.getElementById('collection-name') as HTMLInputElement
+      if (nameField) {
+        nameField.placeholder = 'Erreur lors de la création...'
+        nameField.classList.add('ring-2', 'ring-red-500')
+        setTimeout(() => {
+          nameField.classList.remove('ring-2', 'ring-red-500')
+          nameField.placeholder = 'Nom de la collection'
+        }, 3000)
+      }
     }
   }
 
@@ -496,9 +522,18 @@ const { vinylData } = Astro.props
       }
 
       showSection('success-message')
+      
+      // Fermer le modal après 2 secondes et mettre à jour le dashboard
+      setTimeout(() => {
+        closeModal()
+        // Mettre à jour le dashboard
+        document.dispatchEvent(new CustomEvent('stats:recalculate'))
+      }, 2000)
     } catch (error) {
       console.error('Erreur:', error)
-      alert("Erreur lors de l'ajout du vinyle à la collection")
+      // Afficher un message d'erreur dans l'interface au lieu d'une alerte
+      showSection('collection-selection')
+      // Vous pourriez ajouter un message d'erreur visible ici
     }
   }
 
@@ -538,30 +573,18 @@ const { vinylData } = Astro.props
     isOpen: isModalOpen,
   }
 
-  // Exposer immédiatement sur window
-  window.addToCollectionModal = addToCollectionModal
-  console.log('AddToCollectionModal: Modal exposée immédiatement sur window')
-
   // Initialiser la modal
   document.addEventListener('DOMContentLoaded', () => {
     console.log('AddToCollectionModal: Initialisation...')
     initModal()
-    window.addToCollectionModal = addToCollectionModal
-    console.log('AddToCollectionModal: Modal initialisée et exposée sur window')
+    console.log('AddToCollectionModal: Modal initialisée')
+    
+    // Écouter les événements pour ouvrir le modal
+    document.addEventListener('modal:add-to-collection:open', (event: Event) => {
+      const customEvent = event as CustomEvent
+      openModal(customEvent.detail.vinylData)
+    })
   })
 
-  // Fallback pour s'assurer que la modal est disponible
-  setTimeout(() => {
-    if (!window.addToCollectionModal) {
-      console.log('AddToCollectionModal: Fallback - réexposition de la modal')
-      window.addToCollectionModal = addToCollectionModal
-    }
-  }, 1000)
-
-  // Type global pour TypeScript
-  declare global {
-    interface Window {
-      addToCollectionModal: typeof addToCollectionModal
-    }
-  }
+  // Types globaux sont maintenant définis dans src/types/window.d.ts
 </script>

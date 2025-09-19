@@ -302,20 +302,16 @@ class PersonalStatsModal {
   }
 }
 
-// Types globaux
-declare global {
-  interface Window {
-    PersonalStatsModal: typeof PersonalStatsModal
-    personalStatsModal: any
-  }
-}
-
-// Exposer globalement pour utilisation dans d'autres composants
-window.PersonalStatsModal = PersonalStatsModal
+// Types globaux sont maintenant définis dans src/types/window.d.ts
 
 // Initialiser le modal
 document.addEventListener('DOMContentLoaded', () => {
-  window.personalStatsModal = new PersonalStatsModal()
+  const personalStatsModal = new PersonalStatsModal()
+  
+  // Écouter les événements pour ouvrir le modal
+  document.addEventListener('modal:personal-stats:open', () => {
+    personalStatsModal.open()
+  })
 })
 </script>
 
