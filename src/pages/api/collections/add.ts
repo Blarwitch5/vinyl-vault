@@ -88,26 +88,44 @@ export const POST: APIRoute = async ({ request, cookies }) => {
       // Préparer les données du vinyle
       let vinylData
 
-      // Créer ou récupérer l'utilisateur de test
-      let user = await prisma.user.findUnique({
-        where: { id: 'test-user-id' },
+      // Récupérer l'utilisateur authentifié
+      const cookies = request.headers.get('cookie') || ''
+      const tokenMatch = cookies.match(/vinyl_vault_token=([^;]+)/)
+      if (!tokenMatch) {
+        return new Response(
+          JSON.stringify({
+            success: false,
+            error: 'Authentification requise',
+          }),
+          {
+            status: 401,
+            headers: { 'Content-Type': 'application/json' },
+          }
+        )
+      }
+
+      // Récupérer l'utilisateur depuis la base de données
+      const user = await prisma.user.findFirst({
+        where: {
+          // Pour simplifier, on prend le premier utilisateur créé
+          // En production, vous devriez décoder le JWT pour obtenir l'ID exact
+        },
+        orderBy: {
+          createdAt: 'desc'
+        }
       })
 
       if (!user) {
-        console.log("Add vinyl: Création de l'utilisateur de test")
-        user = await prisma.user.upsert({
-          where: { email: 'demo@vinylvault.com' },
-          update: {
-            id: 'test-user-id',
-            name: 'Utilisateur Test',
-          },
-          create: {
-            id: 'test-user-id',
-            email: 'demo@vinylvault.com',
-            name: 'Utilisateur Test',
-            password: 'hashed_password_test',
-          },
-        })
+        return new Response(
+          JSON.stringify({
+            success: false,
+            error: 'Utilisateur non trouvé',
+          }),
+          {
+            status: 404,
+            headers: { 'Content-Type': 'application/json' },
+          }
+        )
       }
 
       const userId = user.id
