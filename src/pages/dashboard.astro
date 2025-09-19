@@ -27,7 +27,7 @@ let totalCollections: number = 0;
 let recentActivity: any[] = [];
 let error = null;
 
-const token = Astro.cookies.get("vinyl_vault_token")?.value;
+  const token = Astro.cookies.get("vinyl_vault_token")?.value;
 
 try {
   if (token) {
@@ -809,23 +809,9 @@ d="M3 6h5l.645-1.69A2 2 0 0 1 10.53 4h2.94a2 2 0 0 1 1.885 1.31L15 6h5"
               title="Ouvrir le scanner de code-barres pour ajouter un vinyle"
             >
               <div class="flex items-center">
-                <svg
-                   class="w-5 h-5 text-emerald-500 dark:text-emerald-500 mr-3"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    stroke-width="2"
-d="M5 12h14"
-                  />
-                  <path
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    stroke-width="2"
-                    d="M12 5v14"></path>
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-plus w-5 h-5 text-emerald-500 dark:text-emerald-500 mr-3">
+                  <path d="M5 12h14"/>
+                  <path d="M12 5v14"/>
                 </svg>
                 <span
                   class="text-sm font-medium text-neutral-900 dark:text-neutral-50"
@@ -866,24 +852,9 @@ d="M5 12h14"
               title="Créer une nouvelle collection"
             >
               <div class="flex items-center">
-                <svg
-                   class="w-5 h-5 text-emerald-500 dark:text-emerald-500 mr-3"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    stroke-width="2"
-d="M5 12h14"
-                  />
-                  <path
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    stroke-width="2"
-                    d="M12 5v14"
-                  />
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-plus w-5 h-5 text-emerald-500 dark:text-emerald-500 mr-3">
+                  <path d="M5 12h14"/>
+                  <path d="M12 5v14"/>
                 </svg>
                 <span
                   class="text-sm font-medium text-neutral-900 dark:text-neutral-50"
@@ -898,18 +869,9 @@ d="M5 12h14"
               title="Voir et modifier votre profil"
             >
               <div class="flex items-center">
-                <svg
-                   class="w-5 h-5 text-emerald-500 dark:text-emerald-500 mr-3"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    stroke-width="2"
-                    d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
-                  ></path>
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-user w-5 h-5 text-emerald-500 dark:text-emerald-500 mr-3">
+                  <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+                  <circle cx="12" cy="7" r="4"/>
                 </svg>
                 <span
                   class="text-sm font-medium text-neutral-900 dark:text-neutral-50"
