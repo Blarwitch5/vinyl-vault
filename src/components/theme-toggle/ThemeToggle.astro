@@ -3,14 +3,12 @@
 ---
 
 <button
-  id="theme-toggle"
-  class="relative inline-flex items-center justify-center w-10 h-10 rounded-lg glass dark:glass-dark hover:glass-emerald-subtle transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2 dark:focus:ring-offset-neutral-950"
+  class="theme-toggle-btn relative inline-flex items-center justify-center w-10 h-10 rounded-lg glass dark:glass-dark hover:glass-emerald-subtle transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2 dark:focus:ring-offset-neutral-950"
   aria-label="Basculer le thème"
 >
   <!-- Icône soleil (mode clair) -->
   <svg
-    id="sun-icon"
-    class="w-5 h-5 text-neutral-600 dark:text-neutral-400 transition-all duration-200 hidden"
+    class="sun-icon w-5 h-5 text-neutral-600 dark:text-neutral-400 transition-all duration-200 hidden"
     fill="none"
     stroke="currentColor"
     stroke-width="2"
@@ -31,8 +29,7 @@
 
   <!-- Icône lune (mode sombre) -->
   <svg
-    id="moon-icon"
-    class="w-5 h-5 text-neutral-600 dark:text-neutral-400 transition-all duration-200 hidden"
+    class="moon-icon w-5 h-5 text-neutral-600 dark:text-neutral-400 transition-all duration-200 hidden"
     fill="none"
     stroke="currentColor"
     stroke-width="2"
@@ -48,15 +45,13 @@
 
 <script>
   import { createDomHelper } from '../../utils/dom-helpers'
-import { createThemeHelper } from '../../utils/theme-helpers'
+  import { createThemeHelper } from '../../utils/theme-helpers'
 
-  document.addEventListener('DOMContentLoaded', () => {
+  // Fonction pour initialiser un toggle de thème
+  const initThemeToggle = (toggle: HTMLElement): void => {
     const themeHelper = createThemeHelper()
-    const domHelper = createDomHelper()
-
-    const toggle = domHelper.getElementById('theme-toggle')
-    const sunIcon = domHelper.getElementById('sun-icon')
-    const moonIcon = domHelper.getElementById('moon-icon')
+    const sunIcon = toggle.querySelector('.sun-icon') as HTMLElement
+    const moonIcon = toggle.querySelector('.moon-icon') as HTMLElement
 
     // Fonction pour mettre à jour les icônes selon les règles
     const updateIcons = (isDark: boolean): void => {
@@ -70,6 +65,41 @@ import { createThemeHelper } from '../../utils/theme-helpers'
         moonIcon?.classList.remove('hidden')
       }
     }
+
+    // Mettre à jour les icônes initiales
+    updateIcons(themeHelper.isDarkMode())
+
+    // Gérer le click sur le toggle selon les règles (fonctionnel)
+    toggle.addEventListener('click', () => {
+      themeHelper.toggleTheme()
+      updateIcons(themeHelper.isDarkMode())
+      
+      // Mettre à jour tous les autres toggles sur la page
+      updateAllThemeToggles()
+    })
+  }
+
+  // Fonction pour mettre à jour tous les toggles
+  const updateAllThemeToggles = (): void => {
+    const themeHelper = createThemeHelper()
+    const allToggles = document.querySelectorAll('.theme-toggle-btn')
+    
+    allToggles.forEach(toggle => {
+      const sunIcon = toggle.querySelector('.sun-icon') as HTMLElement
+      const moonIcon = toggle.querySelector('.moon-icon') as HTMLElement
+      
+      if (themeHelper.isDarkMode()) {
+        sunIcon?.classList.remove('hidden')
+        moonIcon?.classList.add('hidden')
+      } else {
+        sunIcon?.classList.add('hidden')
+        moonIcon?.classList.remove('hidden')
+      }
+    })
+  }
+
+  document.addEventListener('DOMContentLoaded', () => {
+    const themeHelper = createThemeHelper()
 
     // Migration automatique vers dark mode par défaut
     const migrateToDarkDefault = (): void => {
@@ -86,20 +116,18 @@ import { createThemeHelper } from '../../utils/theme-helpers'
     // Appliquer la migration et le thème initial
     migrateToDarkDefault()
     themeHelper.initTheme()
-    updateIcons(themeHelper.isDarkMode())
 
-    // Gérer le click sur le toggle selon les règles (fonctionnel)
-    toggle?.addEventListener('click', () => {
-      themeHelper.toggleTheme()
-      updateIcons(themeHelper.isDarkMode())
+    // Initialiser tous les toggles de thème
+    const allToggles = document.querySelectorAll('.theme-toggle-btn')
+    allToggles.forEach(toggle => {
+      initThemeToggle(toggle as HTMLElement)
     })
 
-    // Écouter les changements du thème système (maintenant moins important car dark par défaut)
+    // Écouter les changements du thème système
     window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => {
-      // Seulement si l'utilisateur a explicitement choisi de suivre le système
       if (themeHelper.getStoredTheme() === 'system') {
         themeHelper.initTheme()
-        updateIcons(themeHelper.isDarkMode())
+        updateAllThemeToggles()
       }
     })
   })

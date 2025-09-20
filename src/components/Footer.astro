@@ -1,5 +1,6 @@
 ---
 // Footer pour le site VinylVault
+import { ThemeToggle } from './theme-toggle'
 ---
 
 <footer
@@ -204,7 +205,12 @@
             </a>
           </div>
         </div>
-        <div class="mt-4 md:mt-0">
+        <div class="mt-4 md:mt-0 flex flex-col sm:flex-row items-center space-y-2 sm:space-y-0 sm:space-x-4">
+          <!-- Theme Toggle (visible sur mobile seulement) -->
+          <div class="md:hidden flex items-center">
+            <ThemeToggle />
+          </div>
+          
           <p class="text-xs">
             Propulsé par
             <a
