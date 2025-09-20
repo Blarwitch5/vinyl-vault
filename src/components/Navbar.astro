@@ -5,45 +5,50 @@ import NavbarSearch from './NavbarSearch.astro'
 import SkeletonLoader from './SkeletonLoader.astro'
 ---
 
+<!-- Navbar Top (Logo + User) -->
 <nav
   class="glass dark:glass-dark border-b border-neutral-200/50 dark:border-neutral-800/50 transition-colors duration-300 relative z-50"
 >
-  <div class="container mx-auto px-4">
-    <div class="flex items-center h-16 space-x-4">
+  <div class="container mx-auto px-3 sm:px-4">
+    <div class="flex items-center justify-between h-12 sm:h-16">
       <!-- Logo -->
       <div class="flex items-center">
         <a href="/" class="flex items-center space-x-2">
-          <span class="text-2xl">🎵</span>
-          <span class="text-xl font-bold text-neutral-900 dark:text-neutral-50">VinylVault</span>
+          <!-- Icône vinyle avec gradient -->
+          <div class="flex-shrink-0">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="url(#vinyl-gradient)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-disc3-icon lucide-disc-3 sm:w-8 sm:h-8">
+              <circle cx="12" cy="12" r="10"/>
+              <path d="M6 12c0-1.7.7-3.2 1.8-4.2"/>
+              <circle cx="12" cy="12" r="2"/>
+              <path d="M18 12c0 1.7-.7 3.2-1.8 4.2"/>
+            </svg>
+            <!-- Gradient SVG -->
+            <svg width="0" height="0" style="position: absolute;">
+              <defs>
+                <linearGradient id="vinyl-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                  <stop offset="0%" style="stop-color:#14b8a6;stop-opacity:1" />
+                  <stop offset="100%" style="stop-color:#10b981;stop-opacity:1" />
+                </linearGradient>
+              </defs>
+            </svg>
+          </div>
+          
+          <!-- Texte du logo selon les breakpoints -->
+          <!-- Mobile : sans texte -->
+          <!-- Tablet : VV -->
+          <span class="hidden md:block lg:hidden text-xl font-bold text-neutral-900 dark:text-neutral-50" style="font-family: 'Poppins', sans-serif; font-weight: 700;">VV</span>
+          <!-- Desktop : VinylVault complet -->
+          <span class="hidden lg:block text-xl font-bold text-neutral-900 dark:text-neutral-50" style="font-family: 'Poppins', sans-serif; font-weight: 700;">VinylVault</span>
         </a>
       </div>
 
-      <!-- Bouton de basculement de thème -->
-      <ThemeToggle />
-
-      <!-- Barre de recherche centrale -->
-      <div class="hidden md:flex flex-1 justify-center max-w-2xl">
+      <!-- Barre de recherche pour tous les écrans -->
+      <div class="flex flex-1 justify-center max-w-sm sm:max-w-md mx-2 sm:mx-4">
         <NavbarSearch />
       </div>
 
-      <!-- Navigation avec icônes et actions -->
-      <div class="flex items-center space-x-3">
-
-        <!-- Icône Recherche mobile -->
-        <button
-          id="mobile-search-toggle"
-          class="md:hidden p-2 text-neutral-600 dark:text-neutral-400 hover:text-emerald-500 dark:hover:text-emerald-500 hover:bg-neutral-100 dark:hover:bg-neutral-900 rounded-xl transition-colors"
-          title="Rechercher"
-        >
-          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-scan-search-icon lucide-scan-search">
-            <path d="M3 7V5a2 2 0 0 1 2-2h2"/>
-            <path d="M17 3h2a2 2 0 0 1 2 2v2"/>
-            <path d="M21 17v2a2 2 0 0 1-2 2h-2"/>
-            <path d="M7 21H5a2 2 0 0 1-2-2v-2"/>
-            <circle cx="12" cy="12" r="3"/>
-            <path d="m16 16-1.9-1.9"/>
-          </svg>
-        </button>
+      <!-- User Menu (droite) -->
+      <div class="flex items-center space-x-2 sm:space-x-3">
 
         <!-- Skeleton User Menu (affiché pendant le chargement) -->
         <div id="user-skeleton" class="flex items-center space-x-3">
@@ -55,17 +60,18 @@ import SkeletonLoader from './SkeletonLoader.astro'
         <div id="user-menu" class="hidden relative">
           <button
             id="user-menu-button"
-            class="flex items-center space-x-3 text-neutral-600 dark:text-neutral-400 hover:text-emerald-500 dark:hover:text-emerald-500 transition-colors"
+            class="flex items-center space-x-1 sm:space-x-3 text-neutral-600 dark:text-neutral-400 hover:text-emerald-500 dark:hover:text-emerald-500 transition-colors"
           >
             <!-- Avatar utilisateur -->
             <div
               id="user-avatar"
-              class="w-8 h-8 rounded-xl border-2 border-neutral-200 dark:border-white/10 overflow-hidden"
+              class="w-7 h-7 sm:w-8 sm:h-8 rounded-lg sm:rounded-xl border-2 border-neutral-200 dark:border-white/10 overflow-hidden"
             >
               <img src="/default-avatar.svg" alt="Avatar" class="w-full h-full object-cover" />
             </div>
-            <span id="user-name" class="text-sm font-medium"></span>
-            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <!-- Nom utilisateur (masqué sur mobile) -->
+            <span id="user-name" class="hidden md:inline text-sm font-medium"></span>
+            <svg class="w-3 h-3 sm:w-4 sm:h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path
                 stroke-linecap="round"
                 stroke-linejoin="round"
@@ -75,10 +81,10 @@ import SkeletonLoader from './SkeletonLoader.astro'
           </button>
 
           <!-- Dropdown menu -->
-            <div
-              id="user-dropdown"
-              class="hidden absolute top-full mt-2 w-48 bg-white dark:bg-neutral-950 rounded-xl shadow-lg dark:shadow-neutral-900/50 z-[60] border border-neutral-200 dark:border-neutral-800 flex-col overflow-hidden"
-            >
+          <div
+            id="user-dropdown"
+            class="hidden absolute top-full mt-2 right-0 w-48 bg-white dark:bg-neutral-950 rounded-xl shadow-lg dark:shadow-neutral-900/50 z-[60] border border-neutral-200 dark:border-neutral-800 flex-col overflow-hidden"
+          >
             <div class="py-2">
               <a
                 href="/profile"
@@ -152,94 +158,18 @@ import SkeletonLoader from './SkeletonLoader.astro'
           </a>
         </div>
       </div>
-
-      <!-- Menu mobile -->
-      <div class="md:hidden">
-        <button
-          id="mobile-menu-toggle"
-          class="text-neutral-600 dark:text-neutral-400 hover:text-gradient-emerald dark:hover:text-gradient-emerald focus:outline-none"
-        >
-          <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
-            <line x1="4" x2="20" y1="12" y2="12"/>
-            <line x1="4" x2="20" y1="6" y2="6"/>
-            <line x1="4" x2="20" y1="18" y2="18"/>
-          </svg>
-        </button>
-      </div>
-    </div>
-
-    <!-- Barre de recherche mobile -->
-    <div
-      id="mobile-search"
-      class="hidden md:hidden border-t border-neutral-200 dark:border-white/10 p-4"
-    >
-      <NavbarSearch />
-    </div>
-
-    <!-- Menu mobile déroulant -->
-    <div id="mobile-menu" class="hidden md:hidden border-t border-neutral-200 dark:border-white/10">
-      <div class="py-4 space-y-2">
-        <div class="border-t border-neutral-200 dark:border-white/10 pt-2 space-y-2">
-          <div class="flex items-center justify-between py-2">
-            <span class="text-neutral-600 dark:text-neutral-400 text-sm">Thème</span>
-            <ThemeToggle />
-          </div>
-
-          <!-- Menu mobile utilisateur connecté -->
-          <div id="mobile-user-menu" class="hidden">
-            <a
-              href="/profile"
-              class="flex items-center space-x-3 text-neutral-600 dark:text-neutral-400 hover:text-gradient-emerald dark:hover:text-gradient-emerald py-2"
-            >
-              <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
-                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
-                <circle cx="12" cy="7" r="4"/>
-              </svg>
-              <span>Mon Profil</span>
-            </a>
-            <button
-              id="mobile-logout-button"
-              class="flex items-center space-x-3 text-left w-full text-neutral-600 dark:text-neutral-400 hover:text-gradient-emerald dark:hover:text-gradient-emerald py-2"
-            >
-              <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
-                <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
-                <polyline points="16,17 21,12 16,7"/>
-                <line x1="21" x2="9" y1="12" y2="12"/>
-              </svg>
-              <span>Se Déconnecter</span>
-            </button>
-          </div>
-
-          <!-- Menu mobile non connecté -->
-          <div id="mobile-guest-menu">
-            <a
-              href="/login"
-              class="block text-neutral-600 dark:text-neutral-400 hover:text-gradient-emerald dark:hover:text-gradient-emerald py-2"
-            >
-              Connexion
-            </a>
-            <a
-              href="/register"
-              class="block bg-gradient-emerald dark:bg-gradient-emerald text-white px-4 py-2 rounded-xl hover:bg-gradient-emerald/80 dark:hover:bg-gradient-emerald/80 transition-colors"
-            >
-              Inscription
-            </a>
-          </div>
-        </div>
-      </div>
     </div>
   </div>
 </nav>
+
 
 <script>
   import { getCurrentUser, logout } from '../lib/auth.js'
 import {
 smoothHide,
 smoothShow,
-smoothToggle,
 smoothToggleBetween,
-smoothToggleDropdown,
-smoothToggleMobileMenu,
+smoothToggleDropdown
 } from '../utils/smooth-toggle.js'
 
   // Configuration des animations
@@ -254,8 +184,6 @@ smoothToggleMobileMenu,
     // Menus principaux
     userMenu: 'user-menu',
     guestMenu: 'guest-menu',
-    mobileUserMenu: 'mobile-user-menu',
-    mobileGuestMenu: 'mobile-guest-menu',
 
     // Éléments utilisateur
     userName: 'user-name',
@@ -265,14 +193,8 @@ smoothToggleMobileMenu,
 
     // Boutons d'action
     logoutButton: 'logout-button',
-    mobileLogoutButton: 'mobile-logout-button',
     statsButton: 'stats-button',
 
-    // Navigation
-    mobileSearchToggle: 'mobile-search-toggle',
-    mobileSearch: 'mobile-search',
-    mobileMenuToggle: 'mobile-menu-toggle',
-    mobileMenu: 'mobile-menu',
 
     // Skeletons
     skeletons: ['user-skeleton', 'guest-skeleton'],
@@ -320,15 +242,11 @@ smoothToggleMobileMenu,
       const {
         userMenu,
         guestMenu,
-        mobileUserMenu,
-        mobileGuestMenu,
       } = this.elements
 
       // Animations des menus
       if (userMenu && guestMenu)
         smoothToggleBetween(userMenu, guestMenu, 'flex', ANIMATION_DURATIONS.NORMAL)
-      if (mobileUserMenu) smoothShow(mobileUserMenu, 'flex', ANIMATION_DURATIONS.NORMAL)
-      if (mobileGuestMenu) smoothHide(mobileGuestMenu, ANIMATION_DURATIONS.NORMAL)
 
       // Informations utilisateur
       this.updateUserInfo(user)
@@ -336,12 +254,10 @@ smoothToggleMobileMenu,
     }
 
     private setupGuestState(): void {
-      const { userMenu, guestMenu, mobileUserMenu, mobileGuestMenu } = this.elements
+      const { userMenu, guestMenu } = this.elements
 
       if (guestMenu && userMenu)
         smoothToggleBetween(guestMenu, userMenu, 'flex', ANIMATION_DURATIONS.NORMAL)
-      if (mobileUserMenu) smoothHide(mobileUserMenu, ANIMATION_DURATIONS.NORMAL)
-      if (mobileGuestMenu) smoothShow(mobileGuestMenu, 'flex', ANIMATION_DURATIONS.NORMAL)
     }
 
     private updateUserInfo(user: any): void {
@@ -386,7 +302,7 @@ smoothToggleMobileMenu,
     }
 
     private setupUserInteractions(): void {
-      const { userMenuButton, userDropdown, logoutButton, mobileLogoutButton, statsButton } = this.elements
+      const { userMenuButton, userDropdown, logoutButton, statsButton } = this.elements
 
       // Dropdown utilisateur
       if (userMenuButton && userDropdown) {
@@ -410,33 +326,11 @@ smoothToggleMobileMenu,
       // Déconnexion
       const handleLogout = () => logout()
       logoutButton?.addEventListener('click', handleLogout)
-      mobileLogoutButton?.addEventListener('click', handleLogout)
     }
 
     private setupMobileInteractions(): void {
-      const { mobileMenuToggle, mobileMenu, mobileSearchToggle, mobileSearch } = this.elements
-
-      // Menu mobile
-      if (mobileMenuToggle && mobileMenu) {
-        mobileMenuToggle.addEventListener('click', () => {
-          smoothToggleMobileMenu(mobileMenu, undefined, ANIMATION_DURATIONS.SLOW)
-          if (mobileSearch) smoothHide(mobileSearch, ANIMATION_DURATIONS.NORMAL)
-        })
-      }
-
-      // Recherche mobile
-    if (mobileSearchToggle && mobileSearch) {
-      mobileSearchToggle.addEventListener('click', () => {
-          const isVisible = smoothToggle(mobileSearch, 'flex', ANIMATION_DURATIONS.NORMAL)
-          if (mobileMenu) smoothHide(mobileMenu, ANIMATION_DURATIONS.NORMAL)
-
-          // Focus avec délai pour l'animation
-          if (isVisible) {
-          const searchInput = mobileSearch.querySelector('#navbar-search') as HTMLInputElement
-            setTimeout(() => searchInput?.focus(), ANIMATION_DURATIONS.SLOW)
-          }
-        })
-      }
+      // Interactions mobiles supprimées - plus de BottomNavbar
+      console.log('Mobile interactions removed')
     }
 
     async initialize(): Promise<void> {
@@ -456,6 +350,7 @@ smoothToggleMobileMenu,
         this.setupMobileInteractions()
       }
     }
+
   }
 
   // Types globaux sont maintenant définis dans src/types/window.d.ts
@@ -468,6 +363,7 @@ smoothToggleMobileMenu,
 </script>
 
 <style>
+
   /* Tooltip élégant pour le nom d'utilisateur */
   #user-name {
     position: relative;

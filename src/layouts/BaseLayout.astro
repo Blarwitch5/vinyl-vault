@@ -55,6 +55,11 @@ const {
     
     <title>{title}</title>
 
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+
     <!-- Script pour éviter le flash du thème -->
     <script is:inline>
       {
@@ -80,13 +85,13 @@ const {
     </script>
   </head>
   <body
-    class="min-h-screen bg-neutral-50 dark:bg-neutral-950 text-neutral-900 dark:text-neutral-50 transition-colors duration-300"
+    class="min-h-screen bg-neutral-50 dark:bg-neutral-950 text-neutral-900 dark:text-neutral-50 transition-colors duration-300 overflow-x-hidden"
   >
-    <nav>
+    <header style="z-index: 10000; position: relative;">
       <slot name="navbar" />
-    </nav>
+    </header>
 
-    <main class="container mx-auto px-4 py-8">
+    <main class="container mx-auto px-3 sm:px-4 py-6 sm:py-8">
       <slot />
     </main>
 
@@ -98,6 +103,7 @@ const {
     <div id="pwa-components">
       <slot name="pwa" />
     </div>
+    
   </body>
 </html>
 

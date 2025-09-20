@@ -192,16 +192,16 @@ if (currentUser) {
       <!-- Contenu du tableau de bord -->
       <>
         <!-- En-tête du tableau de bord -->
-        <div class="mb-8">
+        <div class="mb-6 sm:mb-8">
           <div class="flex items-center justify-between">
             <div>
-              <h1 class="text-3xl font-bold text-neutral-900 dark:text-neutral-50 mb-2">
+              <h1 class="text-xl sm:text-3xl font-bold text-neutral-900 dark:text-neutral-50 mb-2">
                 Mon tableau de bord
           </h1>
-              <p class="text-lg text-neutral-600 dark:text-neutral-400">
+              <p class="text-base sm:text-lg text-neutral-600 dark:text-neutral-400">
                 Bonjour <span class="font-semibold text-emerald-600 dark:text-emerald-400">{currentUser.name || currentUser.email}</span>
               </p>
-              <p class="text-sm text-neutral-500 dark:text-neutral-500 mt-1">
+              <p class="text-xs sm:text-sm text-neutral-500 dark:text-neutral-500 mt-1">
                 Gérez votre collection de vinyles et suivez vos statistiques
               </p>
             </div>
@@ -242,18 +242,18 @@ if (currentUser) {
           Statistiques détaillées
         </button>
       </div>
-      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+      <div class="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
       <!-- Total vinyles -->
       <div
-        class="glass dark:glass-dark p-5 rounded-xl shadow-sm hover:shadow-md transition-shadow border border-neutral-200/50 dark:border-neutral-800/50"
+        class="glass dark:glass-dark p-3 sm:p-5 rounded-xl shadow-sm hover:shadow-md transition-shadow border border-neutral-200/50 dark:border-neutral-800/50"
       >
         <div class="flex items-start justify-between">
         <div class="flex items-center">
           <div
-              class="p-3 bg-gradient-emerald/10 dark:bg-gradient-emerald/20 rounded-lg"
+              class="p-2 sm:p-3 bg-gradient-emerald/10 dark:bg-gradient-emerald/20 rounded-lg"
           >
             <svg
-              class="w-6 h-6 text-gradient-emerald dark:text-gradient-emerald"
+              class="w-5 h-5 sm:w-6 sm:h-6 text-gradient-emerald dark:text-gradient-emerald"
               fill="none"
               stroke="currentColor"
               stroke-width="2"
@@ -267,14 +267,14 @@ if (currentUser) {
               <path d="M18 12c0 1.7-.7 3.2-1.8 4.2"/>
             </svg>
           </div>
-          <div class="ml-4">
+          <div class="ml-2 sm:ml-4">
             <p
-                class="text-sm font-medium text-neutral-600 dark:text-neutral-400 mb-1"
+                class="text-xs sm:text-sm font-medium text-neutral-600 dark:text-neutral-400 mb-1"
             >
               Total vinyles
             </p>
             <p
-              class="text-2xl font-bold text-neutral-900 dark:text-neutral-50 font-mono"
+              class="text-lg sm:text-2xl font-bold text-neutral-900 dark:text-neutral-50 font-mono"
                 data-stat="total-vinyls"
             >
               {stats.totalVinyls}
@@ -286,7 +286,7 @@ if (currentUser) {
 
       <!-- Valeur totale -->
       <div
-        class="glass dark:glass-dark p-5 rounded-xl shadow-sm hover:shadow-md transition-shadow border border-neutral-200/50 dark:border-neutral-800/50"
+        class="glass dark:glass-dark p-3 sm:p-5 rounded-xl shadow-sm hover:shadow-md transition-shadow border border-neutral-200/50 dark:border-neutral-800/50"
       >
         <div class="flex items-start justify-between">
         <div class="flex items-center">
@@ -326,7 +326,7 @@ if (currentUser) {
 
       <!-- Collections -->
       <div
-        class="glass dark:glass-dark p-5 rounded-xl shadow-sm hover:shadow-md transition-shadow border border-neutral-200/50 dark:border-neutral-800/50"
+        class="glass dark:glass-dark p-3 sm:p-5 rounded-xl shadow-sm hover:shadow-md transition-shadow border border-neutral-200/50 dark:border-neutral-800/50"
       >
         <div class="flex items-start justify-between">
         <div class="flex items-center">
@@ -348,14 +348,14 @@ if (currentUser) {
                 <path d="M4 4v16"/>
             </svg>
           </div>
-          <div class="ml-4">
+          <div class="ml-2 sm:ml-4">
             <p
-                class="text-sm font-medium text-neutral-600 dark:text-neutral-400 mb-1"
+                class="text-xs sm:text-sm font-medium text-neutral-600 dark:text-neutral-400 mb-1"
             >
               Collections
             </p>
             <p
-              class="text-2xl font-bold text-neutral-900 dark:text-neutral-50 font-mono"
+              class="text-lg sm:text-2xl font-bold text-neutral-900 dark:text-neutral-50 font-mono"
                 data-stat="total-collections"
             >
               {stats.totalCollections}
@@ -367,7 +367,7 @@ if (currentUser) {
 
       <!-- Valeur moyenne -->
       <div
-        class="glass dark:glass-dark p-5 rounded-xl shadow-sm hover:shadow-md transition-shadow border border-neutral-200/50 dark:border-neutral-800/50"
+        class="glass dark:glass-dark p-3 sm:p-5 rounded-xl shadow-sm hover:shadow-md transition-shadow border border-neutral-200/50 dark:border-neutral-800/50"
       >
         <div class="flex items-start justify-between">
         <div class="flex items-center">
@@ -387,14 +387,14 @@ if (currentUser) {
                 d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"></path>
             </svg>
           </div>
-          <div class="ml-4">
+          <div class="ml-2 sm:ml-4">
             <p
-                class="text-sm font-medium text-neutral-600 dark:text-neutral-400 mb-1"
+                class="text-xs sm:text-sm font-medium text-neutral-600 dark:text-neutral-400 mb-1"
             >
               Valeur moyenne
             </p>
             <p
-              class="text-2xl font-bold text-neutral-900 dark:text-neutral-50 font-mono"
+              class="text-lg sm:text-2xl font-bold text-neutral-900 dark:text-neutral-50 font-mono"
                 data-stat="average-value"
             >
               {stats.averageValue.toFixed(2)} €
@@ -414,17 +414,17 @@ if (currentUser) {
           class="glass dark:glass-dark rounded-xl shadow-sm mb-8"
         >
           <div
-            class="px-6 py-4  border-neutral-200 dark:border-neutral-800"
+            class="px-4 sm:px-6 py-4 border-neutral-200 dark:border-neutral-800"
           >
             <div class="flex items-center justify-between">
               <h2
-                class="text-xl font-semibold text-neutral-900 dark:text-neutral-50"
+                class="text-lg sm:text-xl font-semibold text-neutral-900 dark:text-neutral-50"
               >
                 Mes collections
               </h2>
               <button
                 id="new-collection-btn"
-                class="bg-gradient-emerald text-white px-4 py-2 rounded-xl hover:bg-gradient-emerald/80 transition-colors text-sm flex items-center"
+                class="bg-gradient-emerald text-white px-3 sm:px-4 py-2 rounded-lg sm:rounded-xl hover:bg-gradient-emerald/80 transition-colors text-xs sm:text-sm flex items-center"
                 title="Créer une nouvelle collection"
               >
                 <svg
@@ -450,17 +450,17 @@ d="M5 12h14"
               </button>
             </div>
           </div>
-          <div class="p-6">
+          <div class="p-4 sm:p-6">
             <div class="space-y-4" data-collections-section>
               {
                 userCollections.map((collection: any) => (
                   <div 
-                    class="bg-neutral-50 dark:bg-neutral-950 dark:bg-gradient-emerald-subtle dark:glass-emerald-border rounded-xl p-4 shadow-sm dark:shadow-white"
+                    class="bg-neutral-50 dark:bg-neutral-950 dark:bg-gradient-emerald-subtle dark:glass-emerald-border rounded-lg sm:rounded-xl p-3 sm:p-4 shadow-sm dark:shadow-white"
                     data-collection-vinyl-count={collection.vinyls.length}
                   >
                     <div class="flex items-center justify-between">
                       <div class="flex-1">
-                        <h3 class="text-lg font-medium text-neutral-900 dark:text-neutral-50 mb-1">
+                        <h3 class="text-base sm:text-lg font-medium text-neutral-900 dark:text-neutral-50 mb-1">
                           <a
                             href={`/collection/${collection.id}`}
                              class="hover:text-emerald-500 dark:hover:text-emerald-500"
@@ -956,6 +956,7 @@ d="M3 6h5l.645-1.69A2 2 0 0 1 10.53 4h2.94a2 2 0 0 1 1.885 1.31L15 6h5"
   </div>
 
   <Footer slot="footer" />
+
 
   <!-- Modals -->
   <BarcodeScannerModal />

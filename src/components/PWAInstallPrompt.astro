@@ -89,17 +89,21 @@
 </div>
 
 <script>
-  import { useRegisterSW } from 'virtual:pwa-register/react';
+  import { registerSW } from 'virtual:pwa-register';
 
-  const {
-    needRefresh: [needRefresh, setNeedRefresh],
-    updateServiceWorker,
-  } = useRegisterSW({
+  const updateServiceWorker = registerSW({
     onRegistered(r) {
       console.log('SW Registered: ' + r)
     },
     onRegisterError(error) {
       console.log('SW registration error', error)
+    },
+    onNeedRefresh() {
+      // Afficher la notification de mise à jour
+      const updateNotification = document.getElementById('pwa-update-notification');
+      if (updateNotification) {
+        updateNotification.classList.remove('hidden');
+      }
     },
   })
 
@@ -243,14 +247,6 @@
   // Initialiser le gestionnaire PWA
   document.addEventListener('DOMContentLoaded', () => {
     new PWAManager();
-    
-    // Afficher la notification de mise à jour si nécessaire
-    if (needRefresh) {
-      const updateNotification = document.getElementById('pwa-update-notification');
-      if (updateNotification) {
-        updateNotification.classList.remove('hidden');
-      }
-    }
   });
 </script>
 

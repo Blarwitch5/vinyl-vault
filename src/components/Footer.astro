@@ -10,7 +10,12 @@
       <!-- Logo et description -->
       <div class="md:col-span-1">
         <div class="flex items-center space-x-2 mb-4">
-          <span class="text-2xl">🎵</span>
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="url(#footer-vinyl-gradient)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-disc-3">
+            <circle cx="12" cy="12" r="10"/>
+            <path d="M6 12c0-1.7.7-3.2 1.8-4.2"/>
+            <circle cx="12" cy="12" r="2"/>
+            <path d="M18 12c0 1.7-.7 3.2-1.8 4.2"/>
+          </svg>
           <span class="text-xl font-bold text-gradient-emerald dark:text-gradient-emerald"
             >VinylVault</span
           >
@@ -213,4 +218,14 @@
       </div>
     </div>
   </div>
+  
+  <!-- Gradient SVG pour l'icône du footer -->
+  <svg width="0" height="0" style="position: absolute;">
+    <defs>
+      <linearGradient id="footer-vinyl-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" style="stop-color:#14b8a6;stop-opacity:1" />
+        <stop offset="100%" style="stop-color:#10b981;stop-opacity:1" />
+      </linearGradient>
+    </defs>
+  </svg>
 </footer>

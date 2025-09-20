@@ -140,7 +140,7 @@ const filterFormat = Astro.url.searchParams.get("format") || "";
 <BaseLayout title={title} description={description}>
   <Navbar slot="navbar" />
 
-  <div class="container mx-auto px-4 py-8">
+  <div class="container mx-auto px-4 py-8 overflow-x-hidden">
     {error ? (
       <div class="text-center py-12">
         <div class="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-xl p-8 max-w-md mx-auto">
@@ -164,94 +164,100 @@ const filterFormat = Astro.url.searchParams.get("format") || "";
         </div>
       </div>
     ) : collection ? (
-    <div
-      class="bg-neutral-50 dark:bg-black/20 dark:glass-emerald-border rounded-xl shadow-sm dark:shadow-white p-6 mb-8"
-    >
-      <div class="flex items-start justify-between">
-        <div class="flex-1">
-          <div class="flex items-center mb-2">
-            <h1
-              class="text-3xl font-bold text-neutral-900 dark:text-neutral-50 mr-3"
-            >
-              {collection.name}
-            </h1>
-            <span
-              class={`px-3 py-1 rounded-full text-sm font-medium ${
-                collection.isPublic
-                  ? "bg-green-100 dark:bg-green-900/20 text-green-800 dark:text-green-400"
-                  : "glass dark:glass-dark shadow-sm dark:shadow-white text-neutral-900 dark:text-neutral-50"
-              }`}
-            >
-              {
-                collection.isPublic
-                  ? "Collection publique"
-                  : "Collection privée"
-              }
-            </span>
+    <!-- Section Informations Collection - Mobile First -->
+    <div class="glass dark:glass-dark rounded-xl shadow-sm mb-6">
+      <!-- Header avec titre et statut -->
+      <div class="p-4 md:p-6 border-b border-neutral-200/50 dark:border-neutral-800/50">
+        <div class="flex flex-col space-y-3">
+          <!-- Titre et statut sur une ligne sur mobile, séparés sur desktop -->
+          <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+            <div class="flex flex-col sm:flex-row sm:items-center gap-2">
+              <h1 class="text-2xl sm:text-3xl font-bold text-neutral-900 dark:text-neutral-50">
+                {collection.name}
+              </h1>
+              <span
+                class={`px-3 py-1 rounded-full text-sm font-medium self-start sm:self-auto ${
+                  collection.isPublic
+                    ? "bg-green-100 dark:bg-green-900/20 text-green-800 dark:text-green-400"
+                    : "bg-neutral-200 dark:bg-neutral-700 text-neutral-700 dark:text-neutral-300"
+                }`}
+              >
+                {collection.isPublic ? "Publique" : "Privée"}
+              </span>
+            </div>
+            
+            <!-- Boutons d'action - Responsive -->
+            {currentUser && currentUser.id === collection.userId && (
+              <div class="flex flex-col sm:flex-row gap-2">
+                <button class="w-full sm:w-auto bg-gradient-emerald text-white px-4 py-2 rounded-xl hover:bg-gradient-emerald/80 transition-colors text-sm font-medium">
+                  Modifier
+                </button>
+                <button 
+                  id="share-collection-btn"
+                  class="w-full sm:w-auto flex items-center justify-center sm:justify-start space-x-2 border border-neutral-200 dark:border-neutral-700 text-neutral-900 dark:text-neutral-50 px-4 py-2 rounded-xl hover:bg-neutral-50 dark:hover:bg-neutral-800 transition-colors text-sm font-medium"
+                >
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.367 2.684 3 3 0 00-5.367-2.684z"/>
+                  </svg>
+                  <span>Partager</span>
+                </button>
+              </div>
+            )}
           </div>
 
-          <p class="text-neutral-600 dark:text-neutral-400 mb-4">
+          <!-- Description -->
+          <p class="text-neutral-600 dark:text-neutral-400 text-sm sm:text-base leading-relaxed">
             {collection.description || "Aucune description disponible"}
           </p>
+        </div>
+      </div>
 
-          <div class="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
-            <div>
-              <span
-                class="text-neutral-600 dark:text-neutral-400"
-                >Propriétaire:</span
-              >
-              <p class="font-medium text-neutral-900 dark:text-neutral-50">
-                {collection.user.name || collection.user.email}
-              </p>
+      <!-- Statistiques - Layout optimisé mobile -->
+      <div class="p-4 md:p-6">
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+          <!-- Propriétaire -->
+          <div class="bg-neutral-50 dark:bg-neutral-800/50 rounded-lg p-3">
+            <div class="text-xs text-neutral-500 dark:text-neutral-400 uppercase tracking-wide font-medium mb-1">
+              Propriétaire
             </div>
-            <div>
-              <span
-                class="text-neutral-600 dark:text-neutral-400"
-                >Vinyles:</span
-              >
-              <p class="font-medium text-neutral-900 dark:text-neutral-50">
-                {collectionVinyls.length}
-              </p>
+            <div class="font-semibold text-neutral-900 dark:text-neutral-50 text-sm truncate">
+              {collection.user.name || collection.user.email}
             </div>
-            <div>
-              <span
-                class="text-neutral-600 dark:text-neutral-400"
-                >Valeur totale:</span
-              >
-              <p class="font-medium text-neutral-900 dark:text-neutral-50">
-                {collectionVinyls.reduce((sum: number, vinyl: any) => sum + (vinyl.price || 0), 0).toFixed(2)} €
-              </p>
+          </div>
+
+          <!-- Nombre de vinyles -->
+          <div class="bg-neutral-50 dark:bg-neutral-800/50 rounded-lg p-3">
+            <div class="text-xs text-neutral-500 dark:text-neutral-400 uppercase tracking-wide font-medium mb-1">
+              Vinyles
             </div>
-            <div>
-              <span
-                class="text-neutral-600 dark:text-neutral-400"
-                >Dernière mise à jour:</span
-              >
-              <p class="font-medium text-neutral-900 dark:text-neutral-50">
-                {new Date(collection.updatedAt).toLocaleDateString("fr-FR")}
-              </p>
+            <div class="font-semibold text-neutral-900 dark:text-neutral-50 text-lg">
+              {collectionVinyls.length}
+            </div>
+          </div>
+
+          <!-- Valeur totale -->
+          <div class="bg-neutral-50 dark:bg-neutral-800/50 rounded-lg p-3">
+            <div class="text-xs text-neutral-500 dark:text-neutral-400 uppercase tracking-wide font-medium mb-1">
+              Valeur totale
+            </div>
+            <div class="font-semibold text-neutral-900 dark:text-neutral-50 text-lg">
+              {collectionVinyls.reduce((sum: number, vinyl: any) => sum + (vinyl.price || 0), 0).toFixed(2)} €
+            </div>
+          </div>
+
+          <!-- Dernière mise à jour -->
+          <div class="bg-neutral-50 dark:bg-neutral-800/50 rounded-lg p-3">
+            <div class="text-xs text-neutral-500 dark:text-neutral-400 uppercase tracking-wide font-medium mb-1">
+              Mise à jour
+            </div>
+            <div class="font-semibold text-neutral-900 dark:text-neutral-50 text-sm">
+              {new Date(collection.updatedAt).toLocaleDateString("fr-FR", { 
+                day: 'numeric', 
+                month: 'short' 
+              })}
             </div>
           </div>
         </div>
-
-        {
-          currentUser && currentUser.id === collection.userId && (
-            <div class="flex space-x-2">
-              <button class="bg-gradient-emerald dark:bg-gradient-emerald text-white px-4 py-2 rounded-xl hover:bg-gradient-emerald/80 dark:hover:bg-gradient-emerald/80 transition-colors">
-                Modifier
-              </button>
-              <button 
-                id="share-collection-btn"
-                class="flex items-center space-x-2 border border-neutral-200 dark:border-neutral-700 text-neutral-900 dark:text-neutral-50 px-4 py-2 rounded-xl hover:bg-white dark:hover:bg-neutral-800 transition-colors"
-              >
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.367 2.684 3 3 0 00-5.367-2.684z"/>
-                </svg>
-                <span>Partager</span>
-              </button>
-            </div>
-          )
-        }
       </div>
     </div>
 
@@ -413,7 +419,7 @@ const filterFormat = Astro.url.searchParams.get("format") || "";
                         <span class="text-neutral-900 dark:text-neutral-50">
                           {format.format}
                         </span>
-                        <span class="text-neutral-400 bg-neutral-900 px-2 py-1 rounded text-xs">
+                        <span class="text-neutral-400 bg-neutral-900 px-2 py-1 rounded text-xs whitespace-nowrap">
                           {format.count} ({format.percentage}%)
                         </span>
                       </div>
@@ -442,7 +448,7 @@ const filterFormat = Astro.url.searchParams.get("format") || "";
                         <span class="text-neutral-900 dark:text-neutral-50">
                           {condition.condition}
                         </span>
-                        <span class="text-neutral-400 bg-neutral-900 px-2 py-1 rounded text-xs">
+                        <span class="text-neutral-400 bg-neutral-900 px-2 py-1 rounded text-xs whitespace-nowrap">
                           {condition.count} ({condition.percentage}%)
                         </span>
                       </div>
@@ -505,7 +511,7 @@ const filterFormat = Astro.url.searchParams.get("format") || "";
                           <span class="text-neutral-900 dark:text-neutral-50">
                             {format.format}
                           </span>
-                          <span class="text-neutral-400 bg-neutral-900 px-2 py-1 rounded text-xs">
+                          <span class="text-neutral-400 bg-neutral-900 px-2 py-1 rounded text-xs whitespace-nowrap">
                             {format.count} ({format.percentage}%)
                           </span>
                         </div>
@@ -534,7 +540,7 @@ const filterFormat = Astro.url.searchParams.get("format") || "";
                           <span class="text-neutral-900 dark:text-neutral-50">
                             {condition.condition}
                           </span>
-                          <span class="text-neutral-400 bg-neutral-900 px-2 py-1 rounded text-xs">
+                          <span class="text-neutral-400 bg-neutral-900 px-2 py-1 rounded text-xs whitespace-nowrap">
                             {condition.count} ({condition.percentage}%)
                           </span>
                         </div>
@@ -697,7 +703,7 @@ const filterFormat = Astro.url.searchParams.get("format") || "";
                   alt={`Couverture de ${vinyl.title}`}
                   class="w-16 h-16 object-cover rounded-lg shadow-sm"
                 />
-                <div class="flex-1 min-w-0">
+                <div class="flex-1 min-w-0 overflow-hidden">
                   <h3 class="font-semibold text-neutral-900 dark:text-neutral-50 truncate">
                     {vinyl.title}
                   </h3>

@@ -25,7 +25,7 @@ const defaultCover = '/default-vinyl-cover.svg'
 <link rel="prefetch" href={`/vinyl/${vinyl.id}`} />
 
 <div
-  class="vinyl-card-container glass dark:glass-dark dark:bg-neutral-950 dark:bg-gradient-emerald-subtle rounded-xl shadow-md dark:shadow-white-md overflow-hidden hover:shadow-lg dark:hover:shadow-white-lg transition-all duration-300 hover:-translate-y-1"
+  class="vinyl-card-container glass dark:glass-dark dark:bg-neutral-950 dark:bg-gradient-emerald-subtle rounded-lg sm:rounded-xl shadow-md dark:shadow-white-md overflow-hidden hover:shadow-lg dark:hover:shadow-white-lg transition-all duration-300 hover:-translate-y-1"
   data-vinyl-id={vinyl.id}
   data-discogs-id={vinyl.discogsId}
   data-discogs-url={vinyl.discogsUrl}
@@ -51,20 +51,20 @@ const defaultCover = '/default-vinyl-cover.svg'
   </div>
 
   <!-- Informations du vinyle -->
-  <div class="p-4">
+  <div class="p-3 sm:p-4">
     <h3
-      class="font-semibold text-lg text-neutral-900 dark:text-neutral-50 mb-1 line-clamp-2"
+      class="font-semibold text-base sm:text-lg text-neutral-900 dark:text-neutral-50 mb-1 line-clamp-2"
       data-vinyl-title
     >
       {vinyl.title}
     </h3>
 
-    <p class="text-neutral-600 dark:text-neutral-400 mb-2 line-clamp-1" data-vinyl-artist>
+    <p class="text-sm sm:text-base text-neutral-600 dark:text-neutral-400 mb-2 line-clamp-1" data-vinyl-artist>
       {vinyl.artist}
     </p>
 
     <div
-      class="flex items-center justify-between text-sm text-neutral-600 dark:text-neutral-400 mb-3"
+      class="flex items-center justify-between text-xs sm:text-sm text-neutral-600 dark:text-neutral-400 mb-3"
     >
       {
         vinyl.year && (
@@ -78,7 +78,7 @@ const defaultCover = '/default-vinyl-cover.svg'
 
     {
       vinyl.price && (
-        <div class="text-lg font-bold text-emerald-600 dark:text-gradient-emerald mb-3 font-mono">
+        <div class="text-base sm:text-lg font-bold text-emerald-600 dark:text-gradient-emerald mb-3 font-mono">
           {vinyl.price.toFixed(2)} €
         </div>
       )
@@ -97,30 +97,31 @@ const defaultCover = '/default-vinyl-cover.svg'
         <div class="flex gap-2">
           {!isInCollection ? (
             <button
-              class="flex-1 bg-gradient-emerald text-white py-2 px-4 rounded-lg hover:bg-gradient-emerald/80 transition-colors text-sm font-medium"
+              class="flex-1 bg-gradient-emerald text-white py-2 px-3 sm:px-4 rounded-lg hover:bg-gradient-emerald/80 transition-colors text-xs sm:text-sm font-medium"
               data-vinyl-id={vinyl.id}
               data-action="add-to-collection"
             >
-              Ajouter à ma collection
+              Ajouter
             </button>
           ) : (
             <div class="flex gap-2">
               <a
                 href={`/vinyl/${vinyl.id}`}
-                class="flex-1 bg-gradient-emerald text-white py-2 px-4 rounded-lg hover:bg-gradient-emerald/80 transition-colors text-sm font-medium text-center flex items-center justify-center space-x-2"
+                class="flex-1 bg-gradient-emerald text-white py-2 px-3 sm:px-4 rounded-lg hover:bg-gradient-emerald/80 transition-colors text-xs sm:text-sm font-medium text-center flex items-center justify-center space-x-1 sm:space-x-2"
               >
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-eye-icon lucide-eye w-4 h-4">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-eye-icon lucide-eye w-3 h-3 sm:w-4 sm:h-4">
                   <path d="M2.062 12.348a1 1 0 0 1 0-.696 10.75 10.75 0 0 1 19.876 0 1 1 0 0 1 0 .696 10.75 10.75 0 0 1-19.876 0"/>
                   <circle cx="12" cy="12" r="3"/>
                 </svg>
                 <span>Voir</span>
               </a>
               <button
-                class="bg-red-600 text-white py-2 px-4 rounded-lg hover:bg-red-700 transition-colors text-sm font-medium"
+                class="bg-red-600 text-white py-2 px-3 sm:px-4 rounded-lg hover:bg-red-700 transition-colors text-xs sm:text-sm font-medium"
                 data-vinyl-id={vinyl.id}
                 data-action="remove"
               >
-                Supprimer
+                <span class="hidden sm:inline">Supprimer</span>
+                <span class="sm:hidden">×</span>
               </button>
             </div>
           )}

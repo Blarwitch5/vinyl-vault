@@ -1,37 +1,40 @@
-#!/usr/bin/env node
+import fs from 'fs'
+import { createRequire } from 'module'
 
-import fs from 'fs';
-import path from 'path';
-import { fileURLToPath } from 'url';
+const require = createRequire(import.meta.url)
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
+// Créer les icônes PWA basées sur notre design
+const createPWAIcon = (size) => {
+  return `<svg xmlns="http://www.w3.org/2000/svg" width="${size}" height="${size}" viewBox="0 0 ${size} ${size}" fill="none">
+  <defs>
+    <linearGradient id="vinyl-gradient-${size}" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#14b8a6;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#10b981;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  <rect width="${size}" height="${size}" rx="${size * 0.2}" fill="url(#vinyl-gradient-${size})"/>
+  <circle cx="${size / 2}" cy="${size / 2}" r="${size / 2 - 8}" stroke="white" stroke-width="4"/>
+  <path d="M${size / 4} ${size / 2}c0-${size / 8} ${size / 32}-${size / 4} ${size / 16}-${size / 3}" stroke="white" stroke-width="3" stroke-linecap="round"/>
+  <circle cx="${size / 2}" cy="${size / 2}" r="${size / 16}" fill="white"/>
+  <path d="M${(size * 3) / 4} ${size / 2}c0 ${size / 8}-${size / 32} ${size / 4}-${size / 16} ${size / 3}" stroke="white" stroke-width="3" stroke-linecap="round"/>
+</svg>`
+}
 
-// Créer des icônes PWA basiques à partir du favicon SVG
-// Dans un vrai projet, vous utiliseriez pwa-asset-generator ou un outil similaire
+// Créer les fichiers SVG
+const icon192 = createPWAIcon(192)
+const icon512 = createPWAIcon(512)
 
-const publicDir = path.join(__dirname, '../public');
+// Sauvegarder les fichiers
+fs.writeFileSync('public/pwa-192x192.svg', icon192)
+fs.writeFileSync('public/pwa-512x512.svg', icon512)
 
-// Créer des icônes SVG simples pour les PWA
-const createPwaIcon = (size, filename) => {
-  const svgContent = `<?xml version="1.0" encoding="UTF-8"?>
-<svg width="${size}" height="${size}" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-  <rect width="24" height="24" rx="4" fill="#059669"/>
-  <path d="M12 2L13.09 8.26L20 9L13.09 9.74L12 16L10.91 9.74L4 9L10.91 8.26L12 2Z" fill="white"/>
-  <circle cx="12" cy="12" r="3" fill="#059669"/>
-</svg>`;
-
-  fs.writeFileSync(path.join(publicDir, filename), svgContent);
-  console.log(`✅ Créé ${filename}`);
-};
-
-// Générer les icônes nécessaires
-console.log('🎨 Génération des icônes PWA...');
-
-createPwaIcon(192, 'pwa-192x192.png');
-createPwaIcon(512, 'pwa-512x512.png');
-
-console.log('🎉 Icônes PWA générées avec succès !');
-console.log('');
-console.log('📝 Note: Pour des icônes de meilleure qualité, utilisez:');
-console.log('   npx pwa-asset-generator public/favicon.svg public --manifest public/manifest.json');
+console.log('✅ Icônes PWA SVG créées avec succès !')
+console.log('📁 Fichiers créés :')
+console.log('  - public/pwa-192x192.svg')
+console.log('  - public/pwa-512x512.svg')
+console.log('')
+console.log(
+  '💡 Pour convertir en PNG, utilisez un outil en ligne ou ImageMagick :'
+)
+console.log('  convert public/pwa-192x192.svg public/pwa-192x192.png')
+console.log('  convert public/pwa-512x512.svg public/pwa-512x512.png')
