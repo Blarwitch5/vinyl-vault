@@ -26,8 +26,33 @@ const {
   <head>
     <meta charset="UTF-8" />
     <meta name="description" content={description} />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    
+    <!-- PWA Meta Tags -->
+    <meta name="theme-color" content="#059669" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+    <meta name="apple-mobile-web-app-title" content="VinylVault" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="application-name" content="VinylVault" />
+    
+    <!-- Apple Touch Icons -->
+    <link rel="apple-touch-icon" href="/pwa-192x192.png" />
+    <link rel="apple-touch-icon" sizes="192x192" href="/pwa-192x192.png" />
+    <link rel="apple-touch-icon" sizes="512x512" href="/pwa-512x512.png" />
+    
+    <!-- Manifest -->
+    <link rel="manifest" href="/manifest.webmanifest" />
+    
+    <!-- iOS Splash Screens -->
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    
+    <!-- Microsoft Tiles -->
+    <meta name="msapplication-TileColor" content="#059669" />
+    <meta name="msapplication-config" content="/browserconfig.xml" />
+    
     <title>{title}</title>
 
     <!-- Script pour éviter le flash du thème -->
@@ -57,6 +82,11 @@ const {
     <footer>
       <slot name="footer" />
     </footer>
+
+    <!-- Composant PWA -->
+    <div id="pwa-components">
+      <slot name="pwa" />
+    </div>
   </body>
 </html>
 
