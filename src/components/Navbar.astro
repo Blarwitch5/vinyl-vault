@@ -75,10 +75,10 @@ import SkeletonLoader from './SkeletonLoader.astro'
           </button>
 
           <!-- Dropdown menu -->
-          <div
-            id="user-dropdown"
-            class="hidden absolute top-full mt-2 w-48 bg-white dark:bg-neutral-950 rounded-xl shadow-lg dark:shadow-neutral-900/50 z-[60] border border-neutral-200 dark:border-neutral-80 flex-col"
-          >
+            <div
+              id="user-dropdown"
+              class="hidden absolute top-full mt-2 w-48 bg-white dark:bg-neutral-950 rounded-xl shadow-lg dark:shadow-neutral-900/50 z-[60] border border-neutral-200 dark:border-neutral-800 flex-col overflow-hidden"
+            >
             <div class="py-2">
               <a
                 href="/profile"
@@ -525,5 +525,33 @@ smoothToggleMobileMenu,
 
   .dark #user-name:hover::before {
     border-bottom-color: #f3f4f6;
+  }
+
+  /* Correction des coins qui dépassent dans le dropdown */
+  #user-dropdown a:first-child,
+  #user-dropdown button:first-child {
+    border-top-left-radius: 0.75rem;
+    border-top-right-radius: 0.75rem;
+  }
+
+  #user-dropdown a:last-child,
+  #user-dropdown button:last-child {
+    border-bottom-left-radius: 0.75rem;
+    border-bottom-right-radius: 0.75rem;
+  }
+
+  /* S'assurer que les éléments du dropdown respectent les coins arrondis */
+  #user-dropdown .py-2 > * {
+    border-radius: 0;
+  }
+
+  #user-dropdown .py-2 > *:first-child {
+    border-top-left-radius: 0.75rem;
+    border-top-right-radius: 0.75rem;
+  }
+
+  #user-dropdown .py-2 > *:last-child {
+    border-bottom-left-radius: 0.75rem;
+    border-bottom-right-radius: 0.75rem;
   }
 </style>
