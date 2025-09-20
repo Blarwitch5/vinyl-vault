@@ -63,6 +63,27 @@ export default {
     'bg-black/0',
     'bg-black/20',
     'bg-white/90',
+
+    // Classes PWA et Mobile-First
+    'touch-manipulation',
+    'touch-active',
+    'long-press-active',
+    'touch-target-small',
+    'touch-target-medium',
+    'touch-target-large',
+    'touch-no-select',
+    'safe-area-top',
+    'safe-area-bottom',
+    'safe-area-left',
+    'safe-area-right',
+    'prevent-zoom',
+    'animate-slide-up-mobile',
+    'animate-slide-down-mobile',
+    'modal-mobile',
+    'btn-mobile',
+    'btn-mobile-large',
+    'card-mobile',
+    'form-mobile',
   ],
   theme: {
     extend: {
@@ -253,6 +274,14 @@ export default {
         scaleIn: {
           '0%': { transform: 'scale(0.95)', opacity: '0' },
           '100%': { transform: 'scale(1)', opacity: '1' },
+        },
+        slideUpMobile: {
+          '0%': { transform: 'translateY(100%)', opacity: '0' },
+          '100%': { transform: 'translateY(0)', opacity: '1' },
+        },
+        slideDownMobile: {
+          '0%': { transform: 'translateY(-100%)', opacity: '0' },
+          '100%': { transform: 'translateY(0)', opacity: '1' },
         },
       },
       backdropBlur: {
@@ -510,6 +539,145 @@ export default {
             boxShadow:
               '0 8px 32px rgba(255, 255, 255, 0.08), 0 2px 8px rgba(255, 255, 255, 0.12)',
             transform: 'translateY(-1px)',
+          },
+        },
+      })
+    },
+    // Plugin pour les optimisations PWA et Mobile-First
+    function ({ addUtilities }) {
+      addUtilities({
+        // Classes tactiles
+        '.touch-manipulation': {
+          'touch-action': 'manipulation',
+        },
+        '.touch-active': {
+          transform: 'scale(0.98)',
+          transition: 'transform 0.1s ease',
+        },
+        '.long-press-active': {
+          'background-color': 'rgba(16, 185, 129, 0.1)',
+          transform: 'scale(1.02)',
+        },
+        '.touch-target-small': {
+          'min-width': '44px',
+          'min-height': '44px',
+        },
+        '.touch-target-medium': {
+          'min-width': '48px',
+          'min-height': '48px',
+        },
+        '.touch-target-large': {
+          'min-width': '56px',
+          'min-height': '56px',
+        },
+        '.touch-no-select': {
+          '-webkit-user-select': 'none',
+          'user-select': 'none',
+        },
+
+        // Safe areas pour les encoches
+        '.safe-area-top': {
+          'padding-top': 'env(safe-area-inset-top)',
+        },
+        '.safe-area-bottom': {
+          'padding-bottom': 'env(safe-area-inset-bottom)',
+        },
+        '.safe-area-left': {
+          'padding-left': 'env(safe-area-inset-left)',
+        },
+        '.safe-area-right': {
+          'padding-right': 'env(safe-area-inset-right)',
+        },
+
+        // Prévention du zoom iOS
+        '.prevent-zoom': {
+          'font-size': '16px',
+        },
+
+        // Animations mobile
+        '.animate-slide-up-mobile': {
+          animation: 'slideUpMobile 0.3s ease-out',
+        },
+        '.animate-slide-down-mobile': {
+          animation: 'slideDownMobile 0.3s ease-out',
+        },
+
+        // Classes pour les composants mobile
+        '.btn-mobile': {
+          'min-height': '44px',
+          'min-width': '44px',
+          padding: '0.75rem 1rem',
+          'border-radius': '0.75rem',
+          'font-size': '1rem',
+          'font-weight': '500',
+          transition: 'all 0.2s ease',
+          'touch-action': 'manipulation',
+          '&:active': {
+            transform: 'scale(0.98)',
+          },
+        },
+        '.btn-mobile-large': {
+          'min-height': '48px',
+          padding: '1rem 1.5rem',
+          'font-size': '1.125rem',
+        },
+        '.card-mobile': {
+          padding: '1rem',
+          'border-radius': '1rem',
+          'margin-bottom': '0.75rem',
+          'touch-action': 'manipulation',
+          '&:active': {
+            transform: 'scale(0.99)',
+          },
+        },
+        '.form-mobile input, .form-mobile textarea, .form-mobile select': {
+          'min-height': '44px',
+          padding: '0.75rem 1rem',
+          'font-size': '16px',
+          'border-radius': '0.75rem',
+          border: '2px solid transparent',
+          transition: 'all 0.2s ease',
+          '&:focus': {
+            outline: 'none',
+            'border-color': '#10b981',
+            'box-shadow': '0 0 0 3px rgba(16, 185, 129, 0.1)',
+          },
+        },
+        '.modal-mobile': {
+          position: 'fixed',
+          top: '0',
+          left: '0',
+          right: '0',
+          bottom: '0',
+          'z-index': '70',
+          background: 'rgba(0, 0, 0, 0.8)',
+          'backdrop-filter': 'blur(10px)',
+          '-webkit-backdrop-filter': 'blur(10px)',
+          '.modal-content': {
+            position: 'absolute',
+            bottom: '0',
+            left: '0',
+            right: '0',
+            'max-height': '90vh',
+            'border-radius': '1rem 1rem 0 0',
+            background: 'white',
+            padding: '1rem',
+          },
+        },
+        '.dark .modal-mobile .modal-content': {
+          background: '#171717',
+        },
+
+        // Optimisations de performance
+        '@media (max-width: 768px)': {
+          'button, [role="button"], .btn-mobile': {
+            'will-change': 'transform',
+            'backface-visibility': 'hidden',
+            perspective: '1000px',
+          },
+          '*': {
+            '-webkit-transform': 'translateZ(0)',
+            transform: 'translateZ(0)',
           },
         },
       })
