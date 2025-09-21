@@ -16,29 +16,46 @@ import SkeletonLoader from './SkeletonLoader.astro'
         <a href="/" class="flex items-center space-x-2">
           <!-- Icône vinyle avec gradient -->
           <div class="flex-shrink-0">
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="url(#vinyl-gradient)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-disc3-icon lucide-disc-3 sm:w-8 sm:h-8">
-              <circle cx="12" cy="12" r="10"/>
-              <path d="M6 12c0-1.7.7-3.2 1.8-4.2"/>
-              <circle cx="12" cy="12" r="2"/>
-              <path d="M18 12c0 1.7-.7 3.2-1.8 4.2"/>
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="url(#vinyl-gradient)"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              class="lucide lucide-disc3-icon lucide-disc-3 sm:w-8 sm:h-8"
+            >
+              <circle cx="12" cy="12" r="10"></circle>
+              <path d="M6 12c0-1.7.7-3.2 1.8-4.2"></path>
+              <circle cx="12" cy="12" r="2"></circle>
+              <path d="M18 12c0 1.7-.7 3.2-1.8 4.2"></path>
             </svg>
             <!-- Gradient SVG -->
             <svg width="0" height="0" style="position: absolute;">
               <defs>
                 <linearGradient id="vinyl-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
-                  <stop offset="0%" style="stop-color:#14b8a6;stop-opacity:1" />
-                  <stop offset="100%" style="stop-color:#10b981;stop-opacity:1" />
+                  <stop offset="0%" style="stop-color:#14b8a6;stop-opacity:1"></stop>
+                  <stop offset="100%" style="stop-color:#10b981;stop-opacity:1"></stop>
                 </linearGradient>
               </defs>
             </svg>
           </div>
-          
+
           <!-- Texte du logo selon les breakpoints -->
           <!-- Mobile : sans texte -->
           <!-- Tablet : VV -->
-          <span class="hidden md:block lg:hidden text-xl font-bold text-neutral-900 dark:text-neutral-50" style="font-family: 'Poppins', sans-serif; font-weight: 700;">VV</span>
+          <span
+            class="hidden md:block lg:hidden text-xl font-bold text-neutral-900 dark:text-neutral-50"
+            style="font-family: 'Poppins', sans-serif; font-weight: 700;">VV</span
+          >
           <!-- Desktop : VinylVault complet -->
-          <span class="hidden lg:block text-xl font-bold text-neutral-900 dark:text-neutral-50" style="font-family: 'Poppins', sans-serif; font-weight: 700;">VinylVault</span>
+          <span
+            class="hidden lg:block text-xl font-bold text-neutral-900 dark:text-neutral-50"
+            style="font-family: 'Poppins', sans-serif; font-weight: 700;">VinylVault</span
+          >
         </a>
       </div>
 
@@ -54,7 +71,6 @@ import SkeletonLoader from './SkeletonLoader.astro'
 
       <!-- User Menu (droite) -->
       <div class="flex items-center space-x-2 sm:space-x-3">
-
         <!-- Skeleton User Menu (affiché pendant le chargement) -->
         <div id="user-skeleton" class="flex items-center space-x-3">
           <SkeletonLoader type="avatar" />
@@ -76,7 +92,12 @@ import SkeletonLoader from './SkeletonLoader.astro'
             </div>
             <!-- Nom utilisateur (masqué sur mobile) -->
             <span id="user-name" class="hidden md:inline text-sm font-medium"></span>
-            <svg class="w-3 h-3 sm:w-4 sm:h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg
+              class="w-3 h-3 sm:w-4 sm:h-4"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
               <path
                 stroke-linecap="round"
                 stroke-linejoin="round"
@@ -95,9 +116,17 @@ import SkeletonLoader from './SkeletonLoader.astro'
                 href="/profile"
                 class="flex items-center space-x-3 px-4 py-2 text-sm text-neutral-600 dark:text-neutral-400 hover:bg-neutral-100 dark:hover:bg-neutral-900 transition-colors"
               >
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
-                  <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
-                  <circle cx="12" cy="7" r="4"/>
+                <svg
+                  class="w-4 h-4"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  viewBox="0 0 24 24"
+                >
+                  <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                  <circle cx="12" cy="7" r="4"></circle>
                 </svg>
                 <span>Mon Profil</span>
               </a>
@@ -105,35 +134,59 @@ import SkeletonLoader from './SkeletonLoader.astro'
                 href="/dashboard"
                 class="flex items-center space-x-3 px-4 py-2 text-sm text-neutral-600 dark:text-neutral-400 hover:bg-neutral-100 dark:hover:bg-neutral-900 transition-colors"
               >
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
-                  <path d="m16 6 4 14"/>
-                  <path d="M12 6v14"/>
-                  <path d="M8 8v12"/>
-                  <path d="M4 4v16"/>
+                <svg
+                  class="w-4 h-4"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  viewBox="0 0 24 24"
+                >
+                  <path d="m16 6 4 14"></path>
+                  <path d="M12 6v14"></path>
+                  <path d="M8 8v12"></path>
+                  <path d="M4 4v16"></path>
                 </svg>
-                <span>Ma Collection</span>
+                <span>Tableau de bord</span>
               </a>
-              <button
-                id="stats-button"
-                class="flex items-center space-x-3 w-full text-left px-4 py-2 text-sm text-neutral-600 dark:text-neutral-400 hover:bg-neutral-100 dark:hover:bg-neutral-900 transition-colors"
+              <a
+                href="/stats"
+                class="flex items-center space-x-3 px-4 py-2 text-sm text-neutral-600 dark:text-neutral-400 hover:bg-neutral-100 dark:hover:bg-neutral-900 transition-colors"
               >
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
-                  <path d="M3 3v16a2 2 0 0 0 2 2h16"/>
-                  <path d="M18 17V9"/>
-                  <path d="M13 17V5"/>
-                  <path d="M8 17v-3"/>
+                <svg
+                  class="w-4 h-4"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  viewBox="0 0 24 24"
+                >
+                  <path d="M3 3v16a2 2 0 0 0 2 2h16"></path>
+                  <path d="M18 17V9"></path>
+                  <path d="M13 17V5"></path>
+                  <path d="M8 17v-3"></path>
                 </svg>
                 <span>Statistiques</span>
-              </button>
+              </a>
               <div class="border-t border-neutral-200 dark:border-white/10 my-1"></div>
               <button
                 id="logout-button"
                 class="flex items-center space-x-3 w-full text-left px-4 py-2 text-sm text-neutral-600 dark:text-neutral-400 hover:bg-neutral-100 dark:hover:bg-neutral-900 transition-colors"
               >
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
-                  <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
-                  <polyline points="16,17 21,12 16,7"/>
-                  <line x1="21" x2="9" y1="12" y2="12"/>
+                <svg
+                  class="w-4 h-4"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  viewBox="0 0 24 24"
+                >
+                  <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+                  <polyline points="16,17 21,12 16,7"></polyline>
+                  <line x1="21" x2="9" y1="12" y2="12"></line>
                 </svg>
                 <span>Se Déconnecter</span>
               </button>
@@ -167,14 +220,9 @@ import SkeletonLoader from './SkeletonLoader.astro'
   </div>
 </nav>
 
-
 <script>
   import { getCurrentUser, logout } from '../lib/auth.js'
-import {
-smoothHide,
-smoothToggleBetween,
-smoothToggleDropdown
-} from '../utils/smooth-toggle.js'
+  import { smoothToggleBetween, smoothToggleDropdown } from '../utils/smooth-toggle'
 
   // Configuration des animations
   const ANIMATION_DURATIONS = {
@@ -197,8 +245,6 @@ smoothToggleDropdown
 
     // Boutons d'action
     logoutButton: 'logout-button',
-    statsButton: 'stats-button',
-
 
     // Skeletons
     skeletons: ['user-skeleton', 'guest-skeleton'],
@@ -243,14 +289,15 @@ smoothToggleDropdown
     }
 
     private setupUserState(user: any): void {
-      const {
-        userMenu,
-        guestMenu,
-      } = this.elements
+      const { userMenu, guestMenu } = this.elements
 
-      // Animations des menus
-      if (userMenu && guestMenu)
-        smoothToggleBetween(userMenu, guestMenu, 'flex', ANIMATION_DURATIONS.NORMAL)
+      console.log('setupUserState: Configuration du menu utilisateur')
+
+      // Animations des menus - on veut masquer guestMenu et afficher userMenu
+      if (userMenu && guestMenu) {
+        console.log('setupUserState: Basculement des menus')
+        smoothToggleBetween(guestMenu, userMenu, 'flex', ANIMATION_DURATIONS.NORMAL)
+      }
 
       // Informations utilisateur
       this.updateUserInfo(user)
@@ -260,8 +307,12 @@ smoothToggleDropdown
     private setupGuestState(): void {
       const { userMenu, guestMenu } = this.elements
 
-      if (guestMenu && userMenu)
-        smoothToggleBetween(guestMenu, userMenu, 'flex', ANIMATION_DURATIONS.NORMAL)
+      console.log('setupGuestState: Configuration du menu invité')
+
+      if (guestMenu && userMenu) {
+        console.log('setupGuestState: Basculement des menus')
+        smoothToggleBetween(userMenu, guestMenu, 'flex', ANIMATION_DURATIONS.NORMAL)
+      }
     }
 
     private updateUserInfo(user: any): void {
@@ -271,7 +322,7 @@ smoothToggleDropdown
       if (userName) {
         const fullName = user.name || user.email.split('@')[0]
         const displayName = fullName.length > 10 ? fullName.substring(0, 10) + '...' : fullName
-        
+
         userName.textContent = displayName
         userName.title = fullName // Tooltip avec le nom complet
         userName.setAttribute('data-tooltip', fullName)
@@ -306,26 +357,31 @@ smoothToggleDropdown
     }
 
     private setupUserInteractions(): void {
-      const { userMenuButton, userDropdown, logoutButton, statsButton } = this.elements
+      const { userMenuButton, userDropdown, logoutButton } = this.elements
 
       // Dropdown utilisateur
       if (userMenuButton && userDropdown) {
+        console.log('Navbar: Configuration du dropdown utilisateur')
         userMenuButton.addEventListener('click', (e) => {
           e.stopPropagation()
+          console.log('Navbar: Clic sur le bouton utilisateur')
+          console.log('Navbar: État du dropdown avant toggle:', {
+            display: userDropdown.style.display,
+            hidden: userDropdown.classList.contains('hidden'),
+            opacity: userDropdown.style.opacity,
+            computedDisplay: getComputedStyle(userDropdown).display,
+          })
           smoothToggleDropdown(userDropdown, userMenuButton, ANIMATION_DURATIONS.FAST)
+        })
+      } else {
+        console.log('Navbar: Éléments dropdown manquants:', {
+          userMenuButton: !!userMenuButton,
+          userDropdown: !!userDropdown,
         })
       }
 
-      // Statistiques personnelles
-      if (statsButton) {
-        statsButton.addEventListener('click', () => {
-          // Fermer le dropdown
-          if (userDropdown) smoothHide(userDropdown, ANIMATION_DURATIONS.FAST)
-          
-          // Ouvrir le modal des statistiques
-          document.dispatchEvent(new CustomEvent('modal:personal-stats:open'))
-        })
-      }
+      // Les statistiques sont maintenant un lien direct vers /stats
+      // Plus besoin de gérer l'ouverture de modal
 
       // Déconnexion
       const handleLogout = () => logout()
@@ -339,11 +395,34 @@ smoothToggleDropdown
 
     async initialize(): Promise<void> {
       try {
+        console.log('Navbar: Initialisation...')
         const user = await getCurrentUser()
+        console.log('Navbar: Utilisateur récupéré:', user)
+
+        // Debug des éléments DOM
+        console.log('Navbar: Éléments DOM:', {
+          userMenu: !!this.elements.userMenu,
+          guestMenu: !!this.elements.guestMenu,
+          userName: !!this.elements.userName,
+          userMenuButton: !!this.elements.userMenuButton,
+          userDropdown: !!this.elements.userDropdown,
+        })
 
         if (user && this.elements.userMenu && this.elements.guestMenu && this.elements.userName) {
+          console.log('Navbar: Configuration du menu utilisateur')
           this.setupUserState(user)
         } else {
+          console.log('Navbar: Configuration du menu invité')
+          console.log(
+            'Navbar: Raison - user:',
+            !!user,
+            'userMenu:',
+            !!this.elements.userMenu,
+            'guestMenu:',
+            !!this.elements.guestMenu,
+            'userName:',
+            !!this.elements.userName
+          )
           this.setupGuestState()
         }
       } catch (error) {
@@ -354,7 +433,6 @@ smoothToggleDropdown
         this.setupMobileInteractions()
       }
     }
-
   }
 
   // Types globaux sont maintenant définis dans src/types/window.d.ts
@@ -367,7 +445,6 @@ smoothToggleDropdown
 </script>
 
 <style>
-
   /* Tooltip élégant pour le nom d'utilisateur */
   #user-name {
     position: relative;

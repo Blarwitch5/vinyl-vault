@@ -11,23 +11,18 @@
   >
     <!-- Header -->
     <div class="flex items-center justify-between mb-6">
-      <h2 class="text-xl font-bold text-neutral-900 dark:text-neutral-50">Supprimer la collection</h2>
+      <h2 class="text-xl font-bold text-neutral-900 dark:text-neutral-50">
+        Supprimer la collection
+      </h2>
       <button
         id="close-delete-collection-modal"
-        class="text-neutral-600 dark:text-neutral-400 hover:text-neutral-900 dark:hover:text-neutral-50 transition-colors"
+        class="text-neutral-600 dark:text-neutral-400 hover:text-neutral-900 dark:hover:text-neutral-50 transition-colors flex items-center justify-center"
       >
         <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            stroke-width="2"
-d="M18 6 6 18"
-                  />
-                  <path
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    stroke-width="2"
-                    d="M6 6l12 12"></path>
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 6 6 18"
+          ></path>
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 6l12 12"
+          ></path>
         </svg>
       </button>
     </div>
@@ -48,11 +43,10 @@ d="M18 6 6 18"
               stroke-linecap="round"
               stroke-linejoin="round"
               stroke-width="2"
-d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"
-                  />
-                  <line x1="12" x2="12" y1="9" y2="13"
-                  />
-                  <line x1="12" x2="12.01" y1="17" y2="17"></path>
+              d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"
+            ></path>
+            <line x1="12" x2="12" y1="9" y2="13"></line>
+            <line x1="12" x2="12.01" y1="17" y2="17"></line>
           </svg>
         </div>
         <div>
@@ -63,14 +57,18 @@ d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 
         </div>
       </div>
 
-      <div class="bg-red-50 dark:bg-red-900/10 border border-red-200 dark:border-red-800 rounded-lg p-4 mb-4">
+      <div
+        class="bg-red-50 dark:bg-red-900/10 border border-red-200 dark:border-red-800 rounded-lg p-4 mb-4"
+      >
         <p class="text-red-800 dark:text-red-200 text-sm">
-          <strong>Attention :</strong> La suppression de cette collection supprimera également tous les vinyles qu'elle contient.
+          <strong>Attention :</strong> La suppression de cette collection supprimera également tous les
+          vinyles qu'elle contient.
         </p>
       </div>
 
       <div id="collection-info" class="bg-neutral-50 dark:bg-neutral-800 rounded-lg p-4">
-        <h4 id="collection-name" class="font-medium text-neutral-900 dark:text-neutral-50 mb-2"></h4>
+        <h4 id="collection-name" class="font-medium text-neutral-900 dark:text-neutral-50 mb-2">
+        </h4>
         <p id="collection-details" class="text-sm text-neutral-600 dark:text-neutral-400"></p>
       </div>
     </div>
@@ -84,7 +82,7 @@ d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 
     </div>
 
     <!-- Actions -->
-    <div class="flex space-x-3">
+    <div class="flex gap-3">
       <button
         id="cancel-delete-collection"
         class="flex-1 bg-neutral-100 dark:bg-neutral-800 text-neutral-700 dark:text-neutral-300 py-2 px-4 rounded-lg hover:bg-neutral-200 dark:hover:bg-neutral-700 transition-colors"
@@ -109,7 +107,7 @@ d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 
   const modal = document.getElementById('delete-collection-modal')
   const closeBtn = document.getElementById('close-delete-collection-modal')
   const cancelBtn = document.getElementById('cancel-delete-collection')
-  const confirmBtn = document.getElementById('confirm-delete-collection') as HTMLButtonElement;
+  const confirmBtn = document.getElementById('confirm-delete-collection') as HTMLButtonElement
   const errorDiv = document.getElementById('delete-collection-error')
   const errorMessage = document.getElementById('delete-collection-error-message')
   const deleteText = document.getElementById('delete-collection-text')
@@ -198,10 +196,10 @@ d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 
 
       if (response.ok && data.success) {
         closeDeleteCollectionModal()
-        
+
         // Appeler la fonction de recalcul des statistiques si elle existe
         if (typeof (window as any).recalculateStats === 'function') {
-          (window as any).recalculateStats()
+          ;(window as any).recalculateStats()
         } else {
           // Fallback : recharger la page
           window.location.reload()

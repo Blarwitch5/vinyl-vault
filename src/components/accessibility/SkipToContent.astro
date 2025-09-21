@@ -1,0 +1,79 @@
+---
+export interface Props {
+  targetId?: string
+}
+
+const { targetId = 'main-content' } = Astro.props
+---
+
+<!-- Bouton Skip to Content - Visible uniquement au focus -->
+<a
+  href={`#${targetId}`}
+  class="skip-to-content sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:z-[10000] focus:bg-blue-600 focus:text-white focus:px-4 focus:py-2 focus:rounded-lg focus:shadow-lg focus:font-medium focus:no-underline focus:outline-none focus:ring-2 focus:ring-blue-300 transition-all duration-200"
+  tabindex="0"
+>
+  Aller au contenu principal
+</a>
+
+<style>
+  /* Classe utilitaire pour masquer visuellement mais garder accessible */
+  .sr-only {
+    position: absolute !important;
+    width: 1px !important;
+    height: 1px !important;
+    padding: 0 !important;
+    margin: -1px !important;
+    overflow: hidden !important;
+    clip: rect(0, 0, 0, 0) !important;
+    white-space: nowrap !important;
+    border: 0 !important;
+  }
+
+  .focus\:not-sr-only:focus {
+    position: static !important;
+    width: auto !important;
+    height: auto !important;
+    padding: revert !important;
+    margin: revert !important;
+    overflow: visible !important;
+    clip: auto !important;
+    white-space: normal !important;
+  }
+</style>
+
+<script>
+  // Améliorer la navigation avec le skip link
+  document.addEventListener('DOMContentLoaded', () => {
+    const skipLink = document.querySelector('.skip-to-content') as HTMLAnchorElement
+
+    if (skipLink) {
+      skipLink.addEventListener('click', (e) => {
+        e.preventDefault()
+        const targetId = skipLink.getAttribute('href')?.substring(1)
+        const targetElement = targetId ? document.getElementById(targetId) : null
+
+        if (targetElement) {
+          // Faire défiler vers l'élément cible
+          targetElement.scrollIntoView({ behavior: 'smooth', block: 'start' })
+
+          // Définir le focus sur l'élément cible pour les lecteurs d'écran
+          targetElement.focus({ preventScroll: true })
+
+          // Si l'élément n'est pas focusable par défaut, le rendre focusable temporairement
+          if (!targetElement.hasAttribute('tabindex')) {
+            targetElement.setAttribute('tabindex', '-1')
+
+            // Retirer le tabindex après le focus pour ne pas affecter la navigation normale
+            targetElement.addEventListener(
+              'blur',
+              () => {
+                targetElement.removeAttribute('tabindex')
+              },
+              { once: true }
+            )
+          }
+        }
+      })
+    }
+  })
+</script>

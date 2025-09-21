@@ -5,9 +5,7 @@ import Footer from "../components/Footer.astro";
 import DeleteCollectionModal from "../components/DeleteCollectionModal.astro";
 import EditCollectionModal from "../components/EditCollectionModal.astro";
 import CreateCollectionModal from "../components/CreateCollectionModal.astro";
-import { PrismaClient } from "@prisma/client";
-
-const prisma = new PrismaClient();
+import { db as prisma } from "../lib/prisma";
 
 // Vérifier l'authentification (système simplifié)
 let currentUser: { id: string; name: string | null; email: string } | null = null;
@@ -239,7 +237,7 @@ try {
                             d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1"
                           />
                         </svg>
-                        <span>{collection.vinyls.reduce((sum: number, vinyl: any) => sum + (vinyl.price || 0), 0).toFixed(2)} €</span>
+                        <span>{Math.round(collection.vinyls.reduce((sum: number, vinyl: any) => sum + (vinyl.price || 0), 0))} €</span>
                       </div>
                       <span
                         class={`px-3 py-1 rounded-full text-xs font-medium ${
@@ -441,7 +439,6 @@ try {
         vinylCount: collectionInfo.vinylCount
       };
       
-      console.log('Delete collection debug:', collection);
 
       // Ouvrir la modal de confirmation
       document.dispatchEvent(new CustomEvent('modal:delete-collection:open', { 

@@ -6,8 +6,8 @@
   "author": "VinylVault Team",
   "license": "MIT",
   "scripts": {
-    "dev": "astro dev",
-    "start": "astro dev",
+    "dev": "NODE_ENV=development astro dev",
+    "start": "NODE_ENV=development astro dev",
     "build": "astro build",
     "preview": "astro preview",
     "astro": "astro",
@@ -26,6 +26,7 @@
     "check": "npm run type-check && npm run lint && npm run format:check"
   },
   "dependencies": {
+    "@astrojs/check": "^0.9.4",
     "@astrojs/tailwind": "^5.1.5",
     "@astrojs/vercel": "^8.2.7",
     "@fontsource/jetbrains-mono": "^5.2.8",

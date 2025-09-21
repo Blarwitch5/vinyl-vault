@@ -3,9 +3,7 @@ import BaseLayout from '../layouts/BaseLayout.astro'
 import Navbar from '../components/Navbar.astro'
 import Footer from '../components/Footer.astro'
 import BarcodeScannerModal from '../components/BarcodeScannerModal.astro'
-import { PrismaClient } from '@prisma/client'
-
-const prisma = new PrismaClient()
+import { db as prisma } from '../lib/prisma'
 
 // Vérifier l'authentification côté serveur (version simplifiée)
 let user = null
@@ -66,17 +64,10 @@ if (!isAuthenticated) {
             class="flex items-center space-x-2 px-4 py-2 bg-gradient-emerald dark:bg-gradient-emerald text-white rounded-xl hover:bg-gradient-emerald/80 dark:hover:bg-gradient-emerald/80 transition-colors"
           >
             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="M5 12h14"
-                  />
-                  <path
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    stroke-width="2"
-                    d="M12 5v14"></path>
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 12h14"
+              ></path>
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 5v14"
+              ></path>
             </svg>
             <span>Ajouter un vinyle</span>
           </button>
@@ -115,9 +106,8 @@ if (!isAuthenticated) {
                     stroke-linecap="round"
                     stroke-linejoin="round"
                     stroke-width="2"
-                    d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"
-                  />
-                  <circle cx="12" cy="7" r="4"></path>
+                    d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                  <circle cx="12" cy="7" r="4"></circle>
                 </svg>
                 <span>Mon Profil</span>
               </a>
@@ -150,13 +140,12 @@ if (!isAuthenticated) {
                       stroke-linecap="round"
                       stroke-linejoin="round"
                       stroke-width="2"
-                      d="M5 12h14"
-                  />
-                  <path
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    stroke-width="2"
-                    d="M12 5v14"></path>
+                      d="M5 12h14"></path>
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M12 5v14"></path>
                   </svg>
                   <span>Ajouter un vinyle</span>
                 </button>
@@ -169,14 +158,12 @@ if (!isAuthenticated) {
                       stroke-linecap="round"
                       stroke-linejoin="round"
                       stroke-width="2"
-                      d="M5 12h14"
-                  />
-                  <path
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    stroke-width="2"
-                    d="M12 5v14"
-                    ></path>
+                      d="M5 12h14"></path>
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M12 5v14"></path>
                   </svg>
                   <span>Nouvelle collection</span>
                 </button>
@@ -406,15 +393,6 @@ if (!isAuthenticated) {
     }
 
     return null
-  }
-
-  // Fonction de debug pour vérifier l'authentification
-  function debugAuth() {
-    console.log('=== DEBUG AUTHENTIFICATION ===')
-    console.log('localStorage auth_token:', localStorage.getItem('auth_token'))
-    console.log('document.cookie:', document.cookie)
-    console.log('getAuthToken():', getAuthToken())
-    console.log('==============================')
   }
 
   // Charger les données utilisateur
@@ -659,10 +637,10 @@ if (!isAuthenticated) {
     const btn = document.getElementById('profile-create-collection-btn')
     if (btn) {
       btn.addEventListener('click', () => {
-        if (typeof (window as any).openCreateCollectionModal === "function") {
-          (window as any).openCreateCollectionModal()
+        if (typeof (window as any).openCreateCollectionModal === 'function') {
+          ;(window as any).openCreateCollectionModal()
         } else {
-          console.error("Modal de création de collection non disponible")
+          console.error('Modal de création de collection non disponible')
         }
       })
     }
@@ -670,7 +648,6 @@ if (!isAuthenticated) {
 
   // Initialisation
   document.addEventListener('DOMContentLoaded', () => {
-    debugAuth() // Debug de l'authentification
     loadUserData()
     setupAvatarSelection()
     setupProfileForm()

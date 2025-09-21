@@ -9,13 +9,24 @@ const searchId = 'navbar-search-unique'
   <!-- Champ de recherche -->
   <div class="relative">
     <div class="absolute inset-y-0 left-0 pl-2.5 sm:pl-3 flex items-center pointer-events-none">
-      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-4 h-4 sm:w-5 sm:h-5 text-neutral-600 dark:text-neutral-400">
-        <path d="M3 7V5a2 2 0 0 1 2-2h2"/>
-        <path d="M17 3h2a2 2 0 0 1 2 2v2"/>
-        <path d="M21 17v2a2 2 0 0 1-2 2h-2"/>
-        <path d="M7 21H5a2 2 0 0 1-2-2v-2"/>
-        <circle cx="12" cy="12" r="3"/>
-        <path d="m16 16-1.9-1.9"/>
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        width="24"
+        height="24"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        class="w-4 h-4 sm:w-5 sm:h-5 text-neutral-600 dark:text-neutral-400"
+      >
+        <path d="M3 7V5a2 2 0 0 1 2-2h2"></path>
+        <path d="M17 3h2a2 2 0 0 1 2 2v2"></path>
+        <path d="M21 17v2a2 2 0 0 1-2 2h-2"></path>
+        <path d="M7 21H5a2 2 0 0 1-2-2v-2"></path>
+        <circle cx="12" cy="12" r="3"></circle>
+        <path d="m16 16-1.9-1.9"></path>
       </svg>
     </div>
     <input
@@ -27,14 +38,10 @@ const searchId = 'navbar-search-unique'
     <!-- Bouton clear (caché par défaut) -->
     <button
       id="search-clear"
-      class="absolute inset-y-0 right-0 pr-3 items-center text-neutral-600 dark:text-neutral-400 hover:text-neutral-900 dark:hover:text-neutral-50 transition-colors hidden"
+      class="absolute inset-y-0 right-0 pr-3 flex items-center justify-center text-neutral-600 dark:text-neutral-400 hover:text-neutral-900 dark:hover:text-neutral-50 transition-colors hidden"
     >
       <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path
-          stroke-linecap="round"
-          stroke-linejoin="round"
-          stroke-width="2"
-          d="M18 6 6 18"></path>
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 6 6 18"></path>
       </svg>
     </button>
   </div>
@@ -52,7 +59,9 @@ const searchId = 'navbar-search-unique'
           class="w-4 h-4 sm:w-5 sm:h-5 border-2 border-emerald-500 border-t-transparent rounded-full animate-spin"
         >
         </div>
-        <span class="text-xs sm:text-sm text-neutral-600 dark:text-neutral-400 font-medium">Recherche en cours...</span>
+        <span class="text-xs sm:text-sm text-neutral-600 dark:text-neutral-400 font-medium"
+          >Recherche en cours...</span
+        >
       </div>
     </div>
 
@@ -62,20 +71,36 @@ const searchId = 'navbar-search-unique'
     <!-- Aucun résultat -->
     <div id="search-empty" class="hidden p-4 sm:p-6 text-center">
       <div class="text-center">
-        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-6 h-6 sm:w-8 sm:h-8 text-neutral-400 dark:text-neutral-500 mx-auto mb-2">
-          <path d="M3 7V5a2 2 0 0 1 2-2h2"/>
-          <path d="M17 3h2a2 2 0 0 1 2 2v2"/>
-          <path d="M21 17v2a2 2 0 0 1-2 2h-2"/>
-          <path d="M7 21H5a2 2 0 0 1-2-2v-2"/>
-          <circle cx="12" cy="12" r="3"/>
-          <path d="m16 16-1.9-1.9"/>
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="24"
+          height="24"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          class="w-6 h-6 sm:w-8 sm:h-8 text-neutral-400 dark:text-neutral-500 mx-auto mb-2"
+        >
+          <path d="M3 7V5a2 2 0 0 1 2-2h2"></path>
+          <path d="M17 3h2a2 2 0 0 1 2 2v2"></path>
+          <path d="M21 17v2a2 2 0 0 1-2 2h-2"></path>
+          <path d="M7 21H5a2 2 0 0 1-2-2v-2"></path>
+          <circle cx="12" cy="12" r="3"></circle>
+          <path d="m16 16-1.9-1.9"></path>
         </svg>
-        <span class="text-xs sm:text-sm text-neutral-600 dark:text-neutral-400">Aucun vinyle trouvé</span>
+        <span class="text-xs sm:text-sm text-neutral-600 dark:text-neutral-400"
+          >Aucun vinyle trouvé</span
+        >
       </div>
     </div>
 
     <!-- Footer avec lien vers recherche complète -->
-    <div id="search-footer" class="hidden border-t border-neutral-200 dark:border-neutral-700 p-2 sm:p-3">
+    <div
+      id="search-footer"
+      class="hidden border-t border-neutral-200 dark:border-neutral-700 p-2 sm:p-3"
+    >
       <a
         href="/search"
         class="block text-center text-xs sm:text-sm text-emerald-600 dark:text-emerald-400 hover:text-emerald-700 dark:hover:text-emerald-300 transition-colors font-medium"
@@ -209,11 +234,15 @@ const searchId = 'navbar-search-unique'
                 <p class="text-xs text-neutral-600 dark:text-neutral-400 truncate">
                   ${vinyl.artist}
                 </p>
-                ${vinyl.year ? `
+                ${
+                  vinyl.year
+                    ? `
                   <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-emerald-100 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-300">
                     ${vinyl.year}
                   </span>
-                ` : ''}
+                `
+                    : ''
+                }
               </div>
             </div>
             <div class="text-xs text-neutral-500 dark:text-neutral-500 font-medium hidden sm:block">

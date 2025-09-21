@@ -20,26 +20,32 @@ export const POST: APIRoute = async ({ request, cookies }) => {
       )
     }
 
-    console.log("Add vinyl: Token trouvé, traitement de l'ajout")
-
     // Récupérer les données de la requête
     const body = await request.json()
-    console.log('Add vinyl: Données reçues:', body)
 
     const {
       collection_id,
       vinyl_data,
-      // Nouveaux champs pour le scan de code-barres
+      // Champs directs (pour le scan de code-barres et autres sources)
       title,
       artist,
       year,
       genre,
       label,
       format,
+      condition,
+      price,
+      note,
       imageUrl,
+      coverImage,
       discogsId,
       discogsUrl,
       barcode,
+      country,
+      catalogNumber,
+      tracks,
+      rating,
+      ratingCount,
     } = body
 
     // Validation - soit collection_id + vinyl_data, soit les champs directs
@@ -82,8 +88,6 @@ export const POST: APIRoute = async ({ request, cookies }) => {
           }
         )
       }
-
-      console.log('Add vinyl: Collection trouvée:', collection.name)
 
       // Préparer les données du vinyle
       let vinylData
@@ -129,7 +133,6 @@ export const POST: APIRoute = async ({ request, cookies }) => {
       }
 
       const userId = user.id
-      console.log('Add vinyl: Utilisateur trouvé/créé:', userId)
 
       // Récupérer les détails complets depuis Discogs si on a un discogsId
       let fullVinylData = null
@@ -164,15 +167,18 @@ export const POST: APIRoute = async ({ request, cookies }) => {
             )
           } else {
             console.log(
-              'Add vinyl: Erreur Discogs API:',
+              'Add vinyl: ⚠️ Discogs API non disponible:',
               discogsResponse.status,
-              discogsResponse.statusText
+              '- Utilisation des données de base'
             )
           }
         } catch (discogsError) {
           console.log(
-            'Add vinyl: Erreur lors de la récupération Discogs:',
-            discogsError
+            'Add vinyl: ⚠️ Enrichissement Discogs échoué (normal):',
+            discogsError instanceof Error
+              ? discogsError.message
+              : 'Erreur réseau',
+            '- Utilisation des données de base'
           )
         }
       }
@@ -185,10 +191,11 @@ export const POST: APIRoute = async ({ request, cookies }) => {
           year:
             fullVinylData?.year || (year ? parseInt(year.toString()) : null),
           format: fullVinylData?.formats?.[0]?.name || format || 'LP',
-          condition: 'Near Mint',
+          condition: condition || 'Near Mint',
           coverImage:
             fullVinylData?.images?.[0]?.uri ||
             coverImage ||
+            imageUrl ||
             '/default-vinyl-cover.svg',
           discogsId: discogsId,
           discogsUrl: fullVinylData?.uri || discogsUrl,
@@ -197,10 +204,10 @@ export const POST: APIRoute = async ({ request, cookies }) => {
               ?.value || barcode,
           tracks: fullVinylData?.tracklist
             ? JSON.stringify(fullVinylData.tracklist)
-            : null,
+            : tracks,
           genre: fullVinylData?.genres?.[0] || genre,
-          price: null,
-          note: null,
+          price: price ? parseFloat(price.toString()) : null,
+          note: note || null,
           userId: userId,
           collectionId: collection_id,
         }
@@ -214,7 +221,7 @@ export const POST: APIRoute = async ({ request, cookies }) => {
             (vinyl_data.year ? parseInt(vinyl_data.year.toString()) : null),
           format:
             fullVinylData?.formats?.[0]?.name || vinyl_data.format || 'LP',
-          condition: 'Near Mint',
+          condition: vinyl_data.condition || 'Near Mint',
           coverImage:
             fullVinylData?.images?.[0]?.uri ||
             vinyl_data.coverImage ||
@@ -226,28 +233,21 @@ export const POST: APIRoute = async ({ request, cookies }) => {
               ?.value || vinyl_data.barcode,
           tracks: fullVinylData?.tracklist
             ? JSON.stringify(fullVinylData.tracklist)
-            : null,
+            : vinyl_data.tracks,
           genre: fullVinylData?.genres?.[0] || vinyl_data.genre,
-          price: null,
-          note: null,
+          price: vinyl_data.price
+            ? parseFloat(vinyl_data.price.toString())
+            : null,
+          note: vinyl_data.note || null,
           userId: userId,
           collectionId: collection_id,
         }
       }
 
-      console.log('Add vinyl: Données du vinyle préparées:', vinylData)
-
       // Créer le vinyle en base de données
-      console.log(
-        'Add vinyl: Tentative de création du vinyle avec les données:',
-        vinylData
-      )
-
       const newVinyl = await prisma.vinyl.create({
         data: vinylData,
       })
-
-      console.log("Add vinyl: Vinyle créé avec l'ID:", newVinyl.id)
 
       // Recalculer les statistiques de la collection
       try {
@@ -270,12 +270,6 @@ export const POST: APIRoute = async ({ request, cookies }) => {
             totalValue: totalValue,
             averagePrice: averagePrice,
           },
-        })
-
-        console.log('Add vinyl: Statistiques de collection mises à jour:', {
-          totalVinyls,
-          totalValue,
-          averagePrice,
         })
       } catch (statsError) {
         console.log(

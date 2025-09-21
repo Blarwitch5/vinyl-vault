@@ -11,9 +11,7 @@ import DeleteCollectionModal from "../components/DeleteCollectionModal.astro";
 import EditCollectionModal from "../components/EditCollectionModal.astro";
 import PersonalStatsModal from "../components/PersonalStatsModal.astro";
 import { AddToCollectionModal } from "../components/collection-modal";
-import { PrismaClient } from "@prisma/client";
-
-const prisma = new PrismaClient();
+import { db as prisma } from "../lib/prisma";
 
 const title = "Tableau de bord - VinylVault";
 const description =
@@ -317,7 +315,7 @@ if (currentUser) {
               class="text-2xl font-bold text-neutral-900 dark:text-neutral-50 font-mono"
                 data-stat="total-value"
             >
-              {stats.totalValue.toFixed(2)} €
+              {Math.round(stats.totalValue)} €
             </p>
             </div>
           </div>
@@ -397,7 +395,7 @@ if (currentUser) {
               class="text-lg sm:text-2xl font-bold text-neutral-900 dark:text-neutral-50 font-mono"
                 data-stat="average-value"
             >
-              {stats.averageValue.toFixed(2)} €
+              {Math.round(stats.averageValue)} €
             </p>
             </div>
           </div>
@@ -446,7 +444,7 @@ d="M5 12h14"
                     d="M12 5v14"
                   />
                 </svg>
-                Nouvelle collection
+                <span class="hidden xs:inline">Nouvelle collection</span>
               </button>
             </div>
           </div>
@@ -455,10 +453,10 @@ d="M5 12h14"
               {
                 userCollections.map((collection: any) => (
                   <div 
-                    class="bg-neutral-50 dark:bg-neutral-950 dark:bg-gradient-emerald-subtle dark:glass-emerald-border rounded-lg sm:rounded-xl p-3 sm:p-4 shadow-sm dark:shadow-white"
+                    class=" bg-neutral-50 dark:bg-neutral-950 dark:bg-gradient-emerald-subtle dark:glass-emerald-border rounded-lg sm:rounded-xl p-3 sm:p-4 shadow-sm dark:shadow-white"
                     data-collection-vinyl-count={collection.vinyls.length}
                   >
-                    <div class="flex items-center justify-between">
+                    <div class="flex flex-col sm:flex-row gap-4 sm:gap-0 items-center justify-between">
                       <div class="flex-1">
                         <h3 class="text-base sm:text-lg font-medium text-neutral-900 dark:text-neutral-50 mb-1">
                           <a
@@ -473,7 +471,7 @@ d="M5 12h14"
                         </p>
                         <div class="flex items-center space-x-4 text-sm text-neutral-600 dark:text-neutral-400">
                           <span>{collection.vinyls.length} vinyles</span>
-                          <span>{collection.vinyls.reduce((sum: number, vinyl: any) => sum + (vinyl.price || 0), 0).toFixed(2)} €</span>
+                          <span>{Math.round(collection.vinyls.reduce((sum: number, vinyl: any) => sum + (vinyl.price || 0), 0))} €</span>
                           <span
                             class={`px-2 py-1 rounded-full text-xs ${
                               collection.isPublic
@@ -486,9 +484,9 @@ d="M5 12h14"
                         </div>
                       </div>
                       <div class="flex items-center space-x-2">
-                        <a
-                          href={`/collection/${collection.id}`}
-                          class="text-neutral-600 dark:text-neutral-400 hover:text-emerald-600 dark:hover:text-emerald-400"
+                        <button
+                          class="text-neutral-600 dark:text-neutral-400 hover:text-emerald-600 dark:hover:text-emerald-400 flex items-center justify-center"
+                          onclick={`window.location.href='/collection/${collection.id}'`}
                           title="Voir la collection"
                         >
                           <svg
@@ -501,14 +499,14 @@ d="M5 12h14"
                               stroke-linecap="round"
                               stroke-linejoin="round"
                               stroke-width="2"
-d="M2 12s3-7.5 10-7.5 10 7.5 10 7.5-3 7.5-10 7.5S2 12 2 12Z"
+                              d="M2 12s3-7.5 10-7.5 10 7.5 10 7.5-3 7.5-10 7.5S2 12 2 12Z"
                             />
                             <circle cx="12" cy="12" r="3"
                             />
                           </svg>
-                        </a>
+                        </button>
                         <button 
-                          class="text-neutral-600 dark:text-neutral-400 hover:text-neutral-900 dark:hover:text-neutral-50"
+                          class="text-neutral-600 dark:text-neutral-400 hover:text-neutral-900 dark:hover:text-neutral-50 flex items-center justify-center"
                           data-collection-action="edit"
                           data-collection-id={collection.id}
                           title="Modifier la collection"
@@ -534,7 +532,7 @@ d="M2 12s3-7.5 10-7.5 10 7.5 10 7.5-3 7.5-10 7.5S2 12 2 12Z"
                           </svg>
                         </button>
                         <button 
-                          class="text-neutral-600 dark:text-neutral-400 hover:text-red-600 dark:hover:text-red-400"
+                          class="text-neutral-600 dark:text-neutral-400 hover:text-red-600 dark:hover:text-red-400 flex items-center justify-center"
                           data-collection-action="delete"
                           data-collection-id={collection.id}
                           title="Supprimer la collection"
@@ -669,7 +667,7 @@ d="M3 6h5l.645-1.69A2 2 0 0 1 10.53 4h2.94a2 2 0 0 1 1.885 1.31L15 6h5"
           </div>
           <div class="p-4">
             <!-- Vue grille (par défaut) -->
-            <div id="dashboard-vinyl-grid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4">
+            <div id="dashboard-vinyl-grid" class="grid grid-cols-1 xs:grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4">
               {
                 recentVinyls.map((vinyl: any) => (
                   <VinylCardCompact
@@ -1162,7 +1160,6 @@ d="M3 6h5l.645-1.69A2 2 0 0 1 10.53 4h2.94a2 2 0 0 1 1.885 1.31L15 6h5"
         vinylCount: vinylCount
       };
       
-      console.log('Delete collection debug:', collection);
 
       // Ouvrir la modal de confirmation
       if (typeof (window as any).openDeleteCollectionModal === 'function') {
@@ -1242,9 +1239,9 @@ d="M3 6h5l.645-1.69A2 2 0 0 1 10.53 4h2.94a2 2 0 0 1 1.885 1.31L15 6h5"
               </div>
             </div>
             <div class="flex items-center space-x-2 ml-4">
-              <a
-                href="/collection/${collection.id}"
-                class="text-neutral-600 dark:text-neutral-400 hover:text-emerald-600 dark:hover:text-emerald-400"
+              <button
+                class="text-neutral-600 dark:text-neutral-400 hover:text-emerald-600 dark:hover:text-emerald-400 flex items-center justify-center"
+                onclick="window.location.href='/collection/${collection.id}'"
                 title="Voir la collection"
               >
                 <svg
@@ -1257,14 +1254,14 @@ d="M3 6h5l.645-1.69A2 2 0 0 1 10.53 4h2.94a2 2 0 0 1 1.885 1.31L15 6h5"
                     stroke-linecap="round"
                     stroke-linejoin="round"
                     stroke-width="2"
-d="M2 12s3-7.5 10-7.5 10 7.5 10 7.5-3 7.5-10 7.5S2 12 2 12Z"
+                    d="M2 12s3-7.5 10-7.5 10 7.5 10 7.5-3 7.5-10 7.5S2 12 2 12Z"
                   />
                   <circle cx="12" cy="12" r="3"
                   />
                 </svg>
-              </a>
+              </button>
               <button 
-                class="text-neutral-600 dark:text-neutral-400 hover:text-neutral-900 dark:hover:text-neutral-50"
+                class="text-neutral-600 dark:text-neutral-400 hover:text-neutral-900 dark:hover:text-neutral-50 flex items-center justify-center"
                 data-collection-action="edit"
                 data-collection-id="${collection.id}"
                 title="Modifier la collection"
@@ -1290,7 +1287,7 @@ d="M2 12s3-7.5 10-7.5 10 7.5 10 7.5-3 7.5-10 7.5S2 12 2 12Z"
                 </svg>
               </button>
               <button 
-                class="text-neutral-600 dark:text-neutral-400 hover:text-red-600 dark:hover:text-red-400"
+                class="text-neutral-600 dark:text-neutral-400 hover:text-red-600 dark:hover:text-red-400 flex items-center justify-center"
                 data-collection-action="delete"
                 data-collection-id="${collection.id}"
                 title="Supprimer la collection"
@@ -1471,13 +1468,13 @@ d="M3 6h5l.645-1.69A2 2 0 0 1 10.53 4h2.94a2 2 0 0 1 1.885 1.31L15 6h5"
       // Mettre à jour la valeur totale
       const totalValueElement = document.querySelector('[data-stat="total-value"]');
       if (totalValueElement) {
-        totalValueElement.textContent = `${stats.totalValue.toFixed(2)} €`;
+        totalValueElement.textContent = `${Math.round(stats.totalValue)} €`;
       }
 
       // Mettre à jour la valeur moyenne
       const averageValueElement = document.querySelector('[data-stat="average-value"]');
       if (averageValueElement) {
-        averageValueElement.textContent = `${stats.averageValue.toFixed(2)} €`;
+        averageValueElement.textContent = `${Math.round(stats.averageValue)} €`;
       }
 
       // Mettre à jour le nombre de collections

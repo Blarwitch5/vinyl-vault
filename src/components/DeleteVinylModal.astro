@@ -1,126 +1,68 @@
 ---
-// Modal de confirmation pour supprimer un vinyle
+import Modal from './ui/Modal.astro'
 ---
 
-<div
-  id="delete-vinyl-modal"
-  class="fixed inset-0 bg-black/70 backdrop-blur-sm items-center justify-center z-50 hidden"
->
-  <div
-    class="bg-white dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-700 rounded-2xl p-6 w-full max-w-md mx-4 shadow-2xl"
-  >
-    <!-- Header -->
-    <div class="flex items-center justify-between mb-6">
-      <h2 class="text-xl font-bold text-neutral-900 dark:text-neutral-50">Supprimer le vinyle</h2>
-      <button
-        id="close-delete-vinyl-modal"
-        class="text-neutral-600 dark:text-neutral-400 hover:text-neutral-900 dark:hover:text-neutral-50 transition-colors"
+<Modal id="delete-vinyl-modal" size="md" animation="scale">
+  <div slot="title" class="flex items-center space-x-3">
+    <div
+      class="w-10 h-10 bg-red-100 dark:bg-red-900/20 rounded-full flex items-center justify-center"
+    >
+      <svg
+        class="w-5 h-5 text-red-600 dark:text-red-400"
+        fill="none"
+        stroke="currentColor"
+        viewBox="0 0 24 24"
       >
-        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            stroke-width="2"
-            d="M18 6 6 18"></path>
-        </svg>
-      </button>
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          stroke-width="2"
+          d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+      </svg>
     </div>
+    <div>
+      <h2 class="text-xl font-bold text-neutral-900 dark:text-neutral-50">Supprimer le vinyle</h2>
+      <p class="text-sm text-neutral-600 dark:text-neutral-400">Cette action est irréversible</p>
+    </div>
+  </div>
 
-    <!-- Contenu -->
-    <div class="mb-6">
-      <div class="flex items-center space-x-3 mb-4">
-        <div
-          class="w-12 h-12 bg-red-100 dark:bg-red-900/20 rounded-full flex items-center justify-center"
-        >
-          <svg
-            class="w-6 h-6 text-red-600 dark:text-red-400"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-          >
-            <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              stroke-width="2"
-              d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-          </svg>
-        </div>
-        <div>
-          <h3 class="font-semibold text-neutral-900 dark:text-neutral-50">Confirmation requise</h3>
-          <p class="text-sm text-neutral-600 dark:text-neutral-400">
-            Cette action est irréversible
+  <!-- Contenu principal -->
+  <div class="space-y-4">
+    <!-- Informations du vinyle à supprimer -->
+    <div id="vinyl-info" class="bg-neutral-100 dark:bg-neutral-800 rounded-xl p-4">
+      <div class="flex items-center space-x-4">
+        <img
+          id="vinyl-cover"
+          src="/default-vinyl-cover.svg"
+          alt="Couverture du vinyle"
+          class="w-16 h-16 object-cover rounded-lg shadow-sm"
+        />
+        <div class="flex-1">
+          <h4 id="vinyl-title" class="font-semibold text-neutral-900 dark:text-neutral-50 text-lg">
+            Titre de l'album
+          </h4>
+          <p id="vinyl-artist" class="text-neutral-600 dark:text-neutral-400 text-sm">
+            Nom de l'artiste
           </p>
-        </div>
-      </div>
-
-      <!-- Informations du vinyle à supprimer -->
-      <div id="vinyl-info" class="bg-neutral-100 dark:bg-neutral-800 rounded-xl p-4 mb-4">
-        <div class="flex items-center space-x-4">
-          <img
-            id="vinyl-cover"
-            src="/default-vinyl-cover.svg"
-            alt="Couverture du vinyle"
-            class="w-16 h-16 object-cover rounded-lg shadow-sm"
-          />
-          <div class="flex-1">
-            <h4
-              id="vinyl-title"
-              class="font-semibold text-neutral-900 dark:text-neutral-50 text-lg"
-            >
-              Titre de l'album
-            </h4>
-            <p id="vinyl-artist" class="text-neutral-600 dark:text-neutral-400 text-sm">
-              Nom de l'artiste
-            </p>
-            <div id="vinyl-details" class="text-xs text-neutral-500 dark:text-neutral-500 mt-1">
-              <!-- Détails supplémentaires -->
-            </div>
+          <div id="vinyl-details" class="text-xs text-neutral-500 dark:text-neutral-500 mt-1">
+            <!-- Détails supplémentaires -->
           </div>
         </div>
       </div>
+    </div>
 
+    <div class="text-center">
       <p class="text-neutral-700 dark:text-neutral-300">
         Êtes-vous sûr de vouloir supprimer <strong id="vinyl-title-confirm">ce vinyle</strong> de votre
         collection ?
-        <span class="font-semibold text-red-600 dark:text-red-400 block mt-2"
-          >Cette action est irréversible.</span
-        >
+      </p>
+      <p class="font-semibold text-red-600 dark:text-red-400 text-sm mt-2">
+        Cette action est irréversible.
       </p>
     </div>
 
-    <!-- Boutons d'action -->
-    <div class="flex space-x-3">
-      <button
-        id="cancel-delete-vinyl"
-        class="flex-1 px-4 py-3 glass dark:glass-dark text-neutral-900 dark:text-neutral-50 rounded-xl hover:bg-white/80 dark:hover:bg-neutral-900/80 transition-colors"
-      >
-        Annuler
-      </button>
-      <button
-        id="confirm-delete-vinyl"
-        class="flex-1 px-4 py-3 bg-red-600 text-white rounded-xl hover:bg-red-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-      >
-        <span id="delete-text">Supprimer</span>
-        <span id="delete-loading" class="hidden">
-          <svg
-            class="w-4 h-4 animate-spin mx-auto"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-          >
-            <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              stroke-width="2"
-              d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"
-            ></path>
-          </svg>
-        </span>
-      </button>
-    </div>
-
     <!-- Message d'erreur -->
-    <div id="delete-vinyl-error" class="hidden mt-4">
+    <div id="delete-vinyl-error" class="hidden">
       <div
         class="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-xl p-4"
       >
@@ -142,13 +84,44 @@
       </div>
     </div>
   </div>
-</div>
+
+  <!-- Actions -->
+  <div slot="footer" class="flex gap-3">
+    <button
+      data-modal-close
+      class="flex-1 px-4 py-3 glass dark:glass-dark text-neutral-900 dark:text-neutral-50 rounded-xl hover:bg-white/80 dark:hover:bg-neutral-900/80 transition-colors"
+    >
+      Annuler
+    </button>
+    <button
+      id="confirm-delete-vinyl"
+      class="flex-1 px-4 py-3 bg-red-600 text-white rounded-xl hover:bg-red-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+    >
+      <span id="delete-text">Supprimer</span>
+      <span id="delete-loading" class="hidden">
+        <svg
+          class="w-4 h-4 animate-spin mx-auto"
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"
+          ></path>
+        </svg>
+      </span>
+    </button>
+  </div>
+</Modal>
 
 <script>
+  import { modalManager } from '../utils/modal-manager'
+
   // Éléments DOM
   const modal = document.getElementById('delete-vinyl-modal')
-  const closeBtn = document.getElementById('close-delete-vinyl-modal')
-  const cancelBtn = document.getElementById('cancel-delete-vinyl')
   const confirmBtn = document.getElementById('confirm-delete-vinyl')
   const deleteText = document.getElementById('delete-text')
   const deleteLoading = document.getElementById('delete-loading')
@@ -165,7 +138,7 @@
   let currentVinylId: string | null = null
   let currentCollectionId: string | null = null
 
-  // Ouvrir le modal
+  // Ouvrir la modal
   function openDeleteVinylModal(vinyl: any) {
     console.log('Ouverture de la modal avec les données:', vinyl)
     currentVinylId = vinyl.id
@@ -199,36 +172,9 @@
       vinylTitleConfirm.textContent = vinyl.title || 'ce vinyle'
     }
 
-    if (modal) {
-      document.body.style.overflow = 'hidden'
-      modal.style.opacity = '0'
-      modal.classList.remove('hidden')
-      modal.classList.add('flex')
+    // Ouvrir la modal via le gestionnaire
+    modalManager.openModal('delete-vinyl-modal')
 
-      setTimeout(() => {
-        modal.style.transition = 'opacity 250ms ease-out'
-        modal.style.opacity = '1'
-      }, 10)
-    }
-    hideError()
-    setDeleteButtonState(false)
-  }
-
-  // Fermer le modal avec animation discrète
-  function closeDeleteVinylModal() {
-    if (modal) {
-      modal.style.transition = 'opacity 200ms ease-in'
-      modal.style.opacity = '0'
-
-      setTimeout(() => {
-        modal.classList.add('hidden')
-        modal.classList.remove('flex')
-        modal.style.transition = ''
-        modal.style.opacity = ''
-        document.body.style.overflow = ''
-      }, 200)
-    }
-    currentVinylId = null
     hideError()
     setDeleteButtonState(false)
   }
@@ -279,7 +225,7 @@
       const data = await response.json()
 
       if (response.ok && data.success) {
-        closeDeleteVinylModal()
+        modalManager.closeModal('delete-vinyl-modal')
         // Rediriger vers la collection ou le dashboard
         if (currentCollectionId) {
           window.location.href = `/collection/${currentCollectionId}`
@@ -298,17 +244,14 @@
   }
 
   // Événements
-  closeBtn?.addEventListener('click', closeDeleteVinylModal)
-  cancelBtn?.addEventListener('click', closeDeleteVinylModal)
   confirmBtn?.addEventListener('click', deleteVinyl)
 
-  modal?.addEventListener('click', (e) => {
-    if (e.target === modal) closeDeleteVinylModal()
-  })
-
-  // Écouter les événements personnalisés pour ouvrir le modal
+  // Écouter les événements personnalisés pour ouvrir la modal
   document.addEventListener('modal:delete-vinyl:open', (event: Event) => {
     const customEvent = event as CustomEvent
     openDeleteVinylModal(customEvent.detail.vinyl)
   })
+
+  // Exposer la fonction globalement
+  ;(window as any).openDeleteVinylModal = openDeleteVinylModal
 </script>

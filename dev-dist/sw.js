@@ -67,39 +67,25 @@ if (!self.define) {
     });
   };
 }
-define(['./workbox-a959eb95'], (function (workbox) { 'use strict';
+define(['./workbox-252dd0ac'], (function (workbox) { 'use strict';
 
-  self.skipWaiting();
-  workbox.clientsClaim();
-
-  /**
-   * The precacheAndRoute() method efficiently caches and responds to
-   * requests for URLs in the manifest.
-   * See https://goo.gl/S9QRab
-   */
-  workbox.precacheAndRoute([{
-    "url": "index.html",
-    "revision": "0.69r1t0780bo"
-  }], {});
-  workbox.cleanupOutdatedCaches();
-  workbox.registerRoute(new workbox.NavigationRoute(workbox.createHandlerBoundToURL("index.html"), {
-    allowlist: [/^\/$/]
-  }));
-  workbox.registerRoute(/^https:\/\/api\.discogs\.com\/.*/i, new workbox.NetworkFirst({
-    "cacheName": "discogs-api-cache",
-    plugins: [new workbox.ExpirationPlugin({
-      maxEntries: 100,
-      maxAgeSeconds: 86400
-    }), new workbox.CacheableResponsePlugin({
-      statuses: [0, 200]
-    })]
-  }), 'GET');
-  workbox.registerRoute(/^https:\/\/.*\.(?:png|jpg|jpeg|svg|gif|webp)$/i, new workbox.CacheFirst({
-    "cacheName": "images-cache",
-    plugins: [new workbox.ExpirationPlugin({
-      maxEntries: 1000,
-      maxAgeSeconds: 2592000
-    })]
-  }), 'GET');
+	self.skipWaiting();
+	workbox.clientsClaim();
+	workbox.registerRoute(/^https:\/\/api\.discogs\.com\/.*/i, new workbox.NetworkFirst({
+	  "cacheName": "discogs-api-cache",
+	  plugins: [new workbox.ExpirationPlugin({
+	    maxEntries: 100,
+	    maxAgeSeconds: 86400
+	  }), new workbox.CacheableResponsePlugin({
+	    statuses: [0, 200]
+	  })]
+	}), 'GET');
+	workbox.registerRoute(/^https:\/\/.*\.(?:png|jpg|jpeg|svg|gif|webp)$/i, new workbox.CacheFirst({
+	  "cacheName": "images-cache",
+	  plugins: [new workbox.ExpirationPlugin({
+	    maxEntries: 1000,
+	    maxAgeSeconds: 2592000
+	  })]
+	}), 'GET');
 
 }));

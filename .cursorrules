@@ -50,6 +50,48 @@
 
 - Use Tailwind for components and styling.
 - Implement responsive design with Tailwind CSS using a mobile-first approach.
+- NEVER use custom CSS classes - use only Tailwind utility classes.
+
+### Button and Icon Guidelines
+
+- All buttons with SVG icons MUST use `flex items-center justify-center` classes.
+- For buttons with icon + text, use `flex items-center justify-center gap-2`.
+- Pagination buttons MUST use `flex items-center justify-center px-3 py-2 text-sm font-medium transition-colors`.
+- Never create custom CSS classes for button styling - use Tailwind utilities only.
+
+### Modal System Guidelines
+
+- Use the unified Modal system (`src/components/ui/Modal.astro`) for all new modals.
+- Modal components should extend the base Modal with slots: `title`, content, `footer`.
+- Use event-driven architecture: emit custom events for modal actions.
+- Modal IDs should be descriptive (e.g., `delete-vinyl-modal`, `add-to-collection-modal`).
+- Always use `modalManager.openModal(id)` and `modalManager.closeModal(id)` for consistency.
+- Avoid creating inline modals with `innerHTML` - use component-based approach.
+
+### Data Handling
+
+- Extract all available vinyl data using utility functions.
+- Enrich data with Discogs API when possible, but handle failures gracefully.
+- Use optional fields to prevent 404 errors when API data is missing.
+- Always validate and sanitize data before sending to APIs.
+
+### Code Organization and Refactoring
+
+- Create utility functions in `src/utils/` for reusable logic.
+- Avoid code duplication - extract common patterns into utilities.
+- Use centralized exports in `src/utils/index.ts`.
+- Prefer composition over inheritance for component logic.
+- Extract complex functions from components into separate utility files.
+- Use typed utility functions with proper TypeScript interfaces.
+- Group related utilities in dedicated files (e.g., `vinyl-data-extractor.ts`, `notification-modals.ts`).
+
+### Error Handling and User Feedback
+
+- Use the unified notification system (`src/utils/notification-modals.ts`) for user feedback.
+- Provide loading states with `setButtonLoading()` and `resetButton()` utilities.
+- Always handle API failures gracefully with fallback behavior.
+- Show informative error messages instead of generic alerts.
+- Use proper TypeScript error types and validation.
 
 ## Performance Optimization\*\*
 

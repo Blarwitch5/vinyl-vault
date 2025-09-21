@@ -173,9 +173,9 @@ export const GET: APIRoute = async ({ request }) => {
 
     const stats = {
       totalVinyls,
-      totalValue: Number(totalValue.toFixed(2)),
+      totalValue: Math.round(totalValue),
       totalCollections: collections.length,
-      averageValue: Number(averageValue.toFixed(2)),
+      averageValue: Math.round(averageValue),
       topGenres,
     }
 

@@ -10,9 +10,12 @@ const { vinylData } = Astro.props
 <!-- Modal overlay -->
 <div
   id="add-to-collection-modal"
-  class="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 items-center justify-center p-4 hidden"
+  class="modal-overlay fixed inset-0 bg-black/70 backdrop-blur-sm z-[9999] flex items-center justify-center p-2 sm:p-4 hidden"
 >
-  <div class="glass-card dark:glass-dark rounded-lg max-w-md w-full max-h-[90vh] overflow-y-auto">
+  <div
+    class="modal-content glass-card dark:glass-dark rounded-lg max-w-sm sm:max-w-md w-full max-h-[95vh] sm:max-h-[90vh] overflow-y-auto mx-2 sm:mx-4"
+    onclick="event.stopPropagation()"
+  >
     <!-- Header -->
     <div
       class="flex items-center justify-between p-6 border-b border-neutral-200 dark:border-white/10"
@@ -25,18 +28,15 @@ const { vinylData } = Astro.props
         class="text-gray-400 hover:text-neutral-600 dark:hover:text-gray-300 p-1"
       >
         <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            stroke-width="2"
-            d="M18 6 6 18"></path>
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 6 6 18"
+          ></path>
         </svg>
       </button>
     </div>
 
     <!-- Vinyl info -->
     <div id="vinyl-info" class="p-6 border-b border-neutral-200 dark:border-white/10 hidden">
-      <div class="flex space-x-4">
+      <div class="flex gap-4">
         <img id="vinyl-cover" src="" alt="" class="w-16 h-16 object-cover rounded" />
         <div class="flex-1">
           <h4 id="vinyl-title" class="font-semibold text-neutral-900 dark:text-neutral-50"></h4>
@@ -71,7 +71,7 @@ const { vinylData } = Astro.props
         <p class="text-neutral-600 dark:text-neutral-400 mb-6">
           Vous devez être connecté pour ajouter des vinyles à votre collection.
         </p>
-        <div class="flex space-x-3">
+        <div class="flex gap-3">
           <a
             href="/login"
             class="flex-1 bg-primary-500 text-white py-2 px-4 rounded-lg hover:bg-primary-600 transition-colors text-center"
@@ -177,7 +177,7 @@ const { vinylData } = Astro.props
               class="w-full px-3 py-2 rounded-md bg-neutral-50 dark:bg-black/20 text-neutral-900 dark:text-neutral-50 focus:outline-none focus:ring-2 focus:ring-primary-500 resize-none"
             ></textarea>
           </div>
-          <div class="flex space-x-3">
+          <div class="flex gap-3">
             <button
               type="button"
               id="back-to-selection"
@@ -216,7 +216,7 @@ const { vinylData } = Astro.props
           Vinyle ajouté !
         </h4>
         <p id="success-details" class="text-neutral-600 dark:text-neutral-400 mb-6"></p>
-        <div class="flex space-x-3">
+        <div class="flex gap-3">
           <button
             id="close-success"
             class="flex-1 text-gray-700 dark:text-neutral-400 py-2 px-4 rounded-lg hover:bg-neutral-50 dark:hover:bg-dark-700 transition-colors"
@@ -236,6 +236,9 @@ const { vinylData } = Astro.props
 </div>
 
 <script>
+  // Import du gestionnaire de modales
+  import { modalManager } from '../../utils/modal-manager'
+
   // Variables d'état
   let modalElement: HTMLElement | null = null
   let currentVinyl: any = null
@@ -251,23 +254,30 @@ const { vinylData } = Astro.props
   const attachEventListeners = (): void => {
     // Éviter d'attacher les event listeners plusieurs fois
     if (eventListenersAttached) {
-      console.log('Event listeners déjà attachés, skip');
-      return;
+      return
     }
 
-    // Fermer la modal
-    document.getElementById('close-modal')?.addEventListener('click', closeModal)
+    // Fermer la modal - utiliser directement modalManager pour éviter les doublons
+    document.getElementById('close-modal')?.addEventListener('click', () => {
+      modalManager.closeModal('add-to-collection')
+    })
 
-    document.getElementById('close-success')?.addEventListener('click', closeModal)
+    document.getElementById('close-success')?.addEventListener('click', () => {
+      modalManager.closeModal('add-to-collection')
+    })
 
     // Fermer en cliquant sur l'overlay
     modalElement?.addEventListener('click', (e) => {
-      if (e.target === modalElement) closeModal()
+      if (e.target === modalElement) {
+        modalManager.closeModal('add-to-collection')
+      }
     })
 
     // Échap pour fermer
     document.addEventListener('keydown', (e) => {
-      if (e.key === 'Escape' && isModalOpen()) closeModal()
+      if (e.key === 'Escape' && isModalOpen()) {
+        modalManager.closeModal('add-to-collection')
+      }
     })
 
     // Boutons d'action
@@ -284,27 +294,26 @@ const { vinylData } = Astro.props
     // Event listener pour le bouton de création (géré par onclick dans le HTML)
 
     // Marquer que les event listeners ont été attachés
-    eventListenersAttached = true;
-    console.log('Event listeners attachés avec succès');
+    eventListenersAttached = true
   }
 
   const openModal = async (vinylData: any): Promise<void> => {
-    console.log('AddToCollectionModal: openModal appelé avec:', vinylData)
     currentVinyl = vinylData
     updateVinylInfo()
 
     if (modalElement) {
-      document.body.style.overflow = 'hidden'
-      modalElement.style.opacity = '0'
-      modalElement.classList.remove('hidden')
-      modalElement.classList.add('flex')
+      modalManager.registerModal('add-to-collection', modalElement)
 
-      setTimeout(() => {
-        if (modalElement) {
-          modalElement.style.transition = 'opacity 250ms ease-out'
-          modalElement.style.opacity = '1'
-        }
-      }, 10)
+      // Écouter l'événement de fermeture pour faire le reset
+      modalElement.addEventListener(
+        'modal:closed',
+        () => {
+          resetModal()
+        },
+        { once: true }
+      )
+
+      modalManager.openModal('add-to-collection')
     }
 
     // Vérifier l'authentification
@@ -312,25 +321,13 @@ const { vinylData } = Astro.props
   }
 
   const closeModal = (): void => {
-    if (modalElement) {
-      modalElement.style.transition = 'opacity 200ms ease-in'
-      modalElement.style.opacity = '0'
-
-      setTimeout(() => {
-        if (modalElement) {
-          modalElement.classList.add('hidden')
-          modalElement.classList.remove('flex')
-          modalElement.style.transition = ''
-          modalElement.style.opacity = ''
-          document.body.style.overflow = ''
-        }
-      }, 200)
-    }
-    resetModal()
+    // Cette fonction est maintenant juste un alias pour fermer via modalManager
+    modalManager.closeModal('add-to-collection')
+    // Le resetModal() sera appelé automatiquement via l'événement modal:closed
   }
 
   const isModalOpen = (): boolean => {
-    return !modalElement?.classList.contains('hidden')
+    return modalManager.getCurrentModal() === 'add-to-collection'
   }
 
   const updateVinylInfo = (): void => {
@@ -430,10 +427,12 @@ const { vinylData } = Astro.props
 
     // Récupérer les valeurs directement depuis les champs en cas de problème avec FormData
     const nameField = document.getElementById('collection-name') as HTMLInputElement
-    const descriptionField = document.getElementById('collection-description') as HTMLTextAreaElement
+    const descriptionField = document.getElementById(
+      'collection-description'
+    ) as HTMLTextAreaElement
 
-    const name = nameField?.value || formData.get('name') as string
-    const description = descriptionField?.value || formData.get('description') as string
+    const name = nameField?.value || (formData.get('name') as string)
+    const description = descriptionField?.value || (formData.get('description') as string)
 
     console.log('Données du formulaire:', {
       name,
@@ -442,12 +441,12 @@ const { vinylData } = Astro.props
       descriptionFieldValue: descriptionField?.value,
       formDataEntries: Array.from(formData.entries()),
       formKeys: Array.from(formData.keys()),
-      formValues: Array.from(formData.values())
-    });
+      formValues: Array.from(formData.values()),
+    })
 
     // Validation côté client
     if (!name || name.trim().length === 0) {
-      console.error('Nom de collection requis');
+      console.error('Nom de collection requis')
       // Afficher un message d'erreur à l'utilisateur
       const nameField = document.getElementById('collection-name') as HTMLInputElement
       nameField?.focus()
@@ -455,10 +454,10 @@ const { vinylData } = Astro.props
       setTimeout(() => {
         nameField?.classList.remove('ring-2', 'ring-red-500')
       }, 3000)
-      return;
+      return
     }
 
-    console.log('handleCreateCollection appelé avec:', { name, description });
+    console.log('handleCreateCollection appelé avec:', { name, description })
 
     try {
       const response = await fetch('/api/collections/create', {
@@ -522,10 +521,10 @@ const { vinylData } = Astro.props
       }
 
       showSection('success-message')
-      
+
       // Fermer le modal après 2 secondes et mettre à jour le dashboard
       setTimeout(() => {
-        closeModal()
+        modalManager.closeModal('add-to-collection')
         // Mettre à jour le dashboard
         document.dispatchEvent(new CustomEvent('stats:recalculate'))
       }, 2000)
@@ -575,10 +574,8 @@ const { vinylData } = Astro.props
 
   // Initialiser la modal
   document.addEventListener('DOMContentLoaded', () => {
-    console.log('AddToCollectionModal: Initialisation...')
     initModal()
-    console.log('AddToCollectionModal: Modal initialisée')
-    
+
     // Écouter les événements pour ouvrir le modal
     document.addEventListener('modal:add-to-collection:open', (event: Event) => {
       const customEvent = event as CustomEvent

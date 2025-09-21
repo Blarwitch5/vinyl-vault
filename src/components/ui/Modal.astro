@@ -1,92 +1,224 @@
 ---
 export interface Props {
-  id?: string
-  title?: string
-  size?: 'sm' | 'md' | 'lg' | 'xl'
-  class?: string
+  id: string
+  size?: 'sm' | 'md' | 'lg' | 'xl' | 'full'
+  closable?: boolean
+  backdrop?: 'blur' | 'dark' | 'none'
+  animation?: 'fade' | 'scale' | 'slide'
+  zIndex?: number
+  className?: string
 }
 
-const { id = 'modal', title = '', size = 'md', class: className = '', ...rest } = Astro.props
+const {
+  id,
+  size = 'md',
+  closable = true,
+  backdrop = 'blur',
+  animation = 'fade',
+  zIndex = 9999,
+  className = '',
+} = Astro.props
 
-// Tailles
-const sizes = {
-  sm: 'max-w-md',
-  md: 'max-w-lg',
-  lg: 'max-w-2xl',
-  xl: 'max-w-4xl',
+// Classes pour les tailles
+const sizeClasses = {
+  sm: 'max-w-sm',
+  md: 'max-w-md',
+  lg: 'max-w-lg',
+  xl: 'max-w-xl',
+  full: 'max-w-full',
 }
 
-const modalClasses = `${sizes[size]} ${className}`
+// Classes pour le backdrop
+const backdropClasses = {
+  blur: 'bg-black/70 backdrop-blur-sm',
+  dark: 'bg-black/80',
+  none: 'bg-transparent',
+}
+
+// Classes pour l'animation
+const animationClasses = {
+  fade: 'transition-opacity duration-300',
+  scale: 'transition-all duration-300',
+  slide: 'transition-transform duration-300',
+}
 ---
 
 <div
   {id}
-  class="fixed inset-0 bg-black/70 backdrop-blur-sm items-center justify-center z-50 hidden overflow-y-auto"
-  aria-labelledby="modal-title"
-  role="dialog"
-  aria-modal="true"
+  class={`modal-overlay fixed inset-0 ${backdropClasses[backdrop]} items-center justify-center p-2 sm:p-4 hidden ${animationClasses[animation]}`}
+  style={`z-index: ${zIndex}`}
+  data-modal-id={id}
+  data-animation={animation}
+  data-closable={closable}
 >
   <div
-    class={`relative w-full ${modalClasses} transform overflow-hidden rounded-2xl bg-white dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-700 shadow-2xl transition-all mx-4`}
-    {...rest}
+    class={`modal-content glass-card dark:glass-dark rounded-lg ${sizeClasses[size]} w-full mx-2 sm:mx-4 ${className} ${animation === 'scale' ? 'transform scale-95' : ''} ${animation === 'slide' ? 'transform translate-y-4' : ''}`}
+    onclick="event.stopPropagation()"
+    data-modal-content
   >
-    <!-- Header -->
-    {
-      title && (
-        <div class="px-6 py-4 border-b border-neutral-200 dark:border-neutral-800">
-          <h3 id="modal-title" class="text-lg font-semibold text-neutral-900 dark:text-neutral-50">
-            {title}
-          </h3>
-        </div>
-      )
-    }
+    <!-- Header avec bouton de fermeture optionnel -->
+    <div
+      class="modal-header flex items-center justify-between p-4 sm:p-6 border-b border-neutral-200 dark:border-white/10"
+    >
+      <div class="modal-title">
+        <slot name="title" />
+      </div>
+      {
+        closable && (
+          <button
+            class="modal-close-btn text-neutral-400 hover:text-neutral-600 dark:hover:text-neutral-300 transition-colors p-1 flex items-center justify-center"
+            data-modal-close
+            aria-label="Fermer la modal"
+          >
+            <svg
+              class="w-6 h-6"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M18 6 6 18"
+              />
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="m6 6 12 12"
+              />
+            </svg>
+          </button>
+        )
+      }
+    </div>
 
-    <!-- Content -->
-    <div class="px-6 py-4">
+    <!-- Contenu principal -->
+    <div class="modal-body p-4 sm:p-6">
       <slot />
     </div>
 
-    <!-- Footer -->
-    <div class="px-6 py-4 border-t border-neutral-200 dark:border-neutral-800">
+    <!-- Footer optionnel -->
+    <div class="modal-footer border-t border-neutral-200 dark:border-white/10 p-4 sm:p-6">
       <slot name="footer" />
     </div>
   </div>
 </div>
 
 <script>
-  // Fonctions d'animation pour le modal générique
-  function openModal(modalId: string) {
-    const modal = document.getElementById(modalId)
-    if (!modal) return
+  import { modalManager } from '../../utils/modal-manager'
 
-    document.body.style.overflow = 'hidden'
-    modal.style.opacity = '0'
-    modal.classList.remove('hidden')
-    modal.classList.add('flex')
+  // Auto-initialisation des modales
+  document.addEventListener('DOMContentLoaded', () => {
+    const modals = document.querySelectorAll('[data-modal-id]')
 
-    setTimeout(() => {
-      modal.style.transition = 'opacity 250ms ease-out'
-      modal.style.opacity = '1'
-    }, 10)
+    modals.forEach((modal) => {
+      const modalElement = modal as HTMLElement
+      const modalId = modalElement.dataset.modalId
+      const isClosable = modalElement.dataset.closable === 'true'
+      const animation = modalElement.dataset.animation || 'fade'
+
+      if (modalId) {
+        // Enregistrer la modal avec le gestionnaire
+        modalManager.registerModal(modalId, modalElement)
+
+        // Ajouter les événements de fermeture
+        if (isClosable) {
+          // Fermeture par clic sur le backdrop
+          modalElement.addEventListener('click', (e) => {
+            if (e.target === modalElement) {
+              modalManager.closeModal(modalId)
+            }
+          })
+
+          // Fermeture par bouton close
+          const closeBtn = modalElement.querySelector('[data-modal-close]')
+          if (closeBtn) {
+            closeBtn.addEventListener('click', () => {
+              modalManager.closeModal(modalId)
+            })
+          }
+
+          // Fermeture par Escape
+          document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && modalManager.getCurrentModal() === modalId) {
+              modalManager.closeModal(modalId)
+            }
+          })
+        }
+
+        // Événements personnalisés pour l'ouverture/fermeture
+        modalElement.addEventListener('modal:open', () => {
+          // Émettre un événement personnalisé
+          modalElement.dispatchEvent(
+            new CustomEvent('modal:opened', {
+              detail: { modalId },
+            })
+          )
+        })
+
+        modalElement.addEventListener('modal:close', () => {
+          // Émettre un événement personnalisé
+          modalElement.dispatchEvent(
+            new CustomEvent('modal:closed', {
+              detail: { modalId },
+            })
+          )
+        })
+      }
+    })
+  })
+
+  // Fonctions utilitaires globales
+  ;(window as any).openModal = function (modalId: string) {
+    modalManager.openModal(modalId)
   }
-
-  function closeModal(modalId: string) {
-    const modal = document.getElementById(modalId)
-    if (!modal) return
-
-    modal.style.transition = 'opacity 200ms ease-in'
-    modal.style.opacity = '0'
-
-    setTimeout(() => {
-      modal.classList.add('hidden')
-      modal.classList.remove('flex')
-      modal.style.transition = ''
-      modal.style.opacity = ''
-      document.body.style.overflow = ''
-    }, 200)
+  ;(window as any).closeModal = function (modalId: string) {
+    modalManager.closeModal(modalId)
   }
-
-  // Exposer les fonctions globalement
-  ;(window as any).openModal = openModal
-  ;(window as any).closeModal = closeModal
+  ;(window as any).toggleModal = function (modalId: string) {
+    if (modalManager.getCurrentModal() === modalId) {
+      modalManager.closeModal(modalId)
+    } else {
+      modalManager.openModal(modalId)
+    }
+  }
 </script>
+
+<style>
+  /* Animations personnalisées */
+  .modal-overlay[data-animation='scale'] .modal-content {
+    transition:
+      transform 300ms ease-out,
+      opacity 300ms ease-out;
+  }
+
+  .modal-overlay[data-animation='slide'] .modal-content {
+    transition:
+      transform 300ms ease-out,
+      opacity 300ms ease-out;
+  }
+
+  /* États d'animation */
+  .modal-overlay.modal-opening[data-animation='scale'] .modal-content {
+    transform: scale(1);
+    opacity: 1;
+  }
+
+  .modal-overlay.modal-opening[data-animation='slide'] .modal-content {
+    transform: translateY(0);
+    opacity: 1;
+  }
+
+  .modal-overlay.modal-closing[data-animation='scale'] .modal-content {
+    transform: scale(0.95);
+    opacity: 0;
+  }
+
+  .modal-overlay.modal-closing[data-animation='slide'] .modal-content {
+    transform: translateY(16px);
+    opacity: 0;
+  }
+</style>

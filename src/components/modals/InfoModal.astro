@@ -1,0 +1,85 @@
+---
+import Modal from '../ui/Modal.astro'
+
+export interface Props {
+  id: string
+  title?: string
+  type?: 'info' | 'success' | 'warning' | 'error'
+  closable?: boolean
+}
+
+const { id, title = 'Information', type = 'info', closable = true } = Astro.props
+
+// Configuration selon le type
+const typeConfig = {
+  info: {
+    icon: 'M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z',
+    iconBg: 'bg-blue-100 dark:bg-blue-900/20',
+    iconColor: 'text-blue-600 dark:text-blue-400',
+    borderColor: 'border-blue-200 dark:border-blue-800',
+  },
+  success: {
+    icon: 'M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z',
+    iconBg: 'bg-green-100 dark:bg-green-900/20',
+    iconColor: 'text-green-600 dark:text-green-400',
+    borderColor: 'border-green-200 dark:border-green-800',
+  },
+  warning: {
+    icon: 'M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z',
+    iconBg: 'bg-amber-100 dark:bg-amber-900/20',
+    iconColor: 'text-amber-600 dark:text-amber-400',
+    borderColor: 'border-amber-200 dark:border-amber-800',
+  },
+  error: {
+    icon: 'M18 6 6 18M6 6l12 12',
+    iconBg: 'bg-red-100 dark:bg-red-900/20',
+    iconColor: 'text-red-600 dark:text-red-400',
+    borderColor: 'border-red-200 dark:border-red-800',
+  },
+}
+
+const config = typeConfig[type]
+---
+
+<Modal {id} size="md" animation="slide" {closable}>
+  <div slot="title" class="flex items-center space-x-3">
+    <div class={`w-12 h-12 ${config.iconBg} rounded-full flex items-center justify-center`}>
+      <svg
+        class={`w-6 h-6 ${config.iconColor}`}
+        fill="none"
+        stroke="currentColor"
+        viewBox="0 0 24 24"
+      >
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d={config.icon}
+        ></path>
+      </svg>
+    </div>
+    <h2 class="text-xl font-semibold text-neutral-900 dark:text-neutral-50">{title}</h2>
+  </div>
+
+  <div class={`border ${config.borderColor} rounded-lg p-4 bg-opacity-50`}>
+    <slot />
+  </div>
+
+  <div slot="footer" class="flex justify-end">
+    <button
+      data-modal-close
+      class="px-6 py-2 bg-neutral-100 dark:bg-neutral-800 text-neutral-900 dark:text-neutral-50 rounded-lg hover:bg-neutral-200 dark:hover:bg-neutral-700 transition-colors"
+    >
+      Fermer
+    </button>
+  </div>
+</Modal>
+
+<script define:vars={{ id }}>
+  import { modalManager } from '../../utils/modal-manager'
+
+  document.addEventListener('DOMContentLoaded', () => {
+    const modal = document.getElementById(id)
+    const closeBtn = modal?.querySelector('[data-modal-close]')
+
+    closeBtn?.addEventListener('click', () => {
+      modalManager.closeModal(id)
+    })
+  })
+</script>

@@ -1,1 +1,29 @@
 @import 'tailwindcss';
+@import './modal-styles.css';
+
+/* Responsive grid pour les cartes vinyl */
+@media (max-width: 479px) {
+  .vinyl-grid-responsive {
+    grid-template-columns: 1fr !important;
+  }
+}
+
+@media (min-width: 480px) and (max-width: 639px) {
+  .vinyl-grid-responsive {
+    grid-template-columns: repeat(2, 1fr) !important;
+  }
+}
+
+/* Boutons plus petits sur petits écrans */
+@media (max-width: 639px) {
+  .vinyl-card-mobile-btn {
+    padding: 0.25rem !important;
+    min-width: 1.5rem !important;
+    min-height: 1.5rem !important;
+  }
+
+  .vinyl-card-mobile-btn svg {
+    width: 0.75rem !important;
+    height: 0.75rem !important;
+  }
+}

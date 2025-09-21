@@ -11,6 +11,32 @@ export default {
     'inline-flex',
     'grid',
 
+    // Classes d'espacement critiques
+    'gap-1',
+    'gap-2',
+    'gap-3',
+    'gap-4',
+    'gap-6',
+    'gap-8',
+    'space-x-1',
+    'space-x-2',
+    'space-x-3',
+    'space-x-4',
+    'items-center',
+    'justify-center',
+
+    // Classes responsive pour le breakpoint xs
+    'xs:grid-cols-1',
+    'xs:grid-cols-2',
+    'xs:grid-cols-3',
+    'xs:grid-cols-4',
+    'xs:p-1',
+    'xs:p-1.5',
+    'xs:w-3',
+    'xs:h-3',
+    'w-2.5',
+    'h-2.5',
+
     // Classes pour les modales optimisées
     'bg-black/70',
     'backdrop-blur-sm',
@@ -186,6 +212,15 @@ export default {
           accentHover: '#10b981', // Emerald hover
           accentSecondary: '#2dd4bf', // Teal light secondaire
         },
+      },
+      screens: {
+        xs: '480px',
+        // Les breakpoints par défaut de Tailwind restent inchangés
+        sm: '640px',
+        md: '768px',
+        lg: '1024px',
+        xl: '1280px',
+        '2xl': '1536px',
       },
       fontFamily: {
         sans: [

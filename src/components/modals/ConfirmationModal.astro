@@ -1,0 +1,120 @@
+---
+import Modal from '../ui/Modal.astro'
+
+export interface Props {
+  id: string
+  title?: string
+  message?: string
+  confirmText?: string
+  cancelText?: string
+  type?: 'info' | 'warning' | 'danger' | 'success'
+}
+
+const {
+  id,
+  title = 'Confirmation',
+  message = 'Êtes-vous sûr ?',
+  confirmText = 'Confirmer',
+  cancelText = 'Annuler',
+  type = 'info',
+} = Astro.props
+
+// Couleurs selon le type
+const typeConfig = {
+  info: {
+    icon: 'M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z',
+    iconBg: 'bg-blue-100 dark:bg-blue-900/20',
+    iconColor: 'text-blue-600 dark:text-blue-400',
+    confirmBtn: 'bg-blue-600 hover:bg-blue-700',
+  },
+  warning: {
+    icon: 'M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z',
+    iconBg: 'bg-amber-100 dark:bg-amber-900/20',
+    iconColor: 'text-amber-600 dark:text-amber-400',
+    confirmBtn: 'bg-amber-600 hover:bg-amber-700',
+  },
+  danger: {
+    icon: 'M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z',
+    iconBg: 'bg-red-100 dark:bg-red-900/20',
+    iconColor: 'text-red-600 dark:text-red-400',
+    confirmBtn: 'bg-red-600 hover:bg-red-700',
+  },
+  success: {
+    icon: 'M5 13l4 4L19 7',
+    iconBg: 'bg-green-100 dark:bg-green-900/20',
+    iconColor: 'text-green-600 dark:text-green-400',
+    confirmBtn: 'bg-green-600 hover:bg-green-700',
+  },
+}
+
+const config = typeConfig[type]
+---
+
+<Modal {id} size="sm" animation="scale">
+  <div slot="title" class="flex items-center space-x-3">
+    <div class={`w-10 h-10 ${config.iconBg} rounded-full flex items-center justify-center`}>
+      <svg
+        class={`w-5 h-5 ${config.iconColor}`}
+        fill="none"
+        stroke="currentColor"
+        viewBox="0 0 24 24"
+      >
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d={config.icon}
+        ></path>
+      </svg>
+    </div>
+    <h2 class="text-lg font-semibold text-neutral-900 dark:text-neutral-50">{title}</h2>
+  </div>
+
+  <div class="text-center">
+    <p class="text-neutral-700 dark:text-neutral-300">{message}</p>
+    <slot />
+  </div>
+
+  <div slot="footer" class="flex gap-3">
+    <button
+      data-modal-cancel
+      class="flex-1 px-4 py-2 glass dark:glass-dark text-neutral-900 dark:text-neutral-50 rounded-lg hover:bg-white/80 dark:hover:bg-neutral-900/80 transition-colors"
+    >
+      {cancelText}
+    </button>
+    <button
+      data-modal-confirm
+      class={`flex-1 px-4 py-2 ${config.confirmBtn} text-white rounded-lg transition-colors`}
+    >
+      {confirmText}
+    </button>
+  </div>
+</Modal>
+
+<script define:vars={{ id }}>
+  import { modalManager } from '../../utils/modal-manager'
+
+  // Événements pour les boutons
+  document.addEventListener('DOMContentLoaded', () => {
+    const modal = document.getElementById(id)
+    const cancelBtn = modal?.querySelector('[data-modal-cancel]')
+    const confirmBtn = modal?.querySelector('[data-modal-confirm]')
+
+    cancelBtn?.addEventListener('click', () => {
+      // Émettre un événement d'annulation
+      document.dispatchEvent(
+        new CustomEvent(`modal:${id}:cancelled`, {
+          detail: { modalId: id },
+        })
+      )
+      // Fermer la modal
+      modalManager.closeModal(id)
+    })
+
+    confirmBtn?.addEventListener('click', () => {
+      modalManager.closeModal(id)
+      // Émettre un événement de confirmation
+      document.dispatchEvent(
+        new CustomEvent(`modal:${id}:confirmed`, {
+          detail: { modalId: id },
+        })
+      )
+    })
+  })
+</script>

@@ -6,6 +6,7 @@ import SearchBar from '../components/SearchBar.astro';
 import VinylCard from '../components/VinylCard.astro';
 import { AddToCollectionModal } from '../components/collection-modal';
 import BarcodeScannerModal from '../components/BarcodeScannerModal.astro';
+import DeleteVinylModal from '../components/DeleteVinylModal.astro';
 import { searchVinyl, formatVinylForDisplay } from '../lib/discogs';
 
 const title = "Recherche de vinyles - VinylVault";
@@ -221,24 +222,26 @@ const availableFormats = [
         {!loading && !error && results.length > 0 && (
           <div>
             <!-- Grille des résultats -->
-            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 mb-8">
+            <div class="grid grid-cols-1 xs:grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 sm:gap-6 mb-8">
               {results.map(vinyl => (
                 <VinylCard 
                   vinyl={vinyl} 
                   showActions={true}
                   isInCollection={false}
+                  compactActions={true}
+                  isSearchResult={true}
                 />
               ))}
             </div>
 
             <!-- Pagination -->
             {pagination && pagination.pages > 1 && (
-              <div class="flex justify-center items-center space-x-2">
+              <div class="flex justify-center items-center gap-2">
                 <!-- Page précédente -->
                 {pagination.page > 1 && (
                   <a 
                     href={`/search?q=${encodeURIComponent(query)}&page=${pagination.page - 1}${genre ? `&genre=${genre}` : ''}${format ? `&format=${format}` : ''}${year ? `&year=${year}` : ''}`}
-                    class="px-3 py-2 text-sm font-medium text-neutral-600 dark:text-neutral-400 bg-neutral-50 dark:bg-black/20 border border-neutral-200 dark:border-neutral-700 rounded-xl hover:bg-white dark:hover:bg-neutral-900 hover:border-light-accent1 dark:hover:border-dark-accent1 transition-colors"
+                    class="flex items-center justify-center px-3 py-2 text-sm font-medium text-neutral-600 dark:text-neutral-400 bg-neutral-50 dark:bg-black/20 border border-neutral-200 dark:border-neutral-700 rounded-xl hover:bg-white dark:hover:bg-neutral-900 hover:border-light-accent1 dark:hover:border-dark-accent1 transition-colors"
                   >
                     Précédent
                   </a>
@@ -251,7 +254,7 @@ const availableFormats = [
                   .map(pageNum => (
                     <a 
                       href={`/search?q=${encodeURIComponent(query)}&page=${pageNum}${genre ? `&genre=${genre}` : ''}${format ? `&format=${format}` : ''}${year ? `&year=${year}` : ''}`}
-                      class={`px-3 py-2 text-sm font-medium rounded-xl border transition-colors ${
+                      class={`flex items-center justify-center px-3 py-2 text-sm font-medium rounded-xl border transition-colors ${
                         pageNum === pagination.page 
                           ? 'text-white bg-gradient-emerald dark:bg-gradient-emerald border-light-accent1 dark:border-dark-accent1' 
                           : 'text-neutral-600 dark:text-neutral-400 bg-neutral-50 dark:bg-black/20 border-neutral-200 dark:border-neutral-700 hover:bg-white dark:hover:bg-neutral-900 hover:border-light-accent1 dark:hover:border-dark-accent1'
@@ -265,7 +268,7 @@ const availableFormats = [
                 {pagination.page < pagination.pages && (
                   <a 
                     href={`/search?q=${encodeURIComponent(query)}&page=${pagination.page + 1}${genre ? `&genre=${genre}` : ''}${format ? `&format=${format}` : ''}${year ? `&year=${year}` : ''}`}
-                    class="px-3 py-2 text-sm font-medium text-neutral-600 dark:text-neutral-400 bg-neutral-50 dark:bg-black/20 border border-neutral-200 dark:border-neutral-700 rounded-xl hover:bg-white dark:hover:bg-neutral-900 hover:border-light-accent1 dark:hover:border-dark-accent1 transition-colors"
+                    class="flex items-center justify-center px-3 py-2 text-sm font-medium text-neutral-600 dark:text-neutral-400 bg-neutral-50 dark:bg-black/20 border border-neutral-200 dark:border-neutral-700 rounded-xl hover:bg-white dark:hover:bg-neutral-900 hover:border-light-accent1 dark:hover:border-dark-accent1 transition-colors"
                   >
                     Suivant
                   </a>
@@ -334,6 +337,7 @@ const availableFormats = [
   <!-- Modals -->
   <BarcodeScannerModal />
   <AddToCollectionModal />
+  <DeleteVinylModal />
 </BaseLayout>
 
 <script>

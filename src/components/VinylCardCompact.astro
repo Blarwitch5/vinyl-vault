@@ -29,9 +29,15 @@ const defaultCover = '/default-vinyl-cover.svg'
 <link rel="prefetch" href={`/vinyl/${vinyl.id}`} />
 
 <div
-  class="vinyl-card-compact glass dark:glass-dark dark:bg-neutral-950 dark:bg-gradient-emerald-subtle rounded-lg shadow-sm dark:shadow-white overflow-hidden hover:shadow-md dark:hover:shadow-white-md transition-all duration-300 hover:scale-105 hover:-translate-y-1 group"
+  class="vinyl-card-compact glass dark:glass-dark dark:bg-neutral-950 dark:bg-gradient-emerald-subtle rounded-lg shadow-sm dark:shadow-white overflow-hidden hover:shadow-md dark:hover:shadow-white-md transition-all duration-300 hover:scale-105 hover:-translate-y-1 group cursor-pointer focus:outline-none focus:ring-2 focus:ring-blue-300 focus:ring-offset-2"
+  data-vinyl-id={vinyl.id}
   data-discogs-id={vinyl.discogsId}
   data-discogs-url={vinyl.discogsUrl}
+  onclick="handleVinylCardClick(event, this)"
+  onkeydown="handleVinylCardKeydown(event, this)"
+  role="button"
+  tabindex="0"
+  aria-label={`${vinyl.title} par ${vinyl.artist}${vinyl.year ? `, ${vinyl.year}` : ''}. Cliquer pour ouvrir la page du vinyle`}
 >
   <!-- Image de couverture -->
   <div class="aspect-square relative glass dark:glass-dark">
@@ -55,70 +61,71 @@ const defaultCover = '/default-vinyl-cover.svg'
     <!-- Actions - Desktop (hover) -->
     {
       (showActions || showViewOnly) && (
-        <div class="hidden md:block absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-50 transition-all duration-300 flex items-center justify-center opacity-0 group-hover:opacity-100 pointer-events-none group-hover:pointer-events-auto">
+        <div class="hidden md:flex absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-50 transition-all duration-300 items-center justify-center opacity-0 group-hover:opacity-100 pointer-events-none group-hover:pointer-events-auto">
           <div class="flex gap-2 items-center justify-center w-full h-full">
-            <a
-              href={`/vinyl/${vinyl.id}`}
-              class="bg-gradient-emerald hover:bg-gradient-emerald/80 text-white p-2 rounded-full transition-colors shadow-lg flex items-center justify-center"
-              title="Voir les détails"
-            >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="24"
-                height="24"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="2"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                class="lucide lucide-eye-icon lucide-eye w-4 h-4"
-              >
-                <path d="M2.062 12.348a1 1 0 0 1 0-.696 10.75 10.75 0 0 1 19.876 0 1 1 0 0 1 0 .696 10.75 10.75 0 0 1-19.876 0" />
-                <circle cx="12" cy="12" r="3" />
-              </svg>
-            </a>
             {showActions && (
-              <button
-                class="bg-red-500 hover:bg-red-600 hover:bg-opacity-90 text-white p-2 rounded-full transition-colors shadow-lg flex items-center justify-center"
-                title="Supprimer de la collection"
-                data-vinyl-id={vinyl.id || ''}
-                data-vinyl-title={vinyl.title || ''}
-                data-vinyl-artist={vinyl.artist || ''}
-                data-vinyl-year={vinyl.year || ''}
-                data-vinyl-format={vinyl.format || ''}
-                data-vinyl-condition={vinyl.condition || ''}
-                data-vinyl-price={vinyl.price || 0}
-                data-vinyl-cover={vinyl.coverImage || '/default-vinyl-cover.svg'}
-                data-action="delete"
-              >
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    stroke-width="2"
-                    d="M3 6h5l.645-1.69A2 2 0 0 1 10.53 4h2.94a2 2 0 0 1 1.885 1.31L15 6h5"
-                  />
-                  <path
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    stroke-width="2"
-                    d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"
-                  />
-                  <path
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    stroke-width="2"
-                    d="M10 11v6"
-                  />
-                  <path
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    stroke-width="2"
-                    d="M14 11v6"
-                  />
-                </svg>
-              </button>
+              <>
+                <!-- Bouton Éditer -->
+                <button
+                  class="bg-blue-500 hover:bg-blue-600 text-white p-2 rounded-full transition-colors shadow-lg flex items-center justify-center focus:outline-none focus:ring-2 focus:ring-blue-300 focus:ring-offset-2"
+                  title="Éditer le vinyle"
+                  data-vinyl-id={vinyl.id || ''}
+                  data-action="edit"
+                  aria-label={`Éditer ${vinyl.title} par ${vinyl.artist}`}
+                >
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"
+                    />
+                  </svg>
+                </button>
+                
+                <!-- Bouton Supprimer -->
+                <button
+                  class="bg-red-500 hover:bg-red-600 text-white p-2 rounded-full transition-colors shadow-lg flex items-center justify-center focus:outline-none focus:ring-2 focus:ring-red-300 focus:ring-offset-2"
+                  title="Supprimer de la collection"
+                  data-vinyl-id={vinyl.id || ''}
+                  data-vinyl-title={vinyl.title || ''}
+                  data-vinyl-artist={vinyl.artist || ''}
+                  data-vinyl-year={vinyl.year || ''}
+                  data-vinyl-format={vinyl.format || ''}
+                  data-vinyl-condition={vinyl.condition || ''}
+                  data-vinyl-price={vinyl.price || 0}
+                  data-vinyl-cover={vinyl.coverImage || '/default-vinyl-cover.svg'}
+                  data-action="delete"
+                  aria-label={`Supprimer ${vinyl.title} par ${vinyl.artist} de votre collection`}
+                >
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M3 6h5l.645-1.69A2 2 0 0 1 10.53 4h2.94a2 2 0 0 1 1.885 1.31L15 6h5"
+                    />
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"
+                    />
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M10 11v6"
+                    />
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M14 11v6"
+                    />
+                  </svg>
+                </button>
+              </>
             )}
           </div>
         </div>
@@ -136,35 +143,12 @@ const defaultCover = '/default-vinyl-cover.svg'
         {vinyl.title}
       </h3>
 
-      <!-- Boutons mobiles à côté du titre -->
-      <div class="md:hidden flex gap-1 flex-shrink-0">
-        <a
-          href={`/vinyl/${vinyl.id}`}
-          class="bg-gradient-emerald hover:bg-gradient-emerald/80 text-white p-1 rounded-full transition-colors shadow-sm flex items-center justify-center"
-          title="Voir les détails"
-        >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            width="24"
-            height="24"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            stroke-width="2"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            class="lucide lucide-eye-icon lucide-eye w-3 h-3"
-          >
-            <path
-              d="M2.062 12.348a1 1 0 0 1 0-.696 10.75 10.75 0 0 1 19.876 0 1 1 0 0 1 0 .696 10.75 10.75 0 0 1-19.876 0"
-            ></path>
-            <circle cx="12" cy="12" r="3"></circle>
-          </svg>
-        </a>
-        {
-          showActions && (
+      <!-- Bouton supprimer mobile à côté du titre -->
+      {
+        showActions && (
+          <div class="md:hidden flex gap-1 flex-shrink-0">
             <button
-              class="bg-red-500 hover:bg-red-600 hover:bg-opacity-90 text-white p-1 rounded-full transition-colors shadow-sm flex items-center justify-center"
+              class="bg-red-500 hover:bg-red-600 hover:bg-opacity-90 text-white p-0.5 xs:p-1 rounded-full transition-colors shadow-sm flex items-center justify-center"
               title="Supprimer de la collection"
               data-vinyl-id={vinyl.id || ''}
               data-vinyl-title={vinyl.title || ''}
@@ -176,7 +160,12 @@ const defaultCover = '/default-vinyl-cover.svg'
               data-vinyl-cover={vinyl.coverImage || '/default-vinyl-cover.svg'}
               data-action="delete"
             >
-              <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg
+                class="w-2.5 h-2.5 xs:w-3 xs:h-3"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
                 <path
                   stroke-linecap="round"
                   stroke-linejoin="round"
@@ -203,9 +192,9 @@ const defaultCover = '/default-vinyl-cover.svg'
                 />
               </svg>
             </button>
-          )
-        }
-      </div>
+          </div>
+        )
+      }
     </div>
 
     <!-- Artiste -->
@@ -259,78 +248,129 @@ const defaultCover = '/default-vinyl-cover.svg'
 </style>
 
 <script>
+  // Fonction pour gérer le clic sur la carte
+  function handleVinylCardClick(event: Event, card: HTMLElement) {
+    // Empêcher le clic si on clique sur un bouton
+    const button = (event.target as HTMLElement).closest('button')
+    if (button) {
+      return // Laisser le bouton gérer son propre clic
+    }
+
+    // Empêcher le clic si on clique sur la zone d'actions hover (desktop uniquement)
+    const actionsOverlay = (event.target as HTMLElement).closest('.group-hover\\:pointer-events-auto')
+    if (actionsOverlay && window.innerWidth >= 768) {
+      return
+    }
+
+    // Rediriger vers la page de détail du vinyle sur tous les appareils
+    const vinylId = card.getAttribute('data-vinyl-id')
+    if (!vinylId) return
+
+    console.log('🖱️ Clic sur carte compact, redirection vers:', vinylId)
+    window.location.href = `/vinyl/${vinylId}`
+  }
+
+  // Fonction pour gérer les événements clavier sur les cartes
+  function handleVinylCardKeydown(event: KeyboardEvent, card: HTMLElement) {
+    if (event.key === 'Enter' || event.key === ' ') {
+      event.preventDefault()
+      handleVinylCardClick(event, card)
+    }
+  }
+
+  // Exposer les fonctions globalement
+  ;(window as any).handleVinylCardClick = handleVinylCardClick
+  ;(window as any).handleVinylCardKeydown = handleVinylCardKeydown
+
   // Gestion des actions sur les cartes compactes de vinyles
   document.addEventListener('DOMContentLoaded', () => {
-    const actionButtons = document.querySelectorAll('[data-action="delete"]')
+    const actionButtons = document.querySelectorAll('[data-action]')
 
     actionButtons.forEach((button) => {
       button.addEventListener('click', async (e) => {
         e.preventDefault()
         e.stopPropagation()
 
-        const target = e.target as HTMLButtonElement
+        const target = (e.target as HTMLElement).closest('button') as HTMLButtonElement
+        if (!target) return
+        
+        const action = target.dataset.action
         const vinylId = target.dataset.vinylId
 
-        if (!vinylId) return
+        if (!action || !vinylId) return
 
-        // Récupérer les informations du vinyle depuis les attributs data-*
-        const vinyl = {
-          id: vinylId,
-          title: target.dataset.vinylTitle || 'Titre inconnu',
-          artist: target.dataset.vinylArtist || 'Artiste inconnu',
-          year: target.dataset.vinylYear || '',
-          format: target.dataset.vinylFormat || '',
-          condition: target.dataset.vinylCondition || '',
-          price: parseFloat(target.dataset.vinylPrice || '0'),
-          coverImage: target.dataset.vinylCover || '/default-vinyl-cover.svg',
-        }
-
-        // Ouvrir la modal de confirmation
-        const openDeleteModal = (window as unknown as Record<string, unknown>)
-          .openDeleteVinylModal as
-          | ((vinyl: {
-              id: string
-              title: string
-              artist: string
-              year: string
-              format: string
-              condition: string
-              price: number
-              coverImage: string
-            }) => void)
-          | undefined
-
-        if (typeof openDeleteModal === 'function') {
-          openDeleteModal(vinyl)
-        } else {
-          console.error('Modal de suppression non disponible')
-          // Attendre que la modal soit chargée
-          setTimeout(() => {
-            const retryOpenDeleteModal = (window as unknown as Record<string, unknown>)
-              .openDeleteVinylModal as
-              | ((vinyl: {
-                  id: string
-                  title: string
-                  artist: string
-                  year: string
-                  format: string
-                  condition: string
-                  price: number
-                  coverImage: string
-                }) => void)
-              | undefined
-
-            if (typeof retryOpenDeleteModal === 'function') {
-              retryOpenDeleteModal(vinyl)
-            } else {
-              // Dernier recours avec confirm
-              if (
-                confirm(`Êtes-vous sûr de vouloir supprimer "${vinyl.title}" de votre collection ?`)
-              ) {
-                deleteVinyl(vinylId)
+        try {
+          switch (action) {
+            case 'edit':
+              // Rediriger vers la page d'édition du vinyle
+              console.log("✏️ Redirection vers l'édition pour:", vinylId)
+              window.location.href = `/vinyl/${vinylId}`
+              break
+            case 'delete':
+              // Récupérer les informations du vinyle depuis les attributs data-*
+              const vinyl = {
+                id: vinylId,
+                title: target.dataset.vinylTitle || 'Titre inconnu',
+                artist: target.dataset.vinylArtist || 'Artiste inconnu',
+                year: target.dataset.vinylYear || '',
+                format: target.dataset.vinylFormat || '',
+                condition: target.dataset.vinylCondition || '',
+                price: parseFloat(target.dataset.vinylPrice || '0'),
+                coverImage: target.dataset.vinylCover || '/default-vinyl-cover.svg',
               }
-            }
-          }, 100)
+
+              // Ouvrir la modal de confirmation
+              const openDeleteModal = (window as unknown as Record<string, unknown>)
+                .openDeleteVinylModal as
+                | ((vinyl: {
+                    id: string
+                    title: string
+                    artist: string
+                    year: string
+                    format: string
+                    condition: string
+                    price: number
+                    coverImage: string
+                  }) => void)
+                | undefined
+
+              if (typeof openDeleteModal === 'function') {
+                openDeleteModal(vinyl)
+              } else {
+                console.error('Modal de suppression non disponible')
+                // Attendre que la modal soit chargée
+                setTimeout(() => {
+                  const retryOpenDeleteModal = (window as unknown as Record<string, unknown>)
+                    .openDeleteVinylModal as
+                    | ((vinyl: {
+                        id: string
+                        title: string
+                        artist: string
+                        year: string
+                        format: string
+                        condition: string
+                        price: number
+                        coverImage: string
+                      }) => void)
+                    | undefined
+
+                  if (typeof retryOpenDeleteModal === 'function') {
+                    retryOpenDeleteModal(vinyl)
+                  } else {
+                    // Dernier recours avec confirm
+                    if (
+                      confirm(`Êtes-vous sûr de vouloir supprimer "${vinyl.title}" de votre collection ?`)
+                    ) {
+                      deleteVinyl(vinylId)
+                    }
+                  }
+                }, 100)
+              }
+              break
+          }
+        } catch (error) {
+          console.error("Erreur lors de l'action:", error)
+          alert('Une erreur est survenue. Veuillez réessayer.')
         }
       })
     })

@@ -10,8 +10,6 @@ export const GET: APIRoute = async ({ request, cookies }) => {
     const authToken = cookies.get('vinyl_vault_token')?.value
 
     if (!authToken) {
-      console.log("Auth check: Aucun token trouvé, création d'un token de test")
-
       // Créer automatiquement un token de test pour les tests
       const testToken = 'test_token_' + Date.now()
       cookies.set('vinyl_vault_token', testToken, {
@@ -58,8 +56,6 @@ export const GET: APIRoute = async ({ request, cookies }) => {
         }
       )
     }
-
-    console.log('Auth check: Token trouvé:', authToken ? 'présent' : 'absent')
 
     // Récupérer l'utilisateur le plus récent (système d'authentification simplifié)
     try {

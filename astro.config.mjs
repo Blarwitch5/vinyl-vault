@@ -19,38 +19,9 @@ export default defineConfig({
   },
   vite: {
     plugins: [
+      // Plugin PWA
       VitePWA({
         registerType: 'autoUpdate',
-        workbox: {
-          globPatterns: ['**/*.{js,css,html,ico,png,svg,woff2}'],
-          runtimeCaching: [
-            {
-              urlPattern: /^https:\/\/api\.discogs\.com\/.*/i,
-              handler: 'NetworkFirst',
-              options: {
-                cacheName: 'discogs-api-cache',
-                expiration: {
-                  maxEntries: 100,
-                  maxAgeSeconds: 60 * 60 * 24, // 24 heures
-                },
-                cacheableResponse: {
-                  statuses: [0, 200],
-                },
-              },
-            },
-            {
-              urlPattern: /^https:\/\/.*\.(?:png|jpg|jpeg|svg|gif|webp)$/i,
-              handler: 'CacheFirst',
-              options: {
-                cacheName: 'images-cache',
-                expiration: {
-                  maxEntries: 1000,
-                  maxAgeSeconds: 60 * 60 * 24 * 30, // 30 jours
-                },
-              },
-            },
-          ],
-        },
         includeAssets: [
           'favicon.svg',
           'default-avatar.svg',
@@ -104,10 +75,62 @@ export default defineConfig({
             },
           ],
         },
+        workbox: {
+          globPatterns: ['**/*.{js,css,html,ico,png,svg,woff2}'],
+          globIgnores: [
+            '**/node_modules/**/*',
+            '**/src/**/*',
+            '**/dev-dist/**/*',
+            '**/.astro/**/*',
+            '**/@vite/**/*',
+            '**/@fs/**/*',
+            '**/@id/**/*',
+            '**/manifest.webmanifest',
+          ],
+          navigateFallback: null,
+          navigateFallbackDenylist: [
+            /^\/api\//,
+            /^\/vinyl\//,
+            /^\/collection\//,
+            /^\/auth\//,
+            /^\/admin\//,
+            /^\/_astro\//,
+            /^\/@vite\//,
+            /^\/@fs\//,
+            /^\/@id\//,
+            /\.(?:json|xml|txt)$/,
+          ],
+          runtimeCaching: [
+            {
+              urlPattern: /^https:\/\/api\.discogs\.com\/.*/i,
+              handler: 'NetworkFirst',
+              options: {
+                cacheName: 'discogs-api-cache',
+                expiration: {
+                  maxEntries: 100,
+                  maxAgeSeconds: 60 * 60 * 24, // 24 heures
+                },
+                cacheableResponse: {
+                  statuses: [0, 200],
+                },
+              },
+            },
+            {
+              urlPattern: /^https:\/\/.*\.(?:png|jpg|jpeg|svg|gif|webp)$/i,
+              handler: 'CacheFirst',
+              options: {
+                cacheName: 'images-cache',
+                expiration: {
+                  maxEntries: 1000,
+                  maxAgeSeconds: 60 * 60 * 24 * 30, // 30 jours
+                },
+              },
+            },
+          ],
+        },
         devOptions: {
-          enabled: true,
+          enabled: true, // Activer en développement
           type: 'module',
-          navigateFallback: 'index.html',
         },
       }),
     ],

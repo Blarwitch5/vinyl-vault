@@ -10,9 +10,7 @@ import ShareCollectionModal from "../../components/ShareCollectionModal.astro";
 import TimelineVisualization from "../../components/TimelineVisualization.astro";
 import PersonalStatsModal from "../../components/PersonalStatsModal.astro";
 import { AddToCollectionModal } from "../../components/collection-modal";
-import { PrismaClient } from "@prisma/client";
-
-const prisma = new PrismaClient();
+import { db as prisma } from "../../lib/prisma";
 
 // Récupérer l'ID de la collection depuis l'URL
 const { id } = Astro.params;
@@ -241,7 +239,7 @@ const filterFormat = Astro.url.searchParams.get("format") || "";
               Valeur totale
             </div>
             <div class="font-semibold text-neutral-900 dark:text-neutral-50 text-lg">
-              {collectionVinyls.reduce((sum: number, vinyl: any) => sum + (vinyl.price || 0), 0).toFixed(2)} €
+              {Math.round(collectionVinyls.reduce((sum: number, vinyl: any) => sum + (vinyl.price || 0), 0))} €
             </div>
           </div>
 
@@ -261,9 +259,9 @@ const filterFormat = Astro.url.searchParams.get("format") || "";
       </div>
     </div>
 
-    <div class="grid lg:grid-cols-4 gap-6">
+    <div class="flex flex-col lg:grid lg:grid-cols-4 gap-4 lg:gap-6">
       <!-- Sidebar - Filtres et statistiques -->
-      <div class="lg:col-span-1 space-y-4">
+      <div class="lg:col-span-1 space-y-4 order-2 lg:order-1">
         <!-- Filtres -->
         <div class="mb-6 md:mb-0">
       <div class="glass dark:glass-dark rounded-xl shadow-sm">
@@ -563,11 +561,11 @@ const filterFormat = Astro.url.searchParams.get("format") || "";
       
     </div>
     <!-- Contenu principal -->
-      <div class="lg:col-span-3">
+      <div class="lg:col-span-3 order-1 lg:order-2">
         <!-- En-tête avec actions -->
-        <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
-          <div>
-            <h2 class="text-2xl font-bold text-neutral-900 dark:text-neutral-50">
+        <div class="flex flex-wrap  sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
+          <div class="w-full">
+            <h2 class="text-2xl font-bold text-neutral-900 dark:text-neutral-50 ">
               Vinyles ({collectionVinyls.length})
             </h2>
             <p class="text-neutral-600 dark:text-neutral-400">
@@ -579,7 +577,7 @@ const filterFormat = Astro.url.searchParams.get("format") || "";
             <div class="flex items-center glass dark:glass-dark rounded-xl p-1">
               <button
                 id="collection-grid-view"
-                class="px-3 py-1 rounded-xl text-sm font-medium bg-white dark:bg-neutral-800 text-neutral-900 dark:text-neutral-50 shadow-sm"
+                class="px-3 py-1 rounded-xl text-sm font-medium bg-white dark:bg-neutral-800 text-neutral-900 dark:text-neutral-50 shadow-sm flex items-center justify-center"
               >
                 <svg
                   class="w-4 h-4"
@@ -597,7 +595,7 @@ const filterFormat = Astro.url.searchParams.get("format") || "";
               </button>
               <button
                 id="collection-list-view"
-                class="px-3 py-1 rounded-xl text-sm font-medium text-neutral-600 dark:text-neutral-400 hover:bg-white dark:hover:bg-neutral-800 transition-colors"
+                class="px-3 py-1 rounded-xl text-sm font-medium text-neutral-600 dark:text-neutral-400 hover:bg-white dark:hover:bg-neutral-800 transition-colors flex items-center justify-center"
               >
                 <svg
                   class="w-4 h-4"
@@ -678,7 +676,7 @@ const filterFormat = Astro.url.searchParams.get("format") || "";
         <!-- Grille des vinyles -->
         <div
           id="collection-vinyl-grid"
-          class="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4 mb-8"
+          class="grid grid-cols-1 xs:grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4 mb-8"
         >
           {
             collectionVinyls.map((vinyl) => (
@@ -692,68 +690,132 @@ const filterFormat = Astro.url.searchParams.get("format") || "";
         </div>
 
         <!-- Vue liste (cachée par défaut) -->
-        <div id="collection-vinyl-list" class="hidden space-y-4">
+        <div id="collection-vinyl-list" class="hidden space-y-3 sm:space-y-4">
           {
             collectionVinyls.map((vinyl) => (
-              <div class="glass dark:glass-dark rounded-xl p-4 flex items-center space-x-4 hover:bg-white/80 dark:hover:bg-neutral-900/80 transition-colors">
+              <div class="glass dark:glass-dark rounded-xl p-3 sm:p-4 hover:bg-white/80 dark:hover:bg-neutral-900/80 transition-colors">
                 <!-- Pre-fetch de la page de détail du vinyle -->
                 <link rel="prefetch" href={`/vinyl/${vinyl.id}`} />
-                <img
-                  src={vinyl.coverImage || "/default-vinyl-cover.svg"}
-                  alt={`Couverture de ${vinyl.title}`}
-                  class="w-16 h-16 object-cover rounded-lg shadow-sm"
-                />
-                <div class="flex-1 min-w-0 overflow-hidden">
-                  <h3 class="font-semibold text-neutral-900 dark:text-neutral-50 truncate">
-                    {vinyl.title}
-                  </h3>
-                  <p class="text-neutral-600 dark:text-neutral-400 truncate">
-                    {vinyl.artist}
-                  </p>
-                  <div class="flex items-center space-x-2 text-sm text-neutral-600 dark:text-neutral-400">
-                    <span>{vinyl.year}</span>
-                    <span>•</span>
-                    <span>{vinyl.format}</span>
-                    <span>•</span>
-                    <span class={`px-2 py-1 rounded-full text-xs ${
-                      vinyl.condition === 'Mint' ? 'bg-green-100 dark:bg-green-900/20 text-green-800 dark:text-green-400' :
-                      vinyl.condition === 'Near Mint' ? 'bg-blue-100 dark:bg-blue-900/20 text-blue-800 dark:text-blue-400' :
-                      vinyl.condition === 'Very Good Plus' ? 'bg-yellow-100 dark:bg-yellow-900/20 text-yellow-800 dark:text-yellow-400' :
-                      vinyl.condition === 'Very Good' ? 'bg-orange-100 dark:bg-orange-900/20 text-orange-800 dark:text-orange-400' :
-                      'bg-gray-100 dark:bg-gray-900/20 text-gray-800 dark:text-gray-400'
-                    }`}>
-                      {vinyl.condition}
-                    </span>
-                  </div>
-                </div>
-                <div class="text-right flex items-center space-x-4">
-                  <div class="text-right">
-                    <div class="font-semibold text-neutral-900 dark:text-neutral-50">
-                      {vinyl.price?.toFixed(2)} €
+                <!-- Layout mobile -->
+                <div class="flex sm:hidden items-start space-x-3 w-full">
+                  <img
+                    src={vinyl.coverImage || "/default-vinyl-cover.svg"}
+                    alt={`Couverture de ${vinyl.title}`}
+                    class="w-12 h-12 object-cover rounded-lg shadow-sm flex-shrink-0"
+                  />
+                  <div class="flex-1 min-w-0">
+                    <h3 class="font-semibold text-neutral-900 dark:text-neutral-50 text-sm line-clamp-2">
+                      {vinyl.title}
+                    </h3>
+                    <p class="text-neutral-600 dark:text-neutral-400 text-sm line-clamp-1">
+                      {vinyl.artist}
+                    </p>
+                    <div class="flex items-center justify-between mt-2">
+                      <div class="flex items-center space-x-1 text-xs text-neutral-600 dark:text-neutral-400">
+                        <span>{vinyl.year}</span>
+                        <span>•</span>
+                        <span>{vinyl.format}</span>
+                      </div>
+                      <div class="font-semibold text-neutral-900 dark:text-neutral-50 text-sm">
+                        {vinyl.price?.toFixed(2)} €
+                      </div>
+                    </div>
+                    <div class="flex items-center justify-between mt-2">
+                      <span class={`px-2 py-1 rounded-full text-xs ${
+                        vinyl.condition === 'Mint' ? 'bg-green-100 dark:bg-green-900/20 text-green-800 dark:text-green-400' :
+                        vinyl.condition === 'Near Mint' ? 'bg-blue-100 dark:bg-blue-900/20 text-blue-800 dark:text-blue-400' :
+                        vinyl.condition === 'Very Good Plus' ? 'bg-yellow-100 dark:bg-yellow-900/20 text-yellow-800 dark:text-yellow-400' :
+                        vinyl.condition === 'Very Good' ? 'bg-orange-100 dark:bg-orange-900/20 text-orange-800 dark:text-orange-400' :
+                        'bg-gray-100 dark:bg-gray-900/20 text-gray-800 dark:text-gray-400'
+                      }`}>
+                        {vinyl.condition}
+                      </span>
+                      <div class="flex space-x-3">
+                        <a
+                          href={`/vinyl/${vinyl.id}`}
+                          class="text-gradient-emerald dark:text-gradient-emerald hover:text-gradient-emerald/80 dark:hover:text-gradient-emerald/80 text-sm font-medium"
+                        >
+                          Voir
+                        </a>
+                        {currentUser && currentUser.id === collection.userId && (
+                          <button 
+                            class="text-red-600 dark:text-red-400 hover:text-red-700 dark:hover:text-red-300 text-sm font-medium"
+                            data-vinyl-id={vinyl.id || ''}
+                            data-vinyl-title={vinyl.title || ''}
+                            data-vinyl-artist={vinyl.artist || ''}
+                            data-vinyl-year={vinyl.year || ''}
+                            data-vinyl-format={vinyl.format || ''}
+                            data-vinyl-condition={vinyl.condition || ''}
+                            data-vinyl-price={vinyl.price || 0}
+                            data-vinyl-cover={vinyl.coverImage || '/default-vinyl-cover.svg'}
+                          >
+                            Supprimer
+                          </button>
+                        )}
+                      </div>
                     </div>
                   </div>
-                  <div class="flex space-x-2 mt-2">
-                    <a
-                      href={`/vinyl/${vinyl.id}`}
-                      class="text-gradient-emerald dark:text-gradient-emerald hover:text-gradient-emerald/80 dark:hover:text-gradient-emerald/80 text-sm"
-                    >
-                      Voir
-                    </a>
-                    {currentUser && currentUser.id === collection.userId && (
-                      <button 
-                        class="text-red-600 dark:text-red-400 hover:text-red-700 dark:hover:text-red-300 text-sm"
-                        data-vinyl-id={vinyl.id || ''}
-                        data-vinyl-title={vinyl.title || ''}
-                        data-vinyl-artist={vinyl.artist || ''}
-                        data-vinyl-year={vinyl.year || ''}
-                        data-vinyl-format={vinyl.format || ''}
-                        data-vinyl-condition={vinyl.condition || ''}
-                        data-vinyl-price={vinyl.price || 0}
-                        data-vinyl-cover={vinyl.coverImage || '/default-vinyl-cover.svg'}
+                </div>
+
+                <!-- Layout desktop -->
+                <div class="hidden sm:flex items-center space-x-4 w-full">
+                  <img
+                    src={vinyl.coverImage || "/default-vinyl-cover.svg"}
+                    alt={`Couverture de ${vinyl.title}`}
+                    class="w-16 h-16 object-cover rounded-lg shadow-sm"
+                  />
+                  <div class="flex-1 min-w-0 overflow-hidden">
+                    <h3 class="font-semibold text-neutral-900 dark:text-neutral-50 truncate">
+                      {vinyl.title}
+                    </h3>
+                    <p class="text-neutral-600 dark:text-neutral-400 truncate">
+                      {vinyl.artist}
+                    </p>
+                    <div class="flex items-center space-x-2 text-sm text-neutral-600 dark:text-neutral-400">
+                      <span>{vinyl.year}</span>
+                      <span>•</span>
+                      <span>{vinyl.format}</span>
+                      <span>•</span>
+                      <span class={`px-2 py-1 rounded-full text-xs ${
+                        vinyl.condition === 'Mint' ? 'bg-green-100 dark:bg-green-900/20 text-green-800 dark:text-green-400' :
+                        vinyl.condition === 'Near Mint' ? 'bg-blue-100 dark:bg-blue-900/20 text-blue-800 dark:text-blue-400' :
+                        vinyl.condition === 'Very Good Plus' ? 'bg-yellow-100 dark:bg-yellow-900/20 text-yellow-800 dark:text-yellow-400' :
+                        vinyl.condition === 'Very Good' ? 'bg-orange-100 dark:bg-orange-900/20 text-orange-800 dark:text-orange-400' :
+                        'bg-gray-100 dark:bg-gray-900/20 text-gray-800 dark:text-gray-400'
+                      }`}>
+                        {vinyl.condition}
+                      </span>
+                    </div>
+                  </div>
+                  <div class="text-right flex items-center space-x-4">
+                    <div class="text-right">
+                      <div class="font-semibold text-neutral-900 dark:text-neutral-50">
+                        {vinyl.price?.toFixed(2)} €
+                      </div>
+                    </div>
+                    <div class="flex space-x-2 mt-2">
+                      <a
+                        href={`/vinyl/${vinyl.id}`}
+                        class="text-gradient-emerald dark:text-gradient-emerald hover:text-gradient-emerald/80 dark:hover:text-gradient-emerald/80 text-sm"
                       >
-                        Supprimer
-                      </button>
-                    )}
+                        Voir
+                      </a>
+                      {currentUser && currentUser.id === collection.userId && (
+                        <button 
+                          class="text-red-600 dark:text-red-400 hover:text-red-700 dark:hover:text-red-300 text-sm"
+                          data-vinyl-id={vinyl.id || ''}
+                          data-vinyl-title={vinyl.title || ''}
+                          data-vinyl-artist={vinyl.artist || ''}
+                          data-vinyl-year={vinyl.year || ''}
+                          data-vinyl-format={vinyl.format || ''}
+                          data-vinyl-condition={vinyl.condition || ''}
+                          data-vinyl-price={vinyl.price || 0}
+                          data-vinyl-cover={vinyl.coverImage || '/default-vinyl-cover.svg'}
+                        >
+                          Supprimer
+                        </button>
+                      )}
+                    </div>
                   </div>
                 </div>
               </div>
@@ -1033,7 +1095,7 @@ const filterFormat = Astro.url.searchParams.get("format") || "";
     }
 
     // Gestion des boutons de suppression dans la vue liste
-    const deleteButtons = document.querySelectorAll('button[data-vinyl-id]');
+    const deleteButtons = document.querySelectorAll('button[data-vinyl-id]:not([data-action])');
     deleteButtons.forEach(button => {
       button.addEventListener('click', async (e) => {
         e.preventDefault();

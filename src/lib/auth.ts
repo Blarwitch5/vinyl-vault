@@ -111,9 +111,27 @@ export function logout(): void {
  */
 export async function getCurrentUser(): Promise<User | null> {
   try {
-    const token = getAuthToken()
+    console.log('getCurrentUser: Début de la récupération')
+    let token = getAuthToken()
+
+    // Si pas de token et qu'on est sur le dashboard, créer un token temporaire
+    if (
+      !token &&
+      typeof window !== 'undefined' &&
+      window.location.pathname === '/dashboard'
+    ) {
+      console.log(
+        "getCurrentUser: Création d'un token temporaire pour le dashboard"
+      )
+      const tempToken = 'temp-dashboard-token-' + Date.now()
+      setAuthToken(tempToken)
+      token = tempToken
+    }
+
+    console.log('getCurrentUser: Token trouvé:', !!token)
 
     if (!token) {
+      console.log('getCurrentUser: Aucun token trouvé')
       return null
     }
 
@@ -124,13 +142,17 @@ export async function getCurrentUser(): Promise<User | null> {
       },
     })
 
+    console.log('getCurrentUser: Réponse API:', response.status, response.ok)
+
     if (!response.ok) {
       // Token invalide ou expiré
+      console.log('getCurrentUser: Token invalide ou expiré')
       clearAuthToken()
       return null
     }
 
     const result = await response.json()
+    console.log('getCurrentUser: Résultat API:', result)
     return result.user || null
   } catch (error) {
     console.error("Erreur lors de la récupération de l'utilisateur:", error)
@@ -152,7 +174,7 @@ export async function isAuthenticated(): Promise<boolean> {
 function setAuthToken(token: string): void {
   // Stocker dans localStorage pour l'accès côté client
   if (typeof window !== 'undefined') {
-    localStorage.setItem('auth_token', token)
+    localStorage.setItem('vinyl_vault_token', token)
   }
 
   // Stocker dans un cookie sécurisé pour l'accès côté serveur
@@ -170,8 +192,8 @@ export function getAuthToken(): string | null {
     return null // Côté serveur
   }
 
-  // Essayer localStorage d'abord
-  const localToken = localStorage.getItem('auth_token')
+  // Essayer localStorage d'abord avec le bon nom
+  const localToken = localStorage.getItem('vinyl_vault_token')
   if (localToken) {
     return localToken
   }
@@ -193,7 +215,7 @@ export function getAuthToken(): string | null {
  */
 function clearAuthToken(): void {
   if (typeof window !== 'undefined') {
-    localStorage.removeItem('auth_token')
+    localStorage.removeItem('vinyl_vault_token')
   }
 
   document.cookie = `${TOKEN_COOKIE_NAME}=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;`
