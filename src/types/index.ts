@@ -18,6 +18,10 @@ export type Vinyl = {
   genre?: string[]
   style?: string[]
   country?: string
+  // Nouveaux champs pour l'expérience utilisateur
+  listened?: boolean
+  userRating?: number
+  listenedAt?: string | Date
 }
 
 // Types pour les collections

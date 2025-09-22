@@ -1,11 +1,12 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro'
 import { PrismaClient } from '@prisma/client'
+import { StarRating, ListenedCheckbox } from '../../components/ui'
+import DeleteVinylModal from '../../components/DeleteVinylModal.astro'
 
 const prisma = new PrismaClient()
 import { getDiscogsReleaseDetails } from '../../lib/discogs'
 import { verifyAuth } from '../../lib/auth'
-import DeleteVinylModal from '../../components/DeleteVinylModal.astro'
 
 export const prerender = false
 
@@ -244,6 +245,38 @@ const pageDescription = `Détails complets de l'album ${vinyl.title} par ${vinyl
                   )
                 }
               </div>
+
+              <!-- Section expérience utilisateur -->
+              {user.id === vinyl.collection.userId && (
+                <div class="space-y-4 pt-4 border-t border-neutral-200 dark:border-neutral-700">
+                  <h3 class="text-lg font-semibold text-neutral-900 dark:text-neutral-50">
+                    Mon expérience
+                  </h3>
+                  
+                  <!-- Statut d'écoute -->
+                  <div class="flex items-center justify-between">
+                    <span class="text-neutral-600 dark:text-neutral-400">Statut d'écoute:</span>
+                    <ListenedCheckbox 
+                      vinylId={vinyl.id}
+                      listened={vinyl.listened || false}
+                      listenedAt={vinyl.listenedAt ? vinyl.listenedAt.toString() : null}
+                      size="sm"
+                      showLabel={true}
+                    />
+                  </div>
+                  
+                  <!-- Ma notation -->
+                  <div class="flex items-center justify-between">
+                    <span class="text-neutral-600 dark:text-neutral-400">Ma note:</span>
+                    <StarRating 
+                      vinylId={vinyl.id}
+                      rating={vinyl.userRating || 0}
+                      size="sm"
+                      readonly={false}
+                    />
+                  </div>
+                </div>
+              )}
             </div>
           </div>
         </div>

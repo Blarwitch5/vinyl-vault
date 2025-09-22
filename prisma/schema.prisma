@@ -66,6 +66,10 @@ model Vinyl {
   tracks       String?  // JSON des pistes du vinyle
   price        Float?
   note         String?
+  // Nouveaux champs pour l'expérience utilisateur
+  listened     Boolean  @default(false) // Si l'utilisateur a écouté le vinyle
+  userRating   Int?     // Note de 1 à 5 étoiles donnée par l'utilisateur
+  listenedAt   DateTime? // Date à laquelle l'utilisateur a marqué comme écouté
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
   

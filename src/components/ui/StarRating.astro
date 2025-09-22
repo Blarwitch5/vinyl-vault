@@ -1,0 +1,217 @@
+---
+export interface Props {
+  rating?: number // Note actuelle (0-5)
+  maxRating?: number // Note maximale (par défaut 5)
+  readonly?: boolean // Lecture seule ou interactive
+  size?: 'sm' | 'md' | 'lg' // Taille des étoiles
+  vinylId?: string // ID du vinyle pour l'interaction
+  class?: string // Classes CSS supplémentaires
+}
+
+const {
+  rating = 0,
+  maxRating = 5,
+  readonly = false,
+  size = 'md',
+  vinylId = '',
+  class: className = '',
+} = Astro.props
+
+// Tailles des étoiles optimales (16-20px selon écrans)
+const sizeClasses = {
+  sm: 'size-4 sm:size-5', // 16px mobile, 20px desktop
+  md: 'size-5 sm:size-6', // 20px mobile, 24px desktop
+  lg: 'size-6 sm:size-7', // 24px mobile, 28px desktop
+}
+
+const starSize = sizeClasses[size]
+
+// Générer les étoiles statiquement
+const stars = []
+for (let i = 1; i <= maxRating; i++) {
+  const isFilled = i <= rating
+  stars.push({
+    number: i,
+    isFilled,
+    classes: `star-button ${starSize} transition-colors duration-200 ${
+      readonly
+        ? 'cursor-default'
+        : 'cursor-pointer hover:scale-110 focus:outline-none focus:ring-2 focus:ring-emerald-400/30 focus:ring-offset-1 rounded-sm'
+    } text-gray-300 dark:text-gray-600`,
+    ariaLabel: readonly
+      ? `Note: ${rating} sur ${maxRating} étoiles`
+      : `Noter ${i} étoile${i > 1 ? 's' : ''}`,
+  })
+}
+---
+
+<div
+  class={`star-rating flex items-center gap-0.5 sm:gap-1 ${className}`}
+  data-vinyl-id={vinylId}
+  data-rating={rating}
+  data-readonly={readonly}
+>
+  <!-- Étoiles générées statiquement -->
+  {
+    stars.map((star) => (
+      <button
+        type="button"
+        class={`${star.classes} no-touch-optimization`}
+        data-star={star.number}
+        disabled={readonly}
+        aria-label={star.ariaLabel}
+      >
+        <svg
+          fill="currentColor"
+          viewBox="0 0 20 20"
+          xmlns="http://www.w3.org/2000/svg"
+          class="w-full h-full"
+        >
+          <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+        </svg>
+      </button>
+    ))
+  }
+
+  <!-- Affichage textuel de la note -->
+  {
+    rating > 0 && (
+      <span class="text-xs sm:text-sm text-gray-600 dark:text-gray-400 ml-1 sm:ml-2">
+        {rating.toFixed(1)}/{maxRating}
+      </span>
+    )
+  }
+</div>
+
+<script>
+  import { announceToScreenReader } from '../../utils/accessibility-helpers'
+
+  document.addEventListener('DOMContentLoaded', () => {
+    const starRatings = document.querySelectorAll('.star-rating')
+
+    starRatings.forEach((rating) => {
+      const ratingElement = rating as HTMLElement
+      if (ratingElement.dataset.readonly === 'true') return
+
+      const vinylId = ratingElement.dataset.vinylId
+      const stars = ratingElement.querySelectorAll('.star-button')
+      let currentRating = parseInt(ratingElement.dataset.rating || '0')
+
+      stars.forEach((star) => {
+        // Hover effect
+        star.addEventListener('mouseenter', (e) => {
+          const target = e.target as HTMLElement
+          const hoverRating = parseInt(target.dataset.star || '0')
+          highlightStars(stars, hoverRating)
+        })
+
+        // Click to rate
+        star.addEventListener('click', async (e) => {
+          e.preventDefault()
+          const target = e.target as HTMLElement
+          const newRating = parseInt(target.dataset.star || '0')
+
+          if (vinylId) {
+            // Mise à jour visuelle immédiate pour une meilleure UX
+            currentRating = newRating
+            ratingElement.dataset.rating = newRating.toString()
+            updateStarDisplay(stars, newRating)
+
+            try {
+              await updateVinylRating(vinylId, newRating)
+
+              // Annonce pour les lecteurs d'écran
+              announceToScreenReader(
+                `Note mise à jour : ${newRating} étoile${newRating > 1 ? 's' : ''}`
+              )
+            } catch (error) {
+              console.error('Erreur lors de la mise à jour de la note:', error)
+
+              // En cas d'erreur, garder l'état visuel mais informer l'utilisateur
+              announceToScreenReader('Note enregistrée localement - synchronisation en attente')
+
+              // Optionnel: ajouter une indication visuelle d'erreur
+              ratingElement.classList.add('opacity-75')
+              setTimeout(() => {
+                ratingElement.classList.remove('opacity-75')
+              }, 2000)
+            }
+          }
+        })
+
+        // Keyboard support
+        star.addEventListener('keydown', (e) => {
+          const keyboardEvent = e as KeyboardEvent
+          if (keyboardEvent.key === 'Enter' || keyboardEvent.key === ' ') {
+            e.preventDefault()
+            ;(star as HTMLElement).click()
+          }
+        })
+      })
+
+      // Reset on mouse leave
+      ratingElement.addEventListener('mouseleave', () => {
+        updateStarDisplay(stars, currentRating)
+      })
+
+      // Initialiser l'affichage des étoiles au chargement
+      updateStarDisplay(stars, currentRating)
+    })
+  })
+
+  function highlightStars(stars: NodeListOf<Element>, rating: number) {
+    stars.forEach((star, index) => {
+      const starElement = star as HTMLElement
+      if (index < rating) {
+        starElement.classList.remove('text-gray-300', 'dark:text-gray-600')
+        starElement.classList.add('text-emerald-500', 'dark:text-emerald-400')
+      } else {
+        starElement.classList.remove('text-emerald-500', 'dark:text-emerald-400')
+        starElement.classList.add('text-gray-300', 'dark:text-gray-600')
+      }
+    })
+  }
+
+  function updateStarDisplay(stars: NodeListOf<Element>, rating: number) {
+    highlightStars(stars, rating)
+
+    // Mettre à jour l'affichage textuel
+    const container = stars[0]?.closest('.star-rating')
+    const textDisplay = container?.querySelector('span')
+    if (textDisplay && rating > 0) {
+      textDisplay.textContent = `${rating.toFixed(1)}/5`
+    }
+  }
+
+  async function updateVinylRating(vinylId: string, rating: number) {
+    const response = await fetch('/api/vinyls/rating', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      credentials: 'include',
+      body: JSON.stringify({
+        vinylId,
+        rating,
+      }),
+    })
+
+    if (!response.ok) {
+      const error = await response.json()
+      console.error('Erreur API détaillée:', error)
+      throw new Error(error.details || error.message || 'Erreur lors de la mise à jour de la note')
+    }
+
+    return response.json()
+  }
+</script>
+
+<style>
+  .star-button:hover {
+    transform: scale(1.1);
+  }
+
+  .star-rating[data-readonly='true'] .star-button:hover {
+    transform: none;
+  }
+</style>

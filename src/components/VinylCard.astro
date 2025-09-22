@@ -1,4 +1,6 @@
 ---
+import { StarRating, ListenedCheckbox } from './ui'
+
 export interface Props {
   vinyl: {
     id: string
@@ -20,6 +22,10 @@ export interface Props {
     tracks?: string
     rating?: number
     ratingCount?: number
+    // Nouveaux champs
+    listened?: boolean
+    userRating?: number
+    listenedAt?: string | Date
   }
   showActions?: boolean
   isInCollection?: boolean
@@ -87,7 +93,7 @@ const isLocalVinyl =
 {isSearchResult ? (
               <!-- Bouton Voir infos pour les résultats de recherche -->
               <button
-                class="bg-blue-500 hover:bg-blue-600 text-white p-3 rounded-full transition-colors shadow-lg flex items-center justify-center focus:outline-none focus:ring-2 focus:ring-blue-300 focus:ring-offset-2"
+                class="bg-blue-500 hover:bg-blue-600 text-white p-2 rounded-full transition-colors shadow-lg flex items-center justify-center focus:outline-none focus:ring-2 focus:ring-blue-300 focus:ring-offset-2"
                 data-vinyl-id={vinyl.id}
                 data-action="preview-vinyl"
                 title="Voir les infos"
@@ -110,7 +116,7 @@ const isLocalVinyl =
               </button>
             ) : !isInCollection ? (
               <button
-                class="bg-gradient-emerald hover:bg-gradient-emerald/80 text-white p-3 rounded-full transition-colors shadow-lg flex items-center justify-center focus:outline-none focus:ring-2 focus:ring-emerald-300 focus:ring-offset-2"
+                class="bg-gradient-emerald hover:bg-gradient-emerald/80 text-white p-2 rounded-full transition-colors shadow-lg flex items-center justify-center focus:outline-none focus:ring-2 focus:ring-emerald-300 focus:ring-offset-2"
                 data-vinyl-id={vinyl.id}
                 data-action="add-to-collection"
                 title="Ajouter à la collection"
@@ -126,7 +132,7 @@ const isLocalVinyl =
                   stroke-width="2"
                   stroke-linecap="round"
                   stroke-linejoin="round"
-                  class="w-5 h-5"
+                  class="w-4 h-4"
                 >
                   <path d="M12 5v14" />
                   <path d="M5 12h14" />
@@ -136,7 +142,7 @@ const isLocalVinyl =
               <>
                 <!-- Bouton Éditer -->
                 <button
-                  class="bg-blue-500 hover:bg-blue-600 text-white p-3 rounded-full transition-colors shadow-lg flex items-center justify-center focus:outline-none focus:ring-2 focus:ring-blue-300 focus:ring-offset-2"
+                  class="bg-blue-500 hover:bg-blue-600 text-white p-2 rounded-full transition-colors shadow-lg flex items-center justify-center focus:outline-none focus:ring-2 focus:ring-blue-300 focus:ring-offset-2"
                   data-vinyl-id={vinyl.id}
                   data-action="edit"
                   title="Éditer le vinyle"
@@ -154,7 +160,7 @@ const isLocalVinyl =
                 
                 <!-- Bouton Supprimer -->
                 <button
-                  class="bg-red-500 hover:bg-red-600 text-white p-3 rounded-full transition-colors shadow-lg flex items-center justify-center focus:outline-none focus:ring-2 focus:ring-red-300 focus:ring-offset-2"
+                  class="bg-red-500 hover:bg-red-600 text-white p-2 rounded-full transition-colors shadow-lg flex items-center justify-center focus:outline-none focus:ring-2 focus:ring-red-300 focus:ring-offset-2"
                   data-vinyl-id={vinyl.id}
                   data-action="remove-from-collection"
                   title="Supprimer de la collection"
@@ -309,6 +315,28 @@ const isLocalVinyl =
         </p>
       )
     }
+
+    {/* Nouveaux composants d'interaction utilisateur - seulement pour les vinyles en collection */}
+    {isInCollection && (
+      <div class="flex items-center justify-between gap-2 mt-2 pt-2 border-t border-neutral-200 dark:border-neutral-700">
+        {/* Statut d'écoute */}
+        <ListenedCheckbox 
+          vinylId={vinyl.id}
+          listened={vinyl.listened || false}
+          listenedAt={vinyl.listenedAt ? vinyl.listenedAt.toString() : null}
+          size="sm"
+          showLabel={false}
+        />
+        
+        {/* Notation par étoiles */}
+        <StarRating 
+          vinylId={vinyl.id}
+          rating={vinyl.userRating || 0}
+          size="sm"
+          class="flex-1 justify-end"
+        />
+      </div>
+    )}
   </div>
 </div>
 

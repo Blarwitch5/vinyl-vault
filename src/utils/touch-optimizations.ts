@@ -114,6 +114,11 @@ export class TouchOptimizer {
    * S'assure qu'un élément a une taille tactile appropriée
    */
   private ensureTouchTargetSize(element: HTMLElement): void {
+    // Ignorer les éléments avec la classe no-touch-optimization
+    if (element.classList.contains('no-touch-optimization')) {
+      return
+    }
+
     const rect = element.getBoundingClientRect()
     const minSize = TOUCH_CONFIG.MIN_TOUCH_TARGET
 

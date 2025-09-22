@@ -31,7 +31,7 @@
     "@astrojs/vercel": "^8.2.7",
     "@fontsource/jetbrains-mono": "^5.2.8",
     "@fontsource/poppins": "^5.2.7",
-    "@prisma/client": "^6.16.2",
+    "@prisma/client": "6.16.2",
     "astro": "^5.13.8",
     "bcryptjs": "^2.4.3",
     "dotenv": "^17.2.2",

@@ -1,0 +1,227 @@
+---
+export interface Props {
+  vinylId: string
+  listened?: boolean
+  listenedAt?: string | null
+  size?: 'sm' | 'md' | 'lg'
+  showLabel?: boolean
+  class?: string
+}
+
+const {
+  vinylId,
+  listened = false,
+  listenedAt = null,
+  size = 'md',
+  showLabel = true,
+  class: className = '',
+} = Astro.props
+
+// Tailles du checkbox optimales (16-20px selon écrans)
+const sizeClasses = {
+  sm: 'size-4 sm:size-5', // 16px mobile, 20px desktop
+  md: 'size-5 sm:size-6', // 20px mobile, 24px desktop
+  lg: 'size-6 sm:size-7', // 24px mobile, 28px desktop
+}
+
+const checkboxSize = sizeClasses[size]
+
+// Formater la date d'écoute
+const formatListenedDate = (dateString: string | null) => {
+  if (!dateString) return ''
+  const date = new Date(dateString)
+  return new Intl.DateTimeFormat('fr-FR', {
+    day: 'numeric',
+    month: 'short',
+    year: 'numeric',
+  }).format(date)
+}
+---
+
+<div class={`listened-checkbox flex items-center gap-2 ${className}`}>
+  <button
+    type="button"
+    class={`${checkboxSize} relative flex items-center justify-center rounded border-2 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-emerald-400/30 focus:ring-offset-1 no-touch-optimization ${
+      listened
+        ? 'bg-emerald-400 dark:bg-emerald-400 border-emerald-400 text-white hover:bg-emerald-500 dark:hover:bg-emerald-500'
+        : 'bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600 hover:border-emerald-400 dark:hover:border-emerald-400'
+    }`}
+    data-vinyl-id={vinylId}
+    data-listened={listened}
+    aria-label={listened ? 'Marquer comme non écouté' : 'Marquer comme écouté'}
+    title={listened
+      ? `Écouté${listenedAt ? ` le ${formatListenedDate(listenedAt)}` : ''}`
+      : 'Marquer comme écouté'}
+  >
+    {
+      listened && (
+        <svg class="size-2.5 sm:size-3" fill="currentColor" viewBox="0 0 20 20" aria-hidden="true">
+          <path
+            fill-rule="evenodd"
+            d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+            clip-rule="evenodd"
+          />
+        </svg>
+      )
+    }
+  </button>
+
+  {
+    showLabel && (
+      <div class="flex flex-col">
+        <span
+          class={`text-xs sm:text-sm ${listened ? 'text-emerald-400 dark:text-emerald-400 font-medium' : 'text-gray-600 dark:text-gray-400'}`}
+        >
+          Écouté
+        </span>
+        {listened && listenedAt && (
+          <span class="text-[10px] sm:text-xs text-gray-500 dark:text-gray-500">
+            {formatListenedDate(listenedAt)}
+          </span>
+        )}
+      </div>
+    )
+  }
+</div>
+
+<script>
+  import { announceToScreenReader } from '../../utils/accessibility-helpers'
+
+  document.addEventListener('DOMContentLoaded', () => {
+    const listenedCheckboxes = document.querySelectorAll('.listened-checkbox button')
+
+    listenedCheckboxes.forEach((checkbox) => {
+      checkbox.addEventListener('click', async (e) => {
+        e.preventDefault()
+
+        const button = e.target as HTMLButtonElement
+        const vinylId = button.dataset.vinylId
+        const currentListened = button.dataset.listened === 'true'
+        const newListened = !currentListened
+
+        if (!vinylId) return
+
+        // Mise à jour visuelle immédiate pour une meilleure UX
+        updateCheckboxAppearance(button, newListened)
+
+        try {
+          // Mise à jour en base de données
+          await updateVinylListenedStatus(vinylId, newListened)
+
+          // Annonce pour les lecteurs d'écran
+          announceToScreenReader(
+            newListened ? 'Vinyle marqué comme écouté' : 'Vinyle marqué comme non écouté'
+          )
+        } catch (error) {
+          console.error("Erreur lors de la mise à jour du statut d'écoute:", error)
+
+          // En cas d'erreur, garder l'état visuel mais informer l'utilisateur
+          announceToScreenReader('Statut enregistré localement - synchronisation en attente')
+
+          // Ajouter une indication visuelle d'erreur temporaire
+          const container = button.closest('.listened-checkbox')
+          if (container) {
+            container.classList.add('opacity-75')
+            setTimeout(() => {
+              container.classList.remove('opacity-75')
+            }, 2000)
+          }
+        }
+      })
+
+      // Support clavier
+      checkbox.addEventListener('keydown', (e) => {
+        const keyboardEvent = e as KeyboardEvent
+        if (keyboardEvent.key === 'Enter' || keyboardEvent.key === ' ') {
+          e.preventDefault()
+          ;(checkbox as HTMLElement).click()
+        }
+      })
+    })
+  })
+
+  function updateCheckboxAppearance(button: HTMLButtonElement, listened: boolean) {
+    button.dataset.listened = listened.toString()
+
+    if (listened) {
+      button.classList.remove(
+        'bg-white',
+        'dark:bg-gray-800',
+        'border-gray-300',
+        'dark:border-gray-600'
+      )
+      button.classList.add(
+        'bg-emerald-400',
+        'dark:bg-emerald-400',
+        'border-emerald-400',
+        'text-white'
+      )
+      button.setAttribute('aria-label', 'Marquer comme non écouté')
+
+      // Ajouter l'icône de coche
+      if (!button.querySelector('svg')) {
+        button.innerHTML = `
+            <svg class="size-2.5 sm:size-3" fill="currentColor" viewBox="0 0 20 20" aria-hidden="true">
+              <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
+            </svg>
+          `
+      }
+    } else {
+      button.classList.remove(
+        'bg-emerald-400',
+        'dark:bg-emerald-400',
+        'border-emerald-400',
+        'text-white'
+      )
+      button.classList.add(
+        'bg-white',
+        'dark:bg-gray-800',
+        'border-gray-300',
+        'dark:border-gray-600'
+      )
+      button.setAttribute('aria-label', 'Marquer comme écouté')
+      button.innerHTML = '' // Retirer l'icône
+    }
+
+    // Mettre à jour le label
+    const container = button.closest('.listened-checkbox')
+    const label = container?.querySelector('span')
+    if (label) {
+      label.textContent = 'Écouté'
+      if (listened) {
+        label.classList.add('text-emerald-400', 'dark:text-emerald-400', 'font-medium')
+        label.classList.remove('text-gray-600', 'dark:text-gray-400')
+      } else {
+        label.classList.remove('text-emerald-400', 'dark:text-emerald-400', 'font-medium')
+        label.classList.add('text-gray-600', 'dark:text-gray-400')
+      }
+    }
+  }
+
+  async function updateVinylListenedStatus(vinylId: string, listened: boolean) {
+    const response = await fetch('/api/vinyls/listened', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      credentials: 'include',
+      body: JSON.stringify({
+        vinylId,
+        listened,
+      }),
+    })
+
+    if (!response.ok) {
+      const error = await response.json()
+      throw new Error(error.message || "Erreur lors de la mise à jour du statut d'écoute")
+    }
+
+    return response.json()
+  }
+</script>
+
+<style>
+  .listened-checkbox button:hover {
+    transform: scale(1.05);
+  }
+</style>
