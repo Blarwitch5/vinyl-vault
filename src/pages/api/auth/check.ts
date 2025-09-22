@@ -29,6 +29,7 @@ export const GET: APIRoute = async ({ request, cookies }) => {
           id: true,
           email: true,
           name: true,
+          username: true,
         },
       })
 
@@ -67,6 +68,7 @@ export const GET: APIRoute = async ({ request, cookies }) => {
           id: true,
           email: true,
           name: true,
+          username: true,
         },
       })
 
@@ -128,7 +130,7 @@ export const OPTIONS: APIRoute = async () => {
     status: 200,
     headers: {
       'Access-Control-Allow-Origin': '*',
-      'Access-Control-Allow-Methods': 'GET, OPTIONS',
+      'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
       'Access-Control-Allow-Headers': 'Content-Type, Authorization',
     },
   })

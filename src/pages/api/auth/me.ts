@@ -1,13 +1,24 @@
 import type { APIRoute } from 'astro'
-import { db as prisma } from '../../../lib/prisma'
+import { PrismaClient } from '@prisma/client'
+
+const prisma = new PrismaClient()
 
 export const GET: APIRoute = async ({ request, cookies }) => {
   try {
     console.log('API /auth/me: Début de la requête')
 
-    // Vérifier la présence du token cookie (comme dans le dashboard)
-    const token = cookies.get('vinyl_vault_token')?.value
-    console.log('API /auth/me: Token cookie trouvé:', !!token)
+    // Vérifier la présence du token (cookie ou header Authorization)
+    let token = cookies.get('vinyl_vault_token')?.value
+
+    // Si pas de token dans les cookies, vérifier l'header Authorization
+    if (!token) {
+      const authHeader = request.headers.get('authorization')
+      if (authHeader && authHeader.startsWith('Bearer ')) {
+        token = authHeader.substring(7)
+      }
+    }
+
+    console.log('API /auth/me: Token trouvé:', !!token)
 
     if (!token) {
       console.log('API /auth/me: Aucun token trouvé')
@@ -35,6 +46,7 @@ export const GET: APIRoute = async ({ request, cookies }) => {
         id: true,
         email: true,
         name: true,
+        username: true,
         avatar: true,
         createdAt: true,
       },
@@ -83,5 +95,7 @@ export const GET: APIRoute = async ({ request, cookies }) => {
         },
       }
     )
+  } finally {
+    await prisma.$disconnect()
   }
 }

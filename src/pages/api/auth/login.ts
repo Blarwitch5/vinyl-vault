@@ -5,7 +5,7 @@ import jwt from 'jsonwebtoken'
 
 const prisma = new PrismaClient()
 
-export const POST: APIRoute = async ({ request }) => {
+export const POST: APIRoute = async ({ request, cookies }) => {
   try {
     const { email, password } = await request.json()
 
@@ -32,6 +32,7 @@ export const POST: APIRoute = async ({ request }) => {
         id: true,
         email: true,
         name: true,
+        username: true,
         password: true,
         createdAt: true,
       },
@@ -82,6 +83,15 @@ export const POST: APIRoute = async ({ request }) => {
         expiresIn: '7d',
       }
     )
+
+    // Stocker le token dans un cookie sécurisé
+    cookies.set('vinyl_vault_token', token, {
+      httpOnly: true,
+      secure: false, // Mettre à true en production avec HTTPS
+      sameSite: 'lax',
+      maxAge: 60 * 60 * 24 * 7, // 7 jours
+      path: '/',
+    })
 
     // Retourner les données utilisateur (sans le mot de passe)
     const { password: _, ...userWithoutPassword } = user

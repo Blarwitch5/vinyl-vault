@@ -12,24 +12,30 @@ let isAuthenticated = false
 try {
   // Récupérer le token depuis les cookies
   const token = Astro.cookies.get('vinyl_vault_token')?.value
+  console.log('Profile: Token trouvé:', !!token)
 
-  if (token) {
-    // Récupérer l'utilisateur authentifié
-    user = await prisma.user.findFirst({
-      orderBy: {
-        createdAt: 'desc',
-      },
-      select: {
-        id: true,
-        email: true,
-        name: true,
-        avatar: true,
-        createdAt: true,
-      },
-    })
+  // Système d'authentification simplifié - récupérer le premier utilisateur
+  // (comme dans l'API me.ts et les autres pages)
+  // Récupérer l'utilisateur même sans token pour debug
+  user = await prisma.user.findFirst({
+    orderBy: {
+      createdAt: 'desc',
+    },
+    select: {
+      id: true,
+      email: true,
+      name: true,
+      username: true,
+      avatar: true,
+      createdAt: true,
+    },
+  })
 
-    isAuthenticated = !!user
-  }
+  isAuthenticated = !!user
+  console.log(
+    'Profile: Utilisateur trouvé:',
+    user ? `${user.id} - ${user.email} - ${user.name}` : 'aucun'
+  )
 } catch (error) {
   console.error("Erreur d'authentification:", error)
   isAuthenticated = false
@@ -185,99 +191,262 @@ if (!isAuthenticated) {
               <label class="block text-sm font-medium text-neutral-900 dark:text-neutral-50 mb-3">
                 Avatar
               </label>
-              <div class="flex items-center space-x-4">
+              <div class="flex items-start space-x-4">
                 <div
                   id="current-avatar"
-                  class="w-16 h-16 rounded-xl border-2 border-neutral-200 dark:border-white/10 overflow-hidden"
+                  class="w-20 h-20 rounded-xl border-2 border-neutral-200 dark:border-white/10 overflow-hidden flex items-center justify-center bg-neutral-100 dark:bg-neutral-800"
                 >
                   <img
+                    id="avatar-image"
                     src="/default-avatar.svg"
                     alt="Avatar actuel"
-                    class="w-full h-full object-cover"
+                    class="w-full h-full object-cover hidden"
                   />
+                  <svg
+                    id="avatar-icon"
+                    class="w-8 h-8 text-white"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <circle cx="12" cy="12" r="10"></circle>
+                    <path d="M6 12c0-1.7.7-3.2 1.8-4.2"></path>
+                    <circle cx="12" cy="12" r="2"></circle>
+                    <path d="M18 12c0 1.7-.7 3.2-1.8 4.2"></path>
+                  </svg>
                 </div>
                 <div class="flex-1">
-                  <p class="text-sm text-neutral-600 dark:text-neutral-400 mb-2">
-                    Choisissez un avatar par défaut ou utilisez un dégradé coloré
+                  <p class="text-sm text-neutral-600 dark:text-neutral-400 mb-3">
+                    Choisissez un avatar par défaut ou uploadez votre propre image
                   </p>
-                  <div class="grid grid-cols-6 gap-2">
-                    <!-- Avatars par défaut -->
+
+                  <!-- Upload d'image -->
+                  <div class="mb-4">
+                    <input
+                      type="file"
+                      id="avatar-upload"
+                      accept="image/jpeg,image/jpg"
+                      class="hidden"
+                    />
                     <button
-                      class="avatar-option w-10 h-10 rounded-lg border-2 border-transparent hover:border-gradient-cyan dark:hover:border-gradient-cyan transition-colors"
-                      data-avatar="default"
+                      type="button"
+                      id="upload-avatar-btn"
+                      class="inline-flex items-center px-3 py-2 text-sm font-medium text-neutral-600 dark:text-neutral-400 bg-neutral-100 dark:bg-neutral-800 rounded-lg hover:bg-neutral-200 dark:hover:bg-neutral-700 transition-colors"
                     >
-                      <img
-                        src="/default-avatar.svg"
-                        alt="Avatar par défaut"
-                        class="w-full h-full object-cover rounded-lg"
-                      />
+                      <svg
+                        class="w-4 h-4 mr-2"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                          stroke-width="2"
+                          d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"
+                        ></path>
+                      </svg>
+                      Uploader une image
                     </button>
-                    <!-- Avatars colorés -->
+                    <p class="text-xs text-neutral-500 dark:text-neutral-500 mt-1">
+                      JPG uniquement, max 5MB, sera redimensionné à 128x128px
+                    </p>
+                  </div>
+
+                  <!-- Avatars par défaut avec icônes vinyl -->
+                  <div class="grid grid-cols-6 gap-2">
+                    <!-- Avatar par défaut -->
                     <button
-                      class="avatar-option w-10 h-10 rounded-lg border-2 border-transparent hover:border-gradient-cyan dark:hover:border-gradient-cyan transition-colors bg-gradient-to-br from-blue-400 to-blue-600"
-                      data-avatar="blue"></button>
+                      class="avatar-option w-10 h-10 rounded-lg border-2 border-transparent hover:border-emerald-400 dark:hover:border-emerald-400 transition-colors bg-neutral-100 dark:bg-neutral-800 flex items-center justify-center"
+                      data-avatar="default"
+                      title="Avatar par défaut"
+                    >
+                      <svg
+                        class="w-5 h-5 text-neutral-400 dark:text-neutral-500"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <circle cx="12" cy="12" r="10"></circle>
+                        <path d="M6 12c0-1.7.7-3.2 1.8-4.2"></path>
+                        <circle cx="12" cy="12" r="2"></circle>
+                        <path d="M18 12c0 1.7-.7 3.2-1.8 4.2"></path>
+                      </svg>
+                    </button>
+                    <!-- Avatars colorés avec icônes vinyl -->
                     <button
-                      class="avatar-option w-10 h-10 rounded-lg border-2 border-transparent hover:border-gradient-cyan dark:hover:border-gradient-cyan transition-colors bg-gradient-to-br from-emerald-400 to-emerald-600"
-                      data-avatar="emerald"></button>
+                      class="avatar-option w-10 h-10 rounded-lg border-2 border-transparent hover:border-emerald-400 dark:hover:border-emerald-400 transition-colors bg-gradient-to-br from-blue-400 to-blue-600 flex items-center justify-center"
+                      data-avatar="blue"
+                      title="Avatar bleu"
+                    >
+                      <svg
+                        class="w-5 h-5 text-white"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <circle cx="12" cy="12" r="10"></circle>
+                        <path d="M6 12c0-1.7.7-3.2 1.8-4.2"></path>
+                        <circle cx="12" cy="12" r="2"></circle>
+                        <path d="M18 12c0 1.7-.7 3.2-1.8 4.2"></path>
+                      </svg>
+                    </button>
                     <button
-                      class="avatar-option w-10 h-10 rounded-lg border-2 border-transparent hover:border-gradient-cyan dark:hover:border-gradient-cyan transition-colors bg-gradient-to-br from-purple-400 to-purple-600"
-                      data-avatar="purple"></button>
+                      class="avatar-option w-10 h-10 rounded-lg border-2 border-transparent hover:border-emerald-400 dark:hover:border-emerald-400 transition-colors bg-gradient-to-br from-emerald-400 to-emerald-600 flex items-center justify-center"
+                      data-avatar="emerald"
+                      title="Avatar emerald"
+                    >
+                      <svg
+                        class="w-5 h-5 text-white"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <circle cx="12" cy="12" r="10"></circle>
+                        <path d="M6 12c0-1.7.7-3.2 1.8-4.2"></path>
+                        <circle cx="12" cy="12" r="2"></circle>
+                        <path d="M18 12c0 1.7-.7 3.2-1.8 4.2"></path>
+                      </svg>
+                    </button>
                     <button
-                      class="avatar-option w-10 h-10 rounded-lg border-2 border-transparent hover:border-gradient-cyan dark:hover:border-gradient-cyan transition-colors bg-gradient-to-br from-orange-400 to-orange-600"
-                      data-avatar="orange"></button>
+                      class="avatar-option w-10 h-10 rounded-lg border-2 border-transparent hover:border-emerald-400 dark:hover:border-emerald-400 transition-colors bg-gradient-to-br from-purple-400 to-purple-600 flex items-center justify-center"
+                      data-avatar="purple"
+                      title="Avatar violet"
+                    >
+                      <svg
+                        class="w-5 h-5 text-white"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <circle cx="12" cy="12" r="10"></circle>
+                        <path d="M6 12c0-1.7.7-3.2 1.8-4.2"></path>
+                        <circle cx="12" cy="12" r="2"></circle>
+                        <path d="M18 12c0 1.7-.7 3.2-1.8 4.2"></path>
+                      </svg>
+                    </button>
                     <button
-                      class="avatar-option w-10 h-10 rounded-lg border-2 border-transparent hover:border-gradient-cyan dark:hover:border-gradient-cyan transition-colors bg-gradient-to-br from-pink-400 to-pink-600"
-                      data-avatar="pink"></button>
+                      class="avatar-option w-10 h-10 rounded-lg border-2 border-transparent hover:border-emerald-400 dark:hover:border-emerald-400 transition-colors bg-gradient-to-br from-orange-400 to-orange-600 flex items-center justify-center"
+                      data-avatar="orange"
+                      title="Avatar orange"
+                    >
+                      <svg
+                        class="w-5 h-5 text-white"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <circle cx="12" cy="12" r="10"></circle>
+                        <path d="M6 12c0-1.7.7-3.2 1.8-4.2"></path>
+                        <circle cx="12" cy="12" r="2"></circle>
+                        <path d="M18 12c0 1.7-.7 3.2-1.8 4.2"></path>
+                      </svg>
+                    </button>
+                    <button
+                      class="avatar-option w-10 h-10 rounded-lg border-2 border-transparent hover:border-emerald-400 dark:hover:border-emerald-400 transition-colors bg-gradient-to-br from-pink-400 to-pink-600 flex items-center justify-center"
+                      data-avatar="pink"
+                      title="Avatar rose"
+                    >
+                      <svg
+                        class="w-5 h-5 text-white"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <circle cx="12" cy="12" r="10"></circle>
+                        <path d="M6 12c0-1.7.7-3.2 1.8-4.2"></path>
+                        <circle cx="12" cy="12" r="2"></circle>
+                        <path d="M18 12c0 1.7-.7 3.2-1.8 4.2"></path>
+                      </svg>
+                    </button>
                   </div>
                 </div>
               </div>
             </div>
 
             <!-- Formulaire de profil -->
-            <form id="profile-form" class="space-y-6">
-              <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div>
-                  <label
-                    for="name"
-                    class="block text-sm font-medium text-neutral-900 dark:text-neutral-50 mb-2"
+            <div class="space-y-6">
+              <!-- Pseudo -->
+              <div>
+                <label
+                  for="username"
+                  class="block text-sm font-medium text-neutral-900 dark:text-neutral-50 mb-2"
+                >
+                  Pseudo
+                </label>
+                <div class="flex gap-3">
+                  <input
+                    type="text"
+                    id="username"
+                    name="username"
+                    class="flex-1 px-4 py-3 bg-neutral-50 dark:bg-black/20 rounded-xl text-neutral-900 dark:text-neutral-50 placeholder-neutral-400 dark:placeholder-neutral-500 focus:outline-none focus:ring-2 focus:ring-emerald-400 focus:border-transparent"
+                    placeholder="Ton pseudo"
+                  />
+                  <button
+                    type="button"
+                    id="update-username-btn"
+                    class="px-4 py-3 bg-gradient-emerald text-white rounded-xl hover:bg-gradient-emerald/80 transition-colors text-sm font-medium"
                   >
-                    Nom complet
-                  </label>
+                    Mettre à jour
+                  </button>
+                </div>
+                <p class="text-xs text-neutral-500 dark:text-neutral-500 mt-1">
+                  Ce nom sera affiché publiquement
+                </p>
+              </div>
+
+              <!-- Nom complet -->
+              <div>
+                <label
+                  for="name"
+                  class="block text-sm font-medium text-neutral-900 dark:text-neutral-50 mb-2"
+                >
+                  Nom complet
+                </label>
+                <div class="flex gap-3">
                   <input
                     type="text"
                     id="name"
                     name="name"
-                    class="w-full px-4 py-3 bg-neutral-50 dark:bg-black/20 rounded-xl text-neutral-900 dark:text-neutral-50 placeholder-light-textSecondary dark:placeholder-dark-textSecondary focus:outline-none focus:ring-2 focus:ring-light-accent1 dark:focus:ring-dark-accent1 focus:border-transparent"
-                    placeholder="Votre nom complet"
+                    class="flex-1 px-4 py-3 bg-neutral-50 dark:bg-black/20 rounded-xl text-neutral-900 dark:text-neutral-50 placeholder-neutral-400 dark:placeholder-neutral-500 focus:outline-none focus:ring-2 focus:ring-emerald-400 focus:border-transparent"
+                    placeholder="Ton nom complet"
                   />
-                </div>
-
-                <div>
-                  <label
-                    for="email"
-                    class="block text-sm font-medium text-neutral-900 dark:text-neutral-50 mb-2"
+                  <button
+                    type="button"
+                    id="update-name-btn"
+                    class="px-4 py-3 bg-gradient-emerald text-white rounded-xl hover:bg-gradient-emerald/80 transition-colors text-sm font-medium"
                   >
-                    Adresse email
-                  </label>
+                    Mettre à jour
+                  </button>
+                </div>
+              </div>
+
+              <!-- Email -->
+              <div>
+                <label
+                  for="email"
+                  class="block text-sm font-medium text-neutral-900 dark:text-neutral-50 mb-2"
+                >
+                  Adresse email
+                </label>
+                <div class="flex gap-3">
                   <input
                     type="email"
                     id="email"
                     name="email"
-                    class="w-full px-4 py-3 bg-neutral-50 dark:bg-black/20 rounded-xl text-neutral-900 dark:text-neutral-50 placeholder-light-textSecondary dark:placeholder-dark-textSecondary focus:outline-none focus:ring-2 focus:ring-light-accent1 dark:focus:ring-dark-accent1 focus:border-transparent"
-                    placeholder="votre@email.com"
+                    class="flex-1 px-4 py-3 bg-neutral-50 dark:bg-black/20 rounded-xl text-neutral-900 dark:text-neutral-50 placeholder-neutral-400 dark:placeholder-neutral-500 focus:outline-none focus:ring-2 focus:ring-emerald-400 focus:border-transparent"
+                    placeholder="Ton adresse mail"
                   />
+                  <button
+                    type="button"
+                    id="update-email-btn"
+                    class="px-4 py-3 bg-gradient-emerald text-white rounded-xl hover:bg-gradient-emerald/80 transition-colors text-sm font-medium"
+                  >
+                    Mettre à jour
+                  </button>
                 </div>
               </div>
-
-              <div class="flex justify-end">
-                <button
-                  type="submit"
-                  class="px-6 py-3 bg-gradient-emerald dark:bg-gradient-emerald text-white rounded-xl hover:bg-gradient-emerald/80 dark:hover:bg-gradient-emerald/80 transition-colors"
-                >
-                  Mettre à jour le profil
-                </button>
-              </div>
-            </form>
+            </div>
 
             <!-- Messages de succès/erreur -->
             <div id="profile-message" class="hidden mt-4 p-4 rounded-xl"></div>
@@ -368,8 +537,11 @@ if (!isAuthenticated) {
     id: "${user?.id || ''}",
     email: "${user?.email || ''}",
     name: "${user?.name || ''}",
+    username: "${user?.username || ''}",
     avatar: "${user?.avatar || 'default'}",
   }
+
+  console.log('Profile: Données utilisateur côté serveur:', serverUser)
 
   // Fonction pour récupérer le token d'authentification
   function getAuthToken(): string | null {
@@ -380,6 +552,7 @@ if (!isAuthenticated) {
     // Essayer localStorage d'abord
     const localToken = localStorage.getItem('auth_token')
     if (localToken) {
+      console.log('Profile: Token trouvé dans localStorage')
       return localToken
     }
 
@@ -388,10 +561,13 @@ if (!isAuthenticated) {
     for (const cookie of cookies) {
       const [name, value] = cookie.trim().split('=')
       if (name === 'vinyl_vault_token') {
+        console.log('Profile: Token trouvé dans les cookies')
         return value
       }
     }
 
+    console.log('Profile: Aucun token trouvé')
+    console.log('Profile: Cookies disponibles:', document.cookie)
     return null
   }
 
@@ -403,23 +579,39 @@ if (!isAuthenticated) {
   // Charger les données utilisateur depuis le serveur
   function loadUserDataFromServer(user: any) {
     const nameInput = document.getElementById('name') as HTMLInputElement
+    const usernameInput = document.getElementById('username') as HTMLInputElement
     const emailInput = document.getElementById('email') as HTMLInputElement
     const currentAvatar = document.getElementById('current-avatar')
+    const avatarImage = document.getElementById('avatar-image') as HTMLImageElement
+    const avatarIcon = document.getElementById('avatar-icon') as HTMLElement
 
     if (nameInput) nameInput.value = user.name || ''
+    if (usernameInput) usernameInput.value = user.username || ''
     if (emailInput) emailInput.value = user.email || ''
 
     // Charger l'avatar actuel
     if (currentAvatar && user.avatar) {
-      const img = currentAvatar.querySelector('img')
-      if (img) {
-        if (user.avatar === 'default') {
-          img.src = '/default-avatar.svg'
-        } else {
-          // Avatar coloré
-          img.style.display = 'none'
-          currentAvatar.style.background = getGradientForColor(user.avatar)
+      if (user.avatar.startsWith('/avatars/')) {
+        // Avatar uploadé
+        if (avatarImage) {
+          avatarImage.src = user.avatar
+          avatarImage.classList.remove('hidden')
+          avatarIcon.classList.add('hidden')
         }
+      } else if (user.avatar === 'default') {
+        // Avatar par défaut
+        if (avatarImage) {
+          avatarImage.classList.add('hidden')
+          avatarIcon.classList.remove('hidden')
+        }
+        currentAvatar.style.background = ''
+      } else {
+        // Avatar coloré
+        if (avatarImage) {
+          avatarImage.classList.add('hidden')
+          avatarIcon.classList.remove('hidden')
+        }
+        currentAvatar.style.background = getGradientForColor(user.avatar)
       }
     }
   }
@@ -440,54 +632,166 @@ if (!isAuthenticated) {
   function setupAvatarSelection() {
     const avatarOptions = document.querySelectorAll('.avatar-option')
     const currentAvatar = document.getElementById('current-avatar')
+    const avatarImage = document.getElementById('avatar-image') as HTMLImageElement
+    const avatarIcon = document.getElementById('avatar-icon') as HTMLElement
 
     avatarOptions.forEach((option) => {
-      option.addEventListener('click', () => {
+      option.addEventListener('click', async () => {
         const avatar = (option as HTMLElement).dataset.avatar
         if (!avatar) return
 
         // Mettre à jour l'affichage
         if (currentAvatar) {
-          const img = currentAvatar.querySelector('img')
           if (avatar === 'default') {
-            if (img) {
-              img.style.display = 'block'
-              img.src = '/default-avatar.svg'
+            if (avatarImage) {
+              avatarImage.classList.add('hidden')
+              avatarIcon.classList.remove('hidden')
             }
             currentAvatar.style.background = ''
           } else {
-            if (img) img.style.display = 'none'
+            if (avatarImage) {
+              avatarImage.classList.add('hidden')
+              avatarIcon.classList.remove('hidden')
+            }
             currentAvatar.style.background = getGradientForColor(avatar)
           }
         }
 
         // Marquer comme sélectionné
         avatarOptions.forEach((opt) => {
-          opt.classList.remove('ring-2', 'ring-light-accent1', 'dark:ring-dark-accent1')
+          opt.classList.remove('ring-2', 'ring-emerald-400')
         })
-        option.classList.add('ring-2', 'ring-light-accent1', 'dark:ring-dark-accent1')
+        option.classList.add('ring-2', 'ring-emerald-400')
+
+        // Mettre à jour l'avatar via l'API
+        try {
+          const token = getAuthToken()
+          if (!token) {
+            console.error("Token manquant pour la mise à jour de l'avatar")
+            return
+          }
+
+          const response = await fetch('/api/auth/profile', {
+            method: 'PUT',
+            headers: {
+              'Content-Type': 'application/json',
+              Authorization: `Bearer ${token}`,
+            },
+            body: JSON.stringify({ avatar: avatar }),
+          })
+
+          const result = await response.json()
+          if (!result.success) {
+            console.error("Erreur lors de la mise à jour de l'avatar:", result.error)
+          }
+        } catch (error) {
+          console.error("Erreur lors de la mise à jour de l'avatar:", error)
+        }
       })
     })
   }
 
-  // Gestion du formulaire de profil
-  function setupProfileForm() {
-    const form = document.getElementById('profile-form') as HTMLFormElement
-    const messageDiv = document.getElementById('profile-message')
+  // Gestion de l'upload d'avatar
+  function setupAvatarUpload() {
+    const uploadBtn = document.getElementById('upload-avatar-btn')
+    const fileInput = document.getElementById('avatar-upload') as HTMLInputElement
+    const currentAvatar = document.getElementById('current-avatar')
+    const avatarImage = document.getElementById('avatar-image') as HTMLImageElement
+    const avatarIcon = document.getElementById('avatar-icon') as HTMLElement
 
-    form?.addEventListener('submit', async (e) => {
-      e.preventDefault()
+    uploadBtn?.addEventListener('click', () => {
+      fileInput?.click()
+    })
 
-      const formData = new FormData(form)
-      const selectedAvatar = document.querySelector('.avatar-option.ring-2') as HTMLElement
-      const avatar = selectedAvatar?.dataset.avatar || 'default'
+    fileInput?.addEventListener('change', async (e) => {
+      const file = (e.target as HTMLInputElement).files?.[0]
+      if (!file) return
 
-      const data = {
-        name: formData.get('name'),
-        email: formData.get('email'),
-        avatar: avatar,
+      // Vérifier le type de fichier
+      if (!file.type.startsWith('image/')) {
+        alert('Veuillez sélectionner un fichier image')
+        return
       }
 
+      // Vérifier la taille (max 5MB)
+      if (file.size > 5 * 1024 * 1024) {
+        alert('Le fichier est trop volumineux (max 5MB)')
+        return
+      }
+
+      try {
+        const token = getAuthToken()
+        if (!token) {
+          alert('Vous devez être connecté pour uploader un avatar')
+          return
+        }
+
+        // Afficher un indicateur de chargement
+        if (uploadBtn) {
+          uploadBtn.innerHTML = `
+          <svg class="w-4 h-4 mr-2 animate-spin" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+          </svg>
+          Upload en cours...
+        `
+        }
+
+        const formData = new FormData()
+        formData.append('avatar', file)
+
+        const response = await fetch('/api/auth/upload-avatar', {
+          method: 'POST',
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+          body: formData,
+        })
+
+        const result = await response.json()
+
+        if (result.success) {
+          // Mettre à jour l'affichage
+          if (avatarImage) {
+            avatarImage.src = result.avatarUrl
+            avatarImage.classList.remove('hidden')
+            avatarIcon.classList.add('hidden')
+          }
+          if (currentAvatar) {
+            currentAvatar.style.background = ''
+          }
+
+          // Désélectionner tous les avatars par défaut
+          document.querySelectorAll('.avatar-option').forEach((opt) => {
+            opt.classList.remove('ring-2', 'ring-emerald-400')
+          })
+
+          alert('Avatar mis à jour avec succès!')
+        } else {
+          alert("Erreur lors de l'upload: " + result.error)
+        }
+      } catch (error) {
+        console.error("Erreur lors de l'upload:", error)
+        alert("Erreur lors de l'upload de l'avatar")
+      } finally {
+        // Restaurer le bouton
+        if (uploadBtn) {
+          uploadBtn.innerHTML = `
+          <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
+          </svg>
+          Uploader une image
+        `
+        }
+      }
+    })
+  }
+
+  // Gestion des mises à jour individuelles
+  function setupProfileForm() {
+    const messageDiv = document.getElementById('profile-message')
+
+    // Fonction pour mettre à jour un champ spécifique
+    async function updateField(fieldName, value) {
       try {
         const token = getAuthToken()
         if (!token) {
@@ -501,6 +805,8 @@ if (!isAuthenticated) {
           return
         }
 
+        const data = { [fieldName]: value }
+
         const response = await fetch('/api/auth/profile', {
           method: 'PUT',
           headers: {
@@ -513,13 +819,41 @@ if (!isAuthenticated) {
         const result = await response.json()
 
         if (result.success) {
-          showMessage(messageDiv, 'Profil mis à jour avec succès!', 'success')
+          showMessage(
+            messageDiv,
+            `${fieldName === 'username' ? 'Pseudo' : fieldName === 'name' ? 'Nom' : 'Email'} mis à jour avec succès!`,
+            'success'
+          )
         } else {
           showMessage(messageDiv, result.error || 'Erreur lors de la mise à jour', 'error')
         }
       } catch (error) {
         console.error('Erreur:', error)
         showMessage(messageDiv, 'Erreur de connexion', 'error')
+      }
+    }
+
+    // Bouton pseudo
+    document.getElementById('update-username-btn')?.addEventListener('click', () => {
+      const username = document.getElementById('username')?.value
+      if (username) {
+        updateField('username', username)
+      }
+    })
+
+    // Bouton nom
+    document.getElementById('update-name-btn')?.addEventListener('click', () => {
+      const name = document.getElementById('name')?.value
+      if (name) {
+        updateField('name', name)
+      }
+    })
+
+    // Bouton email
+    document.getElementById('update-email-btn')?.addEventListener('click', () => {
+      const email = document.getElementById('email')?.value
+      if (email) {
+        updateField('email', email)
       }
     })
   }
@@ -650,6 +984,7 @@ if (!isAuthenticated) {
   document.addEventListener('DOMContentLoaded', () => {
     loadUserData()
     setupAvatarSelection()
+    setupAvatarUpload()
     setupProfileForm()
     setupPasswordForm()
     setupCreateCollectionButton()

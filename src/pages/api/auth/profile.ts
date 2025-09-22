@@ -45,7 +45,7 @@ export const PUT: APIRoute = async ({ request }) => {
       )
     }
 
-    const { name, email, avatar, currentPassword, newPassword } =
+    const { name, username, email, avatar, currentPassword, newPassword } =
       await request.json()
 
     // Vérifier si l'utilisateur existe
@@ -73,6 +73,10 @@ export const PUT: APIRoute = async ({ request }) => {
 
     if (name !== undefined) {
       updateData.name = name
+    }
+
+    if (username !== undefined) {
+      updateData.username = username
     }
 
     if (avatar !== undefined) {
@@ -171,6 +175,7 @@ export const PUT: APIRoute = async ({ request }) => {
         id: true,
         email: true,
         name: true,
+        username: true,
         avatar: true,
         createdAt: true,
         updatedAt: true,
