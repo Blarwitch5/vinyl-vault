@@ -29,4 +29,9 @@ pnpm-debug.log*
 # Documentation files (ignore all .md except README.md)
 *.md
 !README.md
+!DEPLOYMENT_GUIDE.md
+
+# Monorepo séparé : ignorer les variables d'env dans chaque workspace
+landing/.env
+app/.env
 

@@ -1,4 +1,0 @@
--- AlterTable
-ALTER TABLE "public"."collections" ADD COLUMN     "averagePrice" DOUBLE PRECISION NOT NULL DEFAULT 0,
-ADD COLUMN     "totalValue" DOUBLE PRECISION NOT NULL DEFAULT 0,
-ADD COLUMN     "vinylCount" INTEGER NOT NULL DEFAULT 0;
