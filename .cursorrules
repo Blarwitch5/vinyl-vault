@@ -17,14 +17,14 @@
     - background: slate-950 # Fond principal
     - text: zinc-100 # Texte principal
     - textSecondary: zinc-400 # Texte secondaire
-    - accent1: amber-500 # Accent 1 (UI)
+    - accent1: orange-500 # Accent 1 (UI)
     - accent2: emerald-400 # Accent 2 (UI)
     - surface: slate-800 # Surfaces
   - light:
     - background: zinc-50 # Fond principal
     - text: zinc-900 # Texte principal
     - textSecondary: zinc-500 # Texte secondaire
-    - accent1: amber-600 # Accent 1 (UI)
+    - accent1: orange-600 # Accent 1 (UI)
     - accent2: emerald-600 # Accent 2 (UI)
       surface: zinc-200 # Surfaces
 
