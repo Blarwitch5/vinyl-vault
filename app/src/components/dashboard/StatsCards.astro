@@ -1,0 +1,67 @@
+---
+import { Calendar, Disc3, DollarSign, TrendingUp } from '@lucide/astro/icons'
+---
+
+<div class="xs:grid-cols-2 grid grid-cols-1 gap-4 sm:gap-6 lg:grid-cols-2">
+  <!-- Valeur totale -->
+  <div class="rounded-lg bg-neutral-100 p-4 shadow-sm sm:p-6 dark:bg-neutral-800">
+    <div class="flex items-center justify-between">
+      <div>
+        <p class="text-xs font-medium text-neutral-600 dark:text-neutral-400">Valeur totale</p>
+        <p class="text-xl font-bold text-neutral-900 dark:text-neutral-100">€15,420</p>
+        <div class="mt-1 flex items-center">
+          <TrendingUp class="mr-1 h-4 w-4 text-orange-600 dark:text-orange-400" />
+          <span class="text-xs text-orange-600 dark:text-orange-400">+8.2% ce mois</span>
+        </div>
+      </div>
+      <div class="bg-gradient-rock-subtle rounded-full p-2 sm:p-3">
+        <DollarSign class="h-6 w-6 text-orange-600 dark:text-orange-400" />
+      </div>
+    </div>
+  </div>
+
+  <!-- Genre dominant -->
+  <div class="rounded-lg bg-neutral-100 p-4 shadow-sm sm:p-6 dark:bg-neutral-800">
+    <div class="flex items-center justify-between">
+      <div>
+        <p class="text-xs font-medium text-neutral-600 dark:text-neutral-400">Genre dominant</p>
+        <p class="text-xl font-bold text-neutral-900 dark:text-neutral-100">Rock</p>
+        <p class="mt-1 text-xs text-neutral-500 dark:text-neutral-400">45% de votre collection</p>
+      </div>
+      <div class="bg-gradient-rock-subtle rounded-full p-2 sm:p-3">
+        <Disc3 class="h-6 w-6 text-orange-600 dark:text-orange-400" />
+      </div>
+    </div>
+  </div>
+
+  <!-- Décennie favorite -->
+  <div class="rounded-lg bg-neutral-100 p-4 shadow-sm sm:p-6 dark:bg-neutral-800">
+    <div class="flex items-center justify-between">
+      <div>
+        <p class="text-xs font-medium text-neutral-600 dark:text-neutral-400">Décennie favorite</p>
+        <p class="text-xl font-bold text-neutral-900 dark:text-neutral-100">1970s</p>
+        <p class="mt-1 text-xs text-neutral-500 dark:text-neutral-400">250 vinyles</p>
+      </div>
+      <div class="bg-gradient-rock-subtle rounded-full p-2 sm:p-3">
+        <Calendar class="h-6 w-6 text-orange-600 dark:text-orange-400" />
+      </div>
+    </div>
+  </div>
+
+  <!-- Dépense ce mois -->
+  <div class="rounded-lg bg-neutral-100 p-4 shadow-sm sm:p-6 dark:bg-neutral-800">
+    <div class="flex items-center justify-between">
+      <div>
+        <p class="text-xs font-medium text-neutral-600 dark:text-neutral-400">Dépense ce mois</p>
+        <p class="text-xl font-bold text-neutral-900 dark:text-neutral-100">€156</p>
+        <div class="mt-1 flex items-center">
+          <TrendingUp class="mr-1 h-4 w-4 text-orange-600 dark:text-orange-400" />
+          <span class="text-xs text-orange-600 dark:text-orange-400">+12% vs mois dernier</span>
+        </div>
+      </div>
+      <div class="bg-gradient-rock-subtle rounded-full p-2 sm:p-3">
+        <DollarSign class="h-6 w-6 text-orange-600 dark:text-orange-400" />
+      </div>
+    </div>
+  </div>
+</div>

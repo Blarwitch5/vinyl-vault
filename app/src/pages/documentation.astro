@@ -1,0 +1,332 @@
+---
+import { BarChart3, BookOpen, Database, Shield, Users, Zap } from '@lucide/astro/icons';
+import DashboardLayout from '../layouts/DashboardLayout.astro';
+import Layout from '../layouts/Layout.astro';
+---
+
+<Layout title="Documentation">
+  <DashboardLayout title="Documentation" currentPath="/documentation">
+    <div class="max-w-6xl mx-auto">
+      <!-- En-tête -->
+      <div class="text-center mb-12">
+        <h1 class="text-4xl font-bold text-neutral-900 dark:text-white mb-4">
+          Documentation VinylVault
+        </h1>
+        <p class="text-xl text-neutral-600 dark:text-neutral-400 max-w-3xl mx-auto">
+          Découvrez comment VinylVault fonctionne et comment tirer le meilleur parti de votre collection de vinyles
+        </p>
+      </div>
+
+      <!-- Navigation rapide -->
+      <div class="mb-12">
+        <h2 class="text-2xl font-semibold text-neutral-900 dark:text-white mb-6">
+          Navigation rapide
+        </h2>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          <a href="#architecture" class="p-4 bg-white dark:bg-neutral-800 rounded-lg border border-neutral-200 dark:border-neutral-700 hover:border-orange-300 dark:hover:border-orange-600 transition-colors">
+            <div class="flex items-center mb-2">
+              <Database class="w-5 h-5 text-orange-600 dark:text-orange-400 mr-2" />
+              <h3 class="font-semibold text-neutral-900 dark:text-white">Architecture</h3>
+            </div>
+            <p class="text-sm text-neutral-600 dark:text-neutral-400">Comprendre la structure de l'application</p>
+          </a>
+          
+          <a href="#fonctionnalites" class="p-4 bg-white dark:bg-neutral-800 rounded-lg border border-neutral-200 dark:border-neutral-700 hover:border-orange-300 dark:hover:border-orange-600 transition-colors">
+            <div class="flex items-center mb-2">
+              <Zap class="w-5 h-5 text-orange-600 dark:text-orange-400 mr-2" />
+              <h3 class="font-semibold text-neutral-900 dark:text-white">Fonctionnalités</h3>
+            </div>
+            <p class="text-sm text-neutral-600 dark:text-neutral-400">Guide des fonctionnalités principales</p>
+          </a>
+          
+          <a href="#donnees" class="p-4 bg-white dark:bg-neutral-800 rounded-lg border border-neutral-200 dark:border-neutral-700 hover:border-orange-300 dark:hover:border-orange-600 transition-colors">
+            <div class="flex items-center mb-2">
+              <BarChart3 class="w-5 h-5 text-orange-600 dark:text-orange-400 mr-2" />
+              <h3 class="font-semibold text-neutral-900 dark:text-white">Gestion des données</h3>
+            </div>
+            <p class="text-sm text-neutral-600 dark:text-neutral-400">Comment vos données sont gérées</p>
+          </a>
+          
+          <a href="#securite" class="p-4 bg-white dark:bg-neutral-800 rounded-lg border border-neutral-200 dark:border-neutral-700 hover:border-orange-300 dark:hover:border-orange-600 transition-colors">
+            <div class="flex items-center mb-2">
+              <Shield class="w-5 h-5 text-orange-600 dark:text-orange-400 mr-2" />
+              <h3 class="font-semibold text-neutral-900 dark:text-white">Sécurité</h3>
+            </div>
+            <p class="text-sm text-neutral-600 dark:text-neutral-400">Protection de vos données</p>
+          </a>
+          
+          <a href="#api" class="p-4 bg-white dark:bg-neutral-800 rounded-lg border border-neutral-200 dark:border-neutral-700 hover:border-orange-300 dark:hover:border-orange-600 transition-colors">
+            <div class="flex items-center mb-2">
+              <BookOpen class="w-5 h-5 text-orange-600 dark:text-orange-400 mr-2" />
+              <h3 class="font-semibold text-neutral-900 dark:text-white">API & Intégrations</h3>
+            </div>
+            <p class="text-sm text-neutral-600 dark:text-neutral-400">Intégrations externes</p>
+          </a>
+          
+          <a href="#support" class="p-4 bg-white dark:bg-neutral-800 rounded-lg border border-neutral-200 dark:border-neutral-700 hover:border-orange-300 dark:hover:border-orange-600 transition-colors">
+            <div class="flex items-center mb-2">
+              <Users class="w-5 h-5 text-orange-600 dark:text-orange-400 mr-2" />
+              <h3 class="font-semibold text-neutral-900 dark:text-white">Support</h3>
+            </div>
+            <p class="text-sm text-neutral-600 dark:text-neutral-400">Obtenir de l'aide</p>
+          </a>
+        </div>
+      </div>
+
+      <!-- Architecture -->
+      <section id="architecture" class="mb-12">
+        <h2 class="text-3xl font-bold text-neutral-900 dark:text-white mb-6">
+          🏗️ Architecture de l'application
+        </h2>
+        
+        <div class="bg-white dark:bg-neutral-800 rounded-lg border border-neutral-200 dark:border-neutral-700 p-6 mb-6">
+          <h3 class="text-xl font-semibold text-neutral-900 dark:text-white mb-4">
+            Stack technologique
+          </h3>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div>
+              <h4 class="font-medium text-neutral-900 dark:text-white mb-2">Frontend</h4>
+              <ul class="space-y-1 text-sm text-neutral-600 dark:text-neutral-400">
+                <li>• <strong>Astro</strong> - Framework web moderne</li>
+                <li>• <strong>Tailwind CSS</strong> - Framework CSS utilitaire</li>
+                <li>• <strong>TypeScript</strong> - Typage statique</li>
+                <li>• <strong>Lucide Icons</strong> - Icônes SVG</li>
+                <li>• <strong>Flowbite</strong> - Composants UI</li>
+              </ul>
+            </div>
+            <div>
+              <h4 class="font-medium text-neutral-900 dark:text-white mb-2">Backend & Base de données</h4>
+              <ul class="space-y-1 text-sm text-neutral-600 dark:text-neutral-400">
+                <li>• <strong>Prisma</strong> - ORM TypeScript</li>
+                <li>• <strong>PostgreSQL</strong> - Base de données relationnelle</li>
+                <li>• <strong>Vercel</strong> - Hébergement et déploiement</li>
+                <li>• <strong>Discogs API</strong> - Base de données musicale</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <div class="bg-white dark:bg-neutral-800 rounded-lg border border-neutral-200 dark:border-neutral-700 p-6">
+          <h3 class="text-xl font-semibold text-neutral-900 dark:text-white mb-4">
+            Structure des composants
+          </h3>
+          <div class="bg-neutral-50 dark:bg-neutral-900 rounded-lg p-4 font-mono text-sm">
+            <div class="text-neutral-600 dark:text-neutral-400 mb-2">src/</div>
+            <div class="ml-4">
+              <div class="text-neutral-600 dark:text-neutral-400 mb-1">├── components/</div>
+              <div class="ml-4 text-neutral-600 dark:text-neutral-400 mb-1">│   ├── ui/ (composants réutilisables)</div>
+              <div class="ml-4 text-neutral-600 dark:text-neutral-400 mb-1">│   ├── SidebarMenu.astro</div>
+              <div class="ml-4 text-neutral-600 dark:text-neutral-400 mb-1">│   └── ...</div>
+              <div class="text-neutral-600 dark:text-neutral-400 mb-1">├── layouts/</div>
+              <div class="ml-4 text-neutral-600 dark:text-neutral-400 mb-1">│   ├── Layout.astro (layout principal)</div>
+              <div class="ml-4 text-neutral-600 dark:text-neutral-400 mb-1">│   └── DashboardLayout.astro</div>
+              <div class="text-neutral-600 dark:text-neutral-400 mb-1">├── pages/</div>
+              <div class="ml-4 text-neutral-600 dark:text-neutral-400 mb-1">│   ├── dashboard.astro</div>
+              <div class="ml-4 text-neutral-600 dark:text-neutral-400 mb-1">│   ├── collections.astro</div>
+              <div class="ml-4 text-neutral-600 dark:text-neutral-400 mb-1">│   └── ...</div>
+              <div class="text-neutral-600 dark:text-neutral-400 mb-1">└── lib/</div>
+              <div class="ml-4 text-neutral-600 dark:text-neutral-400">    ├── prisma.ts</div>
+              <div class="ml-4 text-neutral-600 dark:text-neutral-400">    └── discogs.ts</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Fonctionnalités -->
+      <section id="fonctionnalites" class="mb-12">
+        <h2 class="text-3xl font-bold text-neutral-900 dark:text-white mb-6">
+          ⚡ Fonctionnalités principales
+        </h2>
+        
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <div class="bg-white dark:bg-neutral-800 rounded-lg border border-neutral-200 dark:border-neutral-700 p-6">
+            <h3 class="text-xl font-semibold text-neutral-900 dark:text-white mb-4">
+              📚 Gestion des collections
+            </h3>
+            <ul class="space-y-2 text-neutral-600 dark:text-neutral-400">
+              <li>• <strong>Collections multiples</strong> - Organisez vos vinyles par genre, artiste, ou période</li>
+              <li>• <strong>Scanner de code-barres</strong> - Ajout rapide via la caméra</li>
+              <li>• <strong>Recherche Discogs</strong> - Base de données complète de vinyles</li>
+              <li>• <strong>Métadonnées enrichies</strong> - Artiste, album, année, genre, condition</li>
+              <li>• <strong>Valeurs estimées</strong> - Suivi de la valeur de votre collection</li>
+            </ul>
+          </div>
+          
+          <div class="bg-white dark:bg-neutral-800 rounded-lg border border-neutral-200 dark:border-neutral-700 p-6">
+            <h3 class="text-xl font-semibold text-neutral-900 dark:text-white mb-4">
+              📊 Statistiques et analyses
+            </h3>
+            <ul class="space-y-2 text-neutral-600 dark:text-neutral-400">
+              <li>• <strong>Répartition par genre</strong> - Visualisation de vos préférences</li>
+              <li>• <strong>Analyse temporelle</strong> - Évolution par décennie</li>
+              <li>• <strong>Valeur totale</strong> - Estimation de la valeur de votre collection</li>
+              <li>• <strong>Top artistes</strong> - Vos artistes les plus représentés</li>
+              <li>• <strong>Graphiques interactifs</strong> - Visualisations claires</li>
+            </ul>
+          </div>
+          
+          <div class="bg-white dark:bg-neutral-800 rounded-lg border border-neutral-200 dark:border-neutral-700 p-6">
+            <h3 class="text-xl font-semibold text-neutral-900 dark:text-white mb-4">
+              ❤️ Wishlist et recommandations
+            </h3>
+            <ul class="space-y-2 text-neutral-600 dark:text-neutral-400">
+              <li>• <strong>Liste de souhaits</strong> - Vinyles que vous voulez acquérir</li>
+              <li>• <strong>Alertes de prix</strong> - Notifications sur les variations</li>
+              <li>• <strong>Recommandations</strong> - Suggestions basées sur votre collection</li>
+              <li>• <strong>Suivi de marché</strong> - Évolution des prix</li>
+            </ul>
+          </div>
+          
+          <div class="bg-white dark:bg-neutral-800 rounded-lg border border-neutral-200 dark:border-neutral-700 p-6">
+            <h3 class="text-xl font-semibold text-neutral-900 dark:text-white mb-4">
+              🔄 Synchronisation et export
+            </h3>
+            <ul class="space-y-2 text-neutral-600 dark:text-neutral-400">
+              <li>• <strong>Sauvegarde automatique</li>
+              <li>• <strong>Export CSV/JSON</strong> - Sauvegarde de vos données</li>
+              <li>• <strong>Import depuis d'autres apps</strong> - Migration facilitée</li>
+              <li>• <strong>Synchronisation cloud</strong> - Accès multi-appareils</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <!-- Gestion des données -->
+      <section id="donnees" class="mb-12">
+        <h2 class="text-3xl font-bold text-neutral-900 dark:text-white mb-6">
+          💾 Gestion des données
+        </h2>
+        
+        <div class="bg-white dark:bg-neutral-800 rounded-lg border border-neutral-200 dark:border-neutral-700 p-6">
+          <h3 class="text-xl font-semibold text-neutral-900 dark:text-white mb-4">
+            Modèle de données
+          </h3>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div>
+              <h4 class="font-medium text-neutral-900 dark:text-white mb-2">Collection</h4>
+              <ul class="text-sm text-neutral-600 dark:text-neutral-400 space-y-1">
+                <li>• id, name, description</li>
+                <li>• createdAt, updatedAt</li>
+                <li>• userId (propriétaire)</li>
+                <li>• vinyls[] (relation)</li>
+              </ul>
+            </div>
+            <div>
+              <h4 class="font-medium text-neutral-900 dark:text-white mb-2">Vinyl</h4>
+              <ul class="text-sm text-neutral-600 dark:text-neutral-400 space-y-1">
+                <li>• id, title, artist, year</li>
+                <li>• genre, condition, value</li>
+                <li>• discogsId, barcode</li>
+                <li>• collectionId (relation)</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Sécurité -->
+      <section id="securite" class="mb-12">
+        <h2 class="text-3xl font-bold text-neutral-900 dark:text-white mb-6">
+          🔒 Sécurité et confidentialité
+        </h2>
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div class="bg-white dark:bg-neutral-800 rounded-lg border border-neutral-200 dark:border-neutral-700 p-6">
+            <h3 class="text-xl font-semibold text-neutral-900 dark:text-white mb-4">
+              Protection des données
+            </h3>
+            <ul class="space-y-2 text-neutral-600 dark:text-neutral-400">
+              <li>• <strong>Chiffrement HTTPS</strong> - Toutes les communications</li>
+              <li>• <strong>Authentification sécurisée</strong> - Sessions protégées</li>
+              <li>• <strong>Validation des données</strong> - Protection contre les injections</li>
+              <li>• <strong>Backup automatique</strong> - Sauvegarde régulière</li>
+            </ul>
+          </div>
+          
+          <div class="bg-white dark:bg-neutral-800 rounded-lg border border-neutral-200 dark:border-neutral-700 p-6">
+            <h3 class="text-xl font-semibold text-neutral-900 dark:text-white mb-4">
+              Confidentialité
+            </h3>
+            <ul class="space-y-2 text-neutral-600 dark:text-neutral-400">
+              <li>• <strong>Données personnelles</strong> - Non partagées avec des tiers</li>
+              <li>• <strong>RGPD compliant</strong> - Respect de la réglementation</li>
+              <li>• <strong>Suppression des données</strong> - Droit à l'oubli</li>
+              <li>• <strong>Transparence</strong> - Politique de confidentialité claire</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <!-- API et intégrations -->
+      <section id="api" class="mb-12">
+        <h2 class="text-3xl font-bold text-neutral-900 dark:text-white mb-6">
+          🔌 API et intégrations
+        </h2>
+        
+        <div class="bg-white dark:bg-neutral-800 rounded-lg border border-neutral-200 dark:border-neutral-700 p-6">
+          <h3 class="text-xl font-semibold text-neutral-900 dark:text-white mb-4">
+            Intégrations externes
+          </h3>
+          <div class="space-y-4">
+            <div>
+              <h4 class="font-medium text-neutral-900 dark:text-white mb-2">Discogs API</h4>
+              <p class="text-sm text-neutral-600 dark:text-neutral-400">
+                Intégration avec la base de données Discogs pour récupérer automatiquement 
+                les informations des vinyles (artiste, album, année, genre, pochette).
+              </p>
+            </div>
+            <div>
+              <h4 class="font-medium text-neutral-900 dark:text-white mb-2">Scanner de code-barres</h4>
+              <p class="text-sm text-neutral-600 dark:text-neutral-400">
+                Utilisation de l'API WebRTC pour accéder à la caméra et scanner 
+                les codes-barres des vinyles.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Support -->
+      <section id="support" class="mb-12">
+        <h2 class="text-3xl font-bold text-neutral-900 dark:text-white mb-6">
+          🆘 Support et assistance
+        </h2>
+        
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div class="bg-white dark:bg-neutral-800 rounded-lg border border-neutral-200 dark:border-neutral-700 p-6 text-center">
+            <BookOpen class="w-8 h-8 text-orange-600 dark:text-orange-400 mx-auto mb-3" />
+            <h3 class="font-semibold text-neutral-900 dark:text-white mb-2">Documentation</h3>
+            <p class="text-sm text-neutral-600 dark:text-neutral-400 mb-4">
+              Guides détaillés et tutoriels
+            </p>
+            <a href="/help" class="text-orange-600 dark:text-orange-400 hover:underline text-sm">
+              Consulter l'aide →
+            </a>
+          </div>
+          
+          <div class="bg-white dark:bg-neutral-800 rounded-lg border border-neutral-200 dark:border-neutral-700 p-6 text-center">
+            <Users class="w-8 h-8 text-orange-600 dark:text-orange-400 mx-auto mb-3" />
+            <h3 class="font-semibold text-neutral-900 dark:text-white mb-2">Support technique</h3>
+            <p class="text-sm text-neutral-600 dark:text-neutral-400 mb-4">
+              Assistance personnalisée
+            </p>
+            <a href="/contact" class="text-orange-600 dark:text-orange-400 hover:underline text-sm">
+              Contacter le support →
+            </a>
+          </div>
+          
+          <div class="bg-white dark:bg-neutral-800 rounded-lg border border-neutral-200 dark:border-neutral-700 p-6 text-center">
+            <Zap class="w-8 h-8 text-orange-600 dark:text-orange-400 mx-auto mb-3" />
+            <h3 class="font-semibold text-neutral-900 dark:text-white mb-2">Signaler un bug</h3>
+            <p class="text-sm text-neutral-600 dark:text-neutral-400 mb-4">
+              Aidez-nous à améliorer l'app
+            </p>
+            <a href="/bug-report" class="text-orange-600 dark:text-orange-400 hover:underline text-sm">
+              Signaler un problème →
+            </a>
+          </div>
+        </div>
+      </section>
+    </div>
+  </DashboardLayout>
+</Layout>

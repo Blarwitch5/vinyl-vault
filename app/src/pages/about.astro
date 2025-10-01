@@ -1,0 +1,353 @@
+---
+import { Award, Globe, Heart, Shield, Star, Target, Users, Zap } from '@lucide/astro/icons';
+import Layout from '../layouts/Layout.astro';
+---
+
+<Layout title="À propos">
+  <div class="min-h-screen bg-neutral-50 dark:bg-neutral-950">
+    <!-- Header simple -->
+    <header class="bg-white dark:bg-neutral-900 border-b border-neutral-200 dark:border-neutral-800">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex justify-between items-center py-6">
+          <div class="flex items-center">
+            <a href="/" class="flex items-center">
+              <div class="w-8 h-8 bg-gradient-rock rounded-lg flex items-center justify-center mr-3">
+                <svg class="w-5 h-5 text-white" fill="currentColor" viewBox="0 0 20 20">
+                  <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                </svg>
+              </div>
+              <span class="text-xl font-bold text-neutral-900 dark:text-white">VinylVault</span>
+            </a>
+          </div>
+          <nav class="hidden md:flex space-x-8">
+            <a href="/dashboard" class="text-neutral-600 dark:text-neutral-400 hover:text-neutral-900 dark:hover:text-white">Dashboard</a>
+            <a href="/collections" class="text-neutral-600 dark:text-neutral-400 hover:text-neutral-900 dark:hover:text-white">Collections</a>
+            <a href="/help" class="text-neutral-600 dark:text-neutral-400 hover:text-neutral-900 dark:hover:text-white">Aide</a>
+          </nav>
+        </div>
+      </div>
+    </header>
+
+    <!-- Contenu principal -->
+    <main class="py-12">
+    <div class="max-w-6xl mx-auto">
+      <!-- En-tête -->
+      <div class="text-center mb-16">
+        <h1 class="text-4xl font-bold text-neutral-900 dark:text-white mb-6">
+          À propos de VinylVault
+        </h1>
+        <p class="text-xl text-neutral-600 dark:text-neutral-400 max-w-3xl mx-auto">
+          La plateforme de référence pour les collectionneurs de vinyles passionnés
+        </p>
+      </div>
+
+      <!-- Notre histoire -->
+      <section class="mb-16">
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+          <div>
+            <h2 class="text-3xl font-bold text-neutral-900 dark:text-white mb-6">
+              Notre histoire
+            </h2>
+            <div class="space-y-4 text-neutral-600 dark:text-neutral-400">
+              <p>
+                VinylVault est né de la passion de deux collectionneurs de vinyles qui cherchaient 
+                un moyen moderne et efficace de gérer leurs collections. Frustrés par les solutions 
+                existantes, nous avons décidé de créer l'outil parfait pour les amateurs de musique.
+              </p>
+              <p>
+                Lancé en 2023, VinylVault a rapidement gagné la confiance de milliers de collectionneurs 
+                à travers le monde. Notre mission est simple : rendre la gestion de collection de vinyles 
+                aussi passionnante que la musique elle-même.
+              </p>
+              <p>
+                Aujourd'hui, nous sommes fiers de servir une communauté grandissante de mélomanes 
+                qui partagent notre amour pour le vinyle et la musique analogique.
+              </p>
+            </div>
+          </div>
+          <div class="bg-gradient-rock-subtle rounded-2xl p-8">
+            <div class="text-center">
+              <div class="w-24 h-24 bg-orange-600 rounded-full flex items-center justify-center mx-auto mb-4">
+                <Heart class="w-12 h-12 text-white" />
+              </div>
+              <h3 class="text-2xl font-bold text-neutral-900 dark:text-white mb-2">
+                Créé par des passionnés
+              </h3>
+              <p class="text-neutral-600 dark:text-neutral-400">
+                Pour des passionnés
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Notre mission -->
+      <section class="mb-16">
+        <div class="text-center mb-12">
+          <h2 class="text-3xl font-bold text-neutral-900 dark:text-white mb-4">
+            Notre mission
+          </h2>
+          <p class="text-lg text-neutral-600 dark:text-neutral-400 max-w-3xl mx-auto">
+            Démocratiser la gestion de collection de vinyles avec des outils modernes et intuitifs
+          </p>
+        </div>
+        
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+          <div class="text-center">
+            <div class="w-16 h-16 bg-orange-100 dark:bg-orange-900/20 rounded-full flex items-center justify-center mx-auto mb-4">
+              <Target class="w-8 h-8 text-orange-600 dark:text-orange-400" />
+            </div>
+            <h3 class="text-xl font-semibold text-neutral-900 dark:text-white mb-3">
+              Simplicité
+            </h3>
+            <p class="text-neutral-600 dark:text-neutral-400">
+              Une interface intuitive qui rend la gestion de collection accessible à tous, 
+              des débutants aux collectionneurs expérimentés.
+            </p>
+          </div>
+          
+          <div class="text-center">
+            <div class="w-16 h-16 bg-orange-100 dark:bg-orange-900/20 rounded-full flex items-center justify-center mx-auto mb-4">
+              <Zap class="w-8 h-8 text-orange-600 dark:text-orange-400" />
+            </div>
+            <h3 class="text-xl font-semibold text-neutral-900 dark:text-white mb-3">
+              Innovation
+            </h3>
+            <p class="text-neutral-600 dark:text-neutral-400">
+              Des fonctionnalités avancées comme le scanner de code-barres, l'IA pour les recommandations, 
+              et l'intégration avec Discogs.
+            </p>
+          </div>
+          
+          <div class="text-center">
+            <div class="w-16 h-16 bg-orange-100 dark:bg-orange-900/20 rounded-full flex items-center justify-center mx-auto mb-4">
+              <Users class="w-8 h-8 text-orange-600 dark:text-orange-400" />
+            </div>
+            <h3 class="text-xl font-semibold text-neutral-900 dark:text-white mb-3">
+              Communauté
+            </h3>
+            <p class="text-neutral-600 dark:text-neutral-400">
+              Créer un espace où les collectionneurs peuvent partager leur passion 
+              et découvrir de nouveaux artistes et albums.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <!-- Nos valeurs -->
+      <section class="mb-16">
+        <div class="bg-white dark:bg-neutral-800 rounded-2xl border border-neutral-200 dark:border-neutral-700 p-8">
+          <h2 class="text-3xl font-bold text-neutral-900 dark:text-white mb-8 text-center">
+            Nos valeurs
+          </h2>
+          
+          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            <div class="text-center">
+              <div class="w-12 h-12 bg-green-100 dark:bg-green-900/20 rounded-lg flex items-center justify-center mx-auto mb-3">
+                <Shield class="w-6 h-6 text-green-600 dark:text-green-400" />
+              </div>
+              <h3 class="font-semibold text-neutral-900 dark:text-white mb-2">
+                Confidentialité
+              </h3>
+              <p class="text-sm text-neutral-600 dark:text-neutral-400">
+                Vos données personnelles et votre collection restent privées et sécurisées.
+              </p>
+            </div>
+            
+            <div class="text-center">
+              <div class="w-12 h-12 bg-blue-100 dark:bg-blue-900/20 rounded-lg flex items-center justify-center mx-auto mb-3">
+                <Globe class="w-6 h-6 text-blue-600 dark:text-blue-400" />
+              </div>
+              <h3 class="font-semibold text-neutral-900 dark:text-white mb-2">
+                Accessibilité
+              </h3>
+              <p class="text-sm text-neutral-600 dark:text-neutral-400">
+                Une application accessible sur tous les appareils, partout dans le monde.
+              </p>
+            </div>
+            
+            <div class="text-center">
+              <div class="w-12 h-12 bg-purple-100 dark:bg-purple-900/20 rounded-lg flex items-center justify-center mx-auto mb-3">
+                <Award class="w-6 h-6 text-purple-600 dark:text-purple-400" />
+              </div>
+              <h3 class="font-semibold text-neutral-900 dark:text-white mb-2">
+                Qualité
+              </h3>
+              <p class="text-sm text-neutral-600 dark:text-neutral-400">
+                Un code de qualité, des fonctionnalités robustes et une expérience utilisateur optimale.
+              </p>
+            </div>
+            
+            <div class="text-center">
+              <div class="w-12 h-12 bg-orange-100 dark:bg-orange-900/20 rounded-lg flex items-center justify-center mx-auto mb-3">
+                <Star class="w-6 h-6 text-orange-600 dark:text-orange-400" />
+              </div>
+              <h3 class="font-semibold text-neutral-900 dark:text-white mb-2">
+                Passion
+              </h3>
+              <p class="text-sm text-neutral-600 dark:text-neutral-400">
+                Chaque fonctionnalité est conçue avec amour pour la musique et le vinyle.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- L'équipe -->
+      <section class="mb-16">
+        <div class="text-center mb-12">
+          <h2 class="text-3xl font-bold text-neutral-900 dark:text-white mb-4">
+            Notre équipe
+          </h2>
+          <p class="text-lg text-neutral-600 dark:text-neutral-400 max-w-3xl mx-auto">
+            Une équipe passionnée de développeurs, designers et mélomanes
+          </p>
+        </div>
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          <div class="bg-white dark:bg-neutral-800 rounded-2xl border border-neutral-200 dark:border-neutral-700 p-6 text-center">
+            <div class="w-20 h-20 bg-gradient-rock rounded-full flex items-center justify-center mx-auto mb-4">
+              <span class="text-2xl font-bold text-white">AM</span>
+            </div>
+            <h3 class="text-xl font-semibold text-neutral-900 dark:text-white mb-2">
+              Alex Martin
+            </h3>
+            <p class="text-orange-600 dark:text-orange-400 font-medium mb-2">
+              Fondateur & CEO
+            </p>
+            <p class="text-sm text-neutral-600 dark:text-neutral-400">
+              Collectionneur depuis 15 ans, passionné de rock classique et de jazz. 
+              Ancien développeur chez Spotify.
+            </p>
+          </div>
+          
+          <div class="bg-white dark:bg-neutral-800 rounded-2xl border border-neutral-200 dark:border-neutral-700 p-6 text-center">
+            <div class="w-20 h-20 bg-gradient-to-br from-blue-400 to-blue-600 rounded-full flex items-center justify-center mx-auto mb-4">
+              <span class="text-2xl font-bold text-white">SD</span>
+            </div>
+            <h3 class="text-xl font-semibold text-neutral-900 dark:text-white mb-2">
+              Sarah Dubois
+            </h3>
+            <p class="text-orange-600 dark:text-orange-400 font-medium mb-2">
+              CTO & Co-fondatrice
+            </p>
+            <p class="text-sm text-neutral-600 dark:text-neutral-400">
+              Spécialiste en IA et machine learning. Collectionneuse de vinyles électroniques 
+              et de musique expérimentale.
+            </p>
+          </div>
+          
+          <div class="bg-white dark:bg-neutral-800 rounded-2xl border border-neutral-200 dark:border-neutral-700 p-6 text-center">
+            <div class="w-20 h-20 bg-gradient-to-br from-green-400 to-green-600 rounded-full flex items-center justify-center mx-auto mb-4">
+              <span class="text-2xl font-bold text-white">MR</span>
+            </div>
+            <h3 class="text-xl font-semibold text-neutral-900 dark:text-white mb-2">
+              Marc Rousseau
+            </h3>
+            <p class="text-orange-600 dark:text-orange-400 font-medium mb-2">
+              Lead Designer
+            </p>
+            <p class="text-sm text-neutral-600 dark:text-neutral-400">
+              Designer UX/UI avec une passion pour le design minimaliste. 
+              Collectionneur de vinyles de hip-hop et de soul.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <!-- Statistiques -->
+      <section class="mb-16">
+        <div class="bg-gradient-rock-subtle rounded-2xl p-8">
+          <h2 class="text-3xl font-bold text-neutral-900 dark:text-white mb-8 text-center">
+            VinylVault en chiffres
+          </h2>
+          
+          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+            <div class="text-center">
+              <div class="text-4xl font-bold text-orange-600 dark:text-orange-400 mb-2">
+                10K+
+              </div>
+              <p class="text-neutral-600 dark:text-neutral-400">
+                Collectionneurs actifs
+              </p>
+            </div>
+            
+            <div class="text-center">
+              <div class="text-4xl font-bold text-orange-600 dark:text-orange-400 mb-2">
+                2M+
+              </div>
+              <p class="text-neutral-600 dark:text-neutral-400">
+                Vinyles catalogués
+              </p>
+            </div>
+            
+            <div class="text-center">
+              <div class="text-4xl font-bold text-orange-600 dark:text-orange-400 mb-2">
+                50+
+              </div>
+              <p class="text-neutral-600 dark:text-neutral-400">
+                Pays représentés
+              </p>
+            </div>
+            
+            <div class="text-center">
+              <div class="text-4xl font-bold text-orange-600 dark:text-orange-400 mb-2">
+                99.9%
+              </div>
+              <p class="text-neutral-600 dark:text-neutral-400">
+                Temps de disponibilité
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- CTA -->
+      <section class="text-center">
+        <h2 class="text-3xl font-bold text-neutral-900 dark:text-white mb-4">
+          Rejoignez la communauté VinylVault
+        </h2>
+        <p class="text-lg text-neutral-600 dark:text-neutral-400 mb-8 max-w-2xl mx-auto">
+          Découvrez comment VinylVault peut transformer votre passion pour le vinyle 
+          en une expérience de collection moderne et organisée.
+        </p>
+        <div class="flex flex-col sm:flex-row gap-4 justify-center">
+          <a
+            href="/dashboard"
+            class="inline-flex items-center px-8 py-3 bg-gradient-rock hover:bg-gradient-rock-hover text-white rounded-lg font-medium transition-colors"
+          >
+            Commencer maintenant
+          </a>
+          <a
+            href="/contact"
+            class="inline-flex items-center px-8 py-3 border border-neutral-300 dark:border-neutral-600 text-neutral-900 dark:text-white rounded-lg hover:bg-neutral-50 dark:hover:bg-neutral-700 transition-colors"
+          >
+            Nous contacter
+          </a>
+        </div>
+      </section>
+    </div>
+    </main>
+
+    <!-- Footer simple -->
+    <footer class="bg-white dark:bg-neutral-900 border-t border-neutral-200 dark:border-neutral-800">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div class="flex flex-col md:flex-row justify-between items-center">
+          <div class="flex items-center mb-4 md:mb-0">
+            <div class="w-6 h-6 bg-gradient-rock rounded-lg flex items-center justify-center mr-2">
+              <svg class="w-4 h-4 text-white" fill="currentColor" viewBox="0 0 20 20">
+                <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+              </svg>
+            </div>
+            <span class="text-neutral-600 dark:text-neutral-400">© 2024 VinylVault. Tous droits réservés.</span>
+          </div>
+          <div class="flex space-x-6">
+            <a href="/privacy" class="text-neutral-600 dark:text-neutral-400 hover:text-neutral-900 dark:hover:text-white">Confidentialité</a>
+            <a href="/terms" class="text-neutral-600 dark:text-neutral-400 hover:text-neutral-900 dark:hover:text-white">Conditions</a>
+            <a href="/contact" class="text-neutral-600 dark:text-neutral-400 hover:text-neutral-900 dark:hover:text-white">Contact</a>
+          </div>
+        </div>
+      </div>
+    </footer>
+  </div>
+</Layout>

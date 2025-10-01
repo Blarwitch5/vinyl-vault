@@ -1,0 +1,139 @@
+---
+import '../styles/global.css'
+import { ClientRouter } from 'astro:transitions'
+
+export interface Props {
+  title: string
+  description?: string
+}
+
+const { title, description = 'VinylVault - Gestion de collection de vinyles' } = Astro.props
+---
+
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="description" content={description} />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <title>{title}</title>
+  </head>
+  <body
+    class="min-h-screen bg-neutral-50 text-neutral-900 dark:bg-neutral-950 dark:text-neutral-100"
+  >
+    <slot />
+    <ClientRouter />
+    <script is:inline src="https://cdn.jsdelivr.net/npm/flowbite@3.1.2/dist/flowbite.min.js"
+    ></script>
+    <script is:inline>
+      // Initialize theme immediately to prevent flash - Dark mode par défaut
+      ;(function () {
+        const isDark =
+          localStorage.getItem('color-theme') === 'dark' ||
+          (!('color-theme' in localStorage) && true) // Dark mode par défaut
+
+        if (isDark) {
+          document.documentElement.classList.add('dark')
+        } else {
+          document.documentElement.classList.remove('dark')
+        }
+      })()
+    </script>
+
+    <script>
+      // Gestion persistante du thème lors des View Transitions
+      document.addEventListener('astro:before-preparation', function () {
+        // Sauvegarder l'état actuel du thème avant la transition
+        const currentTheme = document.documentElement.classList.contains('dark') ? 'dark' : 'light'
+        sessionStorage.setItem('current-theme', currentTheme)
+      })
+
+      document.addEventListener('astro:after-swap', function () {
+        // Restaurer le thème après la transition
+        const savedTheme = sessionStorage.getItem('current-theme')
+        if (savedTheme) {
+          if (savedTheme === 'dark') {
+            document.documentElement.classList.add('dark')
+          } else {
+            document.documentElement.classList.remove('dark')
+          }
+        }
+      })
+    </script>
+  </body>
+</html>
+
+<style is:global>
+  html {
+    font-family: 'Poppins', system-ui, sans-serif;
+  }
+
+  /* View Transitions Styles */
+  @view-transition {
+    navigation: auto;
+  }
+
+  /* Animation personnalisée pour les transitions */
+  ::view-transition-old(root),
+  ::view-transition-new(root) {
+    animation-duration: 0.3s;
+    animation-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  ::view-transition-old(root) {
+    animation-name: fade-out;
+  }
+
+  ::view-transition-new(root) {
+    animation-name: fade-in;
+  }
+
+  @keyframes fade-out {
+    from {
+      opacity: 1;
+      transform: scale(1);
+    }
+    to {
+      opacity: 0;
+      transform: scale(0.98);
+    }
+  }
+
+  @keyframes fade-in {
+    from {
+      opacity: 0;
+      transform: scale(1.02);
+    }
+    to {
+      opacity: 1;
+      transform: scale(1);
+    }
+  }
+
+  /* Transition pour les éléments de navigation */
+  ::view-transition-old(navigation),
+  ::view-transition-new(navigation) {
+    animation-duration: 0.2s;
+  }
+
+  /* Transition pour les éléments de contenu */
+  ::view-transition-old(main-content),
+  ::view-transition-new(main-content) {
+    animation-duration: 0.4s;
+    animation-timing-function: cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  }
+
+  /* Amélioration des transitions pour les éléments flottants */
+  ::view-transition-old(sidebar),
+  ::view-transition-new(sidebar) {
+    animation-duration: 0.3s;
+    animation-timing-function: ease-in-out;
+  }
+
+  ::view-transition-old(navbar),
+  ::view-transition-new(navbar) {
+    animation-duration: 0.25s;
+    animation-timing-function: ease-out;
+  }
+</style>

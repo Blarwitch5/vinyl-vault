@@ -1,0 +1,110 @@
+---
+import SunMedium from '@lucide/astro/icons/sun-medium'
+import Moon from '@lucide/astro/icons/moon'
+---
+
+<button
+  id="theme-toggle"
+  data-tooltip-target="tooltip-toggle"
+  type="button"
+  class="rounded-lg p-1.5 text-sm text-neutral-500 hover:bg-neutral-100 hover:text-neutral-900 focus:ring-1 focus:ring-neutral-200 focus:outline-none sm:p-2.5 dark:text-neutral-400 dark:hover:bg-neutral-800 dark:hover:text-neutral-100 dark:focus:ring-neutral-800"
+>
+  <SunMedium id="theme-toggle-light-icon" class="hidden size-4 sm:size-5" />
+  <Moon id="theme-toggle-dark-icon" class="hidden size-4 sm:size-5" />
+</button>
+<div
+  id="tooltip-toggle"
+  role="tooltip"
+  class="tooltip invisible absolute z-10 inline-block rounded-lg bg-neutral-900 px-3 py-2 text-sm font-medium text-white opacity-0 shadow-sm transition-opacity duration-300"
+>
+  Changer le thème
+  <div class="tooltip-arrow" data-popper-arrow></div>
+</div>
+
+<script>
+  // Fonction pour initialiser le thème et les icônes
+  function initializeThemeSwitcher() {
+    const themeToggleDarkIcon = document.getElementById('theme-toggle-dark-icon')
+    const themeToggleLightIcon = document.getElementById('theme-toggle-light-icon')
+    const themeToggleBtn = document.getElementById('theme-toggle')
+
+    console.log('ThemeSwitcher elements:', {
+      darkIcon: !!themeToggleDarkIcon,
+      lightIcon: !!themeToggleLightIcon,
+      btn: !!themeToggleBtn,
+    })
+
+    if (!themeToggleDarkIcon || !themeToggleLightIcon || !themeToggleBtn) {
+      console.log('ThemeSwitcher elements not found, retrying...')
+      setTimeout(initializeThemeSwitcher, 100)
+      return // Éléments pas encore disponibles
+    }
+
+    // Initialize theme and icons - Dark mode par défaut
+    function initializeTheme() {
+      const isDark =
+        localStorage.getItem('color-theme') === 'dark' || (!('color-theme' in localStorage) && true) // Dark mode par défaut
+
+      console.log('Initializing theme:', {
+        isDark,
+        themeFromStorage: localStorage.getItem('color-theme'),
+      })
+
+      if (isDark) {
+        document.documentElement.classList.add('dark')
+        // En dark mode, on montre l'icône soleil (pour passer en light)
+        themeToggleLightIcon?.classList.remove('hidden')
+        themeToggleDarkIcon?.classList.add('hidden')
+        console.log('Dark mode: showing sun icon')
+      } else {
+        document.documentElement.classList.remove('dark')
+        // En light mode, on montre l'icône lune (pour passer en dark)
+        themeToggleDarkIcon?.classList.remove('hidden')
+        themeToggleLightIcon?.classList.add('hidden')
+        console.log('Light mode: showing moon icon')
+      }
+    }
+
+    // Initialize theme
+    initializeTheme()
+
+    // Handle click - supprimer les anciens listeners d'abord
+    themeToggleBtn.removeEventListener('click', handleThemeToggle)
+    themeToggleBtn.addEventListener('click', handleThemeToggle)
+  }
+
+  // Fonction séparée pour gérer le clic
+  function handleThemeToggle() {
+    const themeToggleDarkIcon = document.getElementById('theme-toggle-dark-icon')
+    const themeToggleLightIcon = document.getElementById('theme-toggle-light-icon')
+    const isDark = document.documentElement.classList.contains('dark')
+
+    console.log('Theme toggle clicked, current isDark:', isDark)
+
+    if (isDark) {
+      document.documentElement.classList.remove('dark')
+      localStorage.setItem('color-theme', 'light')
+      sessionStorage.setItem('current-theme', 'light')
+      themeToggleDarkIcon?.classList.remove('hidden')
+      themeToggleLightIcon?.classList.add('hidden')
+      console.log('Switched to light mode')
+    } else {
+      document.documentElement.classList.add('dark')
+      localStorage.setItem('color-theme', 'dark')
+      sessionStorage.setItem('current-theme', 'dark')
+      themeToggleLightIcon?.classList.remove('hidden')
+      themeToggleDarkIcon?.classList.add('hidden')
+      console.log('Switched to dark mode')
+    }
+  }
+
+  // Initialiser au chargement de la page
+  document.addEventListener('astro:page-load', initializeThemeSwitcher)
+
+  // Fallback pour le premier chargement
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initializeThemeSwitcher)
+  } else {
+    initializeThemeSwitcher()
+  }
+</script>

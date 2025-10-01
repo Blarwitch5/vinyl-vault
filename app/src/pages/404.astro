@@ -1,0 +1,163 @@
+---
+import { ArrowLeft, Home, Search } from '@lucide/astro/icons'
+
+import Layout from '../layouts/Layout.astro'
+---
+
+<Layout title="Page non trouvée - VinylVault">
+  <div
+    class="flex min-h-screen items-center justify-center bg-gradient-to-br from-neutral-950 via-neutral-900 to-neutral-800 px-4"
+  >
+    <div class="mx-auto max-w-2xl text-center">
+      <!-- Image 404 -->
+      <div class="mb-8">
+        <div
+          class="mx-auto mb-6 flex h-64 w-64 items-center justify-center rounded-full bg-orange-100 shadow-sm dark:bg-orange-900"
+        >
+          <!-- SVG Vinyle cassé -->
+          <svg
+            class="h-32 w-32 text-orange-600 dark:text-orange-400"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <!-- Cercle extérieur du vinyle -->
+            <circle cx="12" cy="12" r="10" stroke-width="2" stroke-dasharray="4 4" opacity="0.3"
+            ></circle>
+            <!-- Cercle intérieur -->
+            <circle cx="12" cy="12" r="3" stroke-width="2"></circle>
+            <!-- Fissure dans le vinyle -->
+            <path d="M12 2 L12 22" stroke-width="3" stroke-linecap="round" opacity="0.8"></path>
+            <path d="M2 12 L22 12" stroke-width="3" stroke-linecap="round" opacity="0.8"></path>
+            <!-- Petites fissures -->
+            <path d="M6 6 L18 18" stroke-width="2" stroke-linecap="round" opacity="0.6"></path>
+            <path d="M18 6 L6 18" stroke-width="2" stroke-linecap="round" opacity="0.6"></path>
+          </svg>
+        </div>
+      </div>
+
+      <!-- Contenu principal -->
+      <div class="space-y-6">
+        <div>
+          <h1 class="text-gradient-rock mb-4 text-6xl font-bold">404</h1>
+          <h2 class="mb-4 text-3xl font-bold text-white">Vinyle introuvable</h2>
+          <p class="text-gradient-rock mb-2 text-xl">
+            Oops ! Cette page semble avoir été égarée dans votre collection.
+          </p>
+          <p class="text-lg text-white/90">
+            Peut-être qu'elle a été rangée dans une autre section ?
+          </p>
+        </div>
+
+        <!-- Suggestions -->
+        <div
+          class="rounded-lg border border-orange-200/20 bg-white/10 p-6 backdrop-blur-sm dark:border-orange-800/20 dark:bg-neutral-900/20"
+        >
+          <h3 class="mb-4 text-lg font-semibold text-white">Que souhaitez-vous faire ?</h3>
+          <div class="grid grid-cols-1 gap-4 sm:grid-cols-3">
+            <div class="text-center">
+              <div
+                class="mx-auto mb-3 flex h-12 w-12 items-center justify-center rounded-full bg-orange-600 dark:bg-orange-500"
+              >
+                <Home class="h-6 w-6 text-white" />
+              </div>
+              <p class="text-gradient-rock text-sm">Retourner à l'accueil</p>
+            </div>
+            <div class="text-center">
+              <div
+                class="mx-auto mb-3 flex h-12 w-12 items-center justify-center rounded-full bg-orange-600 dark:bg-orange-500"
+              >
+                <Search class="h-6 w-6 text-white" />
+              </div>
+              <p class="text-gradient-rock text-sm">Rechercher un vinyle</p>
+            </div>
+            <div class="text-center">
+              <div
+                class="mx-auto mb-3 flex h-12 w-12 items-center justify-center rounded-full bg-orange-600 dark:bg-orange-500"
+              >
+                <svg
+                  class="h-6 w-6 text-white"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M4 6h16M4 10h16M4 14h16M4 18h16"></path>
+                </svg>
+              </div>
+              <p class="text-gradient-rock text-sm">Voir mes collections</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Boutons d'action -->
+        <div
+          class="flex flex-col items-center justify-center space-y-4 sm:flex-row sm:space-y-0 sm:space-x-4"
+        >
+          <a
+            href="/"
+            class="flex items-center rounded-lg bg-orange-600 px-6 py-3 font-semibold text-white shadow-sm transition-all hover:bg-orange-700 hover:shadow-md"
+          >
+            <Home class="mr-2 h-5 w-5" />
+            Retour à l'accueil
+          </a>
+          <a
+            href="/dashboard"
+            class="flex items-center rounded-lg border border-white/30 bg-white/20 px-6 py-3 font-semibold text-white transition-colors hover:border-white/50 hover:bg-white/30"
+          >
+            <ArrowLeft class="mr-2 h-5 w-5" />
+            Retour au dashboard
+          </a>
+        </div>
+
+        <!-- Message d'encouragement -->
+        <div
+          class="mt-8 rounded-lg border border-orange-400/30 bg-orange-600/20 p-4 dark:border-orange-400/30 dark:bg-orange-500/20"
+        >
+          <p class="text-gradient-rock text-sm">
+            💡 <strong>Astuce :</strong> Utilisez la barre de recherche pour trouver rapidement vos vinyles
+            favoris !
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Effet de particules flottantes (optionnel) -->
+  <div class="pointer-events-none fixed inset-0 overflow-hidden">
+    <div class="absolute top-1/4 left-1/4 h-2 w-2 animate-pulse rounded-full bg-orange-400/30">
+    </div>
+    <div
+      class="absolute top-1/3 right-1/3 h-1 w-1 animate-pulse rounded-full bg-orange-300/40 delay-1000"
+    >
+    </div>
+    <div
+      class="absolute bottom-1/4 left-1/3 h-1.5 w-1.5 animate-pulse rounded-full bg-orange-500/20 delay-2000"
+    >
+    </div>
+    <div
+      class="absolute right-1/4 bottom-1/3 h-1 w-1 animate-pulse rounded-full bg-orange-400/30 delay-3000"
+    >
+    </div>
+  </div>
+</Layout>
+
+<style>
+  @keyframes float {
+    0%,
+    100% {
+      transform: translateY(0px);
+    }
+    50% {
+      transform: translateY(-10px);
+    }
+  }
+
+  .animate-float {
+    animation: float 3s ease-in-out infinite;
+  }
+</style>

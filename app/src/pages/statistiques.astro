@@ -1,0 +1,188 @@
+---
+import DashboardLayout from '../layouts/DashboardLayout.astro'
+import Layout from '../layouts/Layout.astro'
+---
+
+<Layout title="Statistiques">
+  <DashboardLayout title="Statistiques" currentPath="/statistiques">
+    <div class="mb-6">
+      <h1 class="text-xl font-bold text-neutral-900 dark:text-neutral-100">
+        Statistiques de ma Collection
+      </h1>
+    </div>
+
+    <div class="mb-6 grid grid-cols-1 gap-6 lg:grid-cols-2">
+      <div class="rounded-lg bg-neutral-100 p-6 shadow dark:bg-neutral-800">
+        <h3 class="mb-4 text-base font-semibold text-neutral-900 dark:text-neutral-100">
+          Répartition par Genre
+        </h3>
+        <div class="space-y-3">
+          <div class="flex items-center justify-between">
+            <div class="flex items-center">
+              <div class="bg-orange-500 mr-3 h-4 w-4 rounded"></div>
+              <span class="text-xs text-neutral-700 dark:text-neutral-300">Rock</span>
+            </div>
+            <span class="text-xs font-medium text-neutral-900 dark:text-neutral-100"
+              >45% (567 vinyles)</span
+            >
+          </div>
+          <div class="flex items-center justify-between">
+            <div class="flex items-center">
+              <div class="mr-3 h-4 w-4 rounded bg-blue-500"></div>
+              <span class="text-sm text-neutral-700 dark:text-neutral-300">Jazz</span>
+            </div>
+            <span class="text-sm font-medium text-neutral-900 dark:text-neutral-100"
+              >25% (315 vinyles)</span
+            >
+          </div>
+          <div class="flex items-center justify-between">
+            <div class="flex items-center">
+              <div class="mr-3 h-4 w-4 rounded bg-green-500"></div>
+              <span class="text-sm text-neutral-700 dark:text-neutral-300">Electronic</span>
+            </div>
+            <span class="text-sm font-medium text-neutral-900 dark:text-neutral-100"
+              >15% (189 vinyles)</span
+            >
+          </div>
+          <div class="flex items-center justify-between">
+            <div class="flex items-center">
+              <div class="mr-3 h-4 w-4 rounded bg-purple-500"></div>
+              <span class="text-sm text-neutral-700 dark:text-neutral-300">Classical</span>
+            </div>
+            <span class="text-sm font-medium text-neutral-900 dark:text-neutral-100"
+              >10% (126 vinyles)</span
+            >
+          </div>
+          <div class="flex items-center justify-between">
+            <div class="flex items-center">
+              <div class="mr-3 h-4 w-4 rounded bg-yellow-500"></div>
+              <span class="text-sm text-neutral-700 dark:text-neutral-300">Autres</span>
+            </div>
+            <span class="text-sm font-medium text-neutral-900 dark:text-neutral-100">5% (63 vinyles)</span
+            >
+          </div>
+        </div>
+      </div>
+
+      <div class="rounded-lg bg-neutral-100 p-6 shadow dark:bg-neutral-800">
+        <h3 class="mb-4 text-base font-semibold text-neutral-900 dark:text-neutral-100">
+          Évolution Mensuelle
+        </h3>
+        <div class="space-y-4">
+          <div class="flex items-center justify-between">
+            <span class="text-xs text-neutral-700 dark:text-neutral-300">Janvier 2024</span>
+            <div class="flex items-center">
+              <div class="mr-3 h-2 w-32 rounded-full bg-neutral-200 dark:bg-neutral-700">
+                <div class="bg-orange-600 h-2 rounded-full" style="width: 80%"></div>
+              </div>
+              <span class="text-xs font-medium text-neutral-900 dark:text-neutral-100">12</span>
+            </div>
+          </div>
+          <div class="flex items-center justify-between">
+            <span class="text-sm text-neutral-700 dark:text-neutral-300">Décembre 2023</span>
+            <div class="flex items-center">
+              <div class="mr-3 h-2 w-32 rounded-full bg-neutral-200 dark:bg-neutral-700">
+                <div class="bg-orange-600 h-2 rounded-full" style="width: 60%"></div>
+              </div>
+              <span class="text-sm font-medium text-neutral-900 dark:text-neutral-100">9</span>
+            </div>
+          </div>
+          <div class="flex items-center justify-between">
+            <span class="text-sm text-neutral-700 dark:text-neutral-300">Novembre 2023</span>
+            <div class="flex items-center">
+              <div class="mr-3 h-2 w-32 rounded-full bg-neutral-200 dark:bg-neutral-700">
+                <div class="bg-orange-600 h-2 rounded-full" style="width: 40%"></div>
+              </div>
+              <span class="text-sm font-medium text-neutral-900 dark:text-neutral-100">6</span>
+            </div>
+          </div>
+          <div class="flex items-center justify-between">
+            <span class="text-sm text-neutral-700 dark:text-neutral-300">Octobre 2023</span>
+            <div class="flex items-center">
+              <div class="mr-3 h-2 w-32 rounded-full bg-neutral-200 dark:bg-neutral-700">
+                <div class="bg-orange-600 h-2 rounded-full" style="width: 100%"></div>
+              </div>
+              <span class="text-sm font-medium text-neutral-900 dark:text-neutral-100">15</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="mb-6 grid grid-cols-1 gap-6 lg:grid-cols-3">
+      <div class="rounded-lg bg-neutral-100 p-6 shadow dark:bg-neutral-800">
+        <h3 class="mb-4 text-lg font-semibold text-neutral-900 dark:text-neutral-100">Top Artistes</h3>
+        <div class="space-y-3">
+          <div class="flex items-center justify-between">
+            <span class="text-sm text-neutral-700 dark:text-neutral-300">Pink Floyd</span>
+            <span class="text-sm font-medium text-neutral-900 dark:text-neutral-100">23 albums</span>
+          </div>
+          <div class="flex items-center justify-between">
+            <span class="text-sm text-neutral-700 dark:text-neutral-300">Miles Davis</span>
+            <span class="text-sm font-medium text-neutral-900 dark:text-neutral-100">18 albums</span>
+          </div>
+          <div class="flex items-center justify-between">
+            <span class="text-sm text-neutral-700 dark:text-neutral-300">The Beatles</span>
+            <span class="text-sm font-medium text-neutral-900 dark:text-neutral-100">15 albums</span>
+          </div>
+          <div class="flex items-center justify-between">
+            <span class="text-sm text-neutral-700 dark:text-neutral-300">Led Zeppelin</span>
+            <span class="text-sm font-medium text-neutral-900 dark:text-neutral-100">12 albums</span>
+          </div>
+          <div class="flex items-center justify-between">
+            <span class="text-sm text-neutral-700 dark:text-neutral-300">Aphex Twin</span>
+            <span class="text-sm font-medium text-neutral-900 dark:text-neutral-100">10 albums</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="rounded-lg bg-neutral-100 p-6 shadow dark:bg-neutral-800">
+        <h3 class="mb-4 text-lg font-semibold text-neutral-900 dark:text-neutral-100">Décennies</h3>
+        <div class="space-y-3">
+          <div class="flex items-center justify-between">
+            <span class="text-sm text-neutral-700 dark:text-neutral-300">1970s</span>
+            <span class="text-sm font-medium text-neutral-900 dark:text-neutral-100">35%</span>
+          </div>
+          <div class="flex items-center justify-between">
+            <span class="text-sm text-neutral-700 dark:text-neutral-300">1980s</span>
+            <span class="text-sm font-medium text-neutral-900 dark:text-neutral-100">28%</span>
+          </div>
+          <div class="flex items-center justify-between">
+            <span class="text-sm text-neutral-700 dark:text-neutral-300">1960s</span>
+            <span class="text-sm font-medium text-neutral-900 dark:text-neutral-100">20%</span>
+          </div>
+          <div class="flex items-center justify-between">
+            <span class="text-sm text-neutral-700 dark:text-neutral-300">1990s</span>
+            <span class="text-sm font-medium text-neutral-900 dark:text-neutral-100">12%</span>
+          </div>
+          <div class="flex items-center justify-between">
+            <span class="text-sm text-neutral-700 dark:text-neutral-300">Autres</span>
+            <span class="text-sm font-medium text-neutral-900 dark:text-neutral-100">5%</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="rounded-lg bg-neutral-100 p-6 shadow dark:bg-neutral-800">
+        <h3 class="mb-4 text-lg font-semibold text-neutral-900 dark:text-neutral-100">Valeur Estimée</h3>
+        <div class="text-center">
+          <div class="text-orange-600 dark:text-orange-400 mb-2 text-2xl font-bold">€12,456</div>
+          <p class="mb-4 text-xs text-neutral-600 dark:text-neutral-400">Valeur totale estimée</p>
+          <div class="space-y-2">
+            <div class="flex justify-between text-xs">
+              <span class="text-neutral-600 dark:text-neutral-400">Valeur moyenne par vinyle</span>
+              <span class="font-medium text-neutral-900 dark:text-neutral-100">€9.87</span>
+            </div>
+            <div class="flex justify-between text-xs">
+              <span class="text-neutral-600 dark:text-neutral-400">Vinyle le plus précieux</span>
+              <span class="font-medium text-neutral-900 dark:text-neutral-100">€245</span>
+            </div>
+            <div class="flex justify-between text-xs">
+              <span class="text-neutral-600 dark:text-neutral-400">Dépense ce mois</span>
+              <span class="font-medium text-neutral-900 dark:text-neutral-100">€156</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </DashboardLayout>
+</Layout>

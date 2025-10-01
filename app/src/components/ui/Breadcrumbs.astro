@@ -1,0 +1,60 @@
+---
+import ChevronRight from '@lucide/astro/icons/chevron-right'
+import House from '@lucide/astro/icons/house'
+
+type BreadcrumbItem = {
+  label: string
+  href?: string
+}
+
+type Props = {
+  items: BreadcrumbItem[]
+}
+
+const { items } = Astro.props
+---
+
+<nav class="mb-4 flex sm:mb-6" aria-label="Breadcrumb">
+  <ol class="inline-flex items-center space-x-1 md:space-x-2 rtl:space-x-reverse">
+    <!-- Home -->
+    <li class="inline-flex items-center">
+      <a
+        href="/dashboard"
+        class="inline-flex items-center text-sm font-medium text-neutral-600 transition-colors hover:text-orange-600 dark:text-neutral-400 dark:hover:text-orange-400"
+      >
+        <House class="me-2 h-3 w-3" aria-hidden="true" />
+        Accueil
+      </a>
+    </li>
+
+    <!-- Breadcrumb items -->
+    {
+      items.map((item, index) => {
+        const isLast = index === items.length - 1
+
+        return (
+          <li aria-current={isLast ? 'page' : undefined}>
+            <div class="flex items-center">
+              <ChevronRight
+                class="mx-1 h-3 w-3 text-neutral-400 rtl:rotate-180 dark:text-neutral-500"
+                aria-hidden="true"
+              />
+              {item.href && !isLast ? (
+                <a
+                  href={item.href}
+                  class="ms-1 text-sm font-medium text-neutral-600 transition-colors hover:text-orange-600 md:ms-2 dark:text-neutral-400 dark:hover:text-orange-400"
+                >
+                  {item.label}
+                </a>
+              ) : (
+                <span class="ms-1 text-sm font-medium text-neutral-500 md:ms-2 dark:text-neutral-400">
+                  {item.label}
+                </span>
+              )}
+            </div>
+          </li>
+        )
+      })
+    }
+  </ol>
+</nav>

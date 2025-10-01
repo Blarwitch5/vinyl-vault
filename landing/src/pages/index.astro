@@ -1,0 +1,120 @@
+---
+// Landing page principale VinylVault
+const title = 'VinylVault - Gérez votre collection de vinyles 🎵'
+const description =
+  "L'application web moderne pour cataloguer et gérer votre collection de vinyles avec l'API Discogs intégrée"
+---
+
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="description" content={description} />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="generator" content={Astro.generator} />
+    <title>{title}</title>
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+    />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500&display=swap"
+    />
+  </head>
+  <body class="bg-gradient-to-br from-slate-950 via-zinc-900 to-slate-900 min-h-screen">
+    <div class="min-h-screen flex flex-col">
+      <!-- Navigation -->
+      <nav class="container mx-auto px-4 py-6">
+        <div class="flex justify-between items-center">
+          <div
+            class="text-2xl font-bold bg-gradient-to-r from-orange-500 to-emerald-400 bg-clip-text text-transparent"
+          >
+            VinylVault
+          </div>
+          <div class="flex space-x-4">
+            <a href="#features" class="text-zinc-400 hover:text-emerald-400 transition-colors">
+              Fonctionnalités
+            </a>
+            <a href="#about" class="text-zinc-400 hover:text-emerald-400 transition-colors">
+              À propos
+            </a>
+          </div>
+        </div>
+      </nav>
+
+      <!-- Hero Section -->
+      <main class="flex-1 container mx-auto px-4 py-12">
+        <div class="max-w-4xl mx-auto text-center">
+          <h1 class="text-5xl md:text-7xl font-bold mb-6 leading-tight">
+            <span
+              class="bg-gradient-to-r from-orange-500 via-emerald-400 to-orange-500 bg-clip-text text-transparent"
+            >
+              VinylVault
+            </span>
+          </h1>
+          <p class="text-xl md:text-2xl text-zinc-400 mb-8 max-w-3xl mx-auto">
+            Gérez votre collection de vinyles comme jamais auparavant. Intégration Discogs,
+            catalogage automatique et plus encore.
+          </p>
+
+          <!-- CTA Buttons -->
+          <div class="flex flex-col sm:flex-row gap-4 justify-center mb-12">
+            <a
+              href="/app"
+              class="bg-gradient-to-r from-orange-600 to-emerald-500 text-white px-8 py-4 rounded-xl font-semibold hover:shadow-lg hover:shadow-orange-500/25 transition-all duration-300 hover:scale-105"
+            >
+              🎵 Accéder à VinylVault
+            </a>
+            <a
+              href="/login"
+              class="border border-zinc-700 bg-slate-800/50 text-zinc-300 px-8 py-4 rounded-xl font-semibold hover:border-emerald-400 hover:text-emerald-400 transition-all duration-300 backdrop-blur-sm"
+            >
+              Se connecter
+            </a>
+          </div>
+
+          <!-- Features Preview -->
+          <div class="grid md:grid-cols-3 gap-8 mb-16" id="features">
+            <div class="bg-slate-800/30 border border-slate-700 rounded-xl p-6 backdrop-blur-sm">
+              <div class="text-4xl mb-4">🎧</div>
+              <h3 class="text-lg font-semibold text-zinc-200 mb-2">API Discogs Intégrée</h3>
+              <p class="text-zinc-400">
+                Scanner vos codes-barres pour importer automatiquement vos vinyles
+              </p>
+            </div>
+            <div class="bg-slate-800/30 border border-slate-700 rounded-xl p-6 backdrop-blur-sm">
+              <div class="text-4xl mb-4">📊</div>
+              <h3 class="text-lg font-semibold text-zinc-200 mb-2">Statistiques Avancées</h3>
+              <p class="text-zinc-400">Analysez votre collection avec des métriques détaillées</p>
+            </div>
+            <div class="bg-slate-800/30 border border-slate-700 rounded-xl p-6 backdrop-blur-sm">
+              <div class="text-4xl mb-4">🔍</div>
+              <h3 class="text-lg font-semibold text-zinc-200 mb-2">Recherche Intelligente</h3>
+              <p class="text-zinc-400">Trouvez vos vinyles en quelques secondes</p>
+            </div>
+          </div>
+        </div>
+      </main>
+
+      <!-- About Section -->
+      <section class="py-16 border-t border-zinc-800" id="about">
+        <div class="container mx-auto px-4 text-center">
+          <h2 class="text-3xl font-bold text-zinc-100 mb-8">Gérez votre passion</h2>
+          <p class="text-lg text-zinc-400 max-w-3xl mx-auto">
+            VinylVault est pensé pour les collectionneurs passionnés. Une interface moderne, rapide
+            et intuitive pour organiser et découvrir vos vinyles.
+          </p>
+        </div>
+      </section>
+    </div>
+
+    <!-- Footer -->
+    <footer class="border-t border-zinc-800 py-8">
+      <div class="container mx-auto px-4 text-center">
+        <p class="text-zinc-500">© 2024 VinylVault - C'est parti ! 🎵</p>
+      </div>
+    </footer>
+  </body>
+</html>

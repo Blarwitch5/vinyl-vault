@@ -1,0 +1,60 @@
+---
+import LifeBuoy from '@lucide/astro/icons/life-buoy'
+import TableOfContents from '@lucide/astro/icons/table-of-contents'
+import WandSparkles from '@lucide/astro/icons/wand-sparkles'
+
+// Props pour le menu secondaire
+const { currentPath = '/dashboard' } = Astro.props
+
+// Configuration des éléments de menu secondaire
+const secondaryMenuItems = [
+  {
+    href: '/upgrade',
+    label: 'Passer à Pro',
+    icon: WandSparkles,
+  },
+  {
+    href: '/documentation',
+    label: 'Documentation',
+    icon: TableOfContents,
+  },
+
+  {
+    href: '/help',
+    label: 'Aide',
+    icon: LifeBuoy,
+  },
+]
+
+// Fonction pour déterminer si un élément est actif
+const isActive = (href: string) => currentPath === href
+---
+
+<ul
+  class="mt-4 space-y-1 border-t border-neutral-200 pt-4 font-medium sm:space-y-2 dark:border-neutral-700"
+>
+  {
+    secondaryMenuItems.map((item) => (
+      <li>
+        <a
+          href={item.href}
+          class={`group flex items-center rounded-lg p-2 text-base font-medium transition-colors ${
+            isActive(item.href)
+              ? 'bg-orange-50 text-orange-600 dark:bg-orange-900/20 dark:text-orange-400'
+              : 'text-neutral-900 hover:bg-neutral-100 dark:text-neutral-100 dark:hover:bg-neutral-800'
+          }`}
+        >
+          <item.icon
+            size={20}
+            class={`size-4 transition duration-75 sm:size-6 ${
+              isActive(item.href)
+                ? 'text-orange-600 dark:text-orange-400'
+                : 'text-neutral-500 group-hover:text-neutral-900 dark:text-neutral-400 dark:group-hover:text-neutral-100'
+            }`}
+          />
+          <span class="ms-3">{item.label}</span>
+        </a>
+      </li>
+    ))
+  }
+</ul>

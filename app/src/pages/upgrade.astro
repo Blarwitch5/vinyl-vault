@@ -1,0 +1,440 @@
+---
+import { BarChart3, Check, Crown, Database, Shield, Star, Users, X, Zap } from '@lucide/astro/icons';
+import DashboardLayout from '../layouts/DashboardLayout.astro';
+import Layout from '../layouts/Layout.astro';
+---
+
+<Layout title="Upgrade">
+  <DashboardLayout title="Upgrade" currentPath="/upgrade">
+    <div class="max-w-6xl mx-auto">
+      <!-- En-tête -->
+      <div class="text-center mb-12">
+        <h1 class="text-4xl font-bold text-neutral-900 dark:text-white mb-4">
+          Choisissez votre plan VinylVault
+        </h1>
+        <p class="text-xl text-neutral-600 dark:text-neutral-400 max-w-3xl mx-auto">
+          Débloquez tout le potentiel de votre collection de vinyles avec nos plans premium
+        </p>
+      </div>
+
+      <!-- Toggle de facturation -->
+      <div class="flex justify-center mb-12">
+        <div class="bg-neutral-100 dark:bg-neutral-800 rounded-lg p-1">
+          <div class="flex">
+            <button class="px-4 py-2 text-sm font-medium text-neutral-900 dark:text-white bg-white dark:bg-neutral-700 rounded-md shadow-sm">
+              Mensuel
+            </button>
+            <button class="px-4 py-2 text-sm font-medium text-neutral-500 dark:text-neutral-400 hover:text-neutral-900 dark:hover:text-white">
+              Annuel
+              <span class="ml-1 px-2 py-0.5 text-xs bg-orange-100 text-gradient-rock dark:bg-orange-900 rounded-full">
+                -20%
+              </span>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tableau comparatif -->
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-12">
+        <!-- Plan Gratuit -->
+        <div class="bg-white dark:bg-neutral-800 rounded-2xl border border-neutral-200 dark:border-neutral-700 p-8 relative">
+          <div class="text-center mb-8">
+            <h3 class="text-2xl font-bold text-neutral-900 dark:text-white mb-2">
+              Gratuit
+            </h3>
+            <div class="mb-4">
+              <span class="text-4xl font-bold text-neutral-900 dark:text-white">0€</span>
+              <span class="text-neutral-600 dark:text-neutral-400">/mois</span>
+            </div>
+            <p class="text-neutral-600 dark:text-neutral-400">
+              Parfait pour commencer votre collection
+            </p>
+          </div>
+          
+          <ul class="space-y-4 mb-8">
+            <li class="flex items-center">
+              <Check class="w-5 h-5 text-green-500 mr-3 flex-shrink-0" />
+              <span class="text-neutral-600 dark:text-neutral-400">Jusqu'à 50 vinyles</span>
+            </li>
+            <li class="flex items-center">
+              <Check class="w-5 h-5 text-green-500 mr-3 flex-shrink-0" />
+              <span class="text-neutral-600 dark:text-neutral-400">2 collections</span>
+            </li>
+            <li class="flex items-center">
+              <Check class="w-5 h-5 text-green-500 mr-3 flex-shrink-0" />
+              <span class="text-neutral-600 dark:text-neutral-400">Scanner de code-barres</span>
+            </li>
+            <li class="flex items-center">
+              <Check class="w-5 h-5 text-green-500 mr-3 flex-shrink-0" />
+              <span class="text-neutral-600 dark:text-neutral-400">Recherche Discogs</span>
+            </li>
+            <li class="flex items-center">
+              <Check class="w-5 h-5 text-green-500 mr-3 flex-shrink-0" />
+              <span class="text-neutral-600 dark:text-neutral-400">Statistiques de base</span>
+            </li>
+            <li class="flex items-center">
+              <Check class="w-5 h-5 text-green-500 mr-3 flex-shrink-0" />
+              <span class="text-neutral-600 dark:text-neutral-400">Export CSV</span>
+            </li>
+            <li class="flex items-center">
+              <X class="w-5 h-5 text-neutral-400 mr-3 flex-shrink-0" />
+              <span class="text-neutral-400">Wishlist illimitée</span>
+            </li>
+            <li class="flex items-center">
+              <X class="w-5 h-5 text-neutral-400 mr-3 flex-shrink-0" />
+              <span class="text-neutral-400">Alertes de prix</span>
+            </li>
+            <li class="flex items-center">
+              <X class="w-5 h-5 text-neutral-400 mr-3 flex-shrink-0" />
+              <span class="text-neutral-400">Recommandations IA</span>
+            </li>
+            <li class="flex items-center">
+              <X class="w-5 h-5 text-neutral-400 mr-3 flex-shrink-0" />
+              <span class="text-neutral-400">Support prioritaire</span>
+            </li>
+          </ul>
+          
+          <button class="w-full py-3 px-4 border border-neutral-300 dark:border-neutral-600 text-neutral-900 dark:text-white rounded-lg hover:bg-neutral-50 dark:hover:bg-neutral-700 transition-colors">
+            Plan actuel
+          </button>
+        </div>
+
+        <!-- Plan Pro -->
+        <div class="bg-white dark:bg-neutral-800 rounded-2xl border-2 border-orange-500 dark:border-orange-400 p-8 relative">
+          <!-- Badge populaire -->
+          <div class="absolute -top-4 left-1/2 transform -translate-x-1/2">
+            <span class="bg-orange-500 text-white px-4 py-1 rounded-full text-sm font-medium flex items-center">
+              <Star class="w-4 h-4 mr-1" />
+              Le plus populaire
+            </span>
+          </div>
+          
+          <div class="text-center mb-8">
+            <h3 class="text-2xl font-bold text-neutral-900 dark:text-white mb-2">
+              Pro
+            </h3>
+            <div class="mb-4">
+              <span class="text-4xl font-bold text-neutral-900 dark:text-white">9€</span>
+              <span class="text-neutral-600 dark:text-neutral-400">/mois</span>
+            </div>
+            <p class="text-neutral-600 dark:text-neutral-400">
+              Pour les collectionneurs passionnés
+            </p>
+          </div>
+          
+          <ul class="space-y-4 mb-8">
+            <li class="flex items-center">
+              <Check class="w-5 h-5 text-green-500 mr-3 flex-shrink-0" />
+              <span class="text-neutral-600 dark:text-neutral-400">Vinyles illimités</span>
+            </li>
+            <li class="flex items-center">
+              <Check class="w-5 h-5 text-green-500 mr-3 flex-shrink-0" />
+              <span class="text-neutral-600 dark:text-neutral-400">Collections illimitées</span>
+            </li>
+            <li class="flex items-center">
+              <Check class="w-5 h-5 text-green-500 mr-3 flex-shrink-0" />
+              <span class="text-neutral-600 dark:text-neutral-400">Scanner de code-barres</span>
+            </li>
+            <li class="flex items-center">
+              <Check class="w-5 h-5 text-green-500 mr-3 flex-shrink-0" />
+              <span class="text-neutral-600 dark:text-neutral-400">Recherche Discogs</span>
+            </li>
+            <li class="flex items-center">
+              <Check class="w-5 h-5 text-green-500 mr-3 flex-shrink-0" />
+              <span class="text-neutral-600 dark:text-neutral-400">Statistiques avancées</span>
+            </li>
+            <li class="flex items-center">
+              <Check class="w-5 h-5 text-green-500 mr-3 flex-shrink-0" />
+              <span class="text-neutral-600 dark:text-neutral-400">Export CSV/JSON</span>
+            </li>
+            <li class="flex items-center">
+              <Check class="w-5 h-5 text-green-500 mr-3 flex-shrink-0" />
+              <span class="text-neutral-600 dark:text-neutral-400">Wishlist illimitée</span>
+            </li>
+            <li class="flex items-center">
+              <Check class="w-5 h-5 text-green-500 mr-3 flex-shrink-0" />
+              <span class="text-neutral-600 dark:text-neutral-400">Alertes de prix</span>
+            </li>
+            <li class="flex items-center">
+              <Check class="w-5 h-5 text-green-500 mr-3 flex-shrink-0" />
+              <span class="text-neutral-600 dark:text-neutral-400">Recommandations IA</span>
+            </li>
+            <li class="flex items-center">
+              <Check class="w-5 h-5 text-green-500 mr-3 flex-shrink-0" />
+              <span class="text-neutral-600 dark:text-neutral-400">Support prioritaire</span>
+            </li>
+          </ul>
+          
+          <button class="w-full py-3 px-4 bg-gradient-rock hover:bg-gradient-rock-hover text-white rounded-lg transition-colors font-medium">
+            Passer au Pro
+          </button>
+        </div>
+
+        <!-- Plan Enterprise -->
+        <div class="bg-white dark:bg-neutral-800 rounded-2xl border border-neutral-200 dark:border-neutral-700 p-8 relative">
+          <div class="text-center mb-8">
+            <h3 class="text-2xl font-bold text-neutral-900 dark:text-white mb-2">
+              Enterprise
+            </h3>
+            <div class="mb-4">
+              <span class="text-4xl font-bold text-neutral-900 dark:text-white">29€</span>
+              <span class="text-neutral-600 dark:text-neutral-400">/mois</span>
+            </div>
+            <p class="text-neutral-600 dark:text-neutral-400">
+              Pour les magasins et institutions
+            </p>
+          </div>
+          
+          <ul class="space-y-4 mb-8">
+            <li class="flex items-center">
+              <Check class="w-5 h-5 text-green-500 mr-3 flex-shrink-0" />
+              <span class="text-neutral-600 dark:text-neutral-400">Tout du plan Pro</span>
+            </li>
+            <li class="flex items-center">
+              <Check class="w-5 h-5 text-green-500 mr-3 flex-shrink-0" />
+              <span class="text-neutral-600 dark:text-neutral-400">API complète</span>
+            </li>
+            <li class="flex items-center">
+              <Check class="w-5 h-5 text-green-500 mr-3 flex-shrink-0" />
+              <span class="text-neutral-600 dark:text-neutral-400">Intégrations tierces</span>
+            </li>
+            <li class="flex items-center">
+              <Check class="w-5 h-5 text-green-500 mr-3 flex-shrink-0" />
+              <span class="text-neutral-600 dark:text-neutral-400">Gestion multi-utilisateurs</span>
+            </li>
+            <li class="flex items-center">
+              <Check class="w-5 h-5 text-green-500 mr-3 flex-shrink-0" />
+              <span class="text-neutral-600 dark:text-neutral-400">Support dédié</span>
+            </li>
+            <li class="flex items-center">
+              <Check class="w-5 h-5 text-green-500 mr-3 flex-shrink-0" />
+              <span class="text-neutral-600 dark:text-neutral-400">Formation personnalisée</span>
+            </li>
+            <li class="flex items-center">
+              <Check class="w-5 h-5 text-green-500 mr-3 flex-shrink-0" />
+              <span class="text-neutral-600 dark:text-neutral-400">SLA 99.9%</span>
+            </li>
+            <li class="flex items-center">
+              <Check class="w-5 h-5 text-green-500 mr-3 flex-shrink-0" />
+              <span class="text-neutral-600 dark:text-neutral-400">Sauvegarde quotidienne</span>
+            </li>
+            <li class="flex items-center">
+              <Check class="w-5 h-5 text-green-500 mr-3 flex-shrink-0" />
+              <span class="text-neutral-600 dark:text-neutral-400">Chiffrement avancé</span>
+            </li>
+            <li class="flex items-center">
+              <Check class="w-5 h-5 text-green-500 mr-3 flex-shrink-0" />
+              <span class="text-neutral-600 dark:text-neutral-400">Audit de sécurité</span>
+            </li>
+          </ul>
+          
+          <button class="w-full py-3 px-4 border border-neutral-300 dark:border-neutral-600 text-neutral-900 dark:text-white rounded-lg hover:bg-neutral-50 dark:hover:bg-neutral-700 transition-colors">
+            Contacter les ventes
+          </button>
+        </div>
+      </div>
+
+      <!-- Fonctionnalités détaillées -->
+      <div class="mb-12">
+        <h2 class="text-3xl font-bold text-neutral-900 dark:text-white mb-8 text-center">
+          Fonctionnalités détaillées
+        </h2>
+        
+        <div class="bg-white dark:bg-neutral-800 rounded-2xl border border-neutral-200 dark:border-neutral-700 overflow-hidden">
+          <div class="overflow-x-auto">
+            <table class="w-full">
+              <thead class="bg-neutral-50 dark:bg-neutral-900">
+                <tr>
+                  <th class="px-6 py-4 text-left text-sm font-medium text-neutral-900 dark:text-white">
+                    Fonctionnalité
+                  </th>
+                  <th class="px-6 py-4 text-center text-sm font-medium text-neutral-900 dark:text-white">
+                    Gratuit
+                  </th>
+                  <th class="px-6 py-4 text-center text-sm font-medium text-neutral-900 dark:text-white">
+                    Pro
+                  </th>
+                  <th class="px-6 py-4 text-center text-sm font-medium text-neutral-900 dark:text-white">
+                    Enterprise
+                  </th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-neutral-200 dark:divide-neutral-700">
+                <tr>
+                  <td class="px-6 py-4 text-sm text-neutral-900 dark:text-white">
+                    <div class="flex items-center">
+                      <Database class="w-4 h-4 mr-2 text-orange-600 dark:text-orange-400" />
+                      Vinyles dans la collection
+                    </div>
+                  </td>
+                  <td class="px-6 py-4 text-center text-sm text-neutral-600 dark:text-neutral-400">
+                    50
+                  </td>
+                  <td class="px-6 py-4 text-center text-sm text-neutral-600 dark:text-neutral-400">
+                    Illimité
+                  </td>
+                  <td class="px-6 py-4 text-center text-sm text-neutral-600 dark:text-neutral-400">
+                    Illimité
+                  </td>
+                </tr>
+                <tr>
+                  <td class="px-6 py-4 text-sm text-neutral-900 dark:text-white">
+                    <div class="flex items-center">
+                      <Users class="w-4 h-4 mr-2 text-orange-600 dark:text-orange-400" />
+                      Collections
+                    </div>
+                  </td>
+                  <td class="px-6 py-4 text-center text-sm text-neutral-600 dark:text-neutral-400">
+                    2
+                  </td>
+                  <td class="px-6 py-4 text-center text-sm text-neutral-600 dark:text-neutral-400">
+                    Illimité
+                  </td>
+                  <td class="px-6 py-4 text-center text-sm text-neutral-600 dark:text-neutral-400">
+                    Illimité
+                  </td>
+                </tr>
+                <tr>
+                  <td class="px-6 py-4 text-sm text-neutral-900 dark:text-white">
+                    <div class="flex items-center">
+                      <Zap class="w-4 h-4 mr-2 text-orange-600 dark:text-orange-400" />
+                      Scanner de code-barres
+                    </div>
+                  </td>
+                  <td class="px-6 py-4 text-center">
+                    <Check class="w-5 h-5 text-green-500 mx-auto" />
+                  </td>
+                  <td class="px-6 py-4 text-center">
+                    <Check class="w-5 h-5 text-green-500 mx-auto" />
+                  </td>
+                  <td class="px-6 py-4 text-center">
+                    <Check class="w-5 h-5 text-green-500 mx-auto" />
+                  </td>
+                </tr>
+                <tr>
+                  <td class="px-6 py-4 text-sm text-neutral-900 dark:text-white">
+                    <div class="flex items-center">
+                      <BarChart3 class="w-4 h-4 mr-2 text-orange-600 dark:text-orange-400" />
+                      Statistiques avancées
+                    </div>
+                  </td>
+                  <td class="px-6 py-4 text-center">
+                    <X class="w-5 h-5 text-neutral-400 mx-auto" />
+                  </td>
+                  <td class="px-6 py-4 text-center">
+                    <Check class="w-5 h-5 text-green-500 mx-auto" />
+                  </td>
+                  <td class="px-6 py-4 text-center">
+                    <Check class="w-5 h-5 text-green-500 mx-auto" />
+                  </td>
+                </tr>
+                <tr>
+                  <td class="px-6 py-4 text-sm text-neutral-900 dark:text-white">
+                    <div class="flex items-center">
+                      <Star class="w-4 h-4 mr-2 text-orange-600 dark:text-orange-400" />
+                      Recommandations IA
+                    </div>
+                  </td>
+                  <td class="px-6 py-4 text-center">
+                    <X class="w-5 h-5 text-neutral-400 mx-auto" />
+                  </td>
+                  <td class="px-6 py-4 text-center">
+                    <Check class="w-5 h-5 text-green-500 mx-auto" />
+                  </td>
+                  <td class="px-6 py-4 text-center">
+                    <Check class="w-5 h-5 text-green-500 mx-auto" />
+                  </td>
+                </tr>
+                <tr>
+                  <td class="px-6 py-4 text-sm text-neutral-900 dark:text-white">
+                    <div class="flex items-center">
+                      <Shield class="w-4 h-4 mr-2 text-orange-600 dark:text-orange-400" />
+                      Support prioritaire
+                    </div>
+                  </td>
+                  <td class="px-6 py-4 text-center">
+                    <X class="w-5 h-5 text-neutral-400 mx-auto" />
+                  </td>
+                  <td class="px-6 py-4 text-center">
+                    <Check class="w-5 h-5 text-green-500 mx-auto" />
+                  </td>
+                  <td class="px-6 py-4 text-center">
+                    <Crown class="w-5 h-5 text-orange-500 mx-auto" />
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- FAQ Upgrade -->
+      <div class="mb-12">
+        <h2 class="text-3xl font-bold text-neutral-900 dark:text-white mb-8 text-center">
+          Questions fréquentes
+        </h2>
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div class="bg-white dark:bg-neutral-800 rounded-lg border border-neutral-200 dark:border-neutral-700 p-6">
+            <h3 class="font-semibold text-neutral-900 dark:text-white mb-2">
+              Puis-je changer de plan à tout moment ?
+            </h3>
+            <p class="text-sm text-neutral-600 dark:text-neutral-400">
+              Oui, vous pouvez upgrader ou downgrader votre plan à tout moment. 
+              Les changements prennent effet immédiatement.
+            </p>
+          </div>
+          
+          <div class="bg-white dark:bg-neutral-800 rounded-lg border border-neutral-200 dark:border-neutral-700 p-6">
+            <h3 class="font-semibold text-neutral-900 dark:text-white mb-2">
+              Que se passe-t-il si j'annule mon abonnement ?
+            </h3>
+            <p class="text-sm text-neutral-600 dark:text-neutral-400">
+              Vos données restent accessibles jusqu'à la fin de la période payée. 
+              Vous passez ensuite au plan gratuit avec ses limitations.
+            </p>
+          </div>
+          
+          <div class="bg-white dark:bg-neutral-800 rounded-lg border border-neutral-200 dark:border-neutral-700 p-6">
+            <h3 class="font-semibold text-neutral-900 dark:text-white mb-2">
+              Y a-t-il un essai gratuit ?
+            </h3>
+            <p class="text-sm text-neutral-600 dark:text-neutral-400">
+              Oui, vous pouvez essayer le plan Pro gratuitement pendant 14 jours, 
+              sans engagement.
+            </p>
+          </div>
+          
+          <div class="bg-white dark:bg-neutral-800 rounded-lg border border-neutral-200 dark:border-neutral-700 p-6">
+            <h3 class="font-semibold text-neutral-900 dark:text-white mb-2">
+              Puis-je exporter mes données ?
+            </h3>
+            <p class="text-sm text-neutral-600 dark:text-neutral-400">
+              Absolument ! Tous les plans incluent l'export de vos données 
+              au format CSV ou JSON.
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <!-- CTA final -->
+      <div class="text-center bg-gradient-rock-subtle rounded-2xl p-8">
+        <h2 class="text-3xl font-bold text-neutral-900 dark:text-white mb-4">
+          Prêt à améliorer votre collection ?
+        </h2>
+        <p class="text-lg text-neutral-600 dark:text-neutral-400 mb-6 max-w-2xl mx-auto">
+          Rejoignez des milliers de collectionneurs qui utilisent VinylVault Pro 
+          pour gérer et analyser leurs collections.
+        </p>
+        <div class="flex flex-col sm:flex-row gap-4 justify-center">
+          <button class="px-8 py-3 bg-gradient-rock hover:bg-gradient-rock-hover text-white rounded-lg font-medium transition-colors">
+            Commencer l'essai gratuit
+          </button>
+          <button class="px-8 py-3 border border-neutral-300 dark:border-neutral-600 text-neutral-900 dark:text-white rounded-lg hover:bg-neutral-50 dark:hover:bg-neutral-700 transition-colors">
+            Voir la démo
+          </button>
+        </div>
+      </div>
+    </div>
+  </DashboardLayout>
+</Layout>

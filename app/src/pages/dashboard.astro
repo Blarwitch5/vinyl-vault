@@ -1,0 +1,47 @@
+---
+import RecentActivity from '../components/dashboard/RecentActivity.astro'
+import RecentVinyls from '../components/dashboard/RecentVinyls.astro'
+import StatsCards from '../components/dashboard/StatsCards.astro'
+import TopExpensiveVinyls from '../components/dashboard/TopExpensiveVinyls.astro'
+import VinylsByGenre from '../components/dashboard/VinylsByGenre.astro'
+import WelcomeSection from '../components/dashboard/WelcomeSection.astro'
+import WishlistCarousel from '../components/dashboard/WishlistCarousel.astro'
+import DashboardLayout from '../layouts/DashboardLayout.astro'
+import Layout from '../layouts/Layout.astro'
+---
+
+<Layout title="Tableau de bord">
+  <DashboardLayout title="Tableau de bord" currentPath="/dashboard">
+    <!-- Layout principal avec colonne de droite qui monte en haut -->
+    <div class="grid grid-cols-1 gap-6 lg:grid-cols-3">
+      <!-- Colonne principale (gauche et centre) -->
+      <div class="space-y-6 lg:col-span-2">
+        <!-- Section de bienvenue -->
+        <WelcomeSection />
+
+        <!-- Statistiques avancées -->
+        <StatsCards />
+
+        <!-- Derniers vinyles -->
+        <RecentVinyls />
+      </div>
+
+      <!-- Colonne de droite -->
+      <div class="space-y-4 sm:space-y-6 lg:col-span-1">
+        <!-- Activité récente -->
+        <RecentActivity />
+
+        <!-- Vinyles par style -->
+        <VinylsByGenre />
+
+        <!-- Vinyles les plus chers -->
+        <TopExpensiveVinyls />
+      </div>
+
+      <!-- Wishlist en pleine largeur -->
+      <div class="lg:col-span-3">
+        <WishlistCarousel />
+      </div>
+    </div>
+  </DashboardLayout>
+</Layout>

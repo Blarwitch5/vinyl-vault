@@ -1,0 +1,396 @@
+---
+import {
+  Bookmark,
+  ChevronLeft,
+  ChevronRight,
+  Clock,
+  Heart,
+  TriangleAlert,
+} from '@lucide/astro/icons'
+---
+
+<div>
+  <div class="mb-3 flex items-center justify-between">
+    <h2 class="flex items-center text-lg font-semibold text-neutral-900 dark:text-neutral-100">
+      <Heart class="mr-2 h-5 w-5 text-orange-600 dark:text-orange-400" />
+      Wishlist
+    </h2>
+    <a href="/wishlist" class="text-gradient-rock text-sm transition-colors"> Voir tout → </a>
+  </div>
+
+  <div class="relative">
+    <!-- Carousel wrapper -->
+    <div class="overflow-hidden rounded-lg bg-neutral-100 p-4 shadow-sm sm:p-6 dark:bg-neutral-800">
+      <div id="wishlist-carousel" class="relative">
+        <div class="flex gap-4 transition-transform duration-300 ease-in-out" id="wishlist-track">
+          <!-- Vinyle wishlist 1 -->
+          <a
+            href="/vinyl/the-wall"
+            class="group min-w-[calc(50%-0.5rem)] sm:min-w-[calc(50%-0.5rem)] md:min-w-[calc(25%-0.75rem)] lg:min-w-[calc(16.666%-0.833rem)]"
+          >
+            <div
+              class="rounded-lg bg-neutral-50 p-3 transition-colors hover:bg-neutral-100 dark:bg-neutral-700 dark:hover:bg-neutral-600"
+            >
+              <div
+                class="mb-3 aspect-square overflow-hidden rounded-lg bg-gradient-to-br from-red-100 to-red-200 dark:from-red-900 dark:to-red-800"
+              >
+                <div
+                  class="flex h-full w-full items-center justify-center bg-gradient-to-br from-red-500 to-red-600 text-2xl font-bold text-neutral-100 transition-transform duration-300 group-hover:scale-105"
+                >
+                  PF
+                </div>
+              </div>
+              <div class="text-center">
+                <h4 class="truncate text-sm font-medium text-neutral-900 dark:text-neutral-100">
+                  The Wall
+                </h4>
+                <p class="truncate text-xs text-neutral-500 dark:text-neutral-400">Pink Floyd</p>
+                <div class="mt-2 flex items-center justify-center">
+                  <span class="text-gradient-rock text-sm font-semibold">€89</span>
+                  <TriangleAlert class="ml-1 h-3 w-3 text-orange-600 dark:text-orange-400" />
+                </div>
+              </div>
+            </div>
+          </a>
+
+          <!-- Vinyle wishlist 2 -->
+          <a
+            href="/vinyl/led-zeppelin-iv"
+            class="group min-w-[calc(50%-0.5rem)] sm:min-w-[calc(50%-0.5rem)] md:min-w-[calc(25%-0.75rem)] lg:min-w-[calc(16.666%-0.833rem)]"
+          >
+            <div
+              class="rounded-lg bg-neutral-50 p-3 transition-colors hover:bg-neutral-100 dark:bg-neutral-700 dark:hover:bg-neutral-600"
+            >
+              <div class="bg-gradient-rock-light mb-3 aspect-square overflow-hidden rounded-lg">
+                <div
+                  class="bg-gradient-rock flex h-full w-full items-center justify-center text-2xl font-bold text-neutral-100 transition-transform duration-300 group-hover:scale-105"
+                >
+                  LZ
+                </div>
+              </div>
+              <div class="text-center">
+                <h4 class="truncate text-sm font-medium text-neutral-900 dark:text-neutral-100">
+                  Led Zeppelin IV
+                </h4>
+                <p class="truncate text-xs text-neutral-500 dark:text-neutral-400">Led Zeppelin</p>
+                <div class="mt-2 flex items-center justify-center">
+                  <span class="text-gradient-rock text-sm font-semibold">€42</span>
+                  <Bookmark class="ml-1 h-3 w-3 text-green-600 dark:text-green-400" />
+                </div>
+              </div>
+            </div>
+          </a>
+
+          <!-- Vinyle wishlist 3 -->
+          <a
+            href="/vinyl/a-love-supreme"
+            class="group min-w-[calc(50%-0.5rem)] sm:min-w-[calc(50%-0.5rem)] md:min-w-[calc(25%-0.75rem)] lg:min-w-[calc(16.666%-0.833rem)]"
+          >
+            <div
+              class="rounded-lg bg-neutral-50 p-3 transition-colors hover:bg-neutral-100 dark:bg-neutral-700 dark:hover:bg-neutral-600"
+            >
+              <div
+                class="mb-3 aspect-square overflow-hidden rounded-lg bg-gradient-to-br from-blue-100 to-blue-200 dark:from-blue-900 dark:to-blue-800"
+              >
+                <div
+                  class="flex h-full w-full items-center justify-center bg-gradient-to-br from-blue-500 to-blue-600 text-2xl font-bold text-neutral-100 transition-transform duration-300 group-hover:scale-105"
+                >
+                  JC
+                </div>
+              </div>
+              <div class="text-center">
+                <h4 class="truncate text-sm font-medium text-neutral-900 dark:text-neutral-100">
+                  A Love Supreme
+                </h4>
+                <p class="truncate text-xs text-neutral-500 dark:text-neutral-400">John Coltrane</p>
+                <div class="mt-2 flex items-center justify-center">
+                  <span class="text-gradient-rock text-sm font-semibold">€55</span>
+                  <Clock class="ml-1 h-3 w-3 text-blue-600 dark:text-blue-400" />
+                </div>
+              </div>
+            </div>
+          </a>
+
+          <!-- Vinyle wishlist 4 -->
+          <a
+            href="/vinyl/bohemian-rhapsody"
+            class="group min-w-[calc(50%-0.5rem)] sm:min-w-[calc(50%-0.5rem)] md:min-w-[calc(25%-0.75rem)] lg:min-w-[calc(16.666%-0.833rem)]"
+          >
+            <div
+              class="rounded-lg bg-neutral-50 p-3 transition-colors hover:bg-neutral-100 dark:bg-neutral-700 dark:hover:bg-neutral-600"
+            >
+              <div
+                class="mb-3 aspect-square overflow-hidden rounded-lg bg-gradient-to-br from-purple-100 to-purple-200 dark:from-purple-900 dark:to-purple-800"
+              >
+                <div
+                  class="flex h-full w-full items-center justify-center bg-gradient-to-br from-purple-500 to-purple-600 text-2xl font-bold text-neutral-100 transition-transform duration-300 group-hover:scale-105"
+                >
+                  Q
+                </div>
+              </div>
+              <div class="text-center">
+                <h4 class="truncate text-sm font-medium text-neutral-900 dark:text-neutral-100">
+                  A Night at the Opera
+                </h4>
+                <p class="truncate text-xs text-neutral-500 dark:text-neutral-400">Queen</p>
+                <div class="mt-2 flex items-center justify-center">
+                  <span class="text-gradient-rock text-sm font-semibold">€38</span>
+                  <Bookmark class="ml-1 h-3 w-3 text-green-600 dark:text-green-400" />
+                </div>
+              </div>
+            </div>
+          </a>
+
+          <!-- Vinyle wishlist 5 -->
+          <a
+            href="/vinyl/rumours"
+            class="group min-w-[calc(50%-0.5rem)] sm:min-w-[calc(50%-0.5rem)] md:min-w-[calc(25%-0.75rem)] lg:min-w-[calc(16.666%-0.833rem)]"
+          >
+            <div
+              class="rounded-lg bg-neutral-50 p-3 transition-colors hover:bg-neutral-100 dark:bg-neutral-700 dark:hover:bg-neutral-600"
+            >
+              <div
+                class="mb-3 aspect-square overflow-hidden rounded-lg bg-gradient-to-br from-pink-100 to-pink-200 dark:from-pink-900 dark:to-pink-800"
+              >
+                <div
+                  class="flex h-full w-full items-center justify-center bg-gradient-to-br from-pink-500 to-pink-600 text-2xl font-bold text-neutral-100 transition-transform duration-300 group-hover:scale-105"
+                >
+                  F
+                </div>
+              </div>
+              <div class="text-center">
+                <h4 class="truncate text-sm font-medium text-neutral-900 dark:text-neutral-100">
+                  Rumours
+                </h4>
+                <p class="truncate text-xs text-neutral-500 dark:text-neutral-400">Fleetwood Mac</p>
+                <div class="mt-2 flex items-center justify-center">
+                  <span class="text-xs font-semibold text-orange-600 dark:text-orange-400">€45</span
+                  >
+                  <TriangleAlert class="ml-1 h-3 w-3 text-orange-600 dark:text-orange-400" />
+                </div>
+              </div>
+            </div>
+          </a>
+
+          <!-- Vinyle wishlist 6 -->
+          <a
+            href="/vinyl/thriller"
+            class="group min-w-[calc(50%-0.5rem)] sm:min-w-[calc(50%-0.5rem)] md:min-w-[calc(25%-0.75rem)] lg:min-w-[calc(16.666%-0.833rem)]"
+          >
+            <div
+              class="rounded-lg bg-neutral-50 p-3 transition-colors hover:bg-neutral-100 dark:bg-neutral-700 dark:hover:bg-neutral-600"
+            >
+              <div
+                class="mb-3 aspect-square overflow-hidden rounded-lg bg-gradient-to-br from-yellow-100 to-yellow-200 dark:from-yellow-900 dark:to-yellow-800"
+              >
+                <div
+                  class="flex h-full w-full items-center justify-center bg-gradient-to-br from-yellow-500 to-yellow-600 text-2xl font-bold text-neutral-100 transition-transform duration-300 group-hover:scale-105"
+                >
+                  MJ
+                </div>
+              </div>
+              <div class="text-center">
+                <h4 class="truncate text-sm font-medium text-neutral-900 dark:text-neutral-100">
+                  Thriller
+                </h4>
+                <p class="truncate text-xs text-neutral-500 dark:text-neutral-400">
+                  Michael Jackson
+                </p>
+                <div class="mt-2 flex items-center justify-center">
+                  <span class="text-gradient-rock text-sm font-semibold">€52</span>
+                  <Bookmark class="ml-1 h-3 w-3 text-green-600 dark:text-green-400" />
+                </div>
+              </div>
+            </div>
+          </a>
+
+          <!-- Vinyle wishlist 7 -->
+          <a
+            href="/vinyl/dark-side"
+            class="group min-w-[calc(50%-0.5rem)] sm:min-w-[calc(50%-0.5rem)] md:min-w-[calc(25%-0.75rem)] lg:min-w-[calc(16.666%-0.833rem)]"
+          >
+            <div
+              class="rounded-lg bg-neutral-50 p-3 transition-colors hover:bg-neutral-100 dark:bg-neutral-700 dark:hover:bg-neutral-600"
+            >
+              <div
+                class="mb-3 aspect-square overflow-hidden rounded-lg bg-gradient-to-br from-indigo-100 to-indigo-200 dark:from-indigo-900 dark:to-indigo-800"
+              >
+                <div
+                  class="flex h-full w-full items-center justify-center bg-gradient-to-br from-indigo-500 to-indigo-600 text-2xl font-bold text-neutral-100 transition-transform duration-300 group-hover:scale-105"
+                >
+                  PF
+                </div>
+              </div>
+              <div class="text-center">
+                <h4 class="truncate text-sm font-medium text-neutral-900 dark:text-neutral-100">
+                  Dark Side of the Moon
+                </h4>
+                <p class="truncate text-xs text-neutral-500 dark:text-neutral-400">Pink Floyd</p>
+                <div class="mt-2 flex items-center justify-center">
+                  <span class="text-gradient-rock text-sm font-semibold">€67</span>
+                  <Bookmark class="ml-1 h-3 w-3 text-green-600 dark:text-green-400" />
+                </div>
+              </div>
+            </div>
+          </a>
+
+          <!-- Vinyle wishlist 8 -->
+          <a
+            href="/vinyl/abbey-road"
+            class="group min-w-[calc(50%-0.5rem)] sm:min-w-[calc(50%-0.5rem)] md:min-w-[calc(25%-0.75rem)] lg:min-w-[calc(16.666%-0.833rem)]"
+          >
+            <div
+              class="rounded-lg bg-neutral-50 p-3 transition-colors hover:bg-neutral-100 dark:bg-neutral-700 dark:hover:bg-neutral-600"
+            >
+              <div class="bg-gradient-rock-light mb-3 aspect-square overflow-hidden rounded-lg">
+                <div
+                  class="bg-gradient-rock flex h-full w-full items-center justify-center text-2xl font-bold text-neutral-100 transition-transform duration-300 group-hover:scale-105"
+                >
+                  TB
+                </div>
+              </div>
+              <div class="text-center">
+                <h4 class="truncate text-sm font-medium text-neutral-900 dark:text-neutral-100">
+                  Abbey Road
+                </h4>
+                <p class="truncate text-xs text-neutral-500 dark:text-neutral-400">The Beatles</p>
+                <div class="mt-2 flex items-center justify-center">
+                  <span class="text-xs font-semibold text-orange-600 dark:text-orange-400">€45</span
+                  >
+                  <TriangleAlert class="ml-1 h-3 w-3 text-orange-600 dark:text-orange-400" />
+                </div>
+              </div>
+            </div>
+          </a>
+
+          <!-- Vinyle wishlist 9 -->
+          <a
+            href="/vinyl/nevermind"
+            class="group min-w-[calc(50%-0.5rem)] sm:min-w-[calc(50%-0.5rem)] md:min-w-[calc(25%-0.75rem)] lg:min-w-[calc(16.666%-0.833rem)]"
+          >
+            <div
+              class="rounded-lg bg-neutral-50 p-3 transition-colors hover:bg-neutral-100 dark:bg-neutral-700 dark:hover:bg-neutral-600"
+            >
+              <div
+                class="mb-3 aspect-square overflow-hidden rounded-lg bg-gradient-to-br from-cyan-100 to-cyan-200 dark:from-cyan-900 dark:to-cyan-800"
+              >
+                <div
+                  class="flex h-full w-full items-center justify-center bg-gradient-to-br from-cyan-500 to-cyan-600 text-2xl font-bold text-neutral-100 transition-transform duration-300 group-hover:scale-105"
+                >
+                  N
+                </div>
+              </div>
+              <div class="text-center">
+                <h4 class="truncate text-sm font-medium text-neutral-900 dark:text-neutral-100">
+                  Nevermind
+                </h4>
+                <p class="truncate text-xs text-neutral-500 dark:text-neutral-400">Nirvana</p>
+                <div class="mt-2 flex items-center justify-center">
+                  <span class="text-gradient-rock text-sm font-semibold">€48</span>
+                  <Clock class="ml-1 h-3 w-3 text-cyan-600 dark:text-cyan-400" />
+                </div>
+              </div>
+            </div>
+          </a>
+
+          <!-- Vinyle wishlist 10 -->
+          <a
+            href="/vinyl/back-in-black"
+            class="group min-w-[calc(50%-0.5rem)] sm:min-w-[calc(50%-0.5rem)] md:min-w-[calc(25%-0.75rem)] lg:min-w-[calc(16.666%-0.833rem)]"
+          >
+            <div
+              class="rounded-lg bg-neutral-50 p-3 transition-colors hover:bg-neutral-100 dark:bg-neutral-700 dark:hover:bg-neutral-600"
+            >
+              <div
+                class="mb-3 aspect-square overflow-hidden rounded-lg bg-gradient-to-br from-slate-100 to-slate-200 dark:from-slate-700 dark:to-slate-600"
+              >
+                <div
+                  class="flex h-full w-full items-center justify-center bg-gradient-to-br from-slate-500 to-slate-600 text-2xl font-bold text-neutral-100 transition-transform duration-300 group-hover:scale-105"
+                >
+                  AC
+                </div>
+              </div>
+              <div class="text-center">
+                <h4 class="truncate text-sm font-medium text-neutral-900 dark:text-neutral-100">
+                  Back in Black
+                </h4>
+                <p class="truncate text-xs text-neutral-500 dark:text-neutral-400">AC/DC</p>
+                <div class="mt-2 flex items-center justify-center">
+                  <span class="text-gradient-rock text-sm font-semibold">€54</span>
+                  <TriangleAlert class="ml-1 h-3 w-3 text-orange-600 dark:text-orange-400" />
+                </div>
+              </div>
+            </div>
+          </a>
+        </div>
+      </div>
+
+      <!-- Boutons de navigation -->
+      <button
+        id="prev-btn"
+        type="button"
+        class="absolute top-1/2 left-0 z-10 -translate-y-1/2 rounded-full bg-white/90 p-2 shadow-lg transition-all hover:bg-white dark:bg-neutral-800/90 dark:hover:bg-neutral-800"
+      >
+        <ChevronLeft class="h-5 w-5 text-neutral-900 dark:text-neutral-100" />
+      </button>
+      <button
+        id="next-btn"
+        type="button"
+        class="absolute top-1/2 right-0 z-10 -translate-y-1/2 rounded-full bg-white/90 p-2 shadow-lg transition-all hover:bg-white dark:bg-neutral-800/90 dark:hover:bg-neutral-800"
+      >
+        <ChevronRight class="h-5 w-5 text-neutral-900 dark:text-neutral-100" />
+      </button>
+    </div>
+  </div>
+</div>
+
+<script>
+  const track = document.getElementById('wishlist-track')
+  const prevBtn = document.getElementById('prev-btn')
+  const nextBtn = document.getElementById('next-btn')
+
+  let currentIndex = 0
+
+  const getItemsPerView = () => {
+    const width = window.innerWidth
+    if (width >= 1024) return 6 // lg: 6 items
+    if (width >= 768) return 4 // md: 4 items
+    if (width >= 640) return 2 // sm: 2 items
+    return 2 // mobile: 2 items
+  }
+
+  const updateCarousel = () => {
+    if (!track) return
+    const itemsPerView = getItemsPerView()
+    const firstChild = track.children[0] as HTMLElement
+    const itemWidth = firstChild?.offsetWidth || 0
+    const gap = 16 // gap-4 = 1rem = 16px
+    const offset = -(currentIndex * (itemWidth + gap))
+    track.style.transform = `translateX(${offset}px)`
+  }
+
+  prevBtn?.addEventListener('click', () => {
+    if (currentIndex > 0) {
+      currentIndex--
+      updateCarousel()
+    }
+  })
+
+  nextBtn?.addEventListener('click', () => {
+    const itemsPerView = getItemsPerView()
+    const totalItems = track?.children.length || 0
+    if (currentIndex < totalItems - itemsPerView) {
+      currentIndex++
+      updateCarousel()
+    }
+  })
+
+  // Reset on resize
+  window.addEventListener('resize', () => {
+    currentIndex = 0
+    updateCarousel()
+  })
+
+  // Initial update
+  updateCarousel()
+</script>

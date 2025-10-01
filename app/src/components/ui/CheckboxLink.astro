@@ -1,0 +1,59 @@
+---
+export interface Props {
+  id?: string
+  label: string
+  helpText?: string
+  checked?: boolean
+  disabled?: boolean
+  required?: boolean
+  containerClass?: string
+  checkboxClass?: string
+  labelClass?: string
+  helpClass?: string
+  onChange?: string
+}
+
+const {
+  id = `checkbox-${Math.random().toString(36).substr(2, 9)}`,
+  label,
+  helpText,
+  checked = false,
+  disabled = false,
+  required = false,
+  containerClass = 'flex',
+  checkboxClass = 'w-4 h-4 text-orange-600 bg-neutral-100 border-neutral-300 rounded-sm focus:ring-orange-500 dark:focus:ring-orange-600 dark:ring-offset-neutral-800 focus:ring-2 dark:bg-neutral-700 dark:border-neutral-600',
+  labelClass = 'font-medium text-neutral-900 dark:text-neutral-300',
+  helpClass = 'text-xs font-normal text-neutral-500 dark:text-neutral-300',
+  onChange,
+} = Astro.props
+
+const helpId = helpText ? `${id}-help` : undefined
+---
+
+<div class={containerClass}>
+  <div class="flex h-5 items-center">
+    <input
+      id={id}
+      type="checkbox"
+      checked={checked}
+      disabled={disabled}
+      required={required}
+      class={checkboxClass}
+      aria-describedby={helpId}
+      data-onchange={onChange}
+    />
+  </div>
+  <div class="ms-2 text-sm">
+    <label for={id} class={labelClass}>
+      {label}
+      {required && <span class="ml-1 text-red-500">*</span>}
+    </label>
+    {
+      helpText && (
+        <p id={helpId} class={helpClass}>
+          {helpText}
+        </p>
+      )
+    }
+  </div>
+</div>

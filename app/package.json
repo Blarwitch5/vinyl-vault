@@ -1,0 +1,28 @@
+{
+  "name": "vinylvault-app",
+  "type": "module",
+  "version": "0.0.1",
+  "packageManager": "pnpm@10.11.0",
+  "scripts": {
+    "dev": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview",
+    "astro": "astro",
+    "format": "prettier --write .",
+    "format:check": "prettier --check ."
+  },
+  "dependencies": {
+    "@fontsource/jetbrains-mono": "^5.2.8",
+    "@fontsource/poppins": "^5.2.7",
+    "@tailwindcss/vite": "^4.1.13",
+    "astro": "^5.14.1",
+    "flowbite": "^3.1.2",
+    "lucide-astro": "^0.544.0",
+    "tailwindcss": "^4.1.13"
+  },
+  "devDependencies": {
+    "prettier": "^3.6.2",
+    "prettier-plugin-astro": "^0.14.1",
+    "prettier-plugin-tailwindcss": "^0.6.14"
+  }
+}

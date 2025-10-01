@@ -1,0 +1,52 @@
+---
+export interface Props {
+  src?: string
+  alt?: string
+  size?: 'sm' | 'md' | 'lg'
+  shape?: 'circle' | 'square'
+  showNotification?: boolean
+  notificationColor?: string
+  className?: string
+}
+
+const {
+  src = '/default-avatar.svg',
+  alt = 'Avatar',
+  size = 'md',
+  shape = 'circle',
+  showNotification = false,
+  notificationColor = 'bg-orange-400',
+  className = '',
+} = Astro.props
+
+// Tailles
+const sizeClasses = {
+  sm: 'w-8 h-8',
+  md: 'w-10 h-10',
+  lg: 'w-12 h-12',
+}
+
+// Formes
+const shapeClasses = {
+  circle: 'rounded-full',
+  square: 'rounded-sm',
+}
+
+// Position de la notification selon la taille
+const notificationPositions = {
+  sm: 'top-0 left-6',
+  md: 'top-0 left-7',
+  lg: 'top-0 left-9',
+}
+---
+
+<div class={`relative ${className}`}>
+  <img class={`${sizeClasses[size]} ${shapeClasses[shape]}`} src={src} alt={alt} />
+  {
+    showNotification && (
+      <span
+        class={`${notificationPositions[size]} absolute h-3.5 w-3.5 ${notificationColor} rounded-full border-2 border-white dark:border-neutral-800`}
+      />
+    )
+  }
+</div>

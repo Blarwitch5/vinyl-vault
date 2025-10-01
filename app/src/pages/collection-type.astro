@@ -1,0 +1,431 @@
+---
+import Calendar from '@lucide/astro/icons/calendar'
+import Clock from '@lucide/astro/icons/clock'
+import Disc3 from '@lucide/astro/icons/disc-3'
+import Eye from '@lucide/astro/icons/eye'
+import Funnel from '@lucide/astro/icons/funnel'
+import Grid3x3 from '@lucide/astro/icons/grid-3x3'
+import Heart from '@lucide/astro/icons/heart'
+import List from '@lucide/astro/icons/list'
+import Plus from '@lucide/astro/icons/plus'
+import Search from '@lucide/astro/icons/search'
+import Share2 from '@lucide/astro/icons/share-2'
+import SquarePen from '@lucide/astro/icons/square-pen'
+import Trash2 from '@lucide/astro/icons/trash-2'
+import TrendingUp from '@lucide/astro/icons/trending-up'
+import Users from '@lucide/astro/icons/users'
+
+import DashboardLayout from '../layouts/DashboardLayout.astro'
+import Layout from '../layouts/Layout.astro'
+---
+
+<Layout title="Rock Classics - Collection">
+  <DashboardLayout title="Rock Classics" currentPath="/collections">
+    <!-- En-tête de la collection -->
+    <div class="mb-6">
+      <div class="bg-gradient-rock-subtle rounded-lg border border-orange-200 p-6">
+        <div class="flex items-start justify-between">
+          <div class="flex items-center space-x-4">
+            <div
+              class="flex h-16 w-16 items-center justify-center rounded-lg bg-orange-100 dark:bg-orange-900"
+            >
+              <Disc3 class="h-8 w-8 text-orange-600 dark:text-orange-400" />
+            </div>
+            <div>
+              <h1 class="text-2xl font-bold text-neutral-900 dark:text-white">Rock Classics</h1>
+              <p class="text-neutral-600 dark:text-neutral-400">
+                Une collection de vinyles rock emblématiques des années 60-80
+              </p>
+              <div
+                class="mt-2 flex items-center space-x-4 text-sm text-neutral-500 dark:text-neutral-400"
+              >
+                <span class="flex items-center">
+                  <Disc3 class="mr-1 h-4 w-4" />
+                  45 vinyles
+                </span>
+                <span class="flex items-center">
+                  <Calendar class="mr-1 h-4 w-4" />
+                  Créée le 12/03/2023
+                </span>
+                <span class="flex items-center">
+                  <TrendingUp class="mr-1 h-4 w-4" />
+                  €2,340 valeur estimée
+                </span>
+              </div>
+            </div>
+          </div>
+          <div class="flex items-center space-x-2">
+            <button
+              class="hover:text-gradient-rock p-2 text-neutral-500 transition-colors dark:text-neutral-400"
+              title="Partager"
+            >
+              <Share2 class="h-5 w-5" />
+            </button>
+            <button
+              class="hover:text-gradient-rock p-2 text-neutral-500 transition-colors dark:text-neutral-400"
+              title="Éditer"
+            >
+              <SquarePen class="h-5 w-5" />
+            </button>
+            <button
+              class="p-2 text-neutral-500 transition-colors hover:text-red-600 dark:text-neutral-400 dark:hover:text-red-400"
+              title="Supprimer"
+            >
+              <Trash2 class="h-5 w-5" />
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Barre d'outils -->
+    <div class="mb-6 rounded-lg bg-white p-4 shadow-sm dark:bg-neutral-800">
+      <div
+        class="flex flex-col items-center justify-between space-y-4 sm:flex-row sm:space-y-0 sm:space-x-4"
+      >
+        <!-- Recherche et filtres -->
+        <div class="flex flex-1 items-center space-x-4">
+          <div class="relative max-w-md flex-1">
+            <Search
+              class="absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 transform text-neutral-400"
+            />
+            <input
+              type="text"
+              placeholder="Rechercher dans la collection..."
+              class="w-full rounded-lg border border-neutral-300 bg-neutral-50 py-2 pr-4 pl-10 text-neutral-900 focus:border-orange-500 focus:ring-2 focus:ring-orange-500 dark:border-neutral-600 dark:bg-neutral-700 dark:text-white"
+            />
+          </div>
+          <button
+            class="hover:text-gradient-rock flex items-center px-3 py-2 text-sm text-neutral-600 transition-colors dark:text-neutral-400"
+          >
+            <Funnel class="mr-2 h-4 w-4" />
+            Filtres
+          </button>
+        </div>
+
+        <!-- Actions et vues -->
+        <div class="flex items-center space-x-4">
+          <button
+            class="bg-gradient-rock hover:bg-gradient-rock-hover flex items-center rounded-lg px-4 py-2 text-white transition-colors"
+          >
+            <Plus class="mr-2 h-4 w-4" />
+            Ajouter un vinyle
+          </button>
+
+          <!-- Boutons de vue -->
+          <div class="flex rounded-lg bg-neutral-100 p-1 dark:bg-neutral-700">
+            <button
+              class="rounded-md bg-white p-2 text-orange-600 shadow-sm dark:bg-neutral-800 dark:text-orange-400"
+              title="Vue liste"
+            >
+              <List class="h-4 w-4" />
+            </button>
+            <button
+              class="hover:text-gradient-rock p-2 text-neutral-500 transition-colors dark:text-neutral-400"
+              title="Vue grille"
+            >
+              <Grid3x3 class="h-4 w-4" />
+            </button>
+            <button
+              class="hover:text-gradient-rock p-2 text-neutral-500 transition-colors dark:text-neutral-400"
+              title="Vue timeline"
+            >
+              <Clock class="h-4 w-4" />
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Statistiques rapides -->
+    <div class="mb-6 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+      <div class="rounded-lg bg-white p-4 shadow dark:bg-neutral-800">
+        <div class="flex items-center">
+          <div class="rounded-lg bg-orange-50 p-2 dark:bg-orange-950">
+            <Disc3 class="h-5 w-5 text-orange-600 dark:text-orange-400" />
+          </div>
+          <div class="ml-3">
+            <p class="text-sm font-medium text-neutral-600 dark:text-neutral-400">Total vinyles</p>
+            <p class="text-xl font-semibold text-neutral-900 dark:text-white">45</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="rounded-lg bg-white p-4 shadow dark:bg-neutral-800">
+        <div class="flex items-center">
+          <div class="rounded-lg bg-orange-50 p-2 dark:bg-orange-950">
+            <Users class="h-5 w-5 text-orange-600 dark:text-orange-400" />
+          </div>
+          <div class="ml-3">
+            <p class="text-sm font-medium text-neutral-600 dark:text-neutral-400">
+              Artistes uniques
+            </p>
+            <p class="text-xl font-semibold text-neutral-900 dark:text-white">28</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="rounded-lg bg-white p-4 shadow dark:bg-neutral-800">
+        <div class="flex items-center">
+          <div class="rounded-lg bg-orange-50 p-2 dark:bg-orange-950">
+            <Calendar class="h-5 w-5 text-orange-600 dark:text-orange-400" />
+          </div>
+          <div class="ml-3">
+            <p class="text-sm font-medium text-neutral-600 dark:text-neutral-400">Période</p>
+            <p class="text-xl font-semibold text-neutral-900 dark:text-white">1965-1985</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="rounded-lg bg-white p-4 shadow dark:bg-neutral-800">
+        <div class="flex items-center">
+          <div class="rounded-lg bg-orange-50 p-2 dark:bg-orange-950">
+            <TrendingUp class="h-5 w-5 text-orange-600 dark:text-orange-400" />
+          </div>
+          <div class="ml-3">
+            <p class="text-sm font-medium text-neutral-600 dark:text-neutral-400">Valeur estimée</p>
+            <p class="text-xl font-semibold text-neutral-900 dark:text-white">€2,340</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Liste des vinyles -->
+    <div class="rounded-lg bg-white shadow dark:bg-neutral-800">
+      <div class="p-6">
+        <h2 class="mb-4 text-lg font-semibold text-neutral-900 dark:text-white">
+          Vinyles de la collection
+        </h2>
+
+        <div class="space-y-4">
+          <!-- Vinyle 1 -->
+          <div
+            class="flex items-center space-x-4 rounded-lg bg-neutral-50 p-4 transition-colors hover:bg-neutral-100 dark:bg-neutral-700 dark:hover:bg-neutral-600"
+          >
+            <div
+              class="flex h-16 w-16 items-center justify-center overflow-hidden rounded-lg bg-orange-50 dark:bg-orange-950"
+            >
+              <div
+                class="bg-gradient-rock flex h-full w-full items-center justify-center text-lg font-bold text-white"
+              >
+                AR
+              </div>
+            </div>
+            <div class="flex-1">
+              <h3 class="text-lg font-semibold text-neutral-900 dark:text-white">Abbey Road</h3>
+              <p class="text-neutral-600 dark:text-neutral-400">The Beatles • 1969 • Rock</p>
+              <div
+                class="mt-1 flex items-center space-x-4 text-sm text-neutral-500 dark:text-neutral-400"
+              >
+                <span>État: Excellent</span>
+                <span>Prix: €45</span>
+                <span>Ajouté: 15/01/2024</span>
+              </div>
+            </div>
+            <div class="flex items-center space-x-2">
+              <button
+                class="hover:text-gradient-rock p-2 text-neutral-500 transition-colors dark:text-neutral-400"
+                title="Écouter"
+              >
+                <Trash2 class="h-4 w-4" />
+              </button>
+              <button
+                class="hover:text-gradient-rock p-2 text-neutral-500 transition-colors dark:text-neutral-400"
+                title="Favoris"
+              >
+                <Heart class="h-4 w-4" />
+              </button>
+              <button
+                class="hover:text-gradient-rock p-2 text-neutral-500 transition-colors dark:text-neutral-400"
+                title="Voir détails"
+              >
+                <Eye class="h-4 w-4" />
+              </button>
+            </div>
+          </div>
+
+          <!-- Vinyle 2 -->
+          <div
+            class="flex items-center space-x-4 rounded-lg bg-neutral-50 p-4 transition-colors hover:bg-neutral-100 dark:bg-neutral-700 dark:hover:bg-neutral-600"
+          >
+            <div
+              class="flex h-16 w-16 items-center justify-center overflow-hidden rounded-lg bg-orange-50 dark:bg-orange-950"
+            >
+              <div
+                class="flex h-full w-full items-center justify-center bg-gradient-to-br from-neutral-500 to-neutral-600 text-lg font-bold text-white"
+              >
+                DS
+              </div>
+            </div>
+            <div class="flex-1">
+              <h3 class="text-lg font-semibold text-neutral-900 dark:text-white">
+                The Dark Side of the Moon
+              </h3>
+              <p class="text-neutral-600 dark:text-neutral-400">
+                Pink Floyd • 1973 • Progressive Rock
+              </p>
+              <div
+                class="mt-1 flex items-center space-x-4 text-sm text-neutral-500 dark:text-neutral-400"
+              >
+                <span>État: Très bon</span>
+                <span>Prix: €67</span>
+                <span>Ajouté: 10/01/2024</span>
+              </div>
+            </div>
+            <div class="flex items-center space-x-2">
+              <button
+                class="hover:text-gradient-rock p-2 text-neutral-500 transition-colors dark:text-neutral-400"
+                title="Écouter"
+              >
+                <Trash2 class="h-4 w-4" />
+              </button>
+              <button
+                class="hover:text-gradient-rock p-2 text-neutral-500 transition-colors dark:text-neutral-400"
+                title="Favoris"
+              >
+                <Heart class="h-4 w-4" />
+              </button>
+              <button
+                class="hover:text-gradient-rock p-2 text-neutral-500 transition-colors dark:text-neutral-400"
+                title="Voir détails"
+              >
+                <Eye class="h-4 w-4" />
+              </button>
+            </div>
+          </div>
+
+          <!-- Vinyle 3 -->
+          <div
+            class="flex items-center space-x-4 rounded-lg bg-neutral-50 p-4 transition-colors hover:bg-neutral-100 dark:bg-neutral-700 dark:hover:bg-neutral-600"
+          >
+            <div
+              class="flex h-16 w-16 items-center justify-center overflow-hidden rounded-lg bg-orange-50 dark:bg-orange-950"
+            >
+              <div
+                class="bg-gradient-rock flex h-full w-full items-center justify-center text-lg font-bold text-white"
+              >
+                LZ
+              </div>
+            </div>
+            <div class="flex-1">
+              <h3 class="text-lg font-semibold text-neutral-900 dark:text-white">
+                Led Zeppelin IV
+              </h3>
+              <p class="text-neutral-600 dark:text-neutral-400">Led Zeppelin • 1971 • Hard Rock</p>
+              <div
+                class="mt-1 flex items-center space-x-4 text-sm text-neutral-500 dark:text-neutral-400"
+              >
+                <span>État: Excellent</span>
+                <span>Prix: €52</span>
+                <span>Ajouté: 05/01/2024</span>
+              </div>
+            </div>
+            <div class="flex items-center space-x-2">
+              <button
+                class="hover:text-gradient-rock p-2 text-neutral-500 transition-colors dark:text-neutral-400"
+                title="Écouter"
+              >
+                <Trash2 class="h-4 w-4" />
+              </button>
+              <button
+                class="hover:text-gradient-rock p-2 text-neutral-500 transition-colors dark:text-neutral-400"
+                title="Favoris"
+              >
+                <Heart class="h-4 w-4" />
+              </button>
+              <button
+                class="hover:text-gradient-rock p-2 text-neutral-500 transition-colors dark:text-neutral-400"
+                title="Voir détails"
+              >
+                <Eye class="h-4 w-4" />
+              </button>
+            </div>
+          </div>
+
+          <!-- Vinyle 4 -->
+          <div
+            class="flex items-center space-x-4 rounded-lg bg-neutral-50 p-4 transition-colors hover:bg-neutral-100 dark:bg-neutral-700 dark:hover:bg-neutral-600"
+          >
+            <div
+              class="flex h-16 w-16 items-center justify-center overflow-hidden rounded-lg bg-orange-50 dark:bg-orange-950"
+            >
+              <div
+                class="flex h-full w-full items-center justify-center bg-gradient-to-br from-purple-500 to-purple-600 text-lg font-bold text-white"
+              >
+                QN
+              </div>
+            </div>
+            <div class="flex-1">
+              <h3 class="text-lg font-semibold text-neutral-900 dark:text-white">
+                A Night at the Opera
+              </h3>
+              <p class="text-neutral-600 dark:text-neutral-400">Queen • 1975 • Rock</p>
+              <div
+                class="mt-1 flex items-center space-x-4 text-sm text-neutral-500 dark:text-neutral-400"
+              >
+                <span>État: Très bon</span>
+                <span>Prix: €38</span>
+                <span>Ajouté: 02/01/2024</span>
+              </div>
+            </div>
+            <div class="flex items-center space-x-2">
+              <button
+                class="hover:text-gradient-rock p-2 text-neutral-500 transition-colors dark:text-neutral-400"
+                title="Écouter"
+              >
+                <Trash2 class="h-4 w-4" />
+              </button>
+              <button
+                class="hover:text-gradient-rock p-2 text-neutral-500 transition-colors dark:text-neutral-400"
+                title="Favoris"
+              >
+                <Heart class="h-4 w-4" />
+              </button>
+              <button
+                class="hover:text-gradient-rock p-2 text-neutral-500 transition-colors dark:text-neutral-400"
+                title="Voir détails"
+              >
+                <Eye class="h-4 w-4" />
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Pagination -->
+        <div
+          class="mt-6 flex items-center justify-between border-t border-neutral-200 pt-4 dark:border-neutral-700"
+        >
+          <p class="text-sm text-neutral-500 dark:text-neutral-400">
+            Affichage de 1 à 4 sur 45 vinyles
+          </p>
+          <div class="flex items-center space-x-2">
+            <button
+              class="hover:text-gradient-rock px-3 py-1 text-sm text-neutral-500 transition-colors dark:text-neutral-400"
+            >
+              Précédent
+            </button>
+            <button class="bg-gradient-rock rounded px-3 py-1 text-sm text-white">1</button>
+            <button
+              class="hover:text-gradient-rock px-3 py-1 text-sm text-neutral-500 transition-colors dark:text-neutral-400"
+              >2</button
+            >
+            <button
+              class="hover:text-gradient-rock px-3 py-1 text-sm text-neutral-500 transition-colors dark:text-neutral-400"
+              >3</button
+            >
+            <span class="text-sm text-neutral-500 dark:text-neutral-400">...</span>
+            <button
+              class="hover:text-gradient-rock px-3 py-1 text-sm text-neutral-500 transition-colors dark:text-neutral-400"
+              >12</button
+            >
+            <button
+              class="hover:text-gradient-rock px-3 py-1 text-sm text-neutral-500 transition-colors dark:text-neutral-400"
+            >
+              Suivant
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </DashboardLayout>
+</Layout>

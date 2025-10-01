@@ -1,0 +1,129 @@
+@import '@fontsource/poppins/400.css';
+@import '@fontsource/poppins/500.css';
+@import '@fontsource/poppins/600.css';
+@import '@fontsource/poppins/700.css';
+@import '@fontsource/jetbrains-mono/400.css';
+@import '@fontsource/jetbrains-mono/500.css';
+@import '@fontsource/jetbrains-mono/700.css';
+
+@import 'tailwindcss';
+
+@theme {
+  /* Breakpoints personnalisés */
+  --breakpoint-xs: 480px;
+
+  /* Font families */
+  --font-sans: 'Poppins', ui-sans-serif, system-ui;
+  --font-mono: 'JetBrains Mono', ui-monospace, monospace;
+
+  /* Font sizes avec clamp pour responsive */
+  --font-size-xs: clamp(0.75rem, 0.7rem + 0.25vw, 0.875rem);
+  --font-size-sm: clamp(0.875rem, 0.8rem + 0.375vw, 1rem);
+  --font-size-base: clamp(1rem, 0.9rem + 0.5vw, 1.125rem);
+  --font-size-lg: clamp(1.125rem, 1rem + 0.625vw, 1.25rem);
+  --font-size-xl: clamp(1.25rem, 1.1rem + 0.75vw, 1.5rem);
+  --font-size-2xl: clamp(1.5rem, 1.3rem + 1vw, 2rem);
+  --font-size-3xl: clamp(1.875rem, 1.6rem + 1.375vw, 2.5rem);
+  --font-size-4xl: clamp(2.25rem, 1.9rem + 1.75vw, 3rem);
+
+  /* Gradients personnalisés */
+  --background-image-gradient-rock: linear-gradient(
+    to right,
+    rgb(245, 158, 11),
+    rgb(249, 115, 22),
+    rgb(239, 68, 68)
+  );
+  --background-image-gradient-rock-hover: linear-gradient(
+    to right,
+    rgb(217, 119, 6),
+    rgb(234, 88, 12),
+    rgb(220, 38, 38)
+  );
+  --background-image-gradient-rock-vertical: linear-gradient(
+    to bottom,
+    rgb(245, 158, 11),
+    rgb(249, 115, 22),
+    rgb(239, 68, 68)
+  );
+  --background-image-gradient-rock-subtle: linear-gradient(
+    to right,
+    rgba(245, 158, 11, 0.1),
+    rgba(249, 115, 22, 0.1),
+    rgba(239, 68, 68, 0.1)
+  );
+  --background-image-gradient-rock-light: linear-gradient(
+    to right,
+    rgba(245, 158, 11, 0.2),
+    rgba(249, 115, 22, 0.2),
+    rgba(239, 68, 68, 0.2)
+  );
+}
+
+@import 'flowbite/src/themes/default';
+@plugin "flowbite/plugin";
+@source "../../node_modules/flowbite";
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+/* Classes utilitaires pour les gradients sur texte */
+.text-gradient-rock {
+  background-image: linear-gradient(
+    to right,
+    rgb(245, 158, 11),
+    rgb(249, 115, 22),
+    rgb(239, 68, 68)
+  );
+  background-clip: text;
+  -webkit-background-clip: text;
+  color: transparent;
+}
+
+.text-gradient-rock-hover {
+  background-image: linear-gradient(to right, rgb(217, 119, 6), rgb(234, 88, 12), rgb(220, 38, 38));
+  background-clip: text;
+  -webkit-background-clip: text;
+  color: transparent;
+}
+
+.text-gradient-rock-vertical {
+  background-image: linear-gradient(
+    to bottom,
+    rgb(245, 158, 11),
+    rgb(249, 115, 22),
+    rgb(239, 68, 68)
+  );
+  background-clip: text;
+  -webkit-background-clip: text;
+  color: transparent;
+}
+
+/* Override Flowbite sidebar overlay colors to use neutral instead of gray/slate */
+.fixed.inset-0.bg-gray-900,
+.fixed.inset-0.bg-slate-900,
+.fixed.inset-0.bg-gray-900\/50,
+.fixed.inset-0.bg-slate-900\/50,
+.fixed.inset-0.bg-gray-900\/75,
+.fixed.inset-0.bg-slate-900\/75,
+.bg-gray-900,
+.bg-slate-900,
+.bg-gray-900\/50,
+.bg-slate-900\/50,
+.bg-gray-900\/75,
+.bg-slate-900\/75 {
+  background-color: rgb(23 23 23 / 0.5) !important; /* neutral-900/50 */
+}
+
+.dark .fixed.inset-0.bg-gray-900,
+.dark .fixed.inset-0.bg-slate-900,
+.dark .fixed.inset-0.bg-gray-900\/50,
+.dark .fixed.inset-0.bg-slate-900\/50,
+.dark .fixed.inset-0.bg-gray-900\/75,
+.dark .fixed.inset-0.bg-slate-900\/75,
+.dark .bg-gray-900,
+.dark .bg-slate-900,
+.dark .bg-gray-900\/50,
+.dark .bg-slate-900\/50,
+.dark .bg-gray-900\/75,
+.dark .bg-slate-900\/75 {
+  background-color: rgb(10 10 10 / 0.5) !important; /* neutral-950/50 */
+}

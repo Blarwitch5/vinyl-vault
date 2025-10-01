@@ -1,0 +1,70 @@
+---
+import Activity from '@lucide/astro/icons/activity'
+import VinylCard from '../VinylCard.astro'
+---
+
+<div>
+  <!-- En-tête Derniers vinyles -->
+  <div class="mb-3 flex items-center justify-between">
+    <h2 class="flex items-center text-lg font-semibold text-neutral-900 dark:text-neutral-100">
+      <Activity class="mr-2 h-5 w-5 text-orange-600 dark:text-orange-400" />
+      Derniers vinyles ajoutés
+    </h2>
+    <a href="/activity" class="text-gradient-rock text-sm transition-colors"> Voir tout → </a>
+  </div>
+
+  <!-- Derniers vinyles ajoutés -->
+  <div class="space-y-2 sm:space-y-3">
+    <VinylCard
+      href="/vinyl/abbey-road"
+      initials="AR"
+      title="Abbey Road"
+      artist="The Beatles"
+      year="1969"
+      genre="Rock"
+      addedTime="il y a 2h"
+      collection="Rock Classics"
+      price="45"
+      gradientColors="from-orange-500 to-orange-600"
+    />
+
+    <VinylCard
+      href="/vinyl/kind-of-blue"
+      initials="KB"
+      title="Kind of Blue"
+      artist="Miles Davis"
+      year="1959"
+      genre="Jazz"
+      addedTime="il y a 5h"
+      collection="Jazz Collection"
+      price="38"
+      gradientColors="from-blue-500 to-blue-600"
+    />
+
+    <VinylCard
+      href="/vinyl/illmatic"
+      initials="IL"
+      title="Illmatic"
+      artist="Nas"
+      year="1994"
+      genre="Hip-Hop"
+      addedTime="il y a 1j"
+      collection="Hip-Hop Essentials"
+      price="52"
+      gradientColors="from-purple-500 to-purple-600"
+    />
+
+    <VinylCard
+      href="/vinyl/dark-side-moon"
+      initials="DS"
+      title="The Dark Side of the Moon"
+      artist="Pink Floyd"
+      year="1973"
+      genre="Progressive Rock"
+      addedTime="il y a 2j"
+      collection="Rock Classics"
+      price="67"
+      gradientColors="from-zinc-500 to-zinc-600"
+    />
+  </div>
+</div>

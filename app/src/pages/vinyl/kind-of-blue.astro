@@ -1,0 +1,43 @@
+---
+import Breadcrumbs from '../../components/ui/Breadcrumbs.astro'
+import DashboardLayout from '../../layouts/DashboardLayout.astro'
+import Layout from '../../layouts/Layout.astro'
+---
+
+<Layout title="Kind of Blue - Miles Davis">
+  <DashboardLayout currentPath="/vinyl/kind-of-blue">
+    <Breadcrumbs
+      items={[
+        { label: 'Collections', href: '/collections' },
+        { label: 'Jazz Collection', href: '/collections/jazz-collection' },
+        { label: 'Kind of Blue' },
+      ]}
+    />
+    <div class="mx-auto max-w-4xl">
+      <div class="rounded-lg bg-neutral-100 p-6 shadow-sm dark:bg-neutral-900">
+        <div class="mb-6 flex items-center space-x-6">
+          <div
+            class="flex h-32 w-32 items-center justify-center rounded-lg bg-gradient-to-br from-blue-500 to-blue-600"
+          >
+            <span class="text-4xl font-bold text-neutral-100">KB</span>
+          </div>
+          <div class="flex-1">
+            <h1 class="mb-2 text-3xl font-bold text-neutral-900 dark:text-neutral-100">
+              Kind of Blue
+            </h1>
+            <p class="mb-2 text-xl text-neutral-600 dark:text-neutral-400">Miles Davis</p>
+            <p class="text-neutral-500 dark:text-neutral-400">1959 • Jazz • Columbia Records</p>
+          </div>
+        </div>
+
+        <div class="prose dark:prose-invert max-w-none">
+          <p class="text-lg text-neutral-700 dark:text-neutral-300">
+            Kind of Blue est un album de jazz révolutionnaire de Miles Davis, sorti en 1959.
+            Considéré comme l'un des albums de jazz les plus influents de tous les temps, il a
+            popularisé le jazz modal et reste un classique intemporel.
+          </p>
+        </div>
+      </div>
+    </div>
+  </DashboardLayout>
+</Layout>

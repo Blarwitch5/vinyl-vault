@@ -1,0 +1,206 @@
+---
+import ChartLine from '@lucide/astro/icons/chart-line';
+import ChevronDown from '@lucide/astro/icons/chevron-down';
+import ChevronRight from '@lucide/astro/icons/chevron-right';
+import LayoutDashboard from '@lucide/astro/icons/layout-dashboard';
+import Library from '@lucide/astro/icons/library';
+import ScanSearch from '@lucide/astro/icons/scan-search';
+import LifeBuoy from '@lucide/astro/icons/life-buoy';
+import BookOpen from '@lucide/astro/icons/book-open';
+import Crown from '@lucide/astro/icons/crown';
+import Mail from '@lucide/astro/icons/mail';
+import Info from '@lucide/astro/icons/info';
+import FileText from '@lucide/astro/icons/file-text';
+
+// Props pour le menu de navigation
+const { currentPath = "/dashboard" } = Astro.props;
+
+// Types pour les éléments de menu
+type SubmenuItem = {
+  href: string;
+  label: string;
+  count?: number;
+  isAllCollections?: boolean;
+};
+
+type MenuItem = {
+  href: string;
+  label: string;
+  icon: any;
+  hasSubmenu: boolean;
+  submenuItems?: SubmenuItem[];
+};
+
+// Données des dernières collections (simulées)
+const recentCollections = [
+  { id: "1", name: "Rock Classique", count: 45 },
+  { id: "2", name: "Jazz Vintage", count: 23 },
+  { id: "3", name: "Électronique", count: 18 }
+];
+
+// Configuration des éléments de menu
+const menuItems: MenuItem[] = [
+  {
+    href: "/dashboard",
+    label: "Tableau de bord",
+    icon: LayoutDashboard,
+    hasSubmenu: false
+  },
+  {
+    href: "/collections",
+    label: "Collections",
+    icon: Library,
+    hasSubmenu: true,
+    submenuItems: [
+      ...recentCollections.map(collection => ({
+        href: `/collection/${collection.id}`,
+        label: collection.name,
+        count: collection.count
+      })),
+      {
+        href: "/collections",
+        label: "Toutes les collections",
+        isAllCollections: true
+      }
+    ]
+  },
+  {
+    href: "/recherche",
+    label: "Recherche",
+    icon: ScanSearch,
+    hasSubmenu: false
+  },
+  {
+    href: "/statistiques",
+    label: "Statistiques",
+    icon: ChartLine,
+    hasSubmenu: false
+  }
+];
+
+// Fonction pour déterminer si un élément est actif
+const isActive = (href: string) => currentPath === href;
+
+// Fonction pour déterminer si un sous-menu est ouvert
+const isSubmenuOpen = (item: MenuItem) => {
+  if (!item.hasSubmenu) return false;
+  return item.submenuItems?.some((subItem: SubmenuItem) => isActive(subItem.href)) || false;
+};
+---
+
+<ul class="space-y-1 sm:space-y-2">
+  {menuItems.map((item) => (
+    <li>
+      {item.hasSubmenu ? (
+        <div>
+          <!-- Bouton principal avec chevron -->
+          <button
+            type="button"
+            class={`flex items-center justify-between w-full p-2 text-sm sm:text-base font-medium rounded-lg group transition-colors ${
+              isActive(item.href) || isSubmenuOpen(item)
+                ? 'text-orange-600 bg-orange-50 dark:text-orange-400 dark:bg-orange-900/20'
+                : 'text-neutral-900 dark:text-neutral-100 hover:bg-neutral-100 dark:hover:bg-neutral-800'
+            }`}
+            aria-expanded={isSubmenuOpen(item)}
+            data-collapse-toggle={`submenu-${item.label.toLowerCase()}`}
+          >
+            <div class="flex items-center">
+              <item.icon
+                size={24}
+                class={`size-4 sm:size-6 transition duration-75 ${
+                  isActive(item.href) || isSubmenuOpen(item)
+                    ? 'text-orange-600 dark:text-orange-400'
+                    : 'text-neutral-500 dark:text-neutral-400 group-hover:text-neutral-900 dark:group-hover:text-neutral-100'
+                }`}
+              />
+              <span class="ml-2 sm:ml-3">{item.label}</span>
+            </div>
+            <ChevronRight class={`chevron-icon size-4 sm:size-6 text-neutral-500 dark:text-neutral-400 transition-transform duration-200 ${
+              isSubmenuOpen(item) ? 'rotate-90' : 'rotate-0'
+            }`} />
+          </button>
+          
+          <!-- Sous-menu -->
+          <div
+            id={`submenu-${item.label.toLowerCase()}`}
+            class={`space-y-1 ml-4 sm:ml-6 mt-1 ${isSubmenuOpen(item) ? 'block' : 'hidden'}`}
+          >
+            {item.submenuItems?.map((subItem) => (
+              <a
+                href={subItem.href}
+                class={`flex items-center justify-between p-2 text-xs sm:text-sm rounded-lg group transition-colors ${
+                  isActive(subItem.href)
+                    ? 'text-orange-600 bg-orange-50 dark:text-orange-400 dark:bg-orange-900/20'
+                    : 'text-neutral-700 dark:text-neutral-300 hover:bg-neutral-100 dark:hover:bg-neutral-800'
+                }`}
+                transition:name="navigation"
+              >
+                <span class="flex items-center">
+                  <span class="w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full bg-orange-500 mr-2 sm:mr-3"></span>
+                  {subItem.label}
+                </span>
+                {subItem.count && (
+                  <span class="text-xs text-neutral-500 dark:text-neutral-400 bg-neutral-100 dark:bg-neutral-700 px-1.5 sm:px-2 py-0.5 sm:py-1 rounded-full">
+                    {subItem.count}
+                  </span>
+                )}
+              </a>
+            ))}
+          </div>
+        </div>
+      ) : (
+        <a
+          href={item.href}
+          class={`flex items-center p-2 text-sm sm:text-base font-medium rounded-lg group transition-colors ${
+            isActive(item.href)
+              ? 'text-orange-600 bg-orange-50 dark:text-orange-400 dark:bg-orange-900/20'
+              : 'text-neutral-900 dark:text-neutral-100 hover:bg-neutral-100 dark:hover:bg-neutral-800'
+          }`}
+          transition:name="navigation"
+        >
+          <item.icon
+            size={24}
+            class={`w-4 h-4 sm:w-6 sm:h-6 transition duration-75 ${
+              isActive(item.href)
+                ? 'text-orange-600 dark:text-orange-400'
+                : 'text-neutral-500 dark:text-neutral-400 group-hover:text-neutral-900 dark:group-hover:text-neutral-100'
+            }`}
+          />
+          <span class="ml-2 sm:ml-3">{item.label}</span>
+        </a>
+      )}
+    </li>
+  ))}
+</ul>
+
+<script>
+  // Script pour gérer l'ouverture/fermeture des sous-menus
+  document.addEventListener('DOMContentLoaded', function() {
+    const collapseButtons = document.querySelectorAll('[data-collapse-toggle]');
+    
+    collapseButtons.forEach(button => {
+      button.addEventListener('click', function(event: Event) {
+        const target = event.currentTarget as HTMLElement;
+        const targetId = target.getAttribute('data-collapse-toggle');
+        const targetElement = document.getElementById(targetId || '');
+        const chevron = target.querySelector('.chevron-icon');
+        
+        if (targetElement && chevron) {
+          const isHidden = targetElement.classList.contains('hidden');
+          
+          if (isHidden) {
+            targetElement.classList.remove('hidden');
+            target.setAttribute('aria-expanded', 'true');
+            chevron.classList.remove('rotate-0');
+            chevron.classList.add('rotate-90');
+          } else {
+            targetElement.classList.add('hidden');
+            target.setAttribute('aria-expanded', 'false');
+            chevron.classList.remove('rotate-90');
+            chevron.classList.add('rotate-0');
+          }
+        }
+      });
+    });
+  });
+</script>
