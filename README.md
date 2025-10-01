@@ -63,4 +63,4 @@ Voir [DEPLOYMENT_GUIDE.md](./DEPLOYMENT_GUIDE.md) pour instructions complètes V
 
 ---
 
-**VinylVault par BluRwitch** 🎵 | © 2024
+**VinylVault par Blarwitch** 🎵 | © 2025
