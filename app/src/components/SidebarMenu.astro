@@ -79,12 +79,41 @@ const menuItems: MenuItem[] = [
 ];
 
 // Fonction pour déterminer si un élément est actif
-const isActive = (href: string) => currentPath === href;
+const isActive = (href: string) => {
+  // Correspondance exacte
+  if (currentPath === href) return true;
+  
+  // Pour les routes de collection, vérifier si on est dans une sous-route
+  if (href === "/collections" && currentPath.startsWith("/collection/")) return true;
+  
+  // Pour les routes de vinyl, vérifier si on est dans une sous-route
+  if (href === "/collections" && currentPath.startsWith("/vinyl/")) return true;
+  
+  return false;
+};
 
 // Fonction pour déterminer si un sous-menu est ouvert
 const isSubmenuOpen = (item: MenuItem) => {
   if (!item.hasSubmenu) return false;
-  return item.submenuItems?.some((subItem: SubmenuItem) => isActive(subItem.href)) || false;
+  
+  // Vérifier si l'élément principal est actif
+  if (isActive(item.href)) return true;
+  
+  // Vérifier si un sous-élément est actif
+  return item.submenuItems?.some((subItem: SubmenuItem) => {
+    // Correspondance exacte
+    if (currentPath === subItem.href) return true;
+    
+    // Pour les routes de collection spécifiques
+    if (subItem.href.startsWith("/collection/") && currentPath.startsWith("/collection/")) {
+      return currentPath === subItem.href;
+    }
+    
+    // Pour les routes de vinyl
+    if (currentPath.startsWith("/vinyl/")) return true;
+    
+    return false;
+  }) || false;
 };
 ---
 

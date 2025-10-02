@@ -7,6 +7,13 @@ import SidebarBottomMenu from '../components/SidebarBottomMenu.astro'
 import SidebarMenu from '../components/SidebarMenu.astro'
 import SidebarSecondaryMenu from '../components/SidebarSecondaryMenu.astro'
 import ThemeSwitcher from '../components/ui/ThemeSwitcher.astro'
+
+type Props = {
+  title?: string
+  currentPath?: string
+}
+
+const { title, currentPath = "/dashboard" } = Astro.props
 ---
 
 <div class="bg-neutral-50 antialiased dark:bg-neutral-950">
@@ -459,8 +466,8 @@ import ThemeSwitcher from '../components/ui/ThemeSwitcher.astro'
           />
         </div>
       </form>
-      <SidebarMenu />
-      <SidebarSecondaryMenu />
+      <SidebarMenu currentPath={currentPath} />
+      <SidebarSecondaryMenu currentPath={currentPath} />
     </div>
     <SidebarBottomMenu />
   </aside>

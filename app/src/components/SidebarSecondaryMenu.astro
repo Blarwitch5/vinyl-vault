@@ -27,7 +27,18 @@ const secondaryMenuItems = [
 ]
 
 // Fonction pour déterminer si un élément est actif
-const isActive = (href: string) => currentPath === href
+const isActive = (href: string) => {
+  // Correspondance exacte
+  if (currentPath === href) return true;
+  
+  // Pour les routes de documentation, vérifier les sous-routes
+  if (href === "/documentation" && currentPath.startsWith("/documentation")) return true;
+  
+  // Pour les routes d'aide, vérifier les sous-routes
+  if (href === "/help" && currentPath.startsWith("/help")) return true;
+  
+  return false;
+}
 ---
 
 <ul
