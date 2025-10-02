@@ -1,0 +1,88 @@
+---
+import { type HTMLAttributes } from 'astro/types'
+
+type ButtonVariant = 'primary' | 'secondary' | 'outline' | 'ghost' | 'gradient' | 'danger'
+type ButtonSize = 'sm' | 'md' | 'lg'
+
+type Props = {
+  variant?: ButtonVariant
+  size?: ButtonSize
+  disabled?: boolean
+  loading?: boolean
+  href?: string
+  target?: string
+  type?: 'button' | 'submit' | 'reset'
+  class?: string
+} & HTMLAttributes<'button' | 'a'>
+
+const {
+  variant = 'primary',
+  size = 'md',
+  disabled = false,
+  loading = false,
+  href,
+  target,
+  type = 'button',
+  class: className = '',
+  ...rest
+} = Astro.props
+
+// Classes de base
+const baseClasses =
+  'inline-flex items-center justify-center gap-2 font-medium transition-all duration-300 ease-in-out focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed'
+
+// Variantes de style
+const variants = {
+  primary:
+    'bg-orange-600 text-neutral-100 hover:bg-orange-700 focus:ring-orange-500 shadow-sm hover:shadow-md',
+  secondary:
+    'bg-neutral-100 text-neutral-900 hover:bg-neutral-200 focus:ring-neutral-500 dark:bg-neutral-800 dark:text-neutral-100 dark:hover:bg-neutral-700',
+  outline:
+    'border border-orange-600 text-orange-600 hover:bg-orange-600 hover:text-neutral-100 focus:ring-orange-500 dark:border-orange-400 dark:text-orange-400 dark:hover:bg-orange-400 dark:hover:text-neutral-900',
+  ghost:
+    'border border-neutral-300 bg-transparent text-neutral-900 hover:bg-gradient-rock-subtle hover:border-orange-400 hover:text-orange-600 focus:ring-2 focus:ring-orange-500 focus:ring-offset-2 focus:outline-none dark:border-neutral-600 dark:text-neutral-100 dark:hover:bg-gradient-rock-light dark:hover:border-orange-500 dark:hover:text-orange-400 dark:focus:ring-orange-400 dark:focus:ring-offset-neutral-900',
+  gradient:
+    'bg-gradient-to-r from-orange-500 to-orange-600 text-neutral-100 hover:from-orange-600 hover:to-orange-700 focus:ring-orange-500 shadow-md hover:shadow-lg',
+  danger:
+    'bg-red-600 text-neutral-100 hover:bg-red-700 focus:ring-red-500 shadow-sm hover:shadow-md',
+}
+
+// Tailles
+const sizes = {
+  sm: 'px-3 py-1.5 text-xs rounded-md',
+  md: 'px-4 py-2 text-sm rounded-lg',
+  lg: 'px-6 py-3 text-base rounded-lg',
+}
+
+// Classes finales
+const classes = [baseClasses, variants[variant], sizes[size], className].filter(Boolean).join(' ')
+
+// Déterminer si c'est un lien ou un bouton
+const isLink = href !== undefined
+const Tag = isLink ? 'a' : 'button'
+const tagProps = isLink
+  ? { href, target, ...rest }
+  : { type, disabled: disabled || loading, ...rest }
+---
+
+<Tag class={classes} {...tagProps}>
+  {
+    loading && (
+      <div class="h-4 w-4 animate-spin rounded-full border-2 border-current border-t-transparent" />
+    )
+  }
+  <slot />
+</Tag>
+
+<style>
+  /* Animation personnalisée pour le spinner */
+  @keyframes spin {
+    to {
+      transform: rotate(360deg);
+    }
+  }
+
+  .animate-spin {
+    animation: spin 1s linear infinite;
+  }
+</style>

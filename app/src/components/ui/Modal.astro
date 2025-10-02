@@ -1,0 +1,177 @@
+---
+import { X } from '@lucide/astro/icons'
+
+type Props = {
+  id: string
+  title: string
+  showCloseButton?: boolean
+  showFooter?: boolean
+  footerContent?: string
+}
+
+const { id, title, showCloseButton = true, showFooter = true, footerContent = '' } = Astro.props
+---
+
+<div
+  id={id}
+  class="fixed inset-0 z-[9999] hidden items-center justify-center bg-neutral-900/20 p-4"
+  role="dialog"
+  aria-modal="true"
+  aria-labelledby={`${id}-title`}
+  aria-describedby={`${id}-content`}
+  tabindex="-1"
+>
+  <div
+    class="relative max-h-[90vh] w-full max-w-2xl overflow-y-auto rounded-lg bg-white shadow-xl dark:bg-neutral-800"
+  >
+    <!-- Header -->
+    <div
+      class="sticky top-0 flex items-center justify-between border-b border-neutral-200 p-6 dark:border-neutral-700"
+    >
+      <h2 id={`${id}-title`} class="text-xl font-bold text-neutral-900 dark:text-neutral-100">
+        {title}
+      </h2>
+      {
+        showCloseButton && (
+          <button
+            id={`${id}-close`}
+            class="rounded-lg p-2 text-neutral-500 transition-colors hover:bg-neutral-100 hover:text-neutral-700 dark:text-neutral-400 dark:hover:bg-neutral-700 dark:hover:text-neutral-300"
+          >
+            <X class="h-5 w-5" />
+          </button>
+        )
+      }
+    </div>
+
+    <!-- Content -->
+    <div id={`${id}-content`} class="p-6">
+      <slot />
+    </div>
+
+    <!-- Footer -->
+    {
+      showFooter && (
+        <div class="sticky bottom-0 border-t border-neutral-200 p-6 dark:border-neutral-700">
+          <div id={`${id}-footer`} class="flex gap-3">
+            {footerContent && <div set:html={footerContent} />}
+            <slot name="footer" />
+          </div>
+        </div>
+      )
+    }
+  </div>
+</div>
+
+<script define:vars={{ modalId: id }}>
+  const modal = document.getElementById(modalId)
+  const closeBtn = document.getElementById(`${modalId}-close`)
+  let previouslyFocusedElement = null
+
+  // Fermer la modal
+  const closeModal = () => {
+    modal?.classList.add('hidden')
+    modal?.classList.remove('flex')
+    // Nettoyer les styles inline
+    if (modal) {
+      modal.style.zIndex = ''
+      modal.style.position = ''
+      modal.style.top = ''
+      modal.style.left = ''
+      modal.style.right = ''
+      modal.style.bottom = ''
+      modal.style.width = ''
+      modal.style.height = ''
+    }
+    // Retirer le flou du contenu en arrière-plan
+    document.body.classList.remove('modal-open')
+    document.body.style.overflow = ''
+
+    // Restaurer le focus à l'élément précédent
+    if (previouslyFocusedElement) {
+      previouslyFocusedElement.focus()
+      previouslyFocusedElement = null
+    }
+  }
+
+  // Ouvrir la modal
+  const openModal = () => {
+    // Sauvegarder l'élément actuellement focusé
+    previouslyFocusedElement = document.activeElement
+
+    // Déplacer la modal directement dans le body pour éviter les conflits de contexte de stacking
+    if (modal && modal.parentNode !== document.body) {
+      document.body.appendChild(modal)
+    }
+
+    modal?.classList.remove('hidden')
+    modal?.classList.add('flex')
+    // Forcer le z-index le plus élevé et s'assurer que la modal est au-dessus de tout
+    if (modal) {
+      modal.style.zIndex = '99999'
+      modal.style.position = 'fixed'
+      modal.style.top = '0'
+      modal.style.left = '0'
+      modal.style.right = '0'
+      modal.style.bottom = '0'
+      modal.style.width = '100vw'
+      modal.style.height = '100vh'
+    }
+    // Appliquer le flou au contenu en arrière-plan
+    document.body.classList.add('modal-open')
+    document.body.style.overflow = 'hidden'
+
+    // Gérer le focus pour l'accessibilité
+    setTimeout(() => {
+      const firstFocusableElement = modal?.querySelector(
+        'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
+      )
+      if (firstFocusableElement) {
+        firstFocusableElement.focus()
+      } else {
+        modal?.focus()
+      }
+    }, 100)
+  }
+
+  closeBtn?.addEventListener('click', closeModal)
+
+  // Fermer en cliquant à l'extérieur
+  modal?.addEventListener('click', (event) => {
+    if (event.target === modal) {
+      closeModal()
+    }
+  })
+
+  // Fermer avec Escape et gérer la navigation au clavier
+  document.addEventListener('keydown', (event) => {
+    if (event.key === 'Escape' && !modal?.classList.contains('hidden')) {
+      closeModal()
+    }
+    // Gérer la navigation au clavier dans la modal
+    if (!modal?.classList.contains('hidden') && event.key === 'Tab') {
+      const focusableElements = modal?.querySelectorAll(
+        'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
+      )
+      if (focusableElements && focusableElements.length > 0) {
+        const firstElement = focusableElements[0]
+        const lastElement = focusableElements[focusableElements.length - 1]
+
+        if (event.shiftKey) {
+          if (document.activeElement === firstElement) {
+            lastElement.focus()
+            event.preventDefault()
+          }
+        } else {
+          if (document.activeElement === lastElement) {
+            firstElement.focus()
+            event.preventDefault()
+          }
+        }
+      }
+    }
+  })
+
+  // Écouter les événements personnalisés pour ouvrir/fermer la modal
+  document.addEventListener(`open-${modalId}`, openModal)
+  document.addEventListener(`close-${modalId}`, closeModal)
+</script>

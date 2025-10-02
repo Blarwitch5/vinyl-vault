@@ -1,0 +1,224 @@
+---
+import { Calendar, LayoutGrid, LayoutList } from '@lucide/astro/icons'
+
+type ViewType = 'grid' | 'list' | 'timeline'
+
+type Props = {
+  currentView: ViewType
+  availableViews?: ViewType[]
+  onViewChange?: string // Nom de la fonction JavaScript à appeler
+}
+
+const {
+  currentView,
+  availableViews = ['grid', 'list', 'timeline'],
+  onViewChange = 'toggleView',
+} = Astro.props
+
+const viewConfig = {
+  grid: { label: 'Grille', icon: LayoutGrid },
+  list: { label: 'Liste', icon: LayoutList },
+  timeline: { label: 'Timeline', icon: Calendar },
+}
+---
+
+<script>
+  // Fonction pour gérer le changement de vue
+  const handleViewChange = (view: 'grid' | 'list' | 'timeline') => {
+    // Émettre un événement personnalisé
+    document.dispatchEvent(
+      new CustomEvent('vinyl-view-change', {
+        detail: { view },
+      })
+    )
+  }
+
+  // Initialiser les styles des boutons au chargement
+  const initializeButtonStyles = () => {
+    const buttons = [
+      { btn: document.getElementById('grid-view-btn'), view: 'grid' },
+      { btn: document.getElementById('list-view-btn'), view: 'list' },
+      { btn: document.getElementById('timeline-view-btn'), view: 'timeline' },
+    ]
+
+    buttons.forEach(({ btn, view: btnView }) => {
+      if (btn) {
+        // Nettoyer TOUTES les classes de style possibles
+        btn.classList.remove(
+          'bg-gradient-rock',
+          'bg-gradient-rock-hover',
+          'bg-gradient-rock-subtle',
+          'bg-gradient-rock-light',
+          'bg-transparent',
+          'bg-neutral-100',
+          'bg-neutral-800',
+          'text-white',
+          'text-neutral-100',
+          'text-neutral-600',
+          'text-neutral-700',
+          'text-orange-600',
+          'text-orange-700',
+          'dark:text-neutral-300',
+          'dark:text-neutral-400',
+          'dark:hover:text-orange-300',
+          'dark:hover:text-orange-400',
+          'shadow-md',
+          'hover:shadow-lg',
+          'hover:bg-gradient-rock-subtle',
+          'hover:bg-gradient-rock-light',
+          'hover:bg-gradient-rock-hover',
+          'hover:text-orange-600',
+          'hover:text-orange-700'
+        )
+
+        // Appliquer le style selon l'attribut data-initial-view
+        const isActive = btn.dataset.initialView === 'true'
+        if (isActive) {
+          btn.classList.add(
+            'bg-gradient-rock',
+            'text-white',
+            'shadow-md',
+            'hover:bg-gradient-rock-hover',
+            'hover:shadow-lg'
+          )
+        } else {
+          btn.classList.add(
+            'bg-transparent',
+            'text-neutral-700',
+            'dark:text-neutral-300',
+            'hover:bg-gradient-rock-subtle',
+            'hover:text-orange-700',
+            'dark:hover:bg-gradient-rock-light',
+            'dark:hover:text-orange-300'
+          )
+        }
+      }
+    })
+  }
+
+  // Écouter les changements de vue
+  document.addEventListener('vinyl-view-change', (event) => {
+    const newView = event.detail.view
+    const buttons = [
+      { btn: document.getElementById('grid-view-btn'), view: 'grid' },
+      { btn: document.getElementById('list-view-btn'), view: 'list' },
+      { btn: document.getElementById('timeline-view-btn'), view: 'timeline' },
+    ]
+
+    buttons.forEach(({ btn, view: btnView }) => {
+      if (btn) {
+        if (btnView === newView) {
+          // Bouton actif : gradient
+          btn.classList.add(
+            'bg-gradient-rock',
+            'text-white',
+            'shadow-md',
+            'hover:bg-gradient-rock-hover',
+            'hover:shadow-lg'
+          )
+          btn.classList.remove(
+            'bg-transparent',
+            'text-neutral-700',
+            'dark:text-neutral-300',
+            'hover:bg-gradient-rock-subtle',
+            'hover:text-orange-700',
+            'dark:hover:bg-gradient-rock-light',
+            'dark:hover:text-orange-300'
+          )
+        } else {
+          // Bouton inactif : transparent
+          btn.classList.remove(
+            'bg-gradient-rock',
+            'text-white',
+            'shadow-md',
+            'hover:bg-gradient-rock-hover',
+            'hover:shadow-lg'
+          )
+          btn.classList.add(
+            'bg-transparent',
+            'text-neutral-700',
+            'dark:text-neutral-300',
+            'hover:bg-gradient-rock-subtle',
+            'hover:text-orange-700',
+            'dark:hover:bg-gradient-rock-light',
+            'dark:hover:text-orange-300'
+          )
+        }
+      }
+    })
+  })
+
+  // Gérer les clics sur les boutons de vue
+  document.addEventListener('click', (event) => {
+    const target = event.target
+    if (!target || !(target instanceof Element)) return
+
+    const button = target.closest('[data-action="view-change"]')
+    if (!button) return
+
+    const view = button.getAttribute('data-view')
+    if (!view) return
+
+    // Changer la vue active
+    changeView(view)
+  })
+
+  // Fonction pour changer de vue
+  const changeView = (newView: string) => {
+    // Mettre à jour les styles des boutons
+    availableViews.forEach((view) => {
+      const btn = document.getElementById(`${view}-view-btn`)
+      if (btn) {
+        const isActive = view === newView
+        btn.setAttribute('data-initial-view', isActive ? 'true' : 'false')
+      }
+    })
+
+    // Réinitialiser les styles
+    initializeButtonStyles()
+
+    // Dispatcher l'événement de changement de vue
+    document.dispatchEvent(
+      new CustomEvent('vinyl-view-change', {
+        detail: { view: newView },
+      })
+    )
+  }
+
+  // Initialiser avec un délai pour s'assurer que les éléments DOM sont présents
+  setTimeout(initializeButtonStyles, 0)
+  document.addEventListener('DOMContentLoaded', initializeButtonStyles)
+</script>
+
+<div class="flex items-center gap-2">
+  <div class="flex rounded-lg border border-neutral-300 dark:border-neutral-600">
+    {
+      availableViews.map((view, index) => {
+        const config = viewConfig[view]
+        const Icon = config.icon
+        const isFirst = index === 0
+        const isLast = index === availableViews.length - 1
+        const isActive = currentView === view
+
+        return (
+          <button
+            id={`${view}-view-btn`}
+            class={`flex items-center gap-2 px-3 py-2 text-xs font-medium transition-all duration-300 ease-in-out focus:ring-2 focus:ring-orange-500 focus:ring-offset-2 focus:outline-none ${
+              isFirst ? 'rounded-l-lg' : ''
+            } ${isLast ? 'rounded-r-lg' : 'border-r border-neutral-300 dark:border-neutral-600'} ${
+              isActive
+                ? 'bg-gradient-rock hover:bg-gradient-rock-hover text-white shadow-md hover:shadow-lg'
+                : 'hover:bg-gradient-rock-subtle dark:hover:bg-gradient-rock-light bg-transparent text-neutral-700 hover:text-orange-700 dark:text-neutral-300 dark:hover:text-orange-300'
+            }`}
+            data-view={view}
+            data-initial-view={isActive ? 'true' : 'false'}
+            data-action="view-change"
+          >
+            <Icon class="h-4 w-4" />
+            {config.label}
+          </button>
+        )
+      })
+    }
+  </div>
+</div>
