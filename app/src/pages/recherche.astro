@@ -99,7 +99,19 @@ import { ScanSearch } from '@lucide/astro/icons'
             artist: 'Miles Davis',
             year: '1959',
             genre: ['Jazz'],
-            thumb: 'https://i.discogs.com/example2.jpg',
+            thumb: undefined,
+            country: 'États-Unis',
+            label: 'Columbia Records',
+            format: 'LP, Album, Reissue',
+            tracklist: [
+              { position: 'A1', title: 'So What', duration: '9:22' },
+              { position: 'A2', title: 'Blue in Green', duration: '5:37' },
+              { position: 'A3', title: 'All Blues', duration: '11:33' },
+              { position: 'B1', title: 'Flamenco Sketches', duration: '9:26' },
+              { position: 'B2', title: 'Freddie Freeloader', duration: '9:46' },
+            ],
+            notes:
+              "Album révolutionnaire qui a défini le jazz modal. Considéré comme l'un des albums les plus influents de l'histoire du jazz.",
           },
           {
             id: '5',
@@ -108,6 +120,27 @@ import { ScanSearch } from '@lucide/astro/icons'
             year: '1966',
             genre: ['Rock', 'Psychedelic Rock'],
             thumb: undefined,
+            country: 'Royaume-Uni',
+            label: 'Parlophone Records',
+            format: 'LP, Album, Mono',
+            tracklist: [
+              { position: 'A1', title: 'Taxman', duration: '2:39' },
+              { position: 'A2', title: 'Eleanor Rigby', duration: '2:07' },
+              { position: 'A3', title: "I'm Only Sleeping", duration: '3:01' },
+              { position: 'A4', title: 'Love You To', duration: '3:01' },
+              { position: 'A5', title: 'Here, There and Everywhere', duration: '2:25' },
+              { position: 'A6', title: 'Yellow Submarine', duration: '2:40' },
+              { position: 'B1', title: 'She Said She Said', duration: '2:37' },
+              { position: 'B2', title: 'Good Day Sunshine', duration: '2:09' },
+              { position: 'B3', title: 'And Your Bird Can Sing', duration: '2:01' },
+              { position: 'B4', title: 'For No One', duration: '2:01' },
+              { position: 'B5', title: 'Doctor Robert', duration: '2:15' },
+              { position: 'B6', title: 'I Want to Tell You', duration: '2:29' },
+              { position: 'B7', title: 'Got to Get You Into My Life', duration: '2:30' },
+              { position: 'B8', title: 'Tomorrow Never Knows', duration: '2:57' },
+            ],
+            notes:
+              'Album marquant le tournant psychédélique des Beatles, avec des innovations sonores révolutionnaires.',
           },
           {
             id: '12',
@@ -115,15 +148,31 @@ import { ScanSearch } from '@lucide/astro/icons'
             artist: 'The Beach Boys',
             year: '1966',
             genre: ['Pop', 'Psychedelic Pop'],
-            thumb: 'https://i.discogs.com/example12.jpg',
-          },
-          {
-            id: '10',
-            title: 'The Velvet Underground & Nico',
-            artist: 'The Velvet Underground',
-            year: '1967',
-            genre: ['Rock', 'Art Rock'],
-            thumb: 'https://i.discogs.com/example10.jpg',
+            thumb: undefined,
+            country: 'États-Unis',
+            label: 'Capitol Records',
+            format: 'LP, Album',
+            tracklist: [
+              { position: 'A1', title: "Wouldn't It Be Nice", duration: '2:25' },
+              { position: 'A2', title: 'You Still Believe in Me', duration: '2:31' },
+              { position: 'A3', title: "That's Not Me", duration: '2:28' },
+              {
+                position: 'A4',
+                title: "Don't Talk (Put Your Head on My Shoulder)",
+                duration: '2:53',
+              },
+              { position: 'A5', title: "I'm Waiting for the Day", duration: '3:05' },
+              { position: 'A6', title: "Let's Go Away for Awhile", duration: '2:18' },
+              { position: 'A7', title: 'Sloop John B', duration: '2:58' },
+              { position: 'B1', title: 'God Only Knows', duration: '2:51' },
+              { position: 'B2', title: "I Know There's an Answer", duration: '3:09' },
+              { position: 'B3', title: 'Here Today', duration: '2:54' },
+              { position: 'B4', title: "I Just Wasn't Made for These Times", duration: '3:12' },
+              { position: 'B5', title: 'Pet Sounds', duration: '2:22' },
+              { position: 'B6', title: 'Caroline, No', duration: '2:51' },
+            ],
+            notes:
+              "Chef-d'œuvre de Brian Wilson, considéré comme l'un des albums les plus influents de l'histoire de la pop.",
           },
           {
             id: '4',
@@ -131,23 +180,35 @@ import { ScanSearch } from '@lucide/astro/icons'
             artist: 'The Beatles',
             year: '1969',
             genre: ['Rock', 'Pop'],
-            thumb: 'https://i.discogs.com/example4.jpg',
-          },
-          {
-            id: '6',
-            title: 'Bitches Brew',
-            artist: 'Miles Davis',
-            year: '1970',
-            genre: ['Jazz', 'Fusion'],
-            thumb: 'https://i.discogs.com/example6.jpg',
-          },
-          {
-            id: '8',
-            title: 'Led Zeppelin IV',
-            artist: 'Led Zeppelin',
-            year: '1971',
-            genre: ['Rock', 'Hard Rock'],
-            thumb: 'https://i.discogs.com/example8.jpg',
+            thumb: undefined,
+            country: 'Royaume-Uni',
+            label: 'Apple Records',
+            format: 'LP, Album',
+            tracklist: [
+              { position: 'A1', title: 'Come Together', duration: '4:20' },
+              { position: 'A2', title: 'Something', duration: '3:03' },
+              { position: 'A3', title: "Maxwell's Silver Hammer", duration: '3:27' },
+              { position: 'A4', title: 'Oh! Darling', duration: '3:26' },
+              { position: 'A5', title: "Octopus's Garden", duration: '2:51' },
+              { position: 'A6', title: "I Want You (She's So Heavy)", duration: '7:47' },
+              { position: 'B1', title: 'Here Comes the Sun', duration: '3:05' },
+              { position: 'B2', title: 'Because', duration: '2:45' },
+              { position: 'B3', title: 'You Never Give Me Your Money', duration: '4:02' },
+              { position: 'B4', title: 'Sun King', duration: '2:26' },
+              { position: 'B5', title: 'Mean Mr. Mustard', duration: '1:06' },
+              { position: 'B6', title: 'Polythene Pam', duration: '1:12' },
+              {
+                position: 'B7',
+                title: 'She Came In Through the Bathroom Window',
+                duration: '1:57',
+              },
+              { position: 'B8', title: 'Golden Slumbers', duration: '1:31' },
+              { position: 'B9', title: 'Carry That Weight', duration: '1:36' },
+              { position: 'B10', title: 'The End', duration: '2:19' },
+              { position: 'B11', title: 'Her Majesty', duration: '0:23' },
+            ],
+            notes:
+              'Dernier album enregistré par les Beatles, célèbre pour sa pochette iconique et sa suite musicale finale.',
           },
           {
             id: '15',
@@ -155,39 +216,24 @@ import { ScanSearch } from '@lucide/astro/icons'
             artist: 'Pink Floyd',
             year: '1973',
             genre: ['Rock', 'Progressive Rock'],
-            thumb: 'https://i.discogs.com/example15.jpg',
-          },
-          {
-            id: '7',
-            title: 'Wish You Were Here',
-            artist: 'Pink Floyd',
-            year: '1975',
-            genre: ['Rock', 'Progressive Rock'],
-            thumb: 'https://i.discogs.com/example7.jpg',
-          },
-          {
-            id: '3',
-            title: 'Rumours',
-            artist: 'Fleetwood Mac',
-            year: '1977',
-            genre: ['Rock', 'Pop Rock'],
-            thumb: 'https://i.discogs.com/example3.jpg',
-          },
-          {
-            id: '9',
-            title: 'Nevermind',
-            artist: 'Nirvana',
-            year: '1991',
-            genre: ['Rock', 'Grunge'],
-            thumb: 'https://i.discogs.com/example9.jpg',
-          },
-          {
-            id: '11',
-            title: 'OK Computer',
-            artist: 'Radiohead',
-            year: '1997',
-            genre: ['Rock', 'Alternative Rock'],
-            thumb: 'https://i.discogs.com/example11.jpg',
+            thumb: undefined,
+            country: 'Royaume-Uni',
+            label: 'Harvest Records',
+            format: 'LP, Album',
+            tracklist: [
+              { position: 'A1', title: 'Speak to Me', duration: '1:30' },
+              { position: 'A2', title: 'Breathe (In the Air)', duration: '2:43' },
+              { position: 'A3', title: 'On the Run', duration: '3:30' },
+              { position: 'A4', title: 'Time', duration: '6:53' },
+              { position: 'A5', title: 'The Great Gig in the Sky', duration: '4:43' },
+              { position: 'B1', title: 'Money', duration: '6:22' },
+              { position: 'B2', title: 'Us and Them', duration: '7:49' },
+              { position: 'B3', title: 'Any Colour You Like', duration: '3:25' },
+              { position: 'B4', title: 'Brain Damage', duration: '3:46' },
+              { position: 'B5', title: 'Eclipse', duration: '2:03' },
+            ],
+            notes:
+              "Album conceptuel sur la folie et la pression de la vie moderne. L'un des albums les plus vendus de tous les temps.",
           },
         ]}
         currentView="grid"
@@ -201,15 +247,6 @@ import { ScanSearch } from '@lucide/astro/icons'
 </Layout>
 
 <script>
-  // Déclaration de type pour les fonctions globales
-  declare global {
-    interface Window {
-      updateVinylModal: (vinylData: any) => void
-      openVinylModal: () => void
-      closeVinylModal: () => void
-    }
-  }
-
   // Éléments DOM
   const searchBtn = document.getElementById('search-btn')
   const searchInput = document.getElementById('search-input')
@@ -219,7 +256,7 @@ import { ScanSearch } from '@lucide/astro/icons'
 
   // Recherche
   const performSearch = async () => {
-    const query = (searchInput as HTMLInputElement)?.value.trim()
+    const query = (searchInput as HTMLInputElement)?.value?.trim()
     if (!query) return
 
     try {
@@ -242,12 +279,12 @@ import { ScanSearch } from '@lucide/astro/icons'
 
   // Événements
   searchBtn?.addEventListener('click', performSearch)
-  searchInput?.addEventListener('keypress', (event: KeyboardEvent) => {
+  searchInput?.addEventListener('keypress', (event) => {
     if (event.key === 'Enter') {
       performSearch()
     }
   })
 
   // Initialiser le compteur de résultats
-  resultsCount!.textContent = '12 résultats'
+  resultsCount!.textContent = '5 résultats'
 </script>

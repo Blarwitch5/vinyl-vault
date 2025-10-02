@@ -208,8 +208,9 @@ const isSubmenuOpen = (item: MenuItem) => {
     const collapseButtons = document.querySelectorAll('[data-collapse-toggle]');
     
     collapseButtons.forEach(button => {
-      button.addEventListener('click', function(event: Event) {
-        const target = event.currentTarget as HTMLElement;
+      button.addEventListener('click', function(event) {
+        const target = event.currentTarget;
+        if (!target || !(target instanceof Element)) return
         const targetId = target.getAttribute('data-collapse-toggle');
         const targetElement = document.getElementById(targetId || '');
         const chevron = target.querySelector('.chevron-icon');

@@ -9,6 +9,11 @@ type VinylData = {
   year: string
   genre: string[]
   thumb?: string
+  country?: string
+  label?: string
+  format?: string
+  tracklist?: Array<{ position: string; title: string; duration?: string }>
+  notes?: string
 }
 
 type ViewType = 'grid' | 'list' | 'timeline'
@@ -193,7 +198,7 @@ const { results, currentView, availableViews = ['grid', 'list', 'timeline'] } = 
   }
 
   // Écouter les événements de changement de vue
-  document.addEventListener('vinyl-view-change', (event: CustomEvent) => {
+  document.addEventListener('vinyl-view-change', (event) => {
     toggleVinylView(event.detail.view)
   })
 </script>
