@@ -127,3 +127,74 @@
 .dark .bg-slate-900\/75 {
   background-color: rgb(10 10 10 / 0.5) !important; /* neutral-950/50 */
 }
+
+/* Styles pour la modal */
+body.modal-open {
+  overflow: hidden;
+}
+
+/* Overlay pour la modal */
+body.modal-open::before {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.7);
+  z-index: 9998;
+  pointer-events: none;
+  transition: opacity 0.3s ease;
+  -webkit-backdrop-filter: blur(4px);
+  backdrop-filter: blur(4px);
+}
+
+/* S'assurer que la modal reste au-dessus de l'overlay */
+[id*='modal'] {
+  z-index: 9999 !important;
+}
+
+/* Animations pour les modales */
+[id*='modal'] {
+  animation: modalEnter 0.3s ease-out;
+}
+
+[id*='modal'].modal-exit {
+  animation: modalExit 0.2s ease-in;
+}
+
+@keyframes modalEnter {
+  from {
+    opacity: 0;
+    transform: scale(0.95) translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+@keyframes modalExit {
+  from {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+  to {
+    opacity: 0;
+    transform: scale(0.95) translateY(-10px);
+  }
+}
+
+/* Animation pour l'overlay */
+body.modal-open::before {
+  animation: overlayEnter 0.3s ease-out;
+}
+
+@keyframes overlayEnter {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
