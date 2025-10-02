@@ -14,19 +14,32 @@
 - don't use abrevations, use the full word instead (e.g. `e` -> `event` )
 - colors:
   - dark:
-    - background: slate-950 # Fond principal
-    - text: zinc-100 # Texte principal
-    - textSecondary: zinc-400 # Texte secondaire
+    - background: neutral-900 # Fond principal
+    - text: neutral-100 # Texte principal
+    - textSecondary: neutral-400 # Texte secondaire
     - accent1: orange-500 # Accent 1 (UI)
-    - accent2: emerald-400 # Accent 2 (UI)
-    - surface: slate-800 # Surfaces
+    - surface: neutral-800 # Surfaces
   - light:
-    - background: zinc-50 # Fond principal
-    - text: zinc-900 # Texte principal
-    - textSecondary: zinc-500 # Texte secondaire
+    - background: neutral-100 # Fond principal
+    - text: neutral-900 # Texte principal
+    - textSecondary: neutral-500 # Texte secondaire
     - accent1: orange-600 # Accent 1 (UI)
-    - accent2: emerald-600 # Accent 2 (UI)
-      surface: zinc-200 # Surfaces
+    - surface: neutral-200 # Surfaces
+
+## Accessibility & Screen Readers\*\*
+
+- Always include proper ARIA attributes for interactive components.
+- Use semantic HTML elements (button, nav, main, section, article, aside).
+- Provide meaningful alt text for all images: `<img alt="Descriptive text" />`.
+- Ensure sufficient color contrast ratios (4.5:1 for normal text, 3:1 for large text).
+- Implement keyboard navigation support for all interactive elements.
+- Use focus management in modals: trap focus and restore focus on close.
+- Provide screen reader announcements for dynamic content changes.
+- Use proper heading hierarchy (h1 → h2 → h3) without skipping levels.
+- Include role attributes for custom components: `role="button"`, `role="dialog"`, etc.
+- Ensure form labels are properly associated with inputs using `for` attribute or `aria-labelledby`.
+- Provide skip links for main content navigation.
+- Use `aria-hidden="true"` for decorative elements that should be ignored by screen readers.
 
 ## Naming Conventions\*\*
 
@@ -48,7 +61,7 @@
 
 ## UI and Styling
 
-- Use Tailwind for components and styling.
+- Use Tailwind and Flowbite UI Library for components and styling.
 - Implement responsive design with Tailwind CSS using a mobile-first approach.
 
 ## Performance Optimization\*\*
@@ -57,3 +70,62 @@
 
 - Use dynamic loading for non-critical components.
 - Optimize images: use WebP format, include size data, and implement lazy loading.
+
+### Image Optimization
+
+- Always use Astro's `<Image>` component instead of `<img>` tags for better performance.
+- Configure WebP format with fallbacks: `<Image src="..." format="webp" alt="..." />`
+- Include proper dimensions: `width={400} height={400}` for layout stability.
+- Use `loading="lazy"` for images below the fold.
+- Implement responsive images with `sizes` attribute for different breakpoints.
+
+### Data Fetching & Caching
+
+- Use Astro's `fetch()` with proper caching headers for API calls.
+- Implement `prefetch` for critical data in page components.
+- Cache static data in Astro components using `Astro.glob()` when possible.
+- Use `Astro.cache()` for expensive computations that don't change often.
+
+### Component Optimization
+
+- Use `client:load` only for interactive components that need immediate hydration.
+- Prefer `client:idle` or `client:visible` for non-critical interactive elements.
+- Implement code splitting with dynamic imports for large components.
+- Use `Astro.slots.render()` for conditional content rendering.
+
+### Bundle Optimization
+
+- Minimize JavaScript bundle size by avoiding unnecessary client-side code.
+- Use `import()` for dynamic imports in client-side scripts.
+- Implement tree shaking by using named imports instead of default imports.
+- Optimize CSS by purging unused Tailwind classes in production builds.
+
+### Network & Loading
+
+- Implement proper error boundaries for failed API calls.
+- Use skeleton loaders for better perceived performance.
+- Preload critical resources with `<link rel="preload">` in the head.
+- Implement service worker for offline functionality when needed.
+
+### TypeScript & JavaScript Best Practices
+
+- Avoid using `any` type unless absolutely necessary. Use proper type definitions or `unknown` instead.
+- Do not use the global `window` object. Use custom events for component communication instead.
+- Do not generate HTML markup in JavaScript. Use dynamic components and template literals instead.
+- Use proper error handling with try-catch blocks and meaningful error messages.
+- Implement proper loading states and user feedback for async operations.
+- Use semantic HTML elements and proper ARIA attributes for accessibility.
+- Keep functions small and focused on a single responsibility (SRP).
+- Use descriptive variable and function names that clearly indicate their purpose.
+- Avoid deep nesting and prefer early returns to reduce complexity.
+
+### Design Patterns & Architecture
+
+- Use Factory Pattern for managing multiple types of objects (e.g., Vinyl types: collection, wishlist, custom).
+- Implement Repository Pattern for data access abstraction and consistency.
+- Use Adapter Pattern to unify different data formats and external APIs.
+- Implement Observer Pattern for real-time updates and reactive state management.
+- Prefer composition over inheritance for better flexibility and maintainability.
+- Use dependency injection for better testability and loose coupling.
+- Implement proper separation of concerns between UI, business logic, and data layers.
+- Use builder pattern for complex object construction with many optional parameters.

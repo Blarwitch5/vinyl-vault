@@ -6,11 +6,17 @@ VinylVault est une application web moderne pour gérer et organiser votre collec
 
 ### 🎯 Fonctionnalités principales
 
-Gestion de collections : Créez et organisez plusieurs collections personnalisées
-Intégration Discogs : Recherchez dans la base de données Discogs et ajoutez automatiquement les informations complètes
-Authentification sécurisée : Système d'inscription/connexion avec JWT
-Interface moderne : Design responsive avec Tailwind CSS
-Statistiques détaillées : Suivez la valeur de votre collection et vos tendances
+- Extraits de chansons : Écoutez les extraits de chansons de vos vinyles
+- Authentification sécurisée : Système d'inscription/connexion avec JWT
+  Interface moderne : Design responsive avec Tailwind CSS
+- Connexion avec Discogs : Importez vos vinyles depuis Discogs et ajoutez automatiquement les informations complètes
+- Gestion des collections : Créez et organisez plusieurs collections personnalisées
+- Filtres avancés : Filtrez vos vinyles par genre, format, année, condition, etc.
+- Suggestions et recommandations : Découvrez de nouveaux vinyles en fonction de vos préférences
+- Navigation intuitive : Explorez votre collection avec une navigation intuitive et un design moderne
+- Statistiques détaillées : Suivez la valeur de votre collection et vos tendances
+- Wishlist : Ajoutez des vinyles à votre wishlist pour les suivre
+- Dashboard : Accédez à votre tableau de bord pour une vue d'ensemble de votre collection
 
 ### 🔍 Recherche et découverte
 
