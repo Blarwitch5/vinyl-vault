@@ -1,6 +1,9 @@
 ---
 import DashboardLayout from '../layouts/DashboardLayout.astro'
 import Layout from '../layouts/Layout.astro'
+import SearchVinylCard from '../components/SearchVinylCard.astro'
+import VinylModal from '../components/VinylModal.astro'
+import { Grid3X3, List, Search } from '@lucide/astro/icons'
 ---
 
 <Layout title="Recherche">
@@ -59,8 +62,10 @@ import Layout from '../layouts/Layout.astro'
           </div>
           <div class="flex items-end">
             <button
-              class="rounded-lg bg-orange-600 px-6 py-2 text-white transition-colors hover:bg-orange-700"
+              id="search-btn"
+              class="flex items-center gap-2 rounded-lg bg-orange-600 px-6 py-2 text-white transition-colors hover:bg-orange-700"
             >
+              <Search class="h-4 w-4" />
               Rechercher
             </button>
           </div>
@@ -68,94 +73,301 @@ import Layout from '../layouts/Layout.astro'
       </div>
     </div>
 
-    <div class="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-      <div class="overflow-hidden rounded-lg bg-white shadow-sm dark:bg-neutral-800">
-        <div
-          class="flex aspect-square items-center justify-center bg-neutral-200 dark:bg-neutral-700"
-        >
-          <svg class="h-16 w-16 text-neutral-400" fill="currentColor" viewBox="0 0 20 20">
-            <path
-              d="M4 3a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V5a2 2 0 00-2-2H4zm12 12H4l4-8 3 6 2-4 3 6z"
-            ></path>
-          </svg>
-        </div>
-        <div class="p-4">
-          <h3 class="font-semibold text-neutral-900 dark:text-white">Dark Side of the Moon</h3>
-          <p class="text-xs text-neutral-600 dark:text-neutral-400">Pink Floyd</p>
-          <p class="mt-1 text-xs text-neutral-500 dark:text-neutral-500">1973 • Rock</p>
-          <button
-            class="mt-3 w-full rounded-lg bg-orange-600 py-2 text-xs text-white transition-colors hover:bg-orange-700"
-          >
-            Ajouter à ma collection
-          </button>
-        </div>
+    <!-- Contrôles de vue et résultats -->
+    <div class="mb-6 flex items-center justify-between">
+      <div class="flex items-center gap-4">
+        <h2 class="text-lg font-semibold text-neutral-900 dark:text-white">Résultats de recherche</h2>
+        <span id="results-count" class="text-sm text-neutral-500 dark:text-neutral-400">0 résultats</span>
       </div>
-
-      <div class="overflow-hidden rounded-lg bg-white shadow-sm dark:bg-neutral-800">
-        <div
-          class="flex aspect-square items-center justify-center bg-neutral-200 dark:bg-neutral-700"
-        >
-          <svg class="h-16 w-16 text-neutral-400" fill="currentColor" viewBox="0 0 20 20">
-            <path
-              d="M4 3a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V5a2 2 0 00-2-2H4zm12 12H4l4-8 3 6 2-4 3 6z"
-            ></path>
-          </svg>
-        </div>
-        <div class="p-4">
-          <h3 class="font-semibold text-neutral-900 dark:text-white">Kind of Blue</h3>
-          <p class="text-sm text-neutral-600 dark:text-neutral-400">Miles Davis</p>
-          <p class="mt-1 text-xs text-neutral-500 dark:text-neutral-500">1959 • Jazz</p>
+      <div class="flex items-center gap-2">
+        <span class="text-sm text-neutral-600 dark:text-neutral-400">Vue :</span>
+        <div class="flex rounded-lg border border-neutral-300 dark:border-neutral-600">
           <button
-            class="mt-3 w-full rounded-lg bg-orange-600 py-2 text-xs text-white transition-colors hover:bg-orange-700"
+            id="grid-view-btn"
+            class="flex items-center gap-2 rounded-l-lg border-r border-neutral-300 bg-orange-600 px-3 py-2 text-white dark:border-neutral-600"
+            data-view="grid"
           >
-            Ajouter à ma collection
+            <Grid3X3 class="h-4 w-4" />
+            Grille
           </button>
-        </div>
-      </div>
-
-      <div class="overflow-hidden rounded-lg bg-white shadow-sm dark:bg-neutral-800">
-        <div
-          class="flex aspect-square items-center justify-center bg-neutral-200 dark:bg-neutral-700"
-        >
-          <svg class="h-16 w-16 text-neutral-400" fill="currentColor" viewBox="0 0 20 20">
-            <path
-              d="M4 3a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V5a2 2 0 00-2-2H4zm12 12H4l4-8 3 6 2-4 3 6z"
-            ></path>
-          </svg>
-        </div>
-        <div class="p-4">
-          <h3 class="font-semibold text-neutral-900 dark:text-white">Selected Ambient Works</h3>
-          <p class="text-sm text-neutral-600 dark:text-neutral-400">Aphex Twin</p>
-          <p class="mt-1 text-xs text-neutral-500 dark:text-neutral-500">1992 • Electronic</p>
           <button
-            class="mt-3 w-full rounded-lg bg-orange-600 py-2 text-xs text-white transition-colors hover:bg-orange-700"
+            id="list-view-btn"
+            class="flex items-center gap-2 rounded-r-lg bg-white px-3 py-2 text-neutral-600 transition-colors hover:bg-neutral-50 dark:bg-neutral-800 dark:text-neutral-400 dark:hover:bg-neutral-700"
+            data-view="list"
           >
-            Ajouter à ma collection
-          </button>
-        </div>
-      </div>
-
-      <div class="overflow-hidden rounded-lg bg-white shadow-sm dark:bg-neutral-800">
-        <div
-          class="flex aspect-square items-center justify-center bg-neutral-200 dark:bg-neutral-700"
-        >
-          <svg class="h-16 w-16 text-neutral-400" fill="currentColor" viewBox="0 0 20 20">
-            <path
-              d="M4 3a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V5a2 2 0 00-2-2H4zm12 12H4l4-8 3 6 2-4 3 6z"
-            ></path>
-          </svg>
-        </div>
-        <div class="p-4">
-          <h3 class="font-semibold text-neutral-900 dark:text-white">Abbey Road</h3>
-          <p class="text-sm text-neutral-600 dark:text-neutral-400">The Beatles</p>
-          <p class="mt-1 text-xs text-neutral-500 dark:text-neutral-500">1969 • Rock</p>
-          <button
-            class="mt-3 w-full rounded-lg bg-orange-600 py-2 text-xs text-white transition-colors hover:bg-orange-700"
-          >
-            Ajouter à ma collection
+            <List class="h-4 w-4" />
+            Liste
           </button>
         </div>
       </div>
     </div>
+
+    <!-- Zone de chargement -->
+    <div id="loading" class="hidden items-center justify-center py-12">
+      <div class="flex items-center gap-3">
+        <div class="h-6 w-6 animate-spin rounded-full border-2 border-orange-600 border-t-transparent"></div>
+        <span class="text-neutral-600 dark:text-neutral-400">Recherche en cours...</span>
+      </div>
+    </div>
+
+    <!-- Résultats -->
+    <div id="results-container" class="space-y-4">
+      <div id="results-grid" class="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+        <!-- Les résultats seront injectés ici par JavaScript -->
+      </div>
+      <div id="results-list" class="hidden space-y-4">
+        <!-- Les résultats en vue liste seront injectés ici par JavaScript -->
+      </div>
+    </div>
+
+    <!-- Message vide -->
+    <div id="empty-state" class="flex flex-col items-center justify-center py-12 text-center">
+      <div class="mb-4 rounded-full bg-neutral-100 p-4 dark:bg-neutral-800">
+        <Search class="h-8 w-8 text-neutral-400" />
+      </div>
+      <h3 class="mb-2 text-lg font-semibold text-neutral-900 dark:text-white">Aucun résultat trouvé</h3>
+      <p class="text-neutral-600 dark:text-neutral-400">Essayez de modifier vos critères de recherche</p>
+    </div>
+
+    <!-- Modal -->
+    <VinylModal />
   </DashboardLayout>
 </Layout>
+
+<script>
+  let currentView = 'grid'
+  let searchResults = []
+
+  // Éléments DOM
+  const searchBtn = document.getElementById('search-btn')
+  const searchInput = document.getElementById('search-input')
+  const genreFilter = document.getElementById('genre-filter')
+  const yearFilter = document.getElementById('year-filter')
+  const loading = document.getElementById('loading')
+  const resultsGrid = document.getElementById('results-grid')
+  const resultsList = document.getElementById('results-list')
+  const resultsCount = document.getElementById('results-count')
+  const emptyState = document.getElementById('empty-state')
+  const gridViewBtn = document.getElementById('grid-view-btn')
+  const listViewBtn = document.getElementById('list-view-btn')
+
+  // Toggle vue
+  const toggleView = (view) => {
+    currentView = view
+    
+    if (view === 'grid') {
+      resultsGrid.classList.remove('hidden')
+      resultsList.classList.add('hidden')
+      gridViewBtn.classList.add('bg-orange-600', 'text-white')
+      gridViewBtn.classList.remove('bg-white', 'text-neutral-600', 'dark:bg-neutral-800', 'dark:text-neutral-400')
+      listViewBtn.classList.remove('bg-orange-600', 'text-white')
+      listViewBtn.classList.add('bg-white', 'text-neutral-600', 'dark:bg-neutral-800', 'dark:text-neutral-400')
+    } else {
+      resultsGrid.classList.add('hidden')
+      resultsList.classList.remove('hidden')
+      listViewBtn.classList.add('bg-orange-600', 'text-white')
+      listViewBtn.classList.remove('bg-white', 'text-neutral-600', 'dark:bg-neutral-800', 'dark:text-neutral-400')
+      gridViewBtn.classList.remove('bg-orange-600', 'text-white')
+      gridViewBtn.classList.add('bg-white', 'text-neutral-600', 'dark:bg-neutral-800', 'dark:text-neutral-400')
+    }
+  }
+
+  // Recherche
+  const performSearch = async () => {
+    const query = searchInput.value.trim()
+    if (!query) return
+
+    loading.classList.remove('hidden')
+    loading.classList.add('flex')
+    emptyState.classList.add('hidden')
+
+    try {
+      const params = new URLSearchParams({ q: query })
+      if (genreFilter.value) params.append('type', 'release')
+      
+      const response = await fetch(`/api/search.json?${params}`)
+      const data = await response.json()
+
+      if (data.results) {
+        searchResults = data.results
+        displayResults(searchResults)
+        resultsCount.textContent = `${searchResults.length} résultat${searchResults.length > 1 ? 's' : ''}`
+      } else {
+        searchResults = []
+        displayResults([])
+        resultsCount.textContent = '0 résultats'
+      }
+    } catch (error) {
+      console.error('Erreur de recherche:', error)
+      searchResults = []
+      displayResults([])
+      resultsCount.textContent = '0 résultats'
+    } finally {
+      loading.classList.add('hidden')
+      loading.classList.remove('flex')
+    }
+  }
+
+  // Affichage des résultats
+  const displayResults = (results) => {
+    if (results.length === 0) {
+      emptyState.classList.remove('hidden')
+      resultsGrid.innerHTML = ''
+      resultsList.innerHTML = ''
+      return
+    }
+
+    emptyState.classList.add('hidden')
+    
+    // Générer les cartes
+    const gridCards = results.map(vinyl => createVinylCard(vinyl, 'grid')).join('')
+    const listCards = results.map(vinyl => createVinylCard(vinyl, 'list')).join('')
+    
+    resultsGrid.innerHTML = gridCards
+    resultsList.innerHTML = listCards
+
+    // Attacher les événements
+    attachCardEvents()
+  }
+
+  // Créer une carte vinyle
+  const createVinylCard = (vinyl, viewMode) => {
+    const initials = `${vinyl.artist?.charAt(0) || '?'}${vinyl.title?.charAt(0) || '?'}`.toUpperCase()
+    const year = vinyl.year || 'Inconnue'
+    const genre = vinyl.genre?.join(', ') || 'Non spécifié'
+    
+    if (viewMode === 'grid') {
+      return `
+        <div class="group overflow-hidden rounded-lg bg-white shadow-sm transition-shadow hover:shadow-md dark:bg-neutral-800">
+          <div class="aspect-square overflow-hidden">
+            ${vinyl.thumb ? 
+              `<img src="${vinyl.thumb}" alt="${vinyl.title}" class="h-full w-full object-cover transition-transform group-hover:scale-105" />` :
+              `<div class="flex h-full w-full items-center justify-center bg-gradient-to-br from-orange-500 to-orange-600">
+                <span class="text-2xl font-bold text-white">${initials}</span>
+              </div>`
+            }
+          </div>
+          <div class="p-4">
+            <h3 class="font-semibold text-neutral-900 dark:text-white line-clamp-2">${vinyl.title}</h3>
+            <p class="text-sm text-neutral-600 dark:text-neutral-400">${vinyl.artist}</p>
+            <p class="mt-1 text-xs text-neutral-500 dark:text-neutral-500">${year} • ${genre}</p>
+            <div class="mt-3 flex gap-2">
+              <button class="flex-1 flex items-center justify-center gap-2 rounded-lg bg-neutral-100 py-2 text-xs font-medium text-neutral-700 transition-colors hover:bg-neutral-200 dark:bg-neutral-700 dark:text-neutral-300 dark:hover:bg-neutral-600" data-vinyl-id="${vinyl.id}" data-action="view">
+                <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path></svg>
+                Voir
+              </button>
+              <button class="flex-1 flex items-center justify-center gap-2 rounded-lg bg-orange-600 py-2 text-xs font-medium text-white transition-colors hover:bg-orange-700" data-vinyl-id="${vinyl.id}" data-action="add">
+                <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path></svg>
+                Ajouter
+              </button>
+            </div>
+          </div>
+        </div>
+      `
+    } else {
+      return `
+        <div class="flex items-center gap-4 rounded-lg bg-white p-4 shadow-sm transition-shadow hover:shadow-md dark:bg-neutral-800">
+          <div class="h-16 w-16 flex-shrink-0 overflow-hidden rounded-lg">
+            ${vinyl.thumb ? 
+              `<img src="${vinyl.thumb}" alt="${vinyl.title}" class="h-full w-full object-cover" />` :
+              `<div class="flex h-full w-full items-center justify-center bg-gradient-to-br from-orange-500 to-orange-600">
+                <span class="text-lg font-bold text-white">${initials}</span>
+              </div>`
+            }
+          </div>
+          <div class="flex-1 min-w-0">
+            <h3 class="font-semibold text-neutral-900 dark:text-white truncate">${vinyl.title}</h3>
+            <p class="text-sm text-neutral-600 dark:text-neutral-400 truncate">${vinyl.artist}</p>
+            <p class="text-xs text-neutral-500 dark:text-neutral-500">${year} • ${genre}</p>
+          </div>
+          <div class="flex gap-2">
+            <button class="flex items-center gap-2 rounded-lg bg-neutral-100 px-3 py-2 text-xs font-medium text-neutral-700 transition-colors hover:bg-neutral-200 dark:bg-neutral-700 dark:text-neutral-300 dark:hover:bg-neutral-600" data-vinyl-id="${vinyl.id}" data-action="view">
+              <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path></svg>
+              Voir
+            </button>
+            <button class="flex items-center gap-2 rounded-lg bg-orange-600 px-3 py-2 text-xs font-medium text-white transition-colors hover:bg-orange-700" data-vinyl-id="${vinyl.id}" data-action="add">
+              <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path></svg>
+              Ajouter
+            </button>
+          </div>
+        </div>
+      `
+    }
+  }
+
+  // Attacher les événements aux cartes
+  const attachCardEvents = () => {
+    document.querySelectorAll('[data-action="view"]').forEach(btn => {
+      btn.addEventListener('click', (event) => {
+        const vinylId = event.currentTarget.dataset.vinylId
+        const vinyl = searchResults.find(v => v.id.toString() === vinylId)
+        if (vinyl && (window as any).openVinylModal) {
+          (window as any).openVinylModal(vinyl)
+        }
+      })
+    })
+
+    document.querySelectorAll('[data-action="add"]').forEach(btn => {
+      btn.addEventListener('click', (event) => {
+        const vinylId = event.currentTarget.dataset.vinylId
+        const vinyl = searchResults.find(v => v.id.toString() === vinylId)
+        if (vinyl) {
+          console.log('Ajouter à la collection:', vinyl)
+          // TODO: Implémenter l'ajout à la collection
+        }
+      })
+    })
+  }
+
+  // Événements
+  searchBtn?.addEventListener('click', performSearch)
+  searchInput?.addEventListener('keypress', (event) => {
+    if (event.key === 'Enter') {
+      performSearch()
+    }
+  })
+  
+  gridViewBtn?.addEventListener('click', () => toggleView('grid'))
+  listViewBtn?.addEventListener('click', () => toggleView('list'))
+
+  // Recherche initiale avec des données de démonstration
+  const demoResults = [
+    {
+      id: 1,
+      title: "Dark Side of the Moon",
+      artist: "Pink Floyd",
+      year: "1973",
+      genre: ["Rock", "Progressive Rock"],
+      thumb: null
+    },
+    {
+      id: 2,
+      title: "Kind of Blue",
+      artist: "Miles Davis",
+      year: "1959",
+      genre: ["Jazz"],
+      thumb: null
+    },
+    {
+      id: 3,
+      title: "Selected Ambient Works",
+      artist: "Aphex Twin",
+      year: "1992",
+      genre: ["Electronic", "Ambient"],
+      thumb: null
+    },
+    {
+      id: 4,
+      title: "Abbey Road",
+      artist: "The Beatles",
+      year: "1969",
+      genre: ["Rock"],
+      thumb: null
+    }
+  ]
+
+  // Afficher les résultats de démonstration
+  searchResults = demoResults
+  displayResults(demoResults)
+  resultsCount.textContent = `${demoResults.length} résultats`
+</script>
