@@ -1,0 +1,165 @@
+---
+import SearchVinylCard from './SearchVinylCard.astro'
+import TimelineVinylCard from './TimelineVinylCard.astro'
+
+type VinylData = {
+  id: string
+  title: string
+  artist: string
+  year: string
+  genre: string[]
+  thumb?: string
+}
+
+type ViewType = 'grid' | 'list' | 'timeline'
+
+type Props = {
+  results: VinylData[]
+  currentView: ViewType
+  availableViews?: ViewType[]
+  customComponents?: {
+    grid?: any
+    list?: any
+    timeline?: any
+  }
+}
+
+const {
+  results,
+  currentView,
+  availableViews = ['grid', 'list', 'timeline'],
+  customComponents = {},
+} = Astro.props
+---
+
+<div class="space-y-4">
+  <!-- Vue Grille -->
+  {
+    availableViews.includes('grid') && (
+      <div
+        id="results-grid"
+        class={`grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 ${currentView === 'grid' ? 'block' : 'hidden'}`}
+      >
+        {results.map((vinyl) =>
+          customComponents.grid ? (
+            <customComponents.grid
+              id={vinyl.id}
+              title={vinyl.title}
+              artist={vinyl.artist}
+              year={vinyl.year}
+              genre={vinyl.genre.join(', ')}
+              thumb={vinyl.thumb}
+              viewMode="grid"
+            />
+          ) : (
+            <SearchVinylCard
+              id={vinyl.id}
+              title={vinyl.title}
+              artist={vinyl.artist}
+              year={vinyl.year}
+              genre={vinyl.genre.join(', ')}
+              thumb={vinyl.thumb}
+              viewMode="grid"
+            />
+          )
+        )}
+      </div>
+    )
+  }
+
+  <!-- Vue Liste -->
+  {
+    availableViews.includes('list') && (
+      <div id="results-list" class={`space-y-4 ${currentView === 'list' ? 'block' : 'hidden'}`}>
+        {results.map((vinyl) =>
+          customComponents.list ? (
+            <customComponents.list
+              id={vinyl.id}
+              title={vinyl.title}
+              artist={vinyl.artist}
+              year={vinyl.year}
+              genre={vinyl.genre.join(', ')}
+              thumb={vinyl.thumb}
+              viewMode="list"
+            />
+          ) : (
+            <SearchVinylCard
+              id={vinyl.id}
+              title={vinyl.title}
+              artist={vinyl.artist}
+              year={vinyl.year}
+              genre={vinyl.genre.join(', ')}
+              thumb={vinyl.thumb}
+              viewMode="list"
+            />
+          )
+        )}
+      </div>
+    )
+  }
+
+  <!-- Vue Timeline -->
+  {
+    availableViews.includes('timeline') && (
+      <div
+        id="results-timeline"
+        class={`space-y-4 ${currentView === 'timeline' ? 'block' : 'hidden'}`}
+      >
+        {results.map((vinyl) =>
+          customComponents.timeline ? (
+            <customComponents.timeline
+              id={vinyl.id}
+              title={vinyl.title}
+              artist={vinyl.artist}
+              year={vinyl.year}
+              genre={vinyl.genre.join(', ')}
+              thumb={vinyl.thumb}
+              viewMode="timeline"
+            />
+          ) : (
+            <TimelineVinylCard
+              id={vinyl.id}
+              title={vinyl.title}
+              artist={vinyl.artist}
+              year={vinyl.year}
+              genre={vinyl.genre.join(', ')}
+              thumb={vinyl.thumb}
+            />
+          )
+        )}
+      </div>
+    )
+  }
+</div>
+
+<script>
+  // Déclaration de type pour les événements personnalisés
+  declare global {
+    interface DocumentEventMap {
+      'vinyl-view-change': CustomEvent<{ view: 'grid' | 'list' | 'timeline' }>
+    }
+  }
+
+  // Fonction pour basculer entre les vues
+  const toggleVinylView = (view: 'grid' | 'list' | 'timeline') => {
+    const views = ['grid', 'list', 'timeline']
+
+    views.forEach((viewType) => {
+      const element = document.getElementById(`results-${viewType}`)
+      if (element) {
+        if (viewType === view) {
+          element.classList.remove('hidden')
+          element.classList.add('block')
+        } else {
+          element.classList.remove('block')
+          element.classList.add('hidden')
+        }
+      }
+    })
+  }
+
+  // Écouter les événements de changement de vue
+  document.addEventListener('vinyl-view-change', (event: CustomEvent) => {
+    toggleVinylView(event.detail.view)
+  })
+</script>

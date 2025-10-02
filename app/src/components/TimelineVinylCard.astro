@@ -1,0 +1,65 @@
+---
+import { Clock, Eye, Plus } from '@lucide/astro/icons'
+
+type Props = {
+  id: string
+  title: string
+  artist: string
+  year: string
+  genre: string
+  thumb?: string
+}
+
+const { id, title, artist, year, genre, thumb } = Astro.props
+
+const initials = `${artist.charAt(0)}${title.charAt(0)}`.toUpperCase()
+---
+
+<div
+  class="flex items-center gap-4 rounded-lg bg-neutral-100 p-4 shadow-sm transition-shadow hover:shadow-md dark:bg-neutral-800"
+>
+  <!-- Avatar avec icône Clock -->
+  <div
+    class="flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-orange-500 to-orange-600"
+  >
+    {
+      thumb ? (
+        <img src={thumb} alt={title} class="h-full w-full rounded-full object-cover" />
+      ) : (
+        <span class="text-sm font-bold text-neutral-100">{initials}</span>
+      )
+    }
+  </div>
+
+  <!-- Contenu principal -->
+  <div class="min-w-0 flex-1">
+    <div class="flex items-center gap-2">
+      <Clock class="h-4 w-4 text-orange-600 dark:text-orange-400" />
+      <span class="text-sm font-medium text-orange-600 dark:text-orange-400">{year}</span>
+      <div class="h-1 w-1 rounded-full bg-neutral-400"></div>
+      <h3 class="truncate font-semibold text-neutral-900 dark:text-neutral-100">{title}</h3>
+    </div>
+    <p class="truncate text-sm text-neutral-600 dark:text-neutral-400">{artist}</p>
+    <p class="text-xs text-neutral-500 dark:text-neutral-500">{genre}</p>
+  </div>
+
+  <!-- Actions -->
+  <div class="flex gap-2">
+    <button
+      class="flex items-center gap-2 rounded-lg bg-neutral-100 px-3 py-2 text-xs font-medium text-neutral-700 transition-colors hover:bg-neutral-200 dark:bg-neutral-700 dark:text-neutral-300 dark:hover:bg-neutral-600"
+      data-vinyl-id={id}
+      data-action="view"
+    >
+      <Eye class="h-4 w-4" />
+      Voir
+    </button>
+    <button
+      class="flex items-center gap-2 rounded-lg bg-orange-600 px-3 py-2 text-xs font-medium text-neutral-100 transition-colors hover:bg-orange-700"
+      data-vinyl-id={id}
+      data-action="add"
+    >
+      <Plus class="h-4 w-4" />
+      Ajouter
+    </button>
+  </div>
+</div>
