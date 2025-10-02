@@ -1,6 +1,8 @@
 import type { APIRoute } from 'astro'
 import { createDiscogsClient } from '../../../lib/discogs'
 
+export const prerender = false
+
 export const GET: APIRoute = async ({ params }) => {
   const releaseId = parseInt(params.id || '0')
 
