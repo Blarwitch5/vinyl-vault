@@ -10,10 +10,15 @@ export default defineConfig({
   vite: {
     plugins: [tailwindcss()],
     optimizeDeps: {
-      include: ['lucide-astro'],
+      include: ['lucide-astro', '@lucide/astro'],
     },
     ssr: {
-      noExternal: ['lucide-astro'],
+      noExternal: ['lucide-astro', '@lucide/astro'],
+    },
+    build: {
+      rollupOptions: {
+        external: [],
+      },
     },
   },
 })

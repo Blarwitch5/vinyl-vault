@@ -1,23 +1,33 @@
 ---
-import Layout from '../layouts/Layout.astro';
+import ChevronDown from '@lucide/astro/icons/chevron-down'
+import Disc3 from '@lucide/astro/icons/disc-3'
+import Layout from '../layouts/Layout.astro'
 ---
 
 <Layout title="Aide">
   <!-- Header -->
-  <header class="fixed left-0 right-0 top-0 z-50 border-b border-neutral-200 bg-white/80 backdrop-blur-lg dark:border-neutral-800 dark:bg-neutral-900/80">
+  <header
+    class="fixed top-0 right-0 left-0 z-50 border-b border-neutral-200 bg-white/80 backdrop-blur-lg dark:border-neutral-800 dark:bg-neutral-900/80"
+  >
     <nav class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
       <div class="flex h-16 items-center justify-between">
         <a href="/" class="flex items-center space-x-2">
-          <div class="flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-rock">
+          <div class="bg-gradient-rock flex h-8 w-8 items-center justify-center rounded-lg">
             <Disc3 class="h-5 w-5 text-white" />
           </div>
           <span class="text-xl font-semibold text-neutral-900 dark:text-white">VinylVault</span>
         </a>
         <div class="flex items-center space-x-6">
-          <a href="/dashboard" class="text-sm font-medium text-neutral-600 hover:text-orange-600 dark:text-neutral-400 dark:hover:text-orange-400">
+          <a
+            href="/dashboard"
+            class="text-sm font-medium text-neutral-600 hover:text-orange-600 dark:text-neutral-400 dark:hover:text-orange-400"
+          >
             Tableau de bord
           </a>
-          <a href="/contact" class="text-sm font-medium text-neutral-600 hover:text-orange-600 dark:text-neutral-400 dark:hover:text-orange-400">
+          <a
+            href="/contact"
+            class="text-sm font-medium text-neutral-600 hover:text-orange-600 dark:text-neutral-400 dark:hover:text-orange-400"
+          >
             Contact
           </a>
         </div>
@@ -29,8 +39,8 @@ import Layout from '../layouts/Layout.astro';
   <main class="min-h-screen bg-neutral-50 pt-16 dark:bg-neutral-950">
     <div class="mx-auto max-w-4xl px-4 py-12 sm:px-6 lg:px-8">
       <!-- En-tête -->
-      <div class="text-center mb-8">
-        <h1 class="text-3xl font-bold text-neutral-900 dark:text-white mb-4">
+      <div class="mb-8 text-center">
+        <h1 class="mb-4 text-3xl font-bold text-neutral-900 dark:text-white">
           Centre d'aide VinylVault
         </h1>
         <p class="text-lg text-neutral-600 dark:text-neutral-400">
@@ -44,12 +54,23 @@ import Layout from '../layouts/Layout.astro';
           <input
             type="text"
             id="faq-search"
-            class="w-full px-4 py-3 pl-10 text-sm text-neutral-900 border border-neutral-300 rounded-lg bg-neutral-50 focus:ring-orange-500 focus:border-orange-500 dark:bg-neutral-700 dark:border-neutral-600 dark:placeholder-neutral-400 dark:text-white dark:focus:ring-orange-500 dark:focus:border-orange-500"
+            class="w-full rounded-lg border border-neutral-300 bg-neutral-50 px-4 py-3 pl-10 text-sm text-neutral-900 focus:border-orange-500 focus:ring-orange-500 dark:border-neutral-600 dark:bg-neutral-700 dark:text-white dark:placeholder-neutral-400 dark:focus:border-orange-500 dark:focus:ring-orange-500"
             placeholder="Rechercher dans les FAQ..."
           />
-          <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
-            <svg class="w-4 h-4 text-neutral-500 dark:text-neutral-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
-              <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z"/>
+          <div class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
+            <svg
+              class="h-4 w-4 text-neutral-500 dark:text-neutral-400"
+              aria-hidden="true"
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 20 20"
+            >
+              <path
+                stroke="currentColor"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z"></path>
             </svg>
           </div>
         </div>
@@ -59,48 +80,68 @@ import Layout from '../layouts/Layout.astro';
       <div class="space-y-6">
         <!-- Section Débuter -->
         <div>
-          <h2 class="text-xl font-semibold text-neutral-900 dark:text-white mb-4">
+          <h2 class="mb-4 text-xl font-semibold text-neutral-900 dark:text-white">
             🚀 Débuter avec VinylVault
           </h2>
           <div class="space-y-2">
             <details class="group">
-              <summary class="flex justify-between items-center p-4 text-neutral-900 bg-neutral-50 border border-neutral-200 rounded-lg cursor-pointer hover:bg-neutral-100 dark:bg-neutral-800 dark:border-neutral-700 dark:text-white dark:hover:bg-neutral-700">
+              <summary
+                class="flex cursor-pointer items-center justify-between rounded-lg border border-neutral-200 bg-neutral-50 p-4 text-neutral-900 hover:bg-neutral-100 dark:border-neutral-700 dark:bg-neutral-800 dark:text-white dark:hover:bg-neutral-700"
+              >
                 <span class="font-medium">Comment créer ma première collection ?</span>
-                <ChevronDown class="w-5 h-5 text-neutral-500 dark:text-neutral-400 group-open:rotate-180 transition-transform" />
+                <ChevronDown
+                  class="h-5 w-5 text-neutral-500 transition-transform group-open:rotate-180 dark:text-neutral-400"
+                />
               </summary>
-              <div class="p-4 border border-neutral-200 border-t-0 rounded-b-lg dark:border-neutral-700">
+              <div
+                class="rounded-b-lg border border-t-0 border-neutral-200 p-4 dark:border-neutral-700"
+              >
                 <p class="text-neutral-600 dark:text-neutral-400">
-                  Pour créer votre première collection, cliquez sur le bouton "Créer une collection" dans la page Collections. 
-                  Donnez un nom à votre collection, ajoutez une description et choisissez un genre musical. 
-                  Vous pourrez ensuite ajouter vos vinyles un par un.
+                  Pour créer votre première collection, cliquez sur le bouton "Créer une collection"
+                  dans la page Collections. Donnez un nom à votre collection, ajoutez une
+                  description et choisissez un genre musical. Vous pourrez ensuite ajouter vos
+                  vinyles un par un.
                 </p>
               </div>
             </details>
 
             <details class="group">
-              <summary class="flex justify-between items-center p-4 text-neutral-900 bg-neutral-50 border border-neutral-200 rounded-lg cursor-pointer hover:bg-neutral-100 dark:bg-neutral-800 dark:border-neutral-700 dark:text-white dark:hover:bg-neutral-700">
+              <summary
+                class="flex cursor-pointer items-center justify-between rounded-lg border border-neutral-200 bg-neutral-50 p-4 text-neutral-900 hover:bg-neutral-100 dark:border-neutral-700 dark:bg-neutral-800 dark:text-white dark:hover:bg-neutral-700"
+              >
                 <span class="font-medium">Comment ajouter un vinyle à ma collection ?</span>
-                <ChevronDown class="w-5 h-5 text-neutral-500 dark:text-neutral-400 group-open:rotate-180 transition-transform" />
+                <ChevronDown
+                  class="h-5 w-5 text-neutral-500 transition-transform group-open:rotate-180 dark:text-neutral-400"
+                />
               </summary>
-              <div class="p-4 border border-neutral-200 border-t-0 rounded-b-lg dark:border-neutral-700">
+              <div
+                class="rounded-b-lg border border-t-0 border-neutral-200 p-4 dark:border-neutral-700"
+              >
                 <p class="text-neutral-600 dark:text-neutral-400">
-                  Vous pouvez ajouter un vinyle de plusieurs façons : utilisez le scanner de code-barres, 
-                  recherchez dans notre base de données Discogs, ou ajoutez manuellement les informations. 
-                  Chaque vinyle peut inclure des détails comme l'artiste, l'album, l'année, le genre et la valeur estimée.
+                  Vous pouvez ajouter un vinyle de plusieurs façons : utilisez le scanner de
+                  code-barres, recherchez dans notre base de données Discogs, ou ajoutez
+                  manuellement les informations. Chaque vinyle peut inclure des détails comme
+                  l'artiste, l'album, l'année, le genre et la valeur estimée.
                 </p>
               </div>
             </details>
 
             <details class="group">
-              <summary class="flex justify-between items-center p-4 text-neutral-900 bg-neutral-50 border border-neutral-200 rounded-lg cursor-pointer hover:bg-neutral-100 dark:bg-neutral-800 dark:border-neutral-700 dark:text-white dark:hover:bg-neutral-700">
+              <summary
+                class="flex cursor-pointer items-center justify-between rounded-lg border border-neutral-200 bg-neutral-50 p-4 text-neutral-900 hover:bg-neutral-100 dark:border-neutral-700 dark:bg-neutral-800 dark:text-white dark:hover:bg-neutral-700"
+              >
                 <span class="font-medium">Qu'est-ce que la wishlist ?</span>
-                <ChevronDown class="w-5 h-5 text-neutral-500 dark:text-neutral-400 group-open:rotate-180 transition-transform" />
+                <ChevronDown
+                  class="h-5 w-5 text-neutral-500 transition-transform group-open:rotate-180 dark:text-neutral-400"
+                />
               </summary>
-              <div class="p-4 border border-neutral-200 border-t-0 rounded-b-lg dark:border-neutral-700">
+              <div
+                class="rounded-b-lg border border-t-0 border-neutral-200 p-4 dark:border-neutral-700"
+              >
                 <p class="text-neutral-600 dark:text-neutral-400">
-                  La wishlist vous permet de sauvegarder les vinyles que vous souhaitez acquérir. 
-                  Vous pouvez y ajouter des albums depuis la recherche, recevoir des alertes de prix, 
-                  et suivre l'évolution de leur valeur sur le marché.
+                  La wishlist vous permet de sauvegarder les vinyles que vous souhaitez acquérir.
+                  Vous pouvez y ajouter des albums depuis la recherche, recevoir des alertes de
+                  prix, et suivre l'évolution de leur valeur sur le marché.
                 </p>
               </div>
             </details>
@@ -109,47 +150,66 @@ import Layout from '../layouts/Layout.astro';
 
         <!-- Section Fonctionnalités -->
         <div>
-          <h2 class="text-xl font-semibold text-neutral-900 dark:text-white mb-4">
+          <h2 class="mb-4 text-xl font-semibold text-neutral-900 dark:text-white">
             ⚙️ Fonctionnalités
           </h2>
           <div class="space-y-2">
             <details class="group">
-              <summary class="flex justify-between items-center p-4 text-neutral-900 bg-neutral-50 border border-neutral-200 rounded-lg cursor-pointer hover:bg-neutral-100 dark:bg-neutral-800 dark:border-neutral-700 dark:text-white dark:hover:bg-neutral-700">
+              <summary
+                class="flex cursor-pointer items-center justify-between rounded-lg border border-neutral-200 bg-neutral-50 p-4 text-neutral-900 hover:bg-neutral-100 dark:border-neutral-700 dark:bg-neutral-800 dark:text-white dark:hover:bg-neutral-700"
+              >
                 <span class="font-medium">Comment fonctionne le scanner de code-barres ?</span>
-                <ChevronDown class="w-5 h-5 text-neutral-500 dark:text-neutral-400 group-open:rotate-180 transition-transform" />
+                <ChevronDown
+                  class="h-5 w-5 text-neutral-500 transition-transform group-open:rotate-180 dark:text-neutral-400"
+                />
               </summary>
-              <div class="p-4 border border-neutral-200 border-t-0 rounded-b-lg dark:border-neutral-700">
+              <div
+                class="rounded-b-lg border border-t-0 border-neutral-200 p-4 dark:border-neutral-700"
+              >
                 <p class="text-neutral-600 dark:text-neutral-400">
-                  Le scanner utilise la caméra de votre appareil pour lire les codes-barres des vinyles. 
-                  Une fois scanné, l'application recherche automatiquement les informations dans notre base de données 
-                  et vous propose d'ajouter le vinyle à votre collection.
+                  Le scanner utilise la caméra de votre appareil pour lire les codes-barres des
+                  vinyles. Une fois scanné, l'application recherche automatiquement les informations
+                  dans notre base de données et vous propose d'ajouter le vinyle à votre collection.
                 </p>
               </div>
             </details>
 
             <details class="group">
-              <summary class="flex justify-between items-center p-4 text-neutral-900 bg-neutral-50 border border-neutral-200 rounded-lg cursor-pointer hover:bg-neutral-100 dark:bg-neutral-800 dark:border-neutral-700 dark:text-white dark:hover:bg-neutral-700">
+              <summary
+                class="flex cursor-pointer items-center justify-between rounded-lg border border-neutral-200 bg-neutral-50 p-4 text-neutral-900 hover:bg-neutral-100 dark:border-neutral-700 dark:bg-neutral-800 dark:text-white dark:hover:bg-neutral-700"
+              >
                 <span class="font-medium">Comment sont calculées les statistiques ?</span>
-                <ChevronDown class="w-5 h-5 text-neutral-500 dark:text-neutral-400 group-open:rotate-180 transition-transform" />
+                <ChevronDown
+                  class="h-5 w-5 text-neutral-500 transition-transform group-open:rotate-180 dark:text-neutral-400"
+                />
               </summary>
-              <div class="p-4 border border-neutral-200 border-t-0 rounded-b-lg dark:border-neutral-700">
+              <div
+                class="rounded-b-lg border border-t-0 border-neutral-200 p-4 dark:border-neutral-700"
+              >
                 <p class="text-neutral-600 dark:text-neutral-400">
-                  Les statistiques sont calculées en temps réel à partir de votre collection. 
-                  Elles incluent la répartition par genre, décennie, la valeur totale estimée, 
-                  et l'évolution de votre collection au fil du temps.
+                  Les statistiques sont calculées en temps réel à partir de votre collection. Elles
+                  incluent la répartition par genre, décennie, la valeur totale estimée, et
+                  l'évolution de votre collection au fil du temps.
                 </p>
               </div>
             </details>
 
             <details class="group">
-              <summary class="flex justify-between items-center p-4 text-neutral-900 bg-neutral-50 border border-neutral-200 rounded-lg cursor-pointer hover:bg-neutral-100 dark:bg-neutral-800 dark:border-neutral-700 dark:text-white dark:hover:bg-neutral-700">
+              <summary
+                class="flex cursor-pointer items-center justify-between rounded-lg border border-neutral-200 bg-neutral-50 p-4 text-neutral-900 hover:bg-neutral-100 dark:border-neutral-700 dark:bg-neutral-800 dark:text-white dark:hover:bg-neutral-700"
+              >
                 <span class="font-medium">Puis-je exporter mes données ?</span>
-                <ChevronDown class="w-5 h-5 text-neutral-500 dark:text-neutral-400 group-open:rotate-180 transition-transform" />
+                <ChevronDown
+                  class="h-5 w-5 text-neutral-500 transition-transform group-open:rotate-180 dark:text-neutral-400"
+                />
               </summary>
-              <div class="p-4 border border-neutral-200 border-t-0 rounded-b-lg dark:border-neutral-700">
+              <div
+                class="rounded-b-lg border border-t-0 border-neutral-200 p-4 dark:border-neutral-700"
+              >
                 <p class="text-neutral-600 dark:text-neutral-400">
-                  Oui, vous pouvez exporter votre collection au format CSV ou JSON depuis les paramètres. 
-                  Cela vous permet de sauvegarder vos données ou de les importer dans d'autres applications.
+                  Oui, vous pouvez exporter votre collection au format CSV ou JSON depuis les
+                  paramètres. Cela vous permet de sauvegarder vos données ou de les importer dans
+                  d'autres applications.
                 </p>
               </div>
             </details>
@@ -158,47 +218,66 @@ import Layout from '../layouts/Layout.astro';
 
         <!-- Section Problèmes techniques -->
         <div>
-          <h2 class="text-xl font-semibold text-neutral-900 dark:text-white mb-4">
+          <h2 class="mb-4 text-xl font-semibold text-neutral-900 dark:text-white">
             🔧 Problèmes techniques
           </h2>
           <div class="space-y-2">
             <details class="group">
-              <summary class="flex justify-between items-center p-4 text-neutral-900 bg-neutral-50 border border-neutral-200 rounded-lg cursor-pointer hover:bg-neutral-100 dark:bg-neutral-800 dark:border-neutral-700 dark:text-white dark:hover:bg-neutral-700">
+              <summary
+                class="flex cursor-pointer items-center justify-between rounded-lg border border-neutral-200 bg-neutral-50 p-4 text-neutral-900 hover:bg-neutral-100 dark:border-neutral-700 dark:bg-neutral-800 dark:text-white dark:hover:bg-neutral-700"
+              >
                 <span class="font-medium">L'application ne se charge pas correctement</span>
-                <ChevronDown class="w-5 h-5 text-neutral-500 dark:text-neutral-400 group-open:rotate-180 transition-transform" />
+                <ChevronDown
+                  class="h-5 w-5 text-neutral-500 transition-transform group-open:rotate-180 dark:text-neutral-400"
+                />
               </summary>
-              <div class="p-4 border border-neutral-200 border-t-0 rounded-b-lg dark:border-neutral-700">
+              <div
+                class="rounded-b-lg border border-t-0 border-neutral-200 p-4 dark:border-neutral-700"
+              >
                 <p class="text-neutral-600 dark:text-neutral-400">
-                  Essayez de rafraîchir la page (Ctrl+F5 ou Cmd+Shift+R). Si le problème persiste, 
-                  vérifiez votre connexion internet et essayez de vider le cache de votre navigateur.
+                  Essayez de rafraîchir la page (Ctrl+F5 ou Cmd+Shift+R). Si le problème persiste,
+                  vérifiez votre connexion internet et essayez de vider le cache de votre
+                  navigateur.
                 </p>
               </div>
             </details>
 
             <details class="group">
-              <summary class="flex justify-between items-center p-4 text-neutral-900 bg-neutral-50 border border-neutral-200 rounded-lg cursor-pointer hover:bg-neutral-100 dark:bg-neutral-800 dark:border-neutral-700 dark:text-white dark:hover:bg-neutral-700">
+              <summary
+                class="flex cursor-pointer items-center justify-between rounded-lg border border-neutral-200 bg-neutral-50 p-4 text-neutral-900 hover:bg-neutral-100 dark:border-neutral-700 dark:bg-neutral-800 dark:text-white dark:hover:bg-neutral-700"
+              >
                 <span class="font-medium">Le scanner ne fonctionne pas</span>
-                <ChevronDown class="w-5 h-5 text-neutral-500 dark:text-neutral-400 group-open:rotate-180 transition-transform" />
+                <ChevronDown
+                  class="h-5 w-5 text-neutral-500 transition-transform group-open:rotate-180 dark:text-neutral-400"
+                />
               </summary>
-              <div class="p-4 border border-neutral-200 border-t-0 rounded-b-lg dark:border-neutral-700">
+              <div
+                class="rounded-b-lg border border-t-0 border-neutral-200 p-4 dark:border-neutral-700"
+              >
                 <p class="text-neutral-600 dark:text-neutral-400">
-                  Assurez-vous que votre navigateur a l'autorisation d'accéder à la caméra. 
-                  Sur mobile, utilisez un navigateur récent comme Chrome ou Safari. 
-                  Le scanner fonctionne mieux avec un bon éclairage.
+                  Assurez-vous que votre navigateur a l'autorisation d'accéder à la caméra. Sur
+                  mobile, utilisez un navigateur récent comme Chrome ou Safari. Le scanner
+                  fonctionne mieux avec un bon éclairage.
                 </p>
               </div>
             </details>
 
             <details class="group">
-              <summary class="flex justify-between items-center p-4 text-neutral-900 bg-neutral-50 border border-neutral-200 rounded-lg cursor-pointer hover:bg-neutral-100 dark:bg-neutral-800 dark:border-neutral-700 dark:text-white dark:hover:bg-neutral-700">
+              <summary
+                class="flex cursor-pointer items-center justify-between rounded-lg border border-neutral-200 bg-neutral-50 p-4 text-neutral-900 hover:bg-neutral-100 dark:border-neutral-700 dark:bg-neutral-800 dark:text-white dark:hover:bg-neutral-700"
+              >
                 <span class="font-medium">Mes données ont disparu</span>
-                <ChevronDown class="w-5 h-5 text-neutral-500 dark:text-neutral-400 group-open:rotate-180 transition-transform" />
+                <ChevronDown
+                  class="h-5 w-5 text-neutral-500 transition-transform group-open:rotate-180 dark:text-neutral-400"
+                />
               </summary>
-              <div class="p-4 border border-neutral-200 border-t-0 rounded-b-lg dark:border-neutral-700">
+              <div
+                class="rounded-b-lg border border-t-0 border-neutral-200 p-4 dark:border-neutral-700"
+              >
                 <p class="text-neutral-600 dark:text-neutral-400">
-                  Vos données sont sauvegardées automatiquement. Si elles semblent avoir disparu, 
-                  vérifiez que vous êtes connecté avec le bon compte. 
-                  Contactez notre support si le problème persiste.
+                  Vos données sont sauvegardées automatiquement. Si elles semblent avoir disparu,
+                  vérifiez que vous êtes connecté avec le bon compte. Contactez notre support si le
+                  problème persiste.
                 </p>
               </div>
             </details>
@@ -207,23 +286,23 @@ import Layout from '../layouts/Layout.astro';
       </div>
 
       <!-- Contact Support -->
-      <div class="mt-12 p-6 bg-orange-50 dark:bg-orange-900/20 rounded-lg border border-orange-200 dark:border-orange-800">
-        <h3 class="text-lg font-semibold text-orange-900 dark:text-orange-100 mb-2">
+      <div
+        class="mt-12 rounded-lg border border-orange-200 bg-orange-50 p-6 dark:border-orange-800 dark:bg-orange-900/20"
+      >
+        <h3 class="mb-2 text-lg font-semibold text-orange-900 dark:text-orange-100">
           Vous ne trouvez pas votre réponse ?
         </h3>
-        <p class="text-gradient-rock mb-4">
-          Notre équipe support est là pour vous aider.
-        </p>
-        <div class="flex flex-col sm:flex-row gap-3">
+        <p class="text-gradient-rock mb-4">Notre équipe support est là pour vous aider.</p>
+        <div class="flex flex-col gap-3 sm:flex-row">
           <a
             href="/contact"
-            class="inline-flex items-center px-4 py-2 bg-orange-600 hover:bg-orange-700 text-white rounded-lg transition-colors"
+            class="inline-flex items-center rounded-lg bg-orange-600 px-4 py-2 text-white transition-colors hover:bg-orange-700"
           >
             Contacter le support
           </a>
           <a
             href="/bug-report"
-            class="inline-flex items-center px-4 py-2 border border-orange-600 text-orange-600 hover:bg-orange-50 dark:text-orange-400 dark:hover:bg-orange-900/20 rounded-lg transition-colors"
+            class="inline-flex items-center rounded-lg border border-orange-600 px-4 py-2 text-orange-600 transition-colors hover:bg-orange-50 dark:text-orange-400 dark:hover:bg-orange-900/20"
           >
             Signaler un bug
           </a>
@@ -237,7 +316,7 @@ import Layout from '../layouts/Layout.astro';
     <div class="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
       <div class="flex flex-col items-center justify-between gap-4 sm:flex-row">
         <div class="flex items-center space-x-2">
-          <div class="flex h-6 w-6 items-center justify-center rounded-lg bg-gradient-rock">
+          <div class="bg-gradient-rock flex h-6 w-6 items-center justify-center rounded-lg">
             <Disc3 class="h-4 w-4 text-white" />
           </div>
           <span class="text-sm text-neutral-600 dark:text-neutral-400">
@@ -245,13 +324,22 @@ import Layout from '../layouts/Layout.astro';
           </span>
         </div>
         <div class="flex items-center space-x-6">
-          <a href="/about" class="text-sm text-neutral-600 hover:text-orange-600 dark:text-neutral-400 dark:hover:text-orange-400">
+          <a
+            href="/about"
+            class="text-sm text-neutral-600 hover:text-orange-600 dark:text-neutral-400 dark:hover:text-orange-400"
+          >
             À propos
           </a>
-          <a href="/terms" class="text-sm text-neutral-600 hover:text-orange-600 dark:text-neutral-400 dark:hover:text-orange-400">
+          <a
+            href="/terms"
+            class="text-sm text-neutral-600 hover:text-orange-600 dark:text-neutral-400 dark:hover:text-orange-400"
+          >
             Conditions
           </a>
-          <a href="/contact" class="text-sm text-neutral-600 hover:text-orange-600 dark:text-neutral-400 dark:hover:text-orange-400">
+          <a
+            href="/contact"
+            class="text-sm text-neutral-600 hover:text-orange-600 dark:text-neutral-400 dark:hover:text-orange-400"
+          >
             Contact
           </a>
         </div>
@@ -262,34 +350,29 @@ import Layout from '../layouts/Layout.astro';
 
 <script>
   // Fonctionnalité de recherche FAQ
-  document.addEventListener('DOMContentLoaded', function() {
-    const searchInput = document.getElementById('faq-search');
-    const details = document.querySelectorAll('details');
-    
+  document.addEventListener('DOMContentLoaded', function () {
+    const searchInput = document.getElementById('faq-search')
+    const details = document.querySelectorAll('details')
+
     if (searchInput) {
-      searchInput.addEventListener('input', function() {
-        const searchTerm = (this as HTMLInputElement).value.toLowerCase();
-        
-        details.forEach(detail => {
-          const summary = detail.querySelector('summary span');
-          const content = detail.querySelector('div p');
-          
+      searchInput.addEventListener('input', function () {
+        const searchTerm = (this as HTMLInputElement).value.toLowerCase()
+
+        details.forEach((detail) => {
+          const summary = detail.querySelector('summary span')
+          const content = detail.querySelector('div p')
+
           if (summary && content) {
-            const text = (summary.textContent + ' ' + content.textContent).toLowerCase();
-            
+            const text = (summary.textContent + ' ' + content.textContent).toLowerCase()
+
             if (text.includes(searchTerm)) {
-              detail.style.display = 'block';
+              detail.style.display = 'block'
             } else {
-              detail.style.display = 'none';
+              detail.style.display = 'none'
             }
           }
-        });
-      });
+        })
+      })
     }
-  });
-import { 
-  ChevronDown, 
-  Disc3, 
-  Mail 
-} from '@lucide/astro/icons';
+  })
 </script>
