@@ -1,0 +1,199 @@
+---
+import SearchVinylCard from './SearchVinylCard.astro'
+import TimelineVinylCard from './TimelineVinylCard.astro'
+
+type VinylData = {
+  id: string
+  title: string
+  artist: string
+  year: string
+  genre: string[]
+  thumb?: string
+}
+
+type ViewType = 'grid' | 'list' | 'timeline'
+
+type Props = {
+  results: VinylData[]
+  currentView: ViewType
+  availableViews?: ViewType[]
+}
+
+const { results, currentView, availableViews = ['grid', 'list', 'timeline'] } = Astro.props
+---
+
+<div class="space-y-4">
+  <!-- Vue Grille -->
+  {
+    availableViews.includes('grid') && (
+      <div
+        id="results-grid"
+        class={`grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 ${
+          currentView === 'grid' ? 'block' : 'hidden'
+        }`}
+      >
+        {results.map((vinyl) => (
+          <SearchVinylCard
+            id={vinyl.id}
+            title={vinyl.title}
+            artist={vinyl.artist}
+            year={vinyl.year}
+            genre={vinyl.genre.join(', ')}
+            thumb={vinyl.thumb}
+            viewMode="grid"
+          />
+        ))}
+      </div>
+    )
+  }
+
+  <!-- Vue Liste -->
+  {
+    availableViews.includes('list') && (
+      <div id="results-list" class={`space-y-4 ${currentView === 'list' ? 'block' : 'hidden'}`}>
+        {results.map((vinyl) => (
+          <SearchVinylCard
+            id={vinyl.id}
+            title={vinyl.title}
+            artist={vinyl.artist}
+            year={vinyl.year}
+            genre={vinyl.genre.join(', ')}
+            thumb={vinyl.thumb}
+            viewMode="list"
+          />
+        ))}
+      </div>
+    )
+  }
+
+  <!-- Vue Timeline -->
+  {
+    availableViews.includes('timeline') && (
+      <div id="results-timeline" class={`${currentView === 'timeline' ? 'block' : 'hidden'}`}>
+        <ol class="relative border-s border-orange-200 dark:border-orange-700">
+          {results.map((vinyl, index) => {
+            const isLast = index === results.length - 1
+            return (
+              <li class={isLast ? '' : 'ms-4 mb-10'}>
+                <div class="absolute -start-1.5 mt-1.5 h-3 w-3 rounded-full border border-white bg-orange-200 dark:border-neutral-900 dark:bg-orange-600" />
+                <div class="flex gap-4">
+                  <div class="flex-1">
+                    <time class="text-gradient-rock mb-1 text-sm leading-none font-normal">
+                      {vinyl.year}
+                    </time>
+                    <h3 class="text-lg font-semibold text-neutral-900 dark:text-neutral-100">
+                      {vinyl.title}
+                    </h3>
+                    <p class="mb-2 text-base font-normal text-neutral-600 dark:text-neutral-400">
+                      {vinyl.artist}
+                    </p>
+                    <p class="mb-4 text-sm font-normal text-neutral-500 dark:text-neutral-500">
+                      {vinyl.genre.join(', ')}
+                    </p>
+                    <div class="flex gap-2">
+                      <button
+                        class="hover:bg-gradient-rock-subtle dark:hover:bg-gradient-rock-light inline-flex items-center gap-2 rounded-md border border-neutral-300 bg-transparent px-3 py-1.5 text-xs text-neutral-900 hover:border-orange-400 hover:text-orange-600 focus:ring-2 focus:ring-orange-500 focus:ring-offset-2 focus:outline-none dark:border-neutral-600 dark:text-neutral-100 dark:hover:border-orange-500 dark:hover:text-orange-400 dark:focus:ring-orange-400 dark:focus:ring-offset-neutral-900"
+                        data-vinyl-id={vinyl.id}
+                        data-action="view"
+                      >
+                        <svg
+                          class="me-2 h-3 w-3"
+                          fill="none"
+                          stroke="currentColor"
+                          viewBox="0 0 24 24"
+                        >
+                          <path
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            stroke-width="2"
+                            d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
+                          />
+                          <path
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            stroke-width="2"
+                            d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"
+                          />
+                        </svg>
+                        Voir
+                      </button>
+                      <button
+                        class="bg-gradient-rock hover:bg-gradient-rock-hover dark:bg-gradient-rock dark:hover:bg-gradient-rock-hover inline-flex items-center rounded-lg border border-orange-600 px-3 py-2 text-sm font-medium text-white shadow-md transition-all duration-300 ease-in-out hover:shadow-lg focus:z-10 focus:ring-4 focus:ring-orange-100 focus:outline-none dark:focus:ring-orange-700"
+                        data-vinyl-id={vinyl.id}
+                        data-action="add"
+                      >
+                        <svg
+                          class="me-2 h-3 w-3"
+                          fill="none"
+                          stroke="currentColor"
+                          viewBox="0 0 24 24"
+                        >
+                          <path
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            stroke-width="2"
+                            d="M12 6v6m0 0v6m0-6h6m-6 0H6"
+                          />
+                        </svg>
+                        Ajouter
+                      </button>
+                    </div>
+                  </div>
+                  <div class="flex-shrink-0">
+                    <div class="h-20 w-20 overflow-hidden rounded-lg shadow-md">
+                      {vinyl.thumb ? (
+                        <img
+                          src={vinyl.thumb}
+                          alt={vinyl.title}
+                          class="h-full w-full object-cover"
+                        />
+                      ) : (
+                        <div class="flex h-full w-full items-center justify-center bg-gradient-to-br from-orange-500 to-orange-600">
+                          <span class="text-lg font-bold text-neutral-100">
+                            {`${vinyl.artist?.charAt(0) || '?'}${vinyl.title?.charAt(0) || '?'}`.toUpperCase()}
+                          </span>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              </li>
+            )
+          })}
+        </ol>
+      </div>
+    )
+  }
+</div>
+
+<script>
+  // Déclaration de type pour les événements personnalisés
+  declare global {
+    interface DocumentEventMap {
+      'vinyl-view-change': CustomEvent<{ view: 'grid' | 'list' | 'timeline' }>
+    }
+  }
+
+  // Fonction pour basculer entre les vues
+  const toggleVinylView = (view: 'grid' | 'list' | 'timeline') => {
+    const views = ['grid', 'list', 'timeline']
+
+    views.forEach((viewType) => {
+      const element = document.getElementById(`results-${viewType}`)
+      if (element) {
+        if (viewType === view) {
+          element.classList.remove('hidden')
+          element.classList.add('block')
+        } else {
+          element.classList.remove('block')
+          element.classList.add('hidden')
+        }
+      }
+    })
+  }
+
+  // Écouter les événements de changement de vue
+  document.addEventListener('vinyl-view-change', (event: CustomEvent) => {
+    toggleVinylView(event.detail.view)
+  })
+</script>
