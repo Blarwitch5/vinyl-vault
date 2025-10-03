@@ -142,7 +142,7 @@ body.modal-open::before {
   right: 0;
   bottom: 0;
   background-color: rgba(0, 0, 0, 0.7);
-  z-index: 9998;
+  z-index: 99999;
   pointer-events: none;
   transition: opacity 0.3s ease;
   -webkit-backdrop-filter: blur(4px);
@@ -151,7 +151,7 @@ body.modal-open::before {
 
 /* S'assurer que la modal reste au-dessus de l'overlay */
 [id*='modal'] {
-  z-index: 9999 !important;
+  z-index: 100000 !important;
 }
 
 /* Animations pour les modales */
@@ -197,4 +197,31 @@ body.modal-open::before {
   to {
     opacity: 1;
   }
+}
+
+/* Z-index pour le datepicker Flowbite */
+.datepicker-dropdown {
+  z-index: 100001 !important;
+}
+
+/* Gestion globale du prefers-reduced-motion */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* Classe pour le reduced motion (ajoutée dynamiquement) */
+.reduced-motion *,
+.reduced-motion *::before,
+.reduced-motion *::after {
+  animation-duration: 0.01ms !important;
+  animation-iteration-count: 1 !important;
+  transition-duration: 0.01ms !important;
+  scroll-behavior: auto !important;
 }

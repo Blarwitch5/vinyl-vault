@@ -1,0 +1,17 @@
+---
+export interface Props {
+  content: string
+}
+
+const { content } = Astro.props
+---
+
+<section class="rounded-lg bg-neutral-50 p-6 shadow-sm dark:bg-neutral-800">
+  <h2 class="mb-4 text-lg font-semibold text-neutral-900 dark:text-neutral-100">
+    À propos de l'album
+  </h2>
+  <div
+    class="prose prose-sm dark:prose-invert max-w-none text-neutral-700 dark:text-neutral-300"
+    set:html={content}
+  />
+</section>

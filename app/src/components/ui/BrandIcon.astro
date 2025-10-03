@@ -1,0 +1,42 @@
+---
+import { Facebook, Instagram, Whatsapp, X } from 'simple-icons-astro'
+
+export interface Props {
+  name: string
+  size?: number
+  className?: string
+}
+
+const { name, size = 24, className = '' } = Astro.props
+
+// Mapping des noms vers les composants
+const iconComponents = {
+  facebook: Facebook,
+  twitter: X,
+  x: X,
+  instagram: Instagram,
+  linkedin: Instagram, // Remplacement temporaire
+  whatsapp: Whatsapp,
+}
+
+const IconComponent = iconComponents[name.toLowerCase()]
+---
+
+{
+  IconComponent ? (
+    <div
+      class={`inline-flex items-center justify-center ${className}`}
+      style={`width: ${size}px; height: ${size}px;`}
+    >
+      <IconComponent />
+    </div>
+  ) : (
+    <div
+      class={`inline-flex items-center justify-center rounded bg-neutral-200 dark:bg-neutral-700 ${className}`}
+      style={`width: ${size}px; height: ${size}px;`}
+      title={`Icône ${name} non trouvée`}
+    >
+      <span class="text-xs text-neutral-500 dark:text-neutral-400">?</span>
+    </div>
+  )
+}

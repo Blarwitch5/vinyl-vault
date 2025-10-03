@@ -168,7 +168,8 @@ const viewConfig = {
   // Fonction pour changer de vue
   const changeView = (newView: string) => {
     // Mettre à jour les styles des boutons
-    availableViews.forEach((view) => {
+    const views = ['grid', 'list', 'timeline']
+    views.forEach((view) => {
       const btn = document.getElementById(`${view}-view-btn`)
       if (btn) {
         const isActive = view === newView

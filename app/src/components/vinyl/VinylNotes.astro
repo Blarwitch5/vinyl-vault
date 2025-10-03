@@ -1,0 +1,30 @@
+---
+export interface NoteItem {
+  label: string
+  value: string
+}
+
+export interface Props {
+  notes: NoteItem[]
+}
+
+const { notes } = Astro.props
+---
+
+<section class="rounded-lg bg-neutral-50 p-6 shadow-sm dark:bg-neutral-800">
+  <h2 class="mb-4 text-lg font-semibold text-neutral-900 dark:text-neutral-100">
+    Notes personnelles
+  </h2>
+  <div class="space-y-3">
+    {
+      notes.map((note) => (
+        <div>
+          <div class="mb-1 text-sm font-medium text-neutral-700 dark:text-neutral-300">
+            {note.label}
+          </div>
+          <div class="text-sm text-neutral-600 dark:text-neutral-400">{note.value}</div>
+        </div>
+      ))
+    }
+  </div>
+</section>

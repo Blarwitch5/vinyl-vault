@@ -1,0 +1,242 @@
+---
+import Pause from '@lucide/astro/icons/pause'
+import Play from '@lucide/astro/icons/play'
+import AlertTriangle from '@lucide/astro/icons/triangle-alert'
+import X from '@lucide/astro/icons/x'
+
+export interface Props {
+  audioUrl?: string
+  trackTitle?: string
+  artistName?: string
+  className?: string
+}
+
+const {
+  audioUrl = '',
+  trackTitle = 'Titre de la piste',
+  artistName = 'Artiste',
+  className = '',
+} = Astro.props
+---
+
+<div class={`audio-preview-component ${className}`}>
+  {
+    audioUrl ? (
+      <button
+        type="button"
+        class="audio-preview-btn flex items-center justify-center rounded-full bg-gradient-to-br from-orange-500 to-orange-600 p-2 text-white shadow-md transition-all duration-200 hover:scale-105 hover:from-orange-600 hover:to-orange-700 hover:shadow-lg focus:ring-2 focus:ring-orange-500 focus:ring-offset-2 focus:outline-none"
+        data-audio-url={audioUrl}
+        data-track-title={trackTitle}
+        data-artist-name={artistName}
+        aria-label={`Écouter un extrait de ${trackTitle}`}
+      >
+        <Play class="h-4 w-4" />
+      </button>
+    ) : (
+      <div class="flex items-center justify-center rounded-full bg-neutral-200 p-2 text-neutral-500 dark:bg-neutral-700 dark:text-neutral-400">
+        <AlertTriangle class="h-4 w-4" />
+      </div>
+    )
+  }
+</div>
+
+<!-- Mini Modal pour le lecteur audio -->
+<div
+  id="audio-preview-modal"
+  class="fixed inset-0 z-50 hidden items-center justify-center bg-black/50 backdrop-blur-sm"
+  role="dialog"
+  aria-modal="true"
+  aria-labelledby="audio-modal-title"
+>
+  <div class="mx-4 w-full max-w-md rounded-xl bg-white p-6 shadow-2xl dark:bg-neutral-800">
+    <!-- En-tête de la modal -->
+    <div class="mb-6 flex items-center justify-between">
+      <div>
+        <h3
+          id="audio-modal-title"
+          class="text-lg font-semibold text-neutral-900 dark:text-neutral-100"
+        >
+          Aperçu audio
+        </h3>
+        <p class="text-sm text-neutral-600 dark:text-neutral-400">
+          <span id="audio-track-title">{trackTitle}</span> - <span id="audio-artist-name"
+            >{artistName}</span
+          >
+        </p>
+      </div>
+      <button
+        type="button"
+        id="close-audio-modal"
+        class="rounded-lg p-2 text-neutral-500 transition-colors hover:bg-neutral-100 hover:text-neutral-700 dark:text-neutral-400 dark:hover:bg-neutral-700 dark:hover:text-neutral-200"
+        aria-label="Fermer"
+      >
+        <X class="h-5 w-5" />
+      </button>
+    </div>
+
+    <!-- Message d'information si pas d'audio -->
+    <div id="no-audio-message" class="hidden">
+      <div class="flex items-start space-x-3 rounded-lg bg-amber-50 p-4 dark:bg-amber-900/20">
+        <div class="flex-shrink-0">
+          <AlertTriangle class="h-5 w-5 text-amber-600 dark:text-amber-400" />
+        </div>
+        <div>
+          <h4 class="text-sm font-medium text-amber-800 dark:text-amber-200">
+            Extrait non disponible
+          </h4>
+          <p class="text-xs text-amber-700 dark:text-amber-300">
+            Cette piste n'a pas encore été trouvée dans notre base de données musicale.
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Lecteur audio (masqué si pas d'URL) -->
+    <div id="audio-player-container" class="hidden space-y-4">
+      <audio id="audio-player" class="w-full" controls preload="metadata">
+        <source id="audio-source" src="" type="audio/mpeg" />
+        Votre navigateur ne supporte pas l'élément audio.
+      </audio>
+
+      <!-- Contrôles personnalisés -->
+      <div class="flex items-center justify-center space-x-4">
+        <button
+          type="button"
+          id="play-pause-btn"
+          class="flex items-center justify-center rounded-full bg-gradient-to-br from-orange-500 to-orange-600 p-3 text-white shadow-md transition-all duration-200 hover:from-orange-600 hover:to-orange-700 hover:shadow-lg focus:ring-2 focus:ring-orange-500 focus:ring-offset-2 focus:outline-none"
+          aria-label="Lecture/Pause"
+        >
+          <Play id="play-icon" class="h-6 w-6" />
+          <Pause id="pause-icon" class="hidden h-6 w-6" />
+        </button>
+      </div>
+
+      <!-- Informations sur la piste -->
+      <div class="rounded-lg bg-neutral-50 p-3 dark:bg-neutral-700">
+        <p class="text-xs text-neutral-500 dark:text-neutral-400">
+          Extrait de 30 secondes • Qualité 128kbps
+        </p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  // Script audio optimisé avec lazy loading
+  document.addEventListener('DOMContentLoaded', function () {
+    // Initialiser seulement si des boutons audio existent sur la page
+    const audioPreviewBtns = document.querySelectorAll('.audio-preview-btn')
+    if (audioPreviewBtns.length === 0) return
+
+    // Éviter la double initialisation
+    if (document.querySelector('[data-audio-initialized]')) return
+    document.body.setAttribute('data-audio-initialized', 'true')
+
+    // Optimisation: utiliser requestIdleCallback si disponible
+    const initAudio = () => {
+      const modal = document.getElementById('audio-preview-modal')
+      const closeBtn = document.getElementById('close-audio-modal')
+      const audioPlayer = document.getElementById('audio-player') as HTMLAudioElement
+      const audioSource = document.getElementById('audio-source') as HTMLSourceElement
+      const trackTitle = document.getElementById('audio-track-title')
+      const artistName = document.getElementById('audio-artist-name')
+      const noAudioMessage = document.getElementById('no-audio-message')
+      const audioPlayerContainer = document.getElementById('audio-player-container')
+      const playPauseBtn = document.getElementById('play-pause-btn')
+      const playIcon = document.getElementById('play-icon')
+      const pauseIcon = document.getElementById('pause-icon')
+
+      if (
+        !modal ||
+        !closeBtn ||
+        !audioPlayer ||
+        !audioSource ||
+        !trackTitle ||
+        !artistName ||
+        !noAudioMessage ||
+        !audioPlayerContainer ||
+        !playPauseBtn ||
+        !playIcon ||
+        !pauseIcon
+      ) {
+        console.warn('Éléments audio manquants')
+        return
+      }
+
+      // Fonction pour ouvrir la modal
+      const openModal = (url: string, title: string, artist: string) => {
+        if (url && url.trim() !== '') {
+          audioPlayerContainer.classList.remove('hidden')
+          noAudioMessage.classList.add('hidden')
+          audioSource.src = url
+          audioPlayer.load()
+          trackTitle.textContent = title
+          artistName.textContent = artist
+        } else {
+          audioPlayerContainer.classList.add('hidden')
+          noAudioMessage.classList.remove('hidden')
+          trackTitle.textContent = title
+          artistName.textContent = artist
+        }
+        modal.classList.remove('hidden')
+        modal.classList.add('flex')
+        document.body.style.overflow = 'hidden'
+      }
+
+      // Fonction pour fermer la modal
+      const closeModal = () => {
+        modal.classList.add('hidden')
+        modal.classList.remove('flex')
+        document.body.style.overflow = ''
+        audioPlayer.pause()
+        audioPlayer.currentTime = 0
+        playIcon.classList.remove('hidden')
+        pauseIcon.classList.add('hidden')
+      }
+
+      // Event listeners avec délégation d'événements pour gérer les boutons ajoutés dynamiquement
+      document.addEventListener('click', function (e: Event) {
+        const target = e.target as Element
+        const audioBtn = target.closest('.audio-preview-btn')
+        if (audioBtn) {
+          const url = audioBtn.getAttribute('data-audio-url') || ''
+          const title = audioBtn.getAttribute('data-track-title') || 'Titre inconnu'
+          const artist = audioBtn.getAttribute('data-artist-name') || 'Artiste inconnu'
+          openModal(url, title, artist)
+        }
+      })
+
+      closeBtn.addEventListener('click', closeModal)
+      modal.addEventListener('click', function (e: Event) {
+        if (e.target === modal) closeModal()
+      })
+      document.addEventListener('keydown', function (e: KeyboardEvent) {
+        if (e.key === 'Escape' && !modal.classList.contains('hidden')) closeModal()
+      })
+      playPauseBtn.addEventListener('click', function () {
+        if (audioPlayer.paused) {
+          audioPlayer.play()
+          playIcon.classList.add('hidden')
+          pauseIcon.classList.remove('hidden')
+        } else {
+          audioPlayer.pause()
+          playIcon.classList.remove('hidden')
+          pauseIcon.classList.add('hidden')
+        }
+      })
+      audioPlayer.addEventListener('ended', function () {
+        playIcon.classList.remove('hidden')
+        pauseIcon.classList.add('hidden')
+      })
+
+      console.log('AudioPreview initialisé avec succès')
+    }
+
+    // Utiliser requestIdleCallback pour différer l'initialisation
+    if ('requestIdleCallback' in window) {
+      ;(window as any).requestIdleCallback(initAudio, { timeout: 2000 })
+    } else {
+      setTimeout(initAudio, 0)
+    }
+  })
+</script>

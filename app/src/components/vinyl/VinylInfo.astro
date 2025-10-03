@@ -1,0 +1,39 @@
+---
+export interface VinylInfoItem {
+  icon: any
+  label: string
+  value: string
+}
+
+export interface Props {
+  items: VinylInfoItem[]
+}
+
+const { items } = Astro.props
+---
+
+<section class="rounded-lg bg-neutral-50 p-6 shadow-sm dark:bg-neutral-800">
+  <h2 class="mb-4 text-lg font-semibold text-neutral-900 dark:text-neutral-100">
+    Informations de publication
+  </h2>
+  <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
+    {
+      items.map((item) => {
+        const Icon = item.icon
+        return (
+          <div class="flex items-start space-x-4">
+            <div class="flex-shrink-0">
+              <Icon class="h-6 w-6 text-orange-600 dark:text-orange-400" />
+            </div>
+            <div>
+              <dt class="text-sm font-medium text-neutral-900 dark:text-neutral-100">
+                {item.label}
+              </dt>
+              <dd class="mt-1 text-sm text-neutral-600 dark:text-neutral-400">{item.value}</dd>
+            </div>
+          </div>
+        )
+      })
+    }
+  </div>
+</section>

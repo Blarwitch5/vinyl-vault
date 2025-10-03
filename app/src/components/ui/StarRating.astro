@@ -1,0 +1,177 @@
+---
+import Star from '@lucide/astro/icons/star'
+
+export interface Props {
+  maxRating?: number
+  currentRating?: number
+  showText?: boolean
+  size?: 'sm' | 'md' | 'lg'
+  className?: string
+}
+
+const {
+  maxRating = 5,
+  currentRating = 0,
+  showText = true,
+  size = 'md',
+  className = '',
+} = Astro.props
+
+const sizeClasses = {
+  sm: 'h-6 w-6',
+  md: 'h-8 w-8',
+  lg: 'h-10 w-10',
+}
+
+const textSizeClasses = {
+  sm: 'text-xs',
+  md: 'text-sm',
+  lg: 'text-base',
+}
+
+const ratingTexts = {
+  0: 'Aucune note',
+  1: '1 étoile - Très mauvais',
+  2: '2 étoiles - Mauvais',
+  3: '3 étoiles - Moyen',
+  4: '4 étoiles - Bon',
+  5: '5 étoiles - Excellent',
+}
+---
+
+<div class={`star-rating-component ${className}`}>
+  <div class="flex items-center space-x-1" role="radiogroup" aria-label="Notation">
+    {
+      Array.from({ length: maxRating }, (_, index) => (
+        <button
+          type="button"
+          class={`star-rating ${sizeClasses[size]} p-1 text-neutral-300 transition-all duration-200 hover:text-orange-400 focus:ring-2 focus:ring-orange-500 focus:ring-offset-2 focus:outline-none dark:text-neutral-600`}
+          data-rating={index + 1}
+          aria-label={`${index + 1} étoile${index > 0 ? 's' : ''}`}
+        >
+          <Star class="h-full w-full" />
+        </button>
+      ))
+    }
+  </div>
+
+  {
+    showText && (
+      <div class={`${textSizeClasses[size]} mt-2 text-neutral-600 dark:text-neutral-400`}>
+        <span class="current-rating-text">
+          {ratingTexts[currentRating] || 'Aucune note'}
+        </span>
+      </div>
+    )
+  }
+</div>
+
+<script>
+  // Système de notation par étoiles
+  document.addEventListener('DOMContentLoaded', function () {
+    const starRatingComponents = document.querySelectorAll('.star-rating-component')
+
+    starRatingComponents.forEach((component) => {
+      const starButtons = component.querySelectorAll('.star-rating')
+      const currentRatingText = component.querySelector('.current-rating-text')
+      let currentRating = 0
+
+      // Récupérer la note initiale depuis les données
+      const initialRating = component.getAttribute('data-initial-rating')
+      if (initialRating) {
+        currentRating = parseInt(initialRating)
+        updateStars(currentRating)
+      }
+
+      // Fonction pour mettre à jour l'affichage des étoiles
+      function updateStars(rating: number) {
+        starButtons.forEach((button, index) => {
+          const star = button.querySelector('svg')
+          if (!star) return
+
+          if (index < rating) {
+            // Appliquer le gradient uniquement à l'étoile sélectionnée
+            star.classList.add('fill-orange-500', 'text-orange-500')
+            star.classList.remove('text-neutral-300', 'dark:text-neutral-600')
+            // Garder le bouton transparent
+            button.classList.remove(
+              'bg-gradient-to-br',
+              'from-orange-500',
+              'to-orange-600',
+              'text-white',
+              'shadow-md'
+            )
+            button.classList.add(
+              'text-neutral-300',
+              'dark:text-neutral-600',
+              'hover:text-orange-400'
+            )
+          } else {
+            // Retirer le gradient et remettre les couleurs par défaut
+            star.classList.remove('fill-orange-500', 'text-orange-500')
+            star.classList.add('text-neutral-300', 'dark:text-neutral-600')
+            button.classList.remove(
+              'bg-gradient-to-br',
+              'from-orange-500',
+              'to-orange-600',
+              'text-white',
+              'shadow-md'
+            )
+            button.classList.add(
+              'text-neutral-300',
+              'dark:text-neutral-600',
+              'hover:text-orange-400'
+            )
+          }
+        })
+      }
+
+      // Fonction pour mettre à jour le texte de la note
+      function updateRatingText(rating: number) {
+        if (!currentRatingText) return
+
+        const ratingTexts: Record<number, string> = {
+          0: 'Aucune note',
+          1: '1 étoile - Très mauvais',
+          2: '2 étoiles - Mauvais',
+          3: '3 étoiles - Moyen',
+          4: '4 étoiles - Bon',
+          5: '5 étoiles - Excellent',
+        }
+
+        currentRatingText.textContent = ratingTexts[rating] || 'Aucune note'
+      }
+
+      // Gestion des clics sur les étoiles
+      starButtons.forEach((button, index) => {
+        button.addEventListener('click', function () {
+          const rating = index + 1
+          currentRating = rating
+          updateStars(rating)
+          updateRatingText(rating)
+
+          // Dispatcher un événement personnalisé
+          component.dispatchEvent(
+            new CustomEvent('rating-change', {
+              detail: { rating: rating, maxRating: starButtons.length },
+            })
+          )
+
+          // Sauvegarder la note (ici on pourrait faire un appel API)
+          console.log(`Note sauvegardée: ${rating}/${starButtons.length}`)
+        })
+
+        // Effet hover
+        button.addEventListener('mouseenter', function () {
+          const rating = index + 1
+          updateStars(rating)
+        })
+      })
+
+      // Remettre la note actuelle quand on quitte le hover
+      component.addEventListener('mouseleave', function () {
+        updateStars(currentRating)
+      })
+    })
+  })
+</script>

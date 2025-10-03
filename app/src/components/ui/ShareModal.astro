@@ -1,0 +1,282 @@
+---
+import X from '@lucide/astro/icons/x'
+import Copy from '@lucide/astro/icons/copy'
+import Mail from '@lucide/astro/icons/mail'
+import MessageSquare from '@lucide/astro/icons/message-square'
+import Share2 from '@lucide/astro/icons/share-2'
+import Button from './Button.astro'
+import BrandIcon from './BrandIcon.astro'
+
+export interface Props {
+  title: string
+  artist: string
+  url?: string
+}
+
+const {
+  title,
+  artist,
+  url = typeof window !== 'undefined' ? window.location.href : '',
+} = Astro.props
+
+const shareText = `Découvrez "${title}" de ${artist} sur VinylVault !`
+---
+
+<!-- Modal de partage -->
+<div
+  id="share-modal"
+  class="fixed inset-0 z-50 hidden items-center justify-center bg-black/50 backdrop-blur-sm"
+  role="dialog"
+  aria-modal="true"
+  aria-labelledby="share-modal-title"
+>
+  <div class="mx-4 w-full max-w-md rounded-xl bg-white p-6 shadow-2xl dark:bg-neutral-800">
+    <!-- En-tête de la modal -->
+    <div class="mb-6 flex items-center justify-between">
+      <div>
+        <h3
+          id="share-modal-title"
+          class="text-lg font-semibold text-neutral-900 dark:text-neutral-100"
+        >
+          Partager
+        </h3>
+        <p class="text-sm text-neutral-600 dark:text-neutral-400">
+          {title} - {artist}
+        </p>
+      </div>
+      <button
+        type="button"
+        id="close-share-modal"
+        class="rounded-lg p-2 text-neutral-500 transition-colors hover:bg-neutral-100 hover:text-neutral-700 dark:text-neutral-400 dark:hover:bg-neutral-700 dark:hover:text-neutral-200"
+        aria-label="Fermer"
+      >
+        <X class="h-5 w-5" />
+      </button>
+    </div>
+
+    <!-- Options de partage -->
+    <div class="space-y-4">
+      <!-- URL à partager -->
+      <div class="rounded-lg bg-neutral-50 p-3 dark:bg-neutral-700">
+        <label
+          for="share-url"
+          class="mb-2 block text-xs font-medium text-neutral-700 dark:text-neutral-300"
+        >
+          Lien à partager
+        </label>
+        <div class="flex gap-2">
+          <input
+            type="text"
+            id="share-url"
+            value={url}
+            data-title={title}
+            data-artist={artist}
+            readonly
+            class="flex-1 rounded-lg border border-neutral-300 bg-white px-3 py-2 text-sm text-neutral-900 focus:border-orange-500 focus:ring-2 focus:ring-orange-500 dark:border-neutral-600 dark:bg-neutral-600 dark:text-neutral-100"
+          />
+          <button
+            type="button"
+            id="copy-url-btn"
+            class="flex items-center justify-center rounded-lg bg-orange-500 px-3 py-2 text-white transition-colors hover:bg-orange-600 focus:ring-2 focus:ring-orange-500 focus:ring-offset-2"
+            aria-label="Copier le lien"
+          >
+            <Copy class="h-4 w-4" />
+          </button>
+        </div>
+      </div>
+
+      <!-- Boutons de partage rapide -->
+      <div class="grid grid-cols-2 gap-3">
+        <!-- Bouton de partage natif (Web Share API) - visible uniquement si supporté -->
+        <Button
+          variant="gradient"
+          size="lg"
+          class="col-span-2 hidden w-full justify-start"
+          id="native-share-btn"
+          data-share="native"
+        >
+          <Share2 class="mr-2 h-4 w-4" />
+          Partager
+        </Button>
+
+        <Button variant="ghost" size="lg" class="w-full justify-start" data-share="email">
+          <Mail class="mr-2 h-4 w-4" />
+          Email
+        </Button>
+        <Button variant="ghost" size="lg" class="w-full justify-start" data-share="sms">
+          <MessageSquare class="mr-2 h-4 w-4" />
+          SMS
+        </Button>
+        <Button variant="ghost" size="lg" class="w-full justify-start" data-share="facebook">
+          <BrandIcon name="facebook" size={16} className="mr-2" />
+          Facebook
+        </Button>
+        <Button variant="ghost" size="lg" class="w-full justify-start" data-share="twitter">
+          <BrandIcon name="x" size={16} className="mr-2" />
+          X (Twitter)
+        </Button>
+        <Button variant="ghost" size="lg" class="w-full justify-start" data-share="instagram">
+          <BrandIcon name="instagram" size={16} className="mr-2" />
+          Instagram
+        </Button>
+        <Button variant="ghost" size="lg" class="w-full justify-start" data-share="whatsapp">
+          <BrandIcon name="whatsapp" size={16} className="mr-2" />
+          WhatsApp
+        </Button>
+      </div>
+
+      <!-- Message de confirmation -->
+      <div id="copy-success" class="hidden rounded-lg bg-emerald-50 p-3 dark:bg-emerald-900/20">
+        <p class="text-sm text-emerald-700 dark:text-emerald-300">
+          ✓ Lien copié dans le presse-papiers !
+        </p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    const modal = document.getElementById('share-modal')
+    const closeBtn = document.getElementById('close-share-modal')
+    const copyBtn = document.getElementById('copy-url-btn')
+    const shareUrl = document.getElementById('share-url')
+    const copySuccess = document.getElementById('copy-success')
+    const shareButtons = document.querySelectorAll('[data-share]')
+    const nativeShareBtn = document.getElementById('native-share-btn')
+
+    if (!modal || !closeBtn || !copyBtn || !shareUrl || !copySuccess) return
+
+    // Afficher le bouton de partage natif si Web Share API est supporté
+    if (navigator.share && typeof navigator.share === 'function' && nativeShareBtn) {
+      nativeShareBtn.classList.remove('hidden')
+    }
+
+    // Ouvrir la modal
+    document.addEventListener('click', function (e) {
+      const target = e.target
+      if (!target || !(target instanceof Element)) return
+
+      const shareBtn = target.closest('[data-action="share"]')
+      if (shareBtn) {
+        e.preventDefault()
+        modal.classList.remove('hidden')
+        modal.classList.add('flex')
+        document.body.style.overflow = 'hidden'
+      }
+    })
+
+    // Fermer la modal
+    const closeModal = () => {
+      modal.classList.add('hidden')
+      modal.classList.remove('flex')
+      document.body.style.overflow = ''
+      copySuccess.classList.add('hidden')
+    }
+
+    closeBtn.addEventListener('click', closeModal)
+
+    // Fermer en cliquant sur l'overlay
+    modal.addEventListener('click', function (e) {
+      if (e.target === modal) {
+        closeModal()
+      }
+    })
+
+    // Fermer avec Escape
+    document.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape' && !modal.classList.contains('hidden')) {
+        closeModal()
+      }
+    })
+
+    // Copier l'URL
+    copyBtn.addEventListener('click', async function () {
+      try {
+        await navigator.clipboard.writeText(shareUrl.value)
+        copySuccess.classList.remove('hidden')
+        setTimeout(() => {
+          copySuccess.classList.add('hidden')
+        }, 3000)
+      } catch (err) {
+        // Fallback pour les navigateurs plus anciens
+        shareUrl.select()
+        document.execCommand('copy')
+        copySuccess.classList.remove('hidden')
+        setTimeout(() => {
+          copySuccess.classList.add('hidden')
+        }, 3000)
+      }
+    })
+
+    // Fonction de partage hybride (Web Share API + fallback)
+    async function shareContent(platform: string) {
+      const url = shareUrl.value
+      const title = shareUrl.dataset.title || 'ce vinyle'
+      const artist = shareUrl.dataset.artist || 'cet artiste'
+      const text = `Découvrez "${title}" de ${artist} sur VinylVault ! ${url}`
+
+      // 1. Essayer Web Share API d'abord (mobile moderne)
+      if (navigator.share && platform === 'native') {
+        try {
+          await navigator.share({
+            title: `Découvrez "${title}" de ${artist}`,
+            text: text,
+            url: url,
+          })
+          closeModal()
+          return
+        } catch (err) {
+          // L'utilisateur a annulé ou erreur, continuer avec les boutons spécifiques
+          console.log('Web Share API annulé ou non disponible')
+        }
+      }
+
+      // 2. Fallback vers les boutons de partage spécifiques
+      switch (platform) {
+        case 'email':
+          window.open(
+            `mailto:?subject=${encodeURIComponent(`Découvrez "${title}" de ${artist} sur VinylVault !`)}&body=${encodeURIComponent(text)}`
+          )
+          break
+        case 'sms':
+          window.open(`sms:?body=${encodeURIComponent(text)}`)
+          break
+        case 'facebook':
+          window.open(`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}`)
+          break
+        case 'twitter':
+          window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}`)
+          break
+        case 'instagram':
+          // Instagram ne supporte pas le partage direct d'URLs, on copie le lien
+          try {
+            await navigator.clipboard.writeText(url)
+            copySuccess?.classList.remove('hidden')
+            setTimeout(() => {
+              copySuccess?.classList.add('hidden')
+            }, 3000)
+          } catch (err) {
+            // Fallback
+            window.open(`https://www.instagram.com/`)
+          }
+          break
+        case 'whatsapp':
+          window.open(`https://wa.me/?text=${encodeURIComponent(text)}`)
+          break
+      }
+
+      closeModal()
+    }
+
+    // Gestion des boutons de partage
+    shareButtons.forEach((btn) => {
+      btn.addEventListener('click', function (this: Element) {
+        const platform = this.getAttribute('data-share')
+        if (platform) {
+          shareContent(platform)
+        }
+      })
+    })
+  })
+</script>

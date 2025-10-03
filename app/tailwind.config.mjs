@@ -1,4 +1,5 @@
 /** @type {import('tailwindcss').Config} */
+
 export default {
   // Configuration minimale pour Tailwind v4
   // Les personnalisations de thème sont définies dans src/styles/global.css avec @theme
